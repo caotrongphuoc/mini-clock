@@ -1,0 +1,39 @@
+#ifndef __ZW_GAME_GUNNER_H__
+#define __ZW_GAME_GUNNER_H__
+
+#include <stdio.h>
+
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+
+#include "scr_zomwar_game.h"
+
+#define STEP_GUNNER_AXIS_Y     (10) // So buoc moi lan Gunner di chuyen len xuong
+#define SIZE_BITMAP_GUNNER_X   (25) // Kich thuoc chieu ngang cua Gunner
+#define SIZE_BITMAP_GUNNER_Y   (10) // Kich thuoc chieu cao cua Gunner
+#define AXIS_X_GUNNER          (14) // Toa do x cua Gunner ban dau
+#define AXIS_Y_GUNNER          (32) // Toa do y cua Gunner ban dau
+
+typedef struct {
+    bool visible;
+    uint32_t x, y;
+    uint8_t action_image;
+} zw_game_gunner_t;
+
+typedef enum {
+    GUNNER_MOVE_NONE = 0,  // Gunner dung yen
+    GUNNER_MOVE_UP = 1,    // Gunner di chuyen len
+    GUNNER_MOVE_DOWN = 2   // Gunner di chuyen xuong
+} gunner_move_dir_t;
+
+extern zw_game_gunner_t gunner;
+
+
+#endif //__ZW_GAME_GUNNER_H__

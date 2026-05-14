@@ -144,7 +144,9 @@ enum {
 enum {
 	AC_DISPLAY_INITIAL = AK_USER_DEFINE_SIG,
 	AC_DISPLAY_BUTON_MODE_RELEASED,
+	AC_DISPLAY_BUTON_UP_PRESSED,
 	AC_DISPLAY_BUTON_UP_RELEASED,
+	AC_DISPLAY_BUTON_DOWN_PRESSED,
 	AC_DISPLAY_BUTON_DOWN_RELEASED,
 	AC_DISPLAY_SHOW_LOGO,
 	AC_DISPLAY_SHOW_IDLE,
@@ -179,6 +181,32 @@ enum {
 /* define signal */
 enum {
 	AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
+};
+
+/*****************************************************************************/
+/*  ZOMWAR GAME task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define ZW_GAME_GUNNER_UPDATE_INTERVAL  (80) /* ms - toc do cap nhat vi tri gunner */
+
+/* define signal - GUNNER task */
+enum {
+    ZW_GAME_GUNNER_SETUP = AK_USER_DEFINE_SIG,
+    ZW_GAME_GUNNER_UPDATE,
+    ZW_GAME_GUNNER_UP,
+    ZW_GAME_GUNNER_DOWN,
+    ZW_GAME_GUNNER_STOP,
+    ZW_GAME_GUNNER_RESET,
+};
+
+/* define signal - GAME SCREEN input */
+enum {
+    ZW_GAME_BTN_UP_PRESSED = AK_USER_DEFINE_SIG,
+    ZW_GAME_BTN_UP_RELEASED,
+    ZW_GAME_BTN_DOWN_PRESSED,
+    ZW_GAME_BTN_DOWN_RELEASED,
+    ZW_GAME_BTN_MODE_RELEASED,
 };
 
 /*****************************************************************************/
