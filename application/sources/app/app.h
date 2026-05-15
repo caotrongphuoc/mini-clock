@@ -160,6 +160,25 @@ enum {
 };
 
 /*****************************************************************************/
+/*  Zomwar task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define ZW_GAME_TIME_TICK_INTERVAL									(100)
+#define ZW_GAME_TIME_EXIT_INTERVAL									(3000)
+/* define signal */
+enum {
+	ZW_GAME_TIME_TICK = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_RESET,
+	ZW_GAME_EXIT_GAME,
+	ZW_GAME_BTN_MODE_RELEASED,
+	ZW_GAME_BTN_UP_PRESSED,
+	ZW_GAME_BTN_UP_RELEASED,
+	ZW_GAME_BTN_DOWN_PRESSED,
+	ZW_GAME_BTN_DOWN_RELEASED,
+};
+
+/*****************************************************************************/
 /*  ZIGBEE task define
  */
 /*****************************************************************************/
@@ -200,13 +219,12 @@ enum {
     ZW_GAME_GUNNER_RESET,
 };
 
-/* define signal - GAME SCREEN input */
+/* define signal - BULLET task */
 enum {
-    ZW_GAME_BTN_UP_PRESSED = AK_USER_DEFINE_SIG,
-    ZW_GAME_BTN_UP_RELEASED,
-    ZW_GAME_BTN_DOWN_PRESSED,
-    ZW_GAME_BTN_DOWN_RELEASED,
-    ZW_GAME_BTN_MODE_RELEASED,
+    ZW_GAME_BULLET_SETUP = AK_USER_DEFINE_SIG,
+    ZW_GAME_BULLET_RUN,
+    ZW_GAME_BULLET_SHOOT,
+    ZW_GAME_BULLET_RESET,
 };
 
 /*****************************************************************************/

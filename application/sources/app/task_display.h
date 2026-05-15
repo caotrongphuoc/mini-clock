@@ -9,8 +9,8 @@
 #include "scr_es35sw_th_sensor.h"
 #include "scr_lhio404_io_device.h"
 
-#define LCD_WIDTH			(124)
-#define LCD_HEIGHT			(60)
+#define LCD_WIDTH			(128)
+#define LCD_HEIGHT			(64)
 
 #define NUMFLAKES			(10)
 #define XPOS				(0)

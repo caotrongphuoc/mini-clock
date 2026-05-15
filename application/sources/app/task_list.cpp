@@ -21,7 +21,8 @@ const task_t app_task_table[] = {
 	{AC_TASK_DISPLAY_ID			,	TASK_PRI_LEVEL_4	,	task_display		},
 
 	/* ZOMWAR GAME TASKS */
-	{ZW_GAME_GUNNER_ID			,	TASK_PRI_LEVEL_5	,	zw_game_gunner_handle	},
+	{ZW_GAME_GUNNER_ID			,	TASK_PRI_LEVEL_4	,	zw_game_gunner_handle	},
+	{ZW_GAME_BULLET_ID			,	TASK_PRI_LEVEL_4	,	zw_game_bullet_handle	},
 
 	#if defined(TASK_ZIGBEE_EN)
 	{AC_TASK_ZIGBEE_ID			,	TASK_PRI_LEVEL_4	,	task_zigbee			},

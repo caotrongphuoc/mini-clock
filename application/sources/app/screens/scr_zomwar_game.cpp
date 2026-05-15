@@ -19,7 +19,7 @@ void zw_game_frame_display() {
 	view_render.setCursor(64,55);
 	view_render.print("Score:");
 	//view_render.print(zw_game_score);
-	view_render.drawLine(0, LCD_HEIGHT, 	LCD_WIDTH, LCD_HEIGHT,		WHITE);
+	//view_render.drawLine(0, LCD_HEIGHT, 	LCD_WIDTH, LCD_HEIGHT,		WHITE);
 	view_render.drawLine(0, LCD_HEIGHT-11, 	LCD_WIDTH, LCD_HEIGHT-11,	WHITE);
 	view_render.drawRect(0, 0, 128, 64, 1);
 }
@@ -33,6 +33,19 @@ void zw_game_gunner_display() {
 								SIZE_BITMAP_GUNNER_X, 
 								SIZE_BITMAP_GUNNER_Y, 
 								WHITE);
+	}
+}
+
+void zw_game_bullet_display() {
+	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++) {
+		if (bullet[i].visible == WHITE) {
+			view_render.drawBitmap(	bullet[i].x, 
+									bullet[i].y, 
+									bitmap_bullet, 
+									SIZE_BITMAP_BULLET_X, 
+									SIZE_BITMAP_BULLET_Y, 
+									WHITE);
+		}
 	}
 }
 
@@ -57,10 +70,18 @@ void view_scr_zomwar_game() {
 	if (zw_game_state == GAME_PLAY) {
         zw_game_frame_display();
 		zw_game_gunner_display();
+		zw_game_bullet_display();
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();
 	}
+}
+
+void zw_game_time_tick_setup() {
+	timer_set(	AC_TASK_DISPLAY_ID, \
+				ZW_GAME_TIME_TICK, \
+				ZW_GAME_TIME_TICK_INTERVAL, \
+				TIMER_PERIODIC);
 }
 
 /*****************************************************************************/
@@ -72,13 +93,18 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("ZW_GAME SCREEN_ENTRY\n");
 		zw_game_state = GAME_PLAY;
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
-		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, ZW_GAME_GUNNER_UPDATE_INTERVAL, TIMER_PERIODIC);
+		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
+
+		zw_game_time_tick_setup();
 	}
 		break;
 
-	case AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE: {
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
-	}
+	case ZW_GAME_TIME_TICK: 
+		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
+		if (zw_game_state == GAME_PLAY) {
+			task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
+			task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RUN);
+		}
 		break;
 
 	case AC_DISPLAY_BUTON_UP_PRESSED: {
@@ -87,11 +113,11 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_UP_RELEASED: {
-		APP_DBG_SIG("ZW_GAME BTN_UP_RELEASED\n");
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
-	}
-		break;
+	// case AC_DISPLAY_BUTON_UP_RELEASED: {
+	// 	APP_DBG_SIG("ZW_GAME BTN_UP_RELEASED\n");
+	// 	task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
+	// }
+	// 	break;
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_DOWN_PRESSED\n");
@@ -99,19 +125,17 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTON_DOWN_RELEASED: {
-		APP_DBG_SIG("ZW_GAME BTN_DOWN_RELEASED\n");
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
-	}
-		break;
+	// case AC_DISPLAY_BUTON_DOWN_RELEASED: {
+	// 	APP_DBG_SIG("ZW_GAME BTN_DOWN_RELEASED\n");
+	// 	task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
+	// }
+	// 	break;
 
-	case AC_DISPLAY_BUTON_MODE_RELEASED: {
+	case AC_DISPLAY_BUTON_MODE_RELEASED: 
 		APP_DBG_SIG("ZW_GAME BTN_MODE_RELEASED\n");
-		zw_game_state = GAME_OFF;
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE);
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_RESET);
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
-	}
+		if(zw_game_state == GAME_PLAY) {
+			task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SHOOT);
+		}
 		break;
 
 	default:

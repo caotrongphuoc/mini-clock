@@ -165,4 +165,5 @@ build_Zomwar-application/scr_zomwar_game.o: \
  sources/app/screens/scr_lhio404_io_device.h \
  sources/app/screens/scr_bitmap.h \
  sources/app/game/zomwar_game/zw_game_gunner.h \
- sources/app/screens/scr_zomwar_game.h
+ sources/app/screens/scr_zomwar_game.h \
+ sources/app/game/zomwar_game/zw_game_bullet.h

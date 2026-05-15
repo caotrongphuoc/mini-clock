@@ -29,6 +29,7 @@ enum {
 
 	/* ZOMWAR GAME TASKS */
 	ZW_GAME_GUNNER_ID,
+	ZW_GAME_BULLET_ID,
 
 #if defined(TASK_ZIGBEE_EN)
 	AC_TASK_ZIGBEE_ID,
@@ -84,6 +85,7 @@ extern void task_zigbee(ak_msg_t*);
 
 /* ZOMWAR GAME TASK */
 extern void zw_game_gunner_handle(ak_msg_t*);
+extern void zw_game_bullet_handle(ak_msg_t*);
 
 /* RF24 NETWORK TASK */
 extern void task_rf24_phy(ak_msg_t*);

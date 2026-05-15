@@ -170,6 +170,14 @@ static const Tone_TypeDef tones_merryChrismast[] = {
 	{   0, 0}  // <-- tones end
 };
 
+// Short click for bullet shoot and menu navigation
+static const Tone_TypeDef tones_cc[] = {
+	{4000, 2},
+	{   0, 1},
+	{3000, 2},
+	{   0, 0}
+};
+
 // Function prototypes
 void BUZZER_Init(void);
 void BUZZER_Enable(uint16_t freq, uint32_t duration);
