@@ -21,6 +21,9 @@
 #include "scr_bitmap.h"
 #include "scr_zomwar_game.h"
 
+#include "zw_game_gunner.h"
+#include "zw_game_bullet.h"
+
 extern view_dynamic_t dyn_view_item_menu_game;
 extern view_screen_t scr_menu_game;
 extern void scr_menu_game_handle(ak_msg_t* msg);

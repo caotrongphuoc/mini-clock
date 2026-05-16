@@ -80,6 +80,18 @@ void zw_game_car_display() {
 	}
 }
 
+void zw_game_grass_display() {
+	static const uint8_t ly[NUM_LANES] = LANE_Y;
+	for (uint8_t l = 0; l < NUM_LANES; l++) {
+		uint8_t gy = ly[l] + 9;
+		for (uint8_t x = 0; x < 128; x += 5) {
+			view_render.drawPixel(x,     gy,     WHITE);
+			view_render.drawPixel(x + 1, gy,     WHITE);
+			view_render.drawPixel(x + 2, gy,     WHITE);
+		}
+	}
+}
+
 static void view_scr_zomwar_game();
 
 view_dynamic_t dyn_view_item_zomwar_game = {
@@ -103,6 +115,7 @@ void view_scr_zomwar_game() {
 		zw_game_gunner_display();
 		zw_game_bullet_display();
 		zw_game_car_display();
+		zw_game_grass_display();
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();

@@ -34,6 +34,11 @@
 
 //extern zw_game_setting_t settingsetup;
 
+extern void zw_game_gunner_display();
+extern void zw_game_bullet_display();
+extern void zw_game_time_tick_setup();
+
+
 extern view_dynamic_t dyn_view_item_zomwar_game;
 extern view_screen_t scr_zomwar_game;
 extern void scr_zw_game_handle(ak_msg_t* msg);

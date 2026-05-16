@@ -160,12 +160,12 @@ build_Zomwar-application/scr_zomwar_game.o: \
  sources/networks/mbmaster-v2.9.6/mbmaster/include/common/mbportlayer.h \
  sources/app/screens/scr_lhio404_io_device.h \
  sources/app/screens/scr_zomwar_game.h sources/app/screens/scr_bitmap.h \
+ sources/app/game/zomwar_game/zw_game_gunner.h \
+ sources/app/screens/scr_zomwar_game.h \
+ sources/app/game/zomwar_game/zw_game_bullet.h \
  sources/app/screens/scr_startup.h sources/app/screens/scr_noen.h \
  sources/app/screens/scr_es35sw_th_sensor.h \
  sources/app/screens/scr_lhio404_io_device.h \
  sources/driver/eeprom/eeprom.h sources/app/app_eeprom.h \
  sources/app/screens/screens.h sources/app/screens/scr_bitmap.h \
- sources/app/game/zomwar_game/zw_game_gunner.h \
- sources/app/screens/scr_zomwar_game.h \
- sources/app/game/zomwar_game/zw_game_bullet.h \
  sources/app/game/zomwar_game/zw_game_car.h

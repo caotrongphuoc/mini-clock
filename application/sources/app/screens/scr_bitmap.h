@@ -13,5 +13,6 @@ extern const unsigned char PROGMEM bitmap_car_III [];
 
 // scr_menu_game
 extern const unsigned char PROGMEM bitmap_menu_tomb [];
+extern const unsigned char PROGMEM bitmap_tombstone [];
 
 #endif //__SCR_BITMAP_H__

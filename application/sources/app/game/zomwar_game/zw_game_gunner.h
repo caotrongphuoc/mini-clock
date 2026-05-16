@@ -19,9 +19,9 @@
 #define SIZE_BITMAP_GUNNER_X   (25) // Kich thuoc chieu ngang cua Gunner
 #define SIZE_BITMAP_GUNNER_Y   (10) // Kich thuoc chieu cao cua Gunner
 #define AXIS_X_GUNNER          (14) // Toa do x cua Gunner ban dau
-#define AXIS_Y_GUNNER          (32) // Toa do y cua Gunner ban dau
+#define AXIS_Y_GUNNER          (52) // Toa do y cua Gunner ban dau
 #define AXIS_Y_GUNNER_MIN      (12) // Toa do toi thieu cua Gunner
-#define AXIS_Y_GUNNER_MAX      (52) // Toa do toi thieu cua Gunner
+#define AXIS_Y_GUNNER_MAX      (52) // Toa do toi da cua Gunner
 
 // Cac trang thai cua Gunner: dung yen, di chuyen len, di chuyen xuong
 typedef enum {
