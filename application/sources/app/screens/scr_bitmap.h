@@ -7,5 +7,8 @@
 extern const unsigned char PROGMEM bitmap_gunner_I [];
 extern const unsigned char PROGMEM bitmap_gunner_II [];
 extern const unsigned char PROGMEM bitmap_bullet [];
+extern const unsigned char PROGMEM bitmap_car_I [];
+extern const unsigned char PROGMEM bitmap_car_II [];
+extern const unsigned char PROGMEM bitmap_car_III [];
 
 #endif //__SCR_BITMAP_H__

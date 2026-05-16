@@ -26,6 +26,7 @@
 
 #include "zw_game_gunner.h"
 #include "zw_game_bullet.h"
+#include "zw_game_car.h"
 
 #define GAME_OFF  (0) // Trang thai LCD khi khong choi game 
 #define GAME_PLAY (1) // Trang thai LCD khi choi game

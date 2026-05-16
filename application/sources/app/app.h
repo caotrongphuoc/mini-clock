@@ -203,28 +203,43 @@ enum {
 };
 
 /*****************************************************************************/
-/*  ZOMWAR GAME task define
+/*  Zomwar game 'GUNNER' task define
  */
 /*****************************************************************************/
 /* define timer */
-#define ZW_GAME_GUNNER_UPDATE_INTERVAL  (80) /* ms - toc do cap nhat vi tri gunner */
-
-/* define signal - GUNNER task */
+/* define signal */
 enum {
-    ZW_GAME_GUNNER_SETUP = AK_USER_DEFINE_SIG,
-    ZW_GAME_GUNNER_UPDATE,
-    ZW_GAME_GUNNER_UP,
-    ZW_GAME_GUNNER_DOWN,
-    ZW_GAME_GUNNER_STOP,
-    ZW_GAME_GUNNER_RESET,
+	ZW_GAME_GUNNER_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_GUNNER_UPDATE,
+	ZW_GAME_GUNNER_UP,
+	ZW_GAME_GUNNER_DOWN,
+	ZW_GAME_GUNNER_STOP,
+	ZW_GAME_GUNNER_RESET,
 };
 
-/* define signal - BULLET task */
+/*****************************************************************************/
+/*  Zomwar game 'BULLET' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
 enum {
-    ZW_GAME_BULLET_SETUP = AK_USER_DEFINE_SIG,
-    ZW_GAME_BULLET_RUN,
-    ZW_GAME_BULLET_SHOOT,
-    ZW_GAME_BULLET_RESET,
+	ZW_GAME_BULLET_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_BULLET_RUN,
+	ZW_GAME_BULLET_SHOOT,
+	ZW_GAME_BULLET_RESET,
+};
+
+/*****************************************************************************/
+/*  Zomwar game 'CAR' task define   
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_CAR_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_CAR_RUN,
+	ZW_GAME_CAR_RESET,
 };
 
 /*****************************************************************************/

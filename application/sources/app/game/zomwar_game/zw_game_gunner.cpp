@@ -12,7 +12,7 @@ void zw_game_gunner_handle(ak_msg_t* msg) {
         gunner.x = AXIS_X_GUNNER;
         gunner.y = AXIS_Y_GUNNER;
         gunner.visible = WHITE;
-        //gunner.action_image = 1;
+        gunner.action_image = 1;
         gunner_y = AXIS_Y_GUNNER;
         break;
 

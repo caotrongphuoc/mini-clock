@@ -49,6 +49,37 @@ void zw_game_bullet_display() {
 	}
 }
 
+void zw_game_car_display() {
+	for (uint8_t i = 0; i < NUM_LANES; i++) {
+		if (car[i].visible) {
+			if (car[i].action_image == 1) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_I, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+			else if (car[i].action_image == 2) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_II, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+			else if (car[i].action_image == 3) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_III, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+		}
+	}
+}
+
 static void view_scr_zomwar_game();
 
 view_dynamic_t dyn_view_item_zomwar_game = {
@@ -71,6 +102,7 @@ void view_scr_zomwar_game() {
         zw_game_frame_display();
 		zw_game_gunner_display();
 		zw_game_bullet_display();
+		zw_game_car_display();
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();
@@ -94,6 +126,7 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 		zw_game_state = GAME_PLAY;
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
+		task_post_pure_msg(ZW_GAME_CAR_ID, 	  ZW_GAME_CAR_SETUP);
 
 		zw_game_time_tick_setup();
 	}

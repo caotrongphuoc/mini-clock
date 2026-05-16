@@ -165,4 +165,5 @@ build_Zomwar-application/scr_idle.o: sources/app/screens/scr_idle.cpp \
  sources/app/screens/scr_bitmap.h \
  sources/app/game/zomwar_game/zw_game_gunner.h \
  sources/app/screens/scr_zomwar_game.h \
- sources/app/game/zomwar_game/zw_game_bullet.h
+ sources/app/game/zomwar_game/zw_game_bullet.h \
+ sources/app/game/zomwar_game/zw_game_car.h
