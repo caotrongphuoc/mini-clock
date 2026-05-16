@@ -36,6 +36,13 @@ void zw_game_gunner_handle(ak_msg_t* msg) {
         gunner.y = gunner_y; // Cap nhat vi tri Gunner
         break;
 
+    // Cap nhat hoat anh cua Gunner
+    case ZW_GAME_GUNNER_UPDATE:
+        if (gunner.action_image == 2) {
+            gunner.action_image = 1;
+        }
+        break;
+
     // Reset Gunner ve trang thai ban dau
     case ZW_GAME_GUNNER_RESET: 
         APP_DBG_SIG("ZW_GAME_GUNNER_RESET\n");

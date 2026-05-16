@@ -2,6 +2,7 @@
 #include "zw_game_gunner.h"
 
 zw_game_bullet_t bullet[MAX_NUM_BULLET];
+bool zw_game_sound_enable = true; // Kich hoat am thanh
 
 void zw_game_bullet_handle(ak_msg_t* msg) {
     switch (msg->sig) {
@@ -35,8 +36,10 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
                 bullet[i].visible = WHITE; 
                 bullet[i].x = gunner.x + 15; 
                 bullet[i].y = gunner.y -8; 
-                gunner.action_image = 2; 
-                BUZZER_PlayTones(tones_cc); 
+                gunner.action_image = 2;
+                if(zw_game_sound_enable) {
+                    BUZZER_PlayTones(tones_cc); 
+                }
                 break; 
             } 
         } 

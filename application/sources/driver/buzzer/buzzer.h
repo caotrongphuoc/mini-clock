@@ -182,6 +182,7 @@ static const Tone_TypeDef tones_cc[] = {
 void BUZZER_Init(void);
 void BUZZER_Enable(uint16_t freq, uint32_t duration);
 void BUZZER_Disable(void);
+void BUZZER_Sleep(uint8_t silent);
 void BUZZER_PlayTones(const Tone_TypeDef * melody);
 
 extern void buzzer_irq( void );
