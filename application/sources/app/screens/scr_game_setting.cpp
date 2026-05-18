@@ -109,42 +109,37 @@ void scr_game_setting_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
 		setting_location_chosse = SETTING_ITEM_ARRDESS_1;
-		// zw_game_setting_read(&settingdata);
+		zw_game_setting_read(&settingdata);
 		break;
 
 	case AC_DISPLAY_BUTTON_MODE_RELEASED:
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_RELEASED\n");
 		switch (setting_location_chosse) {
-	// 	case SETTING_ITEM_ARRDESS_1: {
-	// 		SCREEN_TRAN(scr_car_position_handle, &scr_car_position);
-	// 		BUZZER_PlayTones(tones_cc);
-	// 	}
-	// 		break;
+		case SETTING_ITEM_ARRDESS_1: 
+		// 		SCREEN_TRAN(scr_car_position_handle, &scr_car_position);
+			BUZZER_PlayTones(tones_cc);
+			break;
 
-	// 	case SETTING_ITEM_ARRDESS_2: {
-	// 		SCREEN_TRAN(scr_tombstone_count_handle, &scr_tombstone_count);
-	// 		BUZZER_PlayTones(tones_cc);
-	// 	}
-	// 		break;
+		case SETTING_ITEM_ARRDESS_2: 
+		// 		SCREEN_TRAN(scr_tombstone_count_handle, &scr_tombstone_count);
+			BUZZER_PlayTones(tones_cc);
+			break;
 
-	// 	case SETTING_ITEM_ARRDESS_3: {
-	// 		settingdata.zombie_speed++;
-	// 		if (settingdata.zombie_speed > 5) {
-	// 			settingdata.zombie_speed = 1;
-	// 		}
-	// 		BUZZER_PlayTones(tones_cc);
-	// 	}
-	// 		break;
+		case SETTING_ITEM_ARRDESS_3:
+			// settingdata.zombie_speed++;
+		// 		if (settingdata.zombie_speed > 5) {
+		// 			settingdata.zombie_speed = 1;
+			BUZZER_PlayTones(tones_cc);
+			break;
 
-	// 	case SETTING_ITEM_ARRDESS_4: {
-	// 		settingdata.silent = !settingdata.silent;
-	// 		BUZZER_Sleep(settingdata.silent);
-	// 		BUZZER_PlayTones(tones_cc);
-	// 	}
-	// 		break;
+		case SETTING_ITEM_ARRDESS_4: 
+			settingdata.silent = !settingdata.silent;
+			BUZZER_Sleep(settingdata.silent);
+			BUZZER_PlayTones(tones_cc);
+			break;
 
 		case SETTING_ITEM_ARRDESS_5: 
-			//zw_game_setting_write(&settingdata);
+			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 			BUZZER_PlayTones(tones_startup);
 			break;

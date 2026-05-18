@@ -3,17 +3,17 @@
 
 #include "view_render.h"
 
-// scr_game_zomwar
+// scr_game_zomwar & scr_game_menu
 extern const unsigned char PROGMEM bitmap_gunner_I [];
 extern const unsigned char PROGMEM bitmap_gunner_II [];
 extern const unsigned char PROGMEM bitmap_bullet [];
 extern const unsigned char PROGMEM bitmap_car_I [];
 extern const unsigned char PROGMEM bitmap_car_II [];
 extern const unsigned char PROGMEM bitmap_car_III [];
-
-// scr_game_menu
 extern const unsigned char PROGMEM bitmap_tombstone [];
-
+extern const unsigned char PROGMEM bitmap_bang_I [];
+extern const unsigned char PROGMEM bitmap_bang_II [];
+extern const unsigned char PROGMEM bitmap_bang_III [];
 
 // scr_game_rank
 extern const unsigned char PROGMEM bitmap_spider [];

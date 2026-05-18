@@ -79,6 +79,20 @@ void zw_game_car_display() {
 	}
 }
 
+void zw_game_bang_display() {
+	for (uint8_t i = 0; i < NUM_BANG; i++) {
+		if (bang[i].visible == WHITE) {
+			const unsigned char* frame = (bang[i].action_image == 2) ? bitmap_bang_II : bitmap_bang_I;
+			view_render.drawBitmap( bang[i].x, \
+									bang[i].y, \
+									frame, \
+									SIZE_BITMAP_BANG_I_X, \
+									SIZE_BITMAP_BANG_I_Y, \
+									WHITE);
+		}
+	}
+}
+
 void zw_game_grass_display() {
 	static const uint8_t ly[NUM_LANES] = LANE_Y;
 	for (uint8_t l = 0; l < NUM_LANES; l++) {
@@ -114,6 +128,7 @@ void view_scr_game_zomwar() {
 		zw_game_gunner_display();
 		zw_game_bullet_display();
 		zw_game_car_display();
+		zw_game_bang_display();
 		zw_game_grass_display();
 	}
     else if (zw_game_state == GAME_OVER) {
@@ -136,10 +151,11 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("ZW_GAME SCREEN_ENTRY\n");
 		zw_game_state = GAME_PLAY;
-		task_post_pure_msg(ZW_GAME_GUNNER_ID,  ZW_GAME_GUNNER_SETUP);
-		task_post_pure_msg(ZW_GAME_BULLET_ID,  ZW_GAME_BULLET_SETUP);
-		task_post_pure_msg(ZW_GAME_CAR_ID, 	   ZW_GAME_CAR_SETUP);
-		task_post_pure_msg(ZW_GAME_BORDER_ID,  ZW_GAME_BORDER_SETUP);
+		task_post_pure_msg(ZW_GAME_GUNNER_ID,   ZW_GAME_GUNNER_SETUP);
+		task_post_pure_msg(ZW_GAME_BULLET_ID,   ZW_GAME_BULLET_SETUP);
+		task_post_pure_msg(ZW_GAME_CAR_ID, 	    ZW_GAME_CAR_SETUP);
+		task_post_pure_msg(ZW_GAME_BANG_ID, 	ZW_GAME_BANG_SETUP);
+		task_post_pure_msg(ZW_GAME_BORDER_ID,   ZW_GAME_BORDER_SETUP);
 		zw_game_time_tick_setup();
 	}
 		break;
@@ -147,9 +163,11 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 	case ZW_GAME_TIME_TICK: 
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
 		if (zw_game_state == GAME_PLAY) {
-			task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
-			task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RUN);
-			task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_CHECK_GAME_OVER);
+			task_post_pure_msg(ZW_GAME_GUNNER_ID, 	ZW_GAME_GUNNER_UPDATE);
+			task_post_pure_msg(ZW_GAME_BULLET_ID, 	ZW_GAME_BULLET_RUN);
+			task_post_pure_msg(ZW_GAME_CAR_ID, 		ZW_GAME_CAR_RUN);
+			task_post_pure_msg(ZW_GAME_BANG_ID, 	ZW_GAME_BANG_UPDATE);
+			task_post_pure_msg(ZW_GAME_BORDER_ID, 	ZW_GAME_BORDER_CHECK_GAME_OVER);
 		}
 		break;
 

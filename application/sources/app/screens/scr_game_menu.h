@@ -26,6 +26,7 @@
 
 #include "zw_game_gunner.h"
 #include "zw_game_bullet.h"
+#include "zw_game_bang.h"
 
 extern view_dynamic_t dyn_view_item_game_menu;
 extern view_screen_t scr_game_menu;

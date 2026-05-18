@@ -14,7 +14,7 @@ void zw_game_car_handle(ak_msg_t* msg) {
             car[i].x       = AXIS_X_CAR; 
             car[i].y       = lane_y[i]; 
             car[i].lane    = i; 
-            //car[i].visible = (settingsetup.num_car >> i) & 1; 
+            car[i].visible = (settingdata.num_car >> i) & 1; 
             car[i].visible = true; 
             car[i].running = false; 
             car[i].action_image = 1; 
