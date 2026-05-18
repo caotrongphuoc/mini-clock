@@ -139,7 +139,6 @@ enum {
 #define AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP_INTERVAL				(15000)
 #define AC_DISPLAY_SHOW_MODBUS_PULL_INTERVAL						(1500)
 #define AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP_INTERVAL					(30000)
-#define ZW_GAME_TIME_SPIDER_UPDATE_INTERVAL							(3000)
 
 /* define signal */
 enum {
@@ -256,6 +255,19 @@ enum {
 	ZW_GAME_CAR_SETUP = ZW_GAME_DEFINE_SIG,
 	ZW_GAME_CAR_RUN,
 	ZW_GAME_CAR_RESET,
+};
+
+/*****************************************************************************/
+/*  Zomwar game 'BORDER' task define   
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_LEVEL_UP,
+	ZW_GAME_BORDER_CHECK_GAME_OVER,
+	ZW_GAME_BORDER_RESET,
 };
 
 /*****************************************************************************/

@@ -136,10 +136,10 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("ZW_GAME SCREEN_ENTRY\n");
 		zw_game_state = GAME_PLAY;
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
-		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
-		task_post_pure_msg(ZW_GAME_CAR_ID, 	  ZW_GAME_CAR_SETUP);
-
+		task_post_pure_msg(ZW_GAME_GUNNER_ID,  ZW_GAME_GUNNER_SETUP);
+		task_post_pure_msg(ZW_GAME_BULLET_ID,  ZW_GAME_BULLET_SETUP);
+		task_post_pure_msg(ZW_GAME_CAR_ID, 	   ZW_GAME_CAR_SETUP);
+		task_post_pure_msg(ZW_GAME_BORDER_ID,  ZW_GAME_BORDER_SETUP);
 		zw_game_time_tick_setup();
 	}
 		break;
@@ -149,6 +149,7 @@ void scr_zw_game_handle(ak_msg_t* msg) {
 		if (zw_game_state == GAME_PLAY) {
 			task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
 			task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RUN);
+			task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_CHECK_GAME_OVER);
 		}
 		break;
 
