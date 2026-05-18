@@ -65,10 +65,10 @@ void view_scr_game_setting() {
 		} break;
 		case 1: {
 			uint8_t total_t = 0;
-			// for (uint8_t i = 0; i < 5; i++) {
-			// 	if ((settingdata.tombstone_lane_1 >> i) & 1) total_t++;
-			// 	if ((settingdata.tombstone_lane_2 >> i) & 1) total_t++;
-			// }
+			for (uint8_t i = 0; i < 5; i++) {
+				if ((settingdata.tombstone_lane_1 >> i) & 1) total_t++;
+				if ((settingdata.tombstone_lane_2 >> i) & 1) total_t++;
+			}
 			view_render.setCursor(2, text_y);
 			view_render.print("Tombstones");
 			view_render.setCursor(total_t >= 10 ? 98 : 104, text_y);
@@ -87,7 +87,7 @@ void view_scr_game_setting() {
 		case 3:
 			view_render.setCursor(2, text_y);
 			view_render.print("Sound");
-			//view_render.drawBitmap(110, text_y, settingdata.silent ? speaker_2 : speaker_1, 7, 7, fg);
+			view_render.drawBitmap(110, text_y, settingdata.silent ? speaker_2 : speaker_1, 7, 7, fg);
 			break;
 		case 4:
 			view_render.setCursor(45, text_y);
@@ -135,7 +135,6 @@ void scr_game_setting_handle(ak_msg_t* msg) {
 		case SETTING_ITEM_ARRDESS_4: 
 			settingdata.silent = !settingdata.silent;
 			BUZZER_Sleep(settingdata.silent);
-			BUZZER_PlayTones(tones_cc);
 			break;
 
 		case SETTING_ITEM_ARRDESS_5: 

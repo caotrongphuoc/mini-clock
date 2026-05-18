@@ -22,6 +22,8 @@ extern "C"
 #include "app_eeprom.h"
 #include "app_data.h"
 
+#include "buzzer.h"
+
 /*****************************************************************************/
 /* SYSTEM task define
  */

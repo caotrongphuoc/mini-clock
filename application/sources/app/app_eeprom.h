@@ -15,7 +15,7 @@
 #define EEPROM_SCORE_START_ADDR         (0X0010)
 #define EEPROM_SCORE_PLAY_ADDR          (0X00FA)
 #define EEPROM_SETTING_START_ADDR       (0X0100)
-#define ZW_GAME_EEPROM_MAGIC_NUMBER     ((uint32_t)0x170304CTP)
+#define ZW_GAME_EEPROM_MAGIC_NUMBER     ((uint32_t)0x170304CA)
 
 /******************************************************************************/
 /* Zomw*/

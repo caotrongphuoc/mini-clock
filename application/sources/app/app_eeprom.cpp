@@ -12,7 +12,7 @@ typedef struct {
 
 typedef struct {
   uint32_t magic_number;
-  zw_game_score_t data;
+  zw_game_setting_t data;
   uint8_t check_sum;
 } zw_game_setting_eeprom_t;
 
