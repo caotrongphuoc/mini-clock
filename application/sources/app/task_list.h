@@ -32,6 +32,7 @@ enum {
 	ZW_GAME_BULLET_ID,
 	ZW_GAME_CAR_ID,
 	ZW_GAME_BANG_ID,
+	ZW_GAME_TOMBSTONE_ID,
 	ZW_GAME_BORDER_ID,
 
 
@@ -92,6 +93,7 @@ extern void zw_game_gunner_handle(ak_msg_t*);
 extern void zw_game_bullet_handle(ak_msg_t*);
 extern void zw_game_car_handle(ak_msg_t*);
 extern void zw_game_bang_handle(ak_msg_t*);
+extern void zw_game_tombstone_handle(ak_msg_t*);
 extern void zw_game_border_handle(ak_msg_t*);
 
 

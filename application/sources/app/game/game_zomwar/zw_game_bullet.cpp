@@ -1,5 +1,4 @@
 #include "zw_game_bullet.h"
-#include "zw_game_gunner.h"
 
 zw_game_bullet_t bullet[MAX_NUM_BULLET];
 bool zw_game_sound_enable = true; // Kich hoat am thanh

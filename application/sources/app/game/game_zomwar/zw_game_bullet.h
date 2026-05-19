@@ -15,6 +15,8 @@
 #include "buzzer.h"
 #include "scr_game_zomwar.h"
 
+#include "zw_game_gunner.h"
+
 #define MAX_NUM_BULLET       (30)  // So luong vien dan toi da
 #define MAX_AXIS_X_BULLET    (128) // Duong bay toi da cua vien dan
 #define SIZE_BITMAP_BULLET_X (5)   // Kich thuoc chieu ngang cua vien dan

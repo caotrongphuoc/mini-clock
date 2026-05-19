@@ -14,6 +14,9 @@ extern const unsigned char PROGMEM bitmap_tombstone [];
 extern const unsigned char PROGMEM bitmap_bang_I [];
 extern const unsigned char PROGMEM bitmap_bang_II [];
 extern const unsigned char PROGMEM bitmap_bang_III [];
+extern const unsigned char PROGMEM bitmap_zombie_I [];
+extern const unsigned char PROGMEM bitmap_zombie_II [];
+extern const unsigned char PROGMEM bitmap_zombie_III [];
 
 // scr_game_setting
 extern const unsigned char PROGMEM speaker_1 [];
@@ -24,4 +27,5 @@ extern const unsigned char PROGMEM bitmap_spider [];
 extern const unsigned char PROGMEM bitmap_spiderweb_L [];
 extern const unsigned char PROGMEM bitmap_spiderweb_R [];
 extern const unsigned char PROGMEM bitmap_tombstone_rank [];
+
 #endif //__scr_GAME_BITMAP_H__
