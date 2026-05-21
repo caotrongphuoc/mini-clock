@@ -18,46 +18,47 @@
 
 #include "zw_game_bullet.h"
 #include "zw_game_bang.h"
-#include "zw_game_border.h"
 
-#define NUM_ZOMBIES                 (50)    // So luong zombie
-#define NUM_ZOMBIES_INIT            (5)     // So luong zombie ban dau
-#define WAVE_SPAWN_COUNT            (8)     // So luong zombie them vao moi wave
-#define WAVE_SCORE_INTERVAL         (200)   // So diem can dat de spawn 1 wave 
-#define ZOMBIE_SPEED_MAX            (6)     // Toc do toi da cua 1 zombie = 6px
-#define SIZE_BITMAP_ZOMBIES_X       (25)    // Kich thuoc chieu ngang cua zombie
-#define SIZE_BITMAP_ZOMBIES_Y       (10)    // Kich thuoc chieu cao cua zombie
-#define ZOMBIE_MIN_LEFT_OFFSET      (6)     // 
-#define ZOMBIE_Y_MIN                (2)     // Gioi han di chuyen cua zombie o vi tri tren man hinh lcd
-#define ZOMBIE_Y_MAX                (42)    // Gioi han di chuyen cua zombie o vi tri duoi man hinh lcd
-#define WARNING_BLINK_DURATION      (30)    // Thoi gian canh bao
-#define WARNING_BLINK_RATE          (3)     // Nhap nhay moi 3 giay
-#define SIZE_BITMAP_WARNING_X       (16)    // Kich thuoc canh bao
-#define SIZE_BITMAP_WARNING_Y       (14)    // Kich thuoc canh bao
+/*---------------------------------------------------------------------------*/
+/*  Constants                                                                */
+/*---------------------------------------------------------------------------*/
+#define NUM_ZOMBIES              (30)   // So luong zombie 
+#define NUM_ZOMBIES_INIT         (5)    // So luong zombie xuat hien tu ben phai man hinh  
+#define WAVE_SPAWN_COUNT         (8)    // So luong zombie xuat hien trong moi wave
+#define WAVE_SCORE_INTERVAL      (200)  // So diem can dat duoc de xuat hien wave
+#define ZOMBIE_SPEED_MAX         (6)    // Toc do toi da cua zombie
+
+#define SIZE_BITMAP_ZOMBIES_X    (25)   // Kich thuoc theo chieu ngang cua zombie
+#define SIZE_BITMAP_ZOMBIES_Y    (10)   // Kich thuoc theo chieu cao cua zombie
+#define ZOMBIE_MIN_LEFT_OFFSET   (6)    // Khoang cach toi thieu zombie co the di chuyen toi tinh tu ben trai
+
+#define ZOMBIE_Y_MIN             (2)    // zombie không lên cao hơn y=2 (giới hạn trên màn hình)
+#define ZOMBIE_Y_MAX             (42)   // zombie không xuống thấp hơn y=42 (giới hạn dưới màn hình, màn hình OLED thường 64px
+
+#define WARNING_BLINK_DURATION   (30)   // hiệu ứng warning nhấp nháy kéo dài 30 tick
+#define WARNING_BLINK_RATE       (3)    // cứ 3 tick đổi trạng thái nhấp nháy 1 lần
+
+#define SIZE_BITMAP_WARNING_X    (16)   // icon warning rộng 16 pixel
+#define SIZE_BITMAP_WARNING_Y    (14)   // icon warning cao 14 pixel
 
 typedef struct {
-    int8_t dy;            
-    uint8_t zigzag_timer;   
-    uint8_t action_image;
-    bool visible;
-    bool rising;
-    int32_t x;
-    uint32_t y;          
-    uint8_t rise_ticks;   
+    int32_t  x;
+    uint32_t y;
+    int8_t   dy;
+    uint8_t  zigzag_timer;
+    uint8_t  action_image;
+    bool     visible;
+    bool     rising;
+    uint8_t  rise_ticks;
 } zw_game_zombie_t;
 
-typedef struct {
-    uint8_t x;
-    uint8_t lane;
-    bool active;
-} tombstone_t;
-
-extern tombstone_t tombstones[NUM_TOMBSTONES];
-extern const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
+extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
-extern uint32_t last_wave_score;
-extern uint8_t wave_warning_timer;    
-extern bool wave_warning_active;
-extern uint8_t wave_level;
+extern uint32_t         last_wave_score;
+extern uint8_t          wave_warning_timer;
+extern bool             wave_warning_active;
+extern uint8_t          wave_level;
+
+void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx);
 
 #endif //__ZW_GAME_ZOMBIE_H__

@@ -13,7 +13,7 @@
 
 #include "scr_game_zomwar.h"
 
-#define NUM_BANG                    (2)
+#define NUM_BANG                    (20)
 #define SIZE_BITMAP_BANG_I_X        (15)
 #define SIZE_BITMAP_BANG_I_Y        (15)
 #define SIZE_BITMAP_BANG_II_X       (10)
@@ -26,5 +26,6 @@ typedef struct {
 } zw_game_bang_t;
 
 extern zw_game_bang_t bang[NUM_BANG];
+uint8_t bang_alloc_slot(void);
 
 #endif //__ZW_GAME_BANG_H__

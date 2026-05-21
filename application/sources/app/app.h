@@ -272,16 +272,29 @@ enum {
 };
 
 /*****************************************************************************/
-/*  Zomwar game 'TOMBSTONE' task define
+/*  Zomwar game 'BANG' task define
  */
 /*****************************************************************************/
 /* define timer */
 /* define signal */
 enum {
-	ZW_GAME_TOMBSTONE_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_TOMBSTONE_UPDATE,
-	ZW_GAME_TOMBSTONE_RESET,
+	ZW_GAME_ZOMBIE_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_ZOMBIE_RUN,
+	ZW_GAME_ZOMBIE_DETONATOR,
+	ZW_GAME_ZOMBIE_RESET,
 };
+
+/*****************************************************************************/
+/*  Zomwar game 'TOMBSTONE' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+// enum {
+// 	ZW_GAME_TOMBSTONE_SETUP = ZW_GAME_DEFINE_SIG,
+// 	ZW_GAME_TOMBSTONE_UPDATE,
+// 	ZW_GAME_TOMBSTONE_RESET,
+// };
 
 /*****************************************************************************/
 /*  Zomwar game 'BORDER' task define   
@@ -289,12 +302,12 @@ enum {
 /*****************************************************************************/
 /* define timer */
 /* define signal */
-enum {
-	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_LEVEL_UP,
-	ZW_GAME_BORDER_CHECK_GAME_OVER,
-	ZW_GAME_BORDER_RESET,
-};
+// enum {
+// 	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
+// 	ZW_GAME_LEVEL_UP,
+// 	ZW_GAME_BORDER_CHECK_GAME_OVER,
+// 	ZW_GAME_BORDER_RESET,
+// };
 
 /*****************************************************************************/
 /*  app function declare

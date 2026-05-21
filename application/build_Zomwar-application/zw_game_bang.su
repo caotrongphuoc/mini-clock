@@ -1,1 +1,2 @@
-sources/app/game/game_zomwar/zw_game_bang.cpp:5:6:void zw_game_bang_handle(ak_msg_t*)	8	static
+sources/app/game/game_zomwar/zw_game_bang.cpp:5:9:uint8_t bang_alloc_slot()	8	static
+sources/app/game/game_zomwar/zw_game_bang.cpp:11:6:void zw_game_bang_handle(ak_msg_t*)	8	static

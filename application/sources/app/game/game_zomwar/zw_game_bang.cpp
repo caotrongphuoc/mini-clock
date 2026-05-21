@@ -1,6 +1,12 @@
 #include "zw_game_bang.h"
 
 zw_game_bang_t bang[NUM_BANG];
+static uint8_t bang_next = 0;
+uint8_t bang_alloc_slot(void) {
+    uint8_t slot = bang_next;
+    bang_next = (bang_next + 1) % NUM_BANG;
+    return slot;
+}
 
 void zw_game_bang_handle(ak_msg_t* msg) {
     switch (msg->sig) {
