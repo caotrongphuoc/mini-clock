@@ -1,72 +1,39 @@
 #include "scr_idle.h"
 #include "scr_game_zomwar.h"
 
-using namespace std;
-
-#define MAX_BALL_DISPLAY	(16)
+#define MAX_BALL_DISPLAY	(8)
 
 class ball {
-	// rand from a to b
-	// (rand() % (b - a + 1)) + a
 public:
-	static int total;
 	int id, x, y, slope, axis_x, axis_y, radius;
 
-	ball() {
+	void init() {
 		axis_x = 1;
 		axis_y = 1;
-		slope = (rand() % (31)) - 15;
-		radius = (rand() % (7)) + 6;
-		x = rand() % (LCD_WIDTH - radius);
-		y = rand() % (LCD_HEIGHT - radius);
-	}
-
-	int distance(ball& __ball) {
-		uint8_t dx, dy;
-		dx = abs(x - __ball.x);
-		dy = abs(y - __ball.y);
-		return sqrt(dx*dx + dy*dy);
-	}
-
-	bool is_hit_to_other(ball& __ball) {
-		if ((radius + __ball.radius) <= distance(__ball)) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		slope  = (rand() % 31) - 15;
+		radius = (rand() % 7) + 6;
+		x      = rand() % (LCD_WIDTH  - radius);
+		y      = rand() % (LCD_HEIGHT - radius);
 	}
 
 	void moving() {
-		if( axis_x > 0) {
-			x = x + 2;
-		}
-		else {
-			x = x - 2;
-		}
-
-		if (axis_y > 0) {
-			y += 2 * atan(slope);
-		}
-		else {
-			y -= 2 * atan(slope);
-		}
+		x += (axis_x > 0) ? 2 : -2;
+		y += (axis_y > 0) ? (int)(2 * atan(slope)) : -(int)(2 * atan(slope));
 
 		if (x > (LCD_WIDTH - radius) || x < radius) {
 			axis_x = -axis_x;
-			if (x < radius) {
-				x = radius;
-			}
+			if (x < radius) x = radius;
 		}
-
-		if (y > (LCD_HEIGHT - radius) || y < radius ) {
+		if (y > (LCD_HEIGHT - radius) || y < radius) {
 			axis_y = -axis_y;
-			if (y < radius) {
-				y = radius;
-			}
+			if (y < radius) y = radius;
 		}
 	}
 };
+
+static ball  v_idle_ball[MAX_BALL_DISPLAY];
+static uint8_t ball_count = 0;
+static int   ball_total   = 0;
 
 static void view_scr_idle();
 
@@ -85,12 +52,9 @@ view_screen_t scr_idle = {
 	.focus_item = 0,
 };
 
-vector<ball> v_idle_ball;
-int ball::total;
-
 void view_scr_idle() {
-	for(ball _ball : v_idle_ball) {
-		view_render.drawCircle(_ball.x, _ball.y, _ball.radius, 144);
+	for (uint8_t i = 0; i < ball_count; i++) {
+		view_render.drawCircle(v_idle_ball[i].x, v_idle_ball[i].y, v_idle_ball[i].radius, WHITE);
 	}
 }
 
@@ -98,21 +62,20 @@ void scr_idle_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		if (v_idle_ball.empty()) {
-			ball new_ball;
-			new_ball.id = ball::total++;
-			v_idle_ball.push_back(new_ball);
+		if (ball_count == 0) {
+			v_idle_ball[0].init();
+			v_idle_ball[0].id = ball_total++;
+			ball_count = 1;
 		}
-
-		timer_set(AC_TASK_DISPLAY_ID, \
-				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
-				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
+		timer_set(AC_TASK_DISPLAY_ID,
+				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
+				  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL,
 				  TIMER_PERIODIC);
 	}
 		break;
 
 	case AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE: {
-		for (unsigned int i = 0; i < v_idle_ball.size(); i++) {
+		for (uint8_t i = 0; i < ball_count; i++) {
 			v_idle_ball[i].moving();
 		}
 	}
@@ -127,20 +90,17 @@ void scr_idle_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTTON_UP_RELEASED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
-		ball new_ball;
-		new_ball.id = ball::total++;
-
-		if (v_idle_ball.empty()) {
-			timer_set(AC_TASK_DISPLAY_ID, \
-					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE, \
-					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL, \
+		if (ball_count == 0) {
+			timer_set(AC_TASK_DISPLAY_ID,
+					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
+					  AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE_INTERAL,
 					  TIMER_PERIODIC);
 		}
-
-		if (v_idle_ball.size() < MAX_BALL_DISPLAY) {
-			v_idle_ball.push_back(new_ball);
-		}
-		else {
+		if (ball_count < MAX_BALL_DISPLAY) {
+			v_idle_ball[ball_count].init();
+			v_idle_ball[ball_count].id = ball_total++;
+			ball_count++;
+		} else {
 			BUZZER_PlayTones(tones_3beep);
 		}
 	}
@@ -148,14 +108,12 @@ void scr_idle_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_RELEASED\n");
-		if (v_idle_ball.size()) {
-			ball::total--;
-			v_idle_ball.pop_back();
+		if (ball_count > 0) {
+			ball_count--;
+			ball_total--;
 		}
-
-		if (v_idle_ball.empty()) {
+		if (ball_count == 0) {
 			timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE);
-			SCREEN_TRAN(scr_es35sw_th_sensor_handle, &scr_es35sw_th_sensor);
 		}
 	}
 		break;

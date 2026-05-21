@@ -28,8 +28,8 @@ public:
 
 void view_scr_info() {
 	/* link base kit */
-	QRCode qrcode;
-	uint8_t qrcodeData[qrcode_getBufferSize(8)];
+	static QRCode qrcode;
+	static uint8_t qrcodeData[301]; /* qrcode_getBufferSize(8) = (49*49+7)/8 = 301 */
 	qrcode_initText(&qrcode, qrcodeData, 8, 0, "https://github.com/ak-embedded-software/ak-base-kit-stm32l151");
 
 	for (uint8_t y = 0; y < qrcode.size; y++) {
@@ -53,9 +53,12 @@ void scr_info_handle(ak_msg_t* msg) {
 	}
 		break;
 
-	case AC_DISPLAY_BUTTON_MODE_RELEASED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_RELEASED\n");
-		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
+	case AC_DISPLAY_BUTTON_MODE_RELEASED:
+	case AC_DISPLAY_BUTTON_UP_RELEASED:
+	case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_RELEASED\n");
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
+		SCREEN_TRAN(scr_idle_handle, &scr_idle);
 	}
 		break;
 
