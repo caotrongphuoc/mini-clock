@@ -10,7 +10,7 @@ void zw_game_frame_display() {
 	//view_render.print(wave_level);
 	view_render.setCursor(64,55);
 	view_render.print("Score:");
-	//view_render.print(zw_game_score);
+	view_render.print(zw_game_score);
 	view_render.drawLine(0, LCD_HEIGHT-11, 	LCD_WIDTH, LCD_HEIGHT-11,	WHITE);
 	view_render.drawRect(0, 0, 128, 64, 1);
 }
@@ -209,7 +209,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 			task_post_pure_msg(ZW_GAME_CAR_ID, 			ZW_GAME_CAR_RUN);
 			task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_UPDATE);
 			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_CHECK_GAME_OVER);
-			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_ZOMBIE_KILLED);
 			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_LEVEL_UP);
 	}
 		break;

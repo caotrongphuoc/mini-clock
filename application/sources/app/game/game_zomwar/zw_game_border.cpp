@@ -29,14 +29,6 @@ void zw_game_border_handle(ak_msg_t* msg) {
     }
         break;
 
-    case ZW_GAME_ZOMBIE_KILLED: {
-        APP_DBG_SIG("ZW_GAME_ZOMBIE_KILLED\n");
-        zw_game_score += 10;
-        //BUZZER_PlayTones(tones_bang);
-        BUZZER_PlaySound(BUZZER_SOUND_BANG);
-    }
-        break;
-
     case ZW_GAME_LEVEL_UP: {
         APP_DBG_SIG("ZW_GAME_LEVEL_UP\n");
         if (zw_zombie_speed < ZOMBIE_SPEED_MAX) { 

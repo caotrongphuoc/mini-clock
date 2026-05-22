@@ -2,8 +2,8 @@
 
 zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
 static uint8_t tombstone_spawn_timer = 0;
-static const uint8_t TOMBSTONE_LANE_1_TMP = 0x00; // fix tam: bitmask 5 lane nhom 1 (0b11111); sau nay lay tu menu Setting
-static const uint8_t TOMBSTONE_LANE_2_TMP = 0x00; // fix tam: bitmask 5 lane nhom 2 (0b11111); sau nay lay tu menu Setting
+static const uint8_t TOMBSTONE_LANE_1_TMP = 0x15; // fix tam: bitmask 5 lane nhom 1 (0b11111); sau nay lay tu menu Setting
+static const uint8_t TOMBSTONE_LANE_2_TMP = 0x04; // fix tam: bitmask 5 lane nhom 2 (0b11111); sau nay lay tu menu Setting
 
 void zw_game_tombstone_handle(ak_msg_t* msg) {
     switch (msg->sig) {

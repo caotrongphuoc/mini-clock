@@ -137,8 +137,8 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                     bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
                     bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
                     bang[bk].action_image = 1;
-
-                    //task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_ZOMBIE_KILLED);
+                    zw_game_score += 10;
+                    BUZZER_PlaySound(BUZZER_SOUND_BANG);
                     break;
                 }
             }

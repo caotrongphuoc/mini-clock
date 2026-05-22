@@ -102,7 +102,8 @@ void zw_game_car_handle(ak_msg_t* msg) {
                         bang[bk].x            = car[i].x; 
                         bang[bk].y            = car[i].y; 
                         bang[bk].action_image = 1; 
-                        //task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_ZOMBIE_KILLED); 
+                        zw_game_score += 10; 
+                        BUZZER_PlaySound(BUZZER_SOUND_BANG);
                     } 
                 } 
                 
