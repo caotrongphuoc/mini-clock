@@ -21,5 +21,9 @@ extern const unsigned char PROGMEM bitmap_bang_I [];
 extern const unsigned char PROGMEM bitmap_bang_II [];
 extern const unsigned char PROGMEM bitmap_bang_III [];
 
+// scr_game_setting
+extern const unsigned char PROGMEM speaker_1 [];
+extern const unsigned char PROGMEM speaker_2 [];
+
 
 #endif //__SCREENS_BITMAP_H__

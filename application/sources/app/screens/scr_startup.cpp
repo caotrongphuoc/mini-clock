@@ -1,4 +1,5 @@
 #include "scr_startup.h"
+#include "app_eeprom.h"
 
 static void view_scr_startup();
 
@@ -42,6 +43,12 @@ void scr_startup_handle(ak_msg_t *msg) {
 		APP_DBG_SIG("AC_DISPLAY_INITIAL\n");
 		view_render.initialize();
 		view_render_display_on();
+
+		/* nap du lieu ben vung tu EEPROM va ap dung trang thai am thanh */
+		zw_game_setting_read(&settingdata);
+		zw_game_score_read(&gamescore);
+		BUZZER_Silent(settingdata.silent ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO, AC_DISPLAY_STARTUP_INTERVAL, TIMER_ONE_SHOT);
 	} break;
 

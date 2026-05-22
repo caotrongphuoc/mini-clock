@@ -33,6 +33,5 @@ typedef struct {
 extern zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
 
 void zw_game_tombstone_handle(ak_msg_t* msg);
-//void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx);
 
 #endif //__ZW_GAME_TOMBSTONE_H__

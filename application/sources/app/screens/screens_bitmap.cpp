@@ -243,3 +243,25 @@ const unsigned char PROGMEM bitmap_bang_III [] = {
     0x14, 0x00,
     0x00, 0x00
 };
+
+// scr_game_setting - 7x7, loa co am thanh (sound ON)
+const unsigned char PROGMEM speaker_1 [] = {
+    0x20, // ..#....
+    0x64, // .##..#.
+    0xEA, // ###.#.#
+    0xEA, // ###.#.#
+    0xEA, // ###.#.#
+    0x64, // .##..#.
+    0x20, // ..#....
+};
+
+// scr_game_setting - 7x7, loa tat tieng (mute) - dau X o phia phat song
+const unsigned char PROGMEM speaker_2 [] = {
+    0x20, // ..#....
+    0x6A, // .##.#.#
+    0xE4, // ###..#.
+    0xE4, // ###..#.
+    0xE4, // ###..#.
+    0x6A, // .##.#.#
+    0x20, // ..#....
+};

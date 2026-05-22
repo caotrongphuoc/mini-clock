@@ -80,15 +80,15 @@ void scr_game_menu_handle(ak_msg_t* msg) {
         }
 		break;
 
-	case AC_DISPLAY_BUTTON_DOWN_RELEASED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 		current_location++;
 		if(current_location >= NUMBER_ITEMS) {
 			current_location = 0;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		break;
-	
-	case AC_DISPLAY_BUTTON_UP_RELEASED:
+
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 		if(current_location == 0) {
 			current_location = NUMBER_ITEMS - 1;
 		} else {
@@ -98,11 +98,11 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 		break;
 
 
-	case AC_DISPLAY_BUTTON_MODE_RELEASED: 
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 		zw_game_sound_enable = true;
 		switch (current_location) {
 			case 0: SCREEN_TRAN(scr_game_zomwar_handle, &scr_game_zomwar); break;
-			// case 1: SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting); break;
+			case 1: SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting); break;
 			// case 2: SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank); break;
 			case 3: SCREEN_TRAN(scr_idle_handle, &scr_idle); break;
 		}

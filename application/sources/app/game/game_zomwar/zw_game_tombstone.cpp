@@ -1,9 +1,9 @@
 #include "zw_game_tombstone.h"
+#include "app_eeprom.h"
 
 zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
+static const uint8_t lane_y_arr[NUM_LANES] = LANE_Y;
 static uint8_t tombstone_spawn_timer = 0;
-static const uint8_t TOMBSTONE_LANE_1_TMP = 0x15; // fix tam: bitmask 5 lane nhom 1 (0b11111); sau nay lay tu menu Setting
-static const uint8_t TOMBSTONE_LANE_2_TMP = 0x04; // fix tam: bitmask 5 lane nhom 2 (0b11111); sau nay lay tu menu Setting
 
 void zw_game_tombstone_handle(ak_msg_t* msg) {
     switch (msg->sig) {
@@ -14,39 +14,39 @@ void zw_game_tombstone_handle(ak_msg_t* msg) {
         for (uint8_t l = 0; l < NUM_LANES; l++) {
             tombstones[l].x      = (uint8_t)(rand() % 20 + 65);
             tombstones[l].lane   = l;
-            tombstones[l].active = (bool)((TOMBSTONE_LANE_1_TMP >> l) & 1);
+            tombstones[l].active = (bool)((settingdata.tombstone_lane_1 >> l) & 1);
 
             tombstones[l + NUM_LANES].x      = (uint8_t)(rand() % 20 + 90);
             tombstones[l + NUM_LANES].lane   = l;
-            tombstones[l + NUM_LANES].active = (bool)((TOMBSTONE_LANE_2_TMP >> l) & 1);
-        }
-    }
-        break;
-
-    case ZW_GAME_TOMBSTONE_UPDATE: {
-        APP_DBG_SIG("ZW_GAME_TOMBSTONE_UPDATE\n");
-        if (tombstone_spawn_timer > 0) {
-            tombstone_spawn_timer--;
-            return;
-        }
-
-        tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL;
-
-        uint8_t tidx = (uint8_t)(rand() % NUM_TOMBSTONES);
-        if (tombstones[tidx].active) {
-            task_post_pure_msg(ZW_GAME_TOMBSTONE_ID, ZW_GAME_TOMBSTONE_SPAWN);
+            tombstones[l + NUM_LANES].active = (bool)((settingdata.tombstone_lane_2 >> l) & 1);
         }
     }
         break;
 
     case ZW_GAME_TOMBSTONE_SPAWN: {
         APP_DBG_SIG("ZW_GAME_TOMBSTONE_SPAWN\n");
+        /* throttle: chi spawn sau moi TOMBSTONE_SPAWN_INTERVAL tick */
+        if (tombstone_spawn_timer > 0) {
+            tombstone_spawn_timer--;
+            return;
+        }
+        tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL;
+
+        /* chon ngau nhien 1 bia mo; neu dang bat thi cho zombie troi len tu do */
         uint8_t tidx = (uint8_t)(rand() % NUM_TOMBSTONES);
         if (!tombstones[tidx].active) return;
 
+        /* tim mot slot zombie trong roi spawn tai bia mo vua chon */
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             if (zombie[i].visible != WHITE) {
-                spawn_zombie_from_tombstone(i, tidx);
+                zombie[i].x            = tombstones[tidx].x;
+                zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
+                zombie[i].visible      = WHITE;
+                zombie[i].action_image = 1;
+                zombie[i].dy           = 0;
+                zombie[i].zigzag_timer = 0;
+                zombie[i].rising       = true;
+                zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
                 return;
             }
         }

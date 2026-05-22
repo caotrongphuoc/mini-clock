@@ -1,25 +1,14 @@
 #include "zw_game_zombie.h"
+#include "app_eeprom.h"
 
 zw_game_zombie_t zombie[NUM_ZOMBIES];
 static bool game_active = false; // Check trang thai hien tai cua game
-static const int32_t ZOMBIE_SPEED_TMP = 2; // fix tam, doi 1/2/3/4... ; sau nay lay tu menu Setting
 const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y] = {
     {9, 8, 8, 9, 6, 9, 9, 9, 9, 8},
     {9, 8, 8, 9, 7, 9, 9, 9, 9, 9},
 };
 
-static const uint8_t lane_y_arr[NUM_LANES] = LANE_Y;
-
-void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx) {
-    zombie[i].x            = tombstones[tidx].x;
-    zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
-    zombie[i].visible      = WHITE;
-    zombie[i].action_image = 1;
-    zombie[i].dy           = 0;
-    zombie[i].zigzag_timer = 0;
-    zombie[i].rising       = true;
-    zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
-}
+uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT; // toc do runtime cua van choi, gan = settingdata luc vao game
 
 void zw_game_zombie_handle(ak_msg_t* msg) {
     uint8_t active_count = 0;
@@ -27,6 +16,7 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     case ZW_GAME_ZOMBIE_SETUP: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
         game_active = true;
+        zw_game_zombie_speed = settingdata.zombie_speed; // bat dau van: lay toc do nguoi choi da chon
         for(uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             if(i < NUM_ZOMBIES_INIT) {
                 zombie[i].x            = (rand() % 39) + 130;
@@ -63,10 +53,10 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                 continue;
             }
             // Zombie di chuyen sang trai
-            if (zombie[i].x - ZOMBIE_SPEED_TMP < -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) {
+            if (zombie[i].x - (int32_t)zw_game_zombie_speed < -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) {
                 zombie[i].x = -(int32_t)ZOMBIE_MIN_LEFT_OFFSET;
             } else {
-                zombie[i].x -= ZOMBIE_SPEED_TMP;
+                zombie[i].x -= (int32_t)zw_game_zombie_speed;
             }
             // Xu ly di chuyen zigzag theo truc Y
             if (zombie[i].zigzag_timer > 0) {

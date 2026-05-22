@@ -1,8 +1,8 @@
 #include "zw_game_car.h"
+#include "app_eeprom.h"
 
 zw_game_car_t car[NUM_LANES];
 static const int8_t lane_y[NUM_LANES] = LANE_Y;
-static const uint8_t CAR_NUM_TMP = 0x1F; // fix tam: bitmask 5 lane (0b11111 = du 5 xe); sau nay lay tu menu Setting
 static bool game_active = false;
 
 static int8_t find_nearest_mower(uint32_t zy) {
@@ -32,7 +32,7 @@ void zw_game_car_handle(ak_msg_t* msg) {
             car[i].x       = AXIS_X_CAR; 
             car[i].y       = lane_y[i]; 
             car[i].lane    = i; 
-            car[i].visible = (CAR_NUM_TMP >> i) & 1;
+            car[i].visible = (settingdata.num_car >> i) & 1;
             car[i].running = false;
             car[i].action_image = 1; 
         } 

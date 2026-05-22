@@ -204,7 +204,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 			task_post_pure_msg(ZW_GAME_BULLET_ID, 		ZW_GAME_BULLET_RUN);
 			task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 		ZW_GAME_ZOMBIE_RUN);
 			task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 		ZW_GAME_ZOMBIE_DETONATOR);
-			task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_UPDATE);
 			task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_SPAWN);
 			task_post_pure_msg(ZW_GAME_CAR_ID, 			ZW_GAME_CAR_RUN);
 			task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_UPDATE);

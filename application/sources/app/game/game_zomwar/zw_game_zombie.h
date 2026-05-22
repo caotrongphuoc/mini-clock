@@ -46,7 +46,6 @@ typedef struct {
 
 extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
-
-void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx);
+extern uint8_t          zw_game_zombie_speed; // toc do runtime trong van choi (LEVEL_UP tang dan)
 
 #endif //__ZW_GAME_ZOMBIE_H__

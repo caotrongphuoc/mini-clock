@@ -23,6 +23,14 @@
 #define AXIS_Y_BORDER_ON        (2)
 #define AXIS_Y_BORDER_UNDER     (52)
 
+/* Wave / warning */
+#define WAVE_SCORE_INTERVAL      (200)  // cu them 200 diem la 1 wave moi
+#define WAVE_SPAWN_COUNT         (8)    // so zombie sinh moi wave
+#define WARNING_BLINK_DURATION   (30)   // so tick hien warning (30 x 100ms = 3 giay)
+#define WARNING_BLINK_RATE       (3)    // doi hien/an moi 3 tick
+#define SIZE_BITMAP_WARNING_X    (16)   // kich thuoc icon warning
+#define SIZE_BITMAP_WARNING_Y    (14)
+
 typedef struct {
     bool visible;
     uint32_t x, y;
@@ -31,5 +39,10 @@ typedef struct {
 
 extern uint32_t zw_game_score;
 extern zw_game_border_t border;
+
+extern uint32_t wave_last_score;
+extern uint8_t  wave_warning_timer;
+extern bool     wave_warning_active;
+extern uint8_t  wave_level;
 
 #endif //__ZW_GAME_BORDER_H__
