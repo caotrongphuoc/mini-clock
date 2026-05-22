@@ -57,15 +57,89 @@ void zw_game_bullet_display() {
 	}
 }
 
+void zw_game_zombie_display() {
+	for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
+		if (zombie[i].visible == WHITE) {
+			if (zombie[i].action_image == 1) {
+				view_render.drawBitmap(	zombie[i].x, \
+										zombie[i].y, \
+										bitmap_zombie_I, \
+										SIZE_BITMAP_ZOMBIES_X, \
+										SIZE_BITMAP_ZOMBIES_Y, \
+										WHITE);
+			}
+			else if (zombie[i].action_image == 2) {
+				view_render.drawBitmap(	zombie[i].x, \
+										zombie[i].y, \
+										bitmap_zombie_II, \
+										SIZE_BITMAP_ZOMBIES_X, \
+										SIZE_BITMAP_ZOMBIES_Y, \
+										WHITE);
+			}
+			else if (zombie[i].action_image == 3) {
+				view_render.drawBitmap(	zombie[i].x, \
+										zombie[i].y, \
+										bitmap_zombie_III, \
+										SIZE_BITMAP_ZOMBIES_X, \
+										SIZE_BITMAP_ZOMBIES_Y, \
+										WHITE);
+			}
+		}
+	}
+}
+
+void zw_game_car_display() {
+	for (uint8_t i = 0; i < NUM_LANES; i++) {
+		if (car[i].visible) {
+			if (car[i].action_image == 1) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_I, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+			else if (car[i].action_image == 2) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_II, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+			else if (car[i].action_image == 3) {
+				view_render.drawBitmap( car[i].x, \
+										car[i].y, \
+										bitmap_car_III, \
+										SIZE_BITMAP_CAR_X, \
+										SIZE_BITMAP_CAR_Y, \
+										WHITE);
+			}
+		}
+	}
+}
+
+void zw_game_grass_display() {
+	static const uint8_t ly[NUM_LANES] = LANE_Y;
+	for (uint8_t l = 0; l < NUM_LANES; l++) {
+		uint8_t gy = ly[l] + 9;
+		for (uint8_t x = 0; x < 128; x += 5) {
+			view_render.drawPixel(x,     gy,     WHITE);
+			view_render.drawPixel(x + 1, gy,     WHITE);
+			view_render.drawPixel(x + 2, gy,     WHITE);
+		}
+	}
+}
+
 void view_scr_game_zomwar() {
 	if (zw_game_state == GAME_PLAY) {
         zw_game_frame_display();
 		zw_game_gunner_display();
 		zw_game_bullet_display();
-		// zw_game_zombie_display();
-		// zw_game_car_display();
+		zw_game_zombie_display();
+		zw_game_car_display();
 		// zw_game_bang_display();
-		// zw_game_grass_display();
+		zw_game_grass_display();
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();
@@ -78,8 +152,8 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("ZW_GAME SCREEN_ENTRY\n");
 		task_post_pure_msg(ZW_GAME_GUNNER_ID,   	ZW_GAME_GUNNER_SETUP);
 		task_post_pure_msg(ZW_GAME_BULLET_ID,   	ZW_GAME_BULLET_SETUP);
-		// task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 	ZW_GAME_ZOMBIE_SETUP);
-		// task_post_pure_msg(ZW_GAME_CAR_ID, 	    ZW_GAME_CAR_SETUP);
+		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 		ZW_GAME_ZOMBIE_SETUP);
+		task_post_pure_msg(ZW_GAME_CAR_ID, 	    	ZW_GAME_CAR_SETUP);
 		// task_post_pure_msg(ZW_GAME_BANG_ID, 	ZW_GAME_BANG_SETUP);
 		// // task_post_pure_msg(ZW_GAME_BORDER_ID,   ZW_GAME_BORDER_SETUP);
 		
@@ -97,7 +171,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
 			task_post_pure_msg(ZW_GAME_GUNNER_ID, 	ZW_GAME_GUNNER_UPDATE);
 			task_post_pure_msg(ZW_GAME_BULLET_ID, 	ZW_GAME_BULLET_RUN);
-			// task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 	ZW_GAME_ZOMBIE_RUN);
+			task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 	ZW_GAME_ZOMBIE_RUN);
 			// task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 	ZW_GAME_ZOMBIE_DETONATOR);
 			// task_post_pure_msg(ZW_GAME_CAR_ID, 		ZW_GAME_CAR_RUN);
 			// task_post_pure_msg(ZW_GAME_BANG_ID, 	ZW_GAME_BANG_UPDATE);
@@ -107,9 +181,11 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 
     case ZW_GAME_RESET: {
         APP_DBG_SIG("ZW_GAME_RESET\n");
-        timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_TIME_TICK);
-        task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_RESET);
-		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RESET);
+        timer_remove_attr(AC_TASK_DISPLAY_ID, 	ZW_GAME_TIME_TICK);
+        task_post_pure_msg(ZW_GAME_GUNNER_ID, 	ZW_GAME_GUNNER_RESET);
+		task_post_pure_msg(ZW_GAME_BULLET_ID, 	ZW_GAME_BULLET_RESET);
+		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 	ZW_GAME_ZOMBIE_RESET);
+		task_post_pure_msg(ZW_GAME_CAR_ID, 		ZW_GAME_CAR_RESET);
 
         timer_set(AC_TASK_DISPLAY_ID, 
 			ZW_GAME_TIME_TICK, 

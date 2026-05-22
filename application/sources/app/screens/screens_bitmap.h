@@ -10,5 +10,11 @@ extern const unsigned char PROGMEM bitmap_dolphin[];
 extern const unsigned char PROGMEM bitmap_gunner_I [];
 extern const unsigned char PROGMEM bitmap_gunner_II [];
 extern const unsigned char PROGMEM bitmap_bullet [];
+extern const unsigned char PROGMEM bitmap_zombie_I [];
+extern const unsigned char PROGMEM bitmap_zombie_II [];
+extern const unsigned char PROGMEM bitmap_zombie_III [];
+extern const unsigned char PROGMEM bitmap_car_I [];
+extern const unsigned char PROGMEM bitmap_car_II [];
+extern const unsigned char PROGMEM bitmap_car_III [];
 
 #endif //__SCREENS_BITMAP_H__

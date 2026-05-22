@@ -1,0 +1,115 @@
+#include "zw_game_car.h"
+//#include "zw_game_zombie.h"
+
+zw_game_car_t car[NUM_LANES];
+static const int8_t lane_y[NUM_LANES] = LANE_Y;
+static const uint8_t CAR_NUM_TMP = 0x1F; // fix tam: bitmask 5 lane (0b11111 = du 5 xe); sau nay lay tu menu Setting
+//static bool game_active = false;
+
+void zw_game_car_handle(ak_msg_t* msg) {
+    switch (msg->sig) {
+    case ZW_GAME_CAR_SETUP: 
+        APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
+        //game_active = true; 
+        for (uint8_t i = 0; i < NUM_LANES; i++) { 
+            car[i].x       = AXIS_X_CAR; 
+            car[i].y       = lane_y[i]; 
+            car[i].lane    = i; 
+            car[i].visible = (CAR_NUM_TMP >> i) & 1;
+            car[i].running = false;
+            car[i].action_image = 1; 
+        } 
+        break;
+
+    // case ZW_GAME_CAR_RUN: {
+    //     APP_DBG_SIG("ZW_GAME_CAR_RUN\n");
+    //     if (!game_active) break; \
+    //         \
+    //         bool game_over = false; \
+    //         \
+    //         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) { \
+    //             if (game_over) break; \
+    //             if (zombie[i].visible != WHITE) continue; \
+    //             \
+    //             if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) { \
+    //                 int8_t m = find_nearest_mower(zombie[i].y); \
+    //                 if (m >= 0) { \
+    //                     car[m].running = true; \
+    //                 } else { \
+    //                     game_over = true; \
+    //                     task_post_pure_msg(ZW_GAME_SCREEN_ID, ZW_GAME_RESET); \
+    //                 } \
+    //                 zombie[i].visible = BLACK; \
+    //                 zombie[i].x = 200; \
+    //                 continue; \
+    //             } \
+    //             \
+    //             for (uint8_t m = 0; m < NUM_LANES; m++) { \
+    //                 if (!car[m].visible || car[m].running) continue; \
+    //                 int32_t dy = (int32_t)zombie[i].y - (int32_t)car[m].y; \
+    //                 if (dy < 0) dy = -dy; \
+    //                 if (dy <= CAR_HIT_RANGE_Y) { \
+    //                     if (zombie[i].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[m].x + SIZE_BITMAP_CAR_X)) { \
+    //                         car[m].running = true; \
+    //                     } \
+    //                 } \
+    //             } \
+    //         } \
+    //         \
+    //         if (game_over) break; \
+    //         \
+    //         for (uint8_t i = 0; i < NUM_LANES; i++) { \
+    //             if (!car[i].visible || !car[i].running) continue; \
+    //             car[i].x += CAR_SPEED; \
+    //             car[i].action_image++; \
+    //             if (car[i].action_image > 3) car[i].action_image = 1; \
+    //             \
+    //             for (uint8_t j = 0; j < NUM_ZOMBIES; j++) { \
+    //                 if (zombie[j].visible != WHITE) continue; \
+    //                 int32_t dy = (int32_t)zombie[j].y - (int32_t)car[i].y; \
+    //                 if (dy < 0) dy = -dy; \
+    //                 if (dy > CAR_HIT_RANGE_Y) continue; \
+    //                 uint8_t fidx_c = (zombie[j].action_image == 2) ? 1 : 0; \
+    //                 bool overlap_x = false; \
+    //                 for (uint8_t r = 0; r < SIZE_BITMAP_ZOMBIES_Y && !overlap_x; r++) { \
+    //                     int32_t lx = zombie[j].x + (int32_t)ZOMBIE_LEFT_PX[fidx_c][r]; \
+    //                     if (lx >= (int32_t)(car[i].x + 4) && lx < (int32_t)(car[i].x + SIZE_BITMAP_CAR_X)) { \
+    //                         overlap_x = true; \
+    //                     } \
+    //                 } \
+    //                 if (overlap_x) { \
+    //                     zombie[j].visible = BLACK; \
+    //                     zombie[j].x = 200; \
+    //                     uint8_t bk = bang_alloc_slot(); \
+    //                     bang[bk].visible      = WHITE; \
+    //                     bang[bk].x            = car[i].x; \
+    //                     bang[bk].y            = car[i].y; \
+    //                     bang[bk].action_image = 1; \
+    //                     task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_ZOMBIE_KILLED); \
+    //                 } \
+    //             } \
+    //             \
+    //             if (car[i].x > LCD_WIDTH) { \
+    //                 car[i].visible = false; \
+    //                 car[i].running = false; \
+    //             } \
+    //         } \        
+    // }
+    //     break;
+
+    case ZW_GAME_CAR_RESET: {
+        APP_DBG_SIG("ZW_GAME_CAR_RESET\n");
+        //game_active = false; 
+        for (uint8_t i = 0; i < NUM_LANES; i++) { 
+            car[i].x       = AXIS_X_CAR; 
+            car[i].y       = lane_y[i]; 
+            car[i].visible = false; 
+            car[i].running = false; 
+        } 
+    }
+        break;
+
+    default:
+        break;
+    }
+}

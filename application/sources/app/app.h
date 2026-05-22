@@ -222,6 +222,31 @@ enum {
 };
 
 /*****************************************************************************/
+/*  Zomwar game 'ZOMBIE' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_ZOMBIE_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_ZOMBIE_RUN,
+	ZW_GAME_ZOMBIE_DETONATOR,
+	ZW_GAME_ZOMBIE_RESET,
+};
+
+/*****************************************************************************/
+/*  Zomwar game 'CAR' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_CAR_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_CAR_RUN,
+	ZW_GAME_CAR_RESET,
+};
+
+/*****************************************************************************/
 /* DBG task define
  */
 /*****************************************************************************/

@@ -232,7 +232,10 @@ build_Zomwar-application/app.o: sources/app/app.cpp \
  sources/app/game/game_zomwar/zw_game_gunner.h \
  sources/app/screens/scr_game_zomwar.h \
  sources/app/game/game_zomwar/zw_game_bullet.h \
- sources/app/game/game_zomwar/zw_game_gunner.h sources/app/task_zigbee.h \
+ sources/app/game/game_zomwar/zw_game_gunner.h \
+ sources/app/game/game_zomwar/zw_game_zombie.h \
+ sources/app/game/game_zomwar/zw_game_bullet.h \
+ sources/app/game/game_zomwar/zw_game_car.h sources/app/task_zigbee.h \
  sources/sys/sys_irq.h \
  sources/platform/stm32l/arduino/libraries/SPI/SPI.h \
  sources/platform/stm32l/arduino/cores/WString.h \

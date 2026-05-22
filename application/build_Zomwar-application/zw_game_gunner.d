@@ -161,4 +161,7 @@ build_Zomwar-application/zw_game_gunner.o: \
  sources/app/game/game_zomwar/zw_game_gunner.h \
  sources/app/game/game_zomwar/zw_game_bullet.h \
  sources/app/screens/scr_game_zomwar.h \
- sources/app/game/game_zomwar/zw_game_gunner.h
+ sources/app/game/game_zomwar/zw_game_gunner.h \
+ sources/app/game/game_zomwar/zw_game_zombie.h \
+ sources/app/game/game_zomwar/zw_game_bullet.h \
+ sources/app/game/game_zomwar/zw_game_car.h
