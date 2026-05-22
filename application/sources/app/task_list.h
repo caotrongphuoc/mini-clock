@@ -92,6 +92,7 @@ extern void task_zigbee(ak_msg_t*);
 
 /* ZOMWAR GAME TASK */
 extern void scr_game_zomwar_handle(ak_msg_t*);
+extern void scr_game_menu_handle(ak_msg_t*);
 extern void zw_game_gunner_handle(ak_msg_t*);
 extern void zw_game_bullet_handle(ak_msg_t*);
 extern void zw_game_zombie_handle(ak_msg_t*);

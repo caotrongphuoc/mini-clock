@@ -11,3 +11,4 @@ SOURCES_CPP += sources/app/screens/scr_startup.cpp
 SOURCES_CPP += sources/app/screens/scr_welcome.cpp
 
 SOURCES_CPP += sources/app/screens/scr_game_zomwar.cpp
+SOURCES_CPP += sources/app/screens/scr_game_menu.cpp
