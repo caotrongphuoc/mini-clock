@@ -21,6 +21,7 @@
 
 #include "buzzer.h"
 
+#include "scr_idle.h"
 #include "screens_bitmap.h"
 #include "screens.h"
 
@@ -30,6 +31,7 @@
 #include "zw_game_car.h"
 #include "zw_game_tombstone.h"
 #include "zw_game_bang.h"
+#include "zw_game_border.h"
 
 #define GAME_OFF  (0) // Trang thai LCD khi khong choi game 
 #define GAME_PLAY (1) // Trang thai LCD khi choi game

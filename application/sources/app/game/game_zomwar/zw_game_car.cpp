@@ -54,7 +54,7 @@ void zw_game_car_handle(ak_msg_t* msg) {
                         car[m].running = true; 
                     } else { 
                         game_over = true; 
-                        //task_post_pure_msg(ZW_GAME_SCREEN_ID, ZW_GAME_RESET); 
+                        task_post_pure_msg(ZW_GAME_SCREEN_ID, ZW_GAME_RESET); 
                     } 
                     zombie[i].visible = BLACK; 
                     zombie[i].x = 200; 
@@ -110,7 +110,7 @@ void zw_game_car_handle(ak_msg_t* msg) {
                     car[i].visible = false; 
                     car[i].running = false; 
                 } 
-            } \        
+            }      
     }
         break;
 

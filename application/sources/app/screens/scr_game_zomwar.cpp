@@ -186,7 +186,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_CAR_ID, 	    	ZW_GAME_CAR_SETUP);
 		task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_SETUP);
 		task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_SETUP);
-		// // task_post_pure_msg(ZW_GAME_BORDER_ID,   ZW_GAME_BORDER_SETUP);
+		task_post_pure_msg(ZW_GAME_BORDER_ID,   	ZW_GAME_BORDER_SETUP);
 		
 		zw_game_state = GAME_PLAY;
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
@@ -208,7 +208,9 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 			task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_SPAWN);
 			task_post_pure_msg(ZW_GAME_CAR_ID, 			ZW_GAME_CAR_RUN);
 			task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_UPDATE);
-			// task_post_pure_msg(ZW_GAME_BORDER_ID, 	ZW_GAME_BORDER_CHECK_GAME_OVER);
+			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_CHECK_GAME_OVER);
+			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_ZOMBIE_KILLED);
+			task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_LEVEL_UP);
 	}
 		break;
 
@@ -221,6 +223,8 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_CAR_ID, 			ZW_GAME_CAR_RESET);
 		task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_RESET);
 		task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_RESET);
+		task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_BORDER_RESET);
+
 
 
         timer_set(AC_TASK_DISPLAY_ID, 
@@ -259,6 +263,14 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		if(zw_game_state == GAME_PLAY) {
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SHOOT);
 		}
+	}
+		break;
+	
+	case ZW_GAME_EXIT_GAME: {
+		APP_DBG_SIG("ZW_GAME_EXIT_GAME\n");
+		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_TIME_TICK);
+		zw_game_state = GAME_OFF;
+		SCREEN_TRAN(scr_idle_handle, &scr_idle);
 	}
 		break;
 

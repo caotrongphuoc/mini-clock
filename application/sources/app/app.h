@@ -166,20 +166,6 @@ enum {
 };
 
 /*****************************************************************************/
-/*  Zomwar task define
- */
-/*****************************************************************************/
-/* define timer */
-#define ZW_GAME_TIME_TICK_INTERVAL									(100)
-#define ZW_GAME_TIME_EXIT_INTERVAL									(3000)
-/* define signal */
-enum {
-	ZW_GAME_TIME_TICK = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_RESET,
-	ZW_GAME_EXIT_GAME,
-};
-
-/*****************************************************************************/
 /*  ZIGBEE task define
  */
 /*****************************************************************************/
@@ -191,6 +177,20 @@ enum {
 	AC_ZIGBEE_START_COODINATOR,
 	AC_ZIGBEE_PERMIT_JOINING_REQ,
 	AC_ZIGBEE_ZCL_CMD_HANDLER
+};
+
+/*****************************************************************************/
+/*  Zomwar game "SCREEN" task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define ZW_GAME_TIME_TICK_INTERVAL									(100)
+#define ZW_GAME_TIME_EXIT_INTERVAL									(3000)
+/* define signal */
+enum {
+	ZW_GAME_TIME_TICK = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_RESET,
+	ZW_GAME_EXIT_GAME,
 };
 
 /*****************************************************************************/
@@ -269,6 +269,20 @@ enum {
 	ZW_GAME_CAR_SETUP = ZW_GAME_DEFINE_SIG,
 	ZW_GAME_CAR_RUN,
 	ZW_GAME_CAR_RESET,
+};
+
+/*****************************************************************************/
+/*  Zomwar game 'BORDER' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_CHECK_GAME_OVER,
+	ZW_GAME_ZOMBIE_KILLED,
+	ZW_GAME_LEVEL_UP,
+	ZW_GAME_BORDER_RESET,
 };
 
 /*****************************************************************************/
