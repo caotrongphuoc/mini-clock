@@ -1,5 +1,4 @@
 #include "zw_game_car.h"
-//#include "zw_game_zombie.h"
 
 zw_game_car_t car[NUM_LANES];
 static const int8_t lane_y[NUM_LANES] = LANE_Y;
@@ -28,7 +27,7 @@ void zw_game_car_handle(ak_msg_t* msg) {
     switch (msg->sig) {
     case ZW_GAME_CAR_SETUP: 
         APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
-        //game_active = true; 
+        game_active = true; 
         for (uint8_t i = 0; i < NUM_LANES; i++) { 
             car[i].x       = AXIS_X_CAR; 
             car[i].y       = lane_y[i]; 

@@ -15,6 +15,8 @@
 
 #include "scr_game_zomwar.h"
 
+#include "zw_game_zombie.h"
+
 #define AXIS_X_CAR        (0)       // Toa do cua car
 #define NUM_LANES         (5)       // So luong lane duong
 #define CAR_SPEED         (4)       // Toc do cua car = 4px
