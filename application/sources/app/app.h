@@ -222,6 +222,18 @@ enum {
 };
 
 /*****************************************************************************/
+/*  Zomwar game 'BANG' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_BANG_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_BANG_UPDATE,
+	ZW_GAME_BANG_RESET,
+};
+
+/*****************************************************************************/
 /*  Zomwar game 'ZOMBIE' task define
  */
 /*****************************************************************************/
@@ -232,6 +244,19 @@ enum {
 	ZW_GAME_ZOMBIE_RUN,
 	ZW_GAME_ZOMBIE_DETONATOR,
 	ZW_GAME_ZOMBIE_RESET,
+};
+
+/*****************************************************************************/
+/*  Zomwar game 'TOMBSTONE' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	ZW_GAME_TOMBSTONE_SETUP = ZW_GAME_DEFINE_SIG,
+	ZW_GAME_TOMBSTONE_UPDATE,
+	ZW_GAME_TOMBSTONE_SPAWN,
+	ZW_GAME_TOMBSTONE_RESET,
 };
 
 /*****************************************************************************/

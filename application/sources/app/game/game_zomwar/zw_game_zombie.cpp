@@ -8,16 +8,18 @@ const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y] = {
     {9, 8, 8, 9, 7, 9, 9, 9, 9, 9},
 };
 
-// void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx) {
-//     zombie[i].x            = tombstones[tidx].x;
-//     zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
-//     zombie[i].visible      = WHITE;
-//     zombie[i].action_image = 1;
-//     zombie[i].dy           = 0;
-//     zombie[i].zigzag_timer = 0;
-//     zombie[i].rising       = true;
-//     zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
-// }
+static const uint8_t lane_y_arr[NUM_LANES] = LANE_Y;
+
+void spawn_zombie_from_tombstone(uint8_t i, uint8_t tidx) {
+    zombie[i].x            = tombstones[tidx].x;
+    zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
+    zombie[i].visible      = WHITE;
+    zombie[i].action_image = 1;
+    zombie[i].dy           = 0;
+    zombie[i].zigzag_timer = 0;
+    zombie[i].rising       = true;
+    zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
+}
 
 void zw_game_zombie_handle(ak_msg_t* msg) {
     uint8_t active_count = 0;
@@ -102,47 +104,47 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     }
         break;
 
-    // case ZW_GAME_ZOMBIE_DETONATOR: {
-    //     APP_DBG_SIG("ZW_GAME_ZOMBIE_DETONATOR\n");
-    //     for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-    //         if (zombie[i].visible != WHITE) continue;
-    //         if (zombie[i].rising) continue;
+    case ZW_GAME_ZOMBIE_DETONATOR: {
+        APP_DBG_SIG("ZW_GAME_ZOMBIE_DETONATOR\n");
+        for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
+            if (zombie[i].visible != WHITE) continue;
+            if (zombie[i].rising) continue;
 
-    //         for (uint8_t j = 0; j < MAX_NUM_BULLET; j++) {
-    //             if (bullet[j].visible != WHITE) continue;
+            for (uint8_t j = 0; j < MAX_NUM_BULLET; j++) {
+                if (bullet[j].visible != WHITE) continue;
 
-    //             int32_t ax = bullet[j].x;
-    //             int32_t ay = bullet[j].y;
-    //             int32_t mx = zombie[i].x;
-    //             int32_t my = (int32_t)zombie[i].y;
-    //             // Kiem tra va cham (dan co ban dinh zombie hay chua)
-    //             bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&     // Dan qua phan than zombie 12 px
-    //                     (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&   // Dan chua qua ben phai zombie
-    //                     (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&    // Dan khong o tren zombie
-    //                     (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);     // Dan khong o duoi zombie
-    //             // Neu dinh luu vi tri de tao hieu ung no
-    //             if (hit) {
-    //                 int32_t  dead_x = zombie[i].x;
-    //                 uint32_t dead_y = zombie[i].y;
+                int32_t ax = bullet[j].x;
+                int32_t ay = bullet[j].y;
+                int32_t mx = zombie[i].x;
+                int32_t my = (int32_t)zombie[i].y;
+                // Kiem tra va cham (dan co ban dinh zombie hay chua)
+                bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&     // Dan qua phan than zombie 12 px
+                        (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&   // Dan chua qua ben phai zombie
+                        (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&    // Dan khong o tren zombie
+                        (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);     // Dan khong o duoi zombie
+                // Neu dinh luu vi tri de tao hieu ung no
+                if (hit) {
+                    int32_t  dead_x = zombie[i].x;
+                    uint32_t dead_y = zombie[i].y;
 
-    //                 zombie[i].visible = BLACK;
-    //                 zombie[i].x       = 200;    // Day zombie ra ngoai man hinh co toa do x = 200;
-    //                 bullet[j].visible = BLACK;  // Tieu thu (an) vien dan
-    //                 bullet[j].x       = 0;  
+                    zombie[i].visible = BLACK;
+                    zombie[i].x       = 200;    // Day zombie ra ngoai man hinh co toa do x = 200;
+                    bullet[j].visible = BLACK;  // Tieu thu (an) vien dan
+                    bullet[j].x       = 0;  
 
-    //                 uint8_t bk       = bang_alloc_slot();
-    //                 bang[bk].visible      = WHITE;
-    //                 bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
-    //                 bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
-    //                 bang[bk].action_image = 1;
+                    uint8_t bk       = bang_alloc_slot();
+                    bang[bk].visible      = WHITE;
+                    bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
+                    bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
+                    bang[bk].action_image = 1;
 
-    //                 //task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_ZOMBIE_KILLED);
-    //                 break;
-    //             }
-    //         }
-    //     }
-    // }
-    //     break;
+                    //task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_ZOMBIE_KILLED);
+                    break;
+                }
+            }
+        }
+    }
+        break;
 
     case ZW_GAME_ZOMBIE_RESET: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");

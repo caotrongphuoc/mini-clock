@@ -16,5 +16,10 @@ extern const unsigned char PROGMEM bitmap_zombie_III [];
 extern const unsigned char PROGMEM bitmap_car_I [];
 extern const unsigned char PROGMEM bitmap_car_II [];
 extern const unsigned char PROGMEM bitmap_car_III [];
+extern const unsigned char PROGMEM bitmap_tombstone [];
+extern const unsigned char PROGMEM bitmap_bang_I [];
+extern const unsigned char PROGMEM bitmap_bang_II [];
+extern const unsigned char PROGMEM bitmap_bang_III [];
+
 
 #endif //__SCREENS_BITMAP_H__
