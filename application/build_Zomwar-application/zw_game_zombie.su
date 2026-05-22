@@ -1,1 +1,0 @@
-sources/app/game/game_zomwar/zw_game_zombie.cpp:10:6:void zw_game_zombie_handle(ak_msg_t*)	32	static

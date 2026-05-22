@@ -162,8 +162,7 @@ int main_app() {
 
 	/* siren init */
 	BUZZER_Init();
-	zw_game_setting_read(&settingdata);
-	BUZZER_Sleep(settingdata.silent);
+	BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 
 	/* get boot share data */
 	flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));

@@ -7,6 +7,3 @@ VPATH += sources/app/game/game_zomwar
 # Zomwar 
 SOURCES_CPP += sources/app/game/game_zomwar/zw_game_gunner.cpp
 SOURCES_CPP += sources/app/game/game_zomwar/zw_game_bullet.cpp
-SOURCES_CPP += sources/app/game/game_zomwar/zw_game_car.cpp
-SOURCES_CPP += sources/app/game/game_zomwar/zw_game_bang.cpp
-SOURCES_CPP += sources/app/game/game_zomwar/zw_game_zombie.cpp

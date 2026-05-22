@@ -22,8 +22,6 @@ extern "C"
 #include "app_eeprom.h"
 #include "app_data.h"
 
-#include "buzzer.h"
-
 /*****************************************************************************/
 /* SYSTEM task define
  */
@@ -141,39 +139,30 @@ enum {
 #define AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP_INTERVAL				(15000)
 #define AC_DISPLAY_SHOW_MODBUS_PULL_INTERVAL						(1500)
 #define AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP_INTERVAL					(30000)
+#define AC_DISPLAY_MINIMUM_SCREEN_RENDER_INTERVAL_MS				(50) /* 50ms => Max 20 FPS */
+#define AC_DISPLAY_IDLE_INTERVAL									(15000)
+#define AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL					(120)
 
 /* define signal */
 enum {
+	AC_DISPLAY_RENDER_SCREEN = AK_SYS_DEFINE_SIG,
 	AC_DISPLAY_INITIAL = AK_USER_DEFINE_SIG,
-	AC_DISPLAY_BUTTON_MODE_RELEASED,
+	AC_DISPLAY_BUTTON_MODE_PRESSED,
 	AC_DISPLAY_BUTTON_UP_PRESSED,
-	AC_DISPLAY_BUTTON_UP_RELEASED,
 	AC_DISPLAY_BUTTON_DOWN_PRESSED,
+	AC_DISPLAY_BUTTON_MODE_RELEASED,
+	AC_DISPLAY_BUTTON_UP_RELEASED,
 	AC_DISPLAY_BUTTON_DOWN_RELEASED,
 	AC_DISPLAY_SHOW_LOGO,
 	AC_DISPLAY_SHOW_IDLE,
 	AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
+	AC_DISPLAY_WELCOME_TEXT_ANIM_TICK,
 	AC_DISPLAY_SHOW_FW_UPDATE,
 	AC_DISPLAY_SHOW_FW_UPDATE_ERR,
 	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SNOW_MOVING_UPDATE,
 	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP,
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
 	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP
-	
-};
-
-
-/*****************************************************************************/
-/*  scr_game_rank task define
- */
-/*****************************************************************************/
-/* define timer */
-#define ZW_GAME_TIME_SPIDER_UPDATE_INTERVAL							(50)
-
-/* define signal */
-enum {
-	ZW_GAME_TIME_SPIDER_UPDATE
-	
 };
 
 /*****************************************************************************/
@@ -188,11 +177,6 @@ enum {
 	ZW_GAME_TIME_TICK = ZW_GAME_DEFINE_SIG,
 	ZW_GAME_RESET,
 	ZW_GAME_EXIT_GAME,
-	ZW_GAME_BTN_MODE_RELEASED,
-	ZW_GAME_BTN_UP_PRESSED,
-	ZW_GAME_BTN_UP_RELEASED,
-	ZW_GAME_BTN_DOWN_PRESSED,
-	ZW_GAME_BTN_DOWN_RELEASED,
 };
 
 /*****************************************************************************/
@@ -207,16 +191,6 @@ enum {
 	AC_ZIGBEE_START_COODINATOR,
 	AC_ZIGBEE_PERMIT_JOINING_REQ,
 	AC_ZIGBEE_ZCL_CMD_HANDLER
-};
-
-/*****************************************************************************/
-/* DBG task define
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-enum {
-	AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
 };
 
 /*****************************************************************************/
@@ -248,66 +222,14 @@ enum {
 };
 
 /*****************************************************************************/
-/*  Zomwar game 'CAR' task define   
+/* DBG task define
  */
 /*****************************************************************************/
 /* define timer */
 /* define signal */
 enum {
-	ZW_GAME_CAR_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_CAR_RUN,
-	ZW_GAME_CAR_RESET,
+	AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
 };
-
-/*****************************************************************************/
-/*  Zomwar game 'BANG' task define
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-enum {
-	ZW_GAME_BANG_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_BANG_UPDATE,
-	ZW_GAME_BANG_RESET,
-};
-
-/*****************************************************************************/
-/*  Zomwar game 'BANG' task define
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-enum {
-	ZW_GAME_ZOMBIE_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_ZOMBIE_RUN,
-	ZW_GAME_ZOMBIE_DETONATOR,
-	ZW_GAME_ZOMBIE_RESET,
-};
-
-/*****************************************************************************/
-/*  Zomwar game 'TOMBSTONE' task define
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-// enum {
-// 	ZW_GAME_TOMBSTONE_SETUP = ZW_GAME_DEFINE_SIG,
-// 	ZW_GAME_TOMBSTONE_UPDATE,
-// 	ZW_GAME_TOMBSTONE_RESET,
-// };
-
-/*****************************************************************************/
-/*  Zomwar game 'BORDER' task define   
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-// enum {
-// 	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
-// 	ZW_GAME_LEVEL_UP,
-// 	ZW_GAME_BORDER_CHECK_GAME_OVER,
-// 	ZW_GAME_BORDER_RESET,
-// };
 
 /*****************************************************************************/
 /*  app function declare
