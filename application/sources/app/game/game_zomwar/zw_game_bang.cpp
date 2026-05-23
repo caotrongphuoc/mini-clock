@@ -3,6 +3,13 @@
 zw_game_bang_t bang[NUM_BANG];
 static uint8_t bang_next = 0;
 uint8_t bang_alloc_slot(void) {
+    // Uu tien slot dang trong (vu no da tat) de khong de len vu no dang chay
+    for (uint8_t i = 0; i < NUM_BANG; i++) {
+        if (bang[i].visible != WHITE) {
+            return i;
+        }
+    }
+    // Het slot trong -> ghi de theo vong tron (slot cu nhat)
     uint8_t slot = bang_next;
     bang_next = (bang_next + 1) % NUM_BANG;
     return slot;
@@ -24,7 +31,7 @@ void zw_game_bang_handle(ak_msg_t* msg) {
             if(bang[i].visible == WHITE) {
                 bang[i].action_image++;
             }
-            if(bang[i].action_image == 3) {
+            if(bang[i].action_image > 3) { // da chay het 3 frame (I, II, III) -> tat
                 bang[i].action_image = 1;
                 bang[i].visible = BLACK;
             }

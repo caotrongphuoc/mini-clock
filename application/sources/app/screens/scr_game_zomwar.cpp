@@ -2,6 +2,12 @@
 
 static uint8_t zw_game_state;
 
+// huong gunner dang giu: 0=dung, 1=len, 2=xuong
+#define GUNNER_DIR_NONE  (0)
+#define GUNNER_DIR_UP    (1)
+#define GUNNER_DIR_DOWN  (2)
+static uint8_t gunner_dir = GUNNER_DIR_NONE;
+
 void zw_game_frame_display() {
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
@@ -45,7 +51,7 @@ void zw_game_gunner_display() {
 }
 
 void zw_game_bullet_display() {
-	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++) {
+	for (uint8_t i = 0; i < bullet_count; i++) { // chi ve dan active [0..bullet_count)
 		if (bullet[i].visible == WHITE) {
 			view_render.drawBitmap(	bullet[i].x, 
 									bullet[i].y, 
@@ -58,7 +64,7 @@ void zw_game_bullet_display() {
 }
 
 void zw_game_zombie_display() {
-	for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
+	for (uint8_t i = 0; i < zombie_count; i++) { // chi ve zombie active [0..zombie_count)
 		if (zombie[i].visible == WHITE) {
 			if (zombie[i].action_image == 1) {
 				view_render.drawBitmap(	zombie[i].x, \
@@ -137,8 +143,10 @@ void zw_game_tombstone_display() {
 void zw_game_bang_display() {
 	for (uint8_t i = 0; i < NUM_BANG; i++) {
 		if (bang[i].visible == WHITE) {
-			const unsigned char* frame = (bang[i].action_image == 2) ? bitmap_bang_II : bitmap_bang_I;
-			view_render.drawBitmap( bang[i].x, 
+			const unsigned char* frame = bitmap_bang_I;
+			if (bang[i].action_image == 2)      frame = bitmap_bang_II;
+			else if (bang[i].action_image == 3) frame = bitmap_bang_III;
+			view_render.drawBitmap( bang[i].x,
 									bang[i].y, 
 									frame, 
 									SIZE_BITMAP_BANG_I_X, 
@@ -205,6 +213,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_BORDER_ID,   	ZW_GAME_BORDER_SETUP);
 		
 		zw_game_state = GAME_PLAY;
+		gunner_dir = GUNNER_DIR_NONE; // vao van moi: chua giu nut
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
 
         timer_set(AC_TASK_DISPLAY_ID, 
@@ -216,6 +225,9 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 
 	case ZW_GAME_TIME_TICK: {
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
+			// giu nut: moi tick day gunner 1 buoc theo huong dang giu
+			if      (gunner_dir == GUNNER_DIR_UP)   task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UP);
+			else if (gunner_dir == GUNNER_DIR_DOWN) task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_DOWN);
 			task_post_pure_msg(ZW_GAME_GUNNER_ID, 		ZW_GAME_GUNNER_UPDATE);
 			task_post_pure_msg(ZW_GAME_BULLET_ID, 		ZW_GAME_BULLET_RUN);
 			task_post_pure_msg(ZW_GAME_ZOMBIE_ID, 		ZW_GAME_ZOMBIE_RUN);
@@ -250,27 +262,29 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_UP_PRESSED\n");
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UP);
+		gunner_dir = GUNNER_DIR_UP;
+		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UP); // di 1 buoc ngay cho nhay
 	}
 		break;
 
-	// case AC_DISPLAY_BUTTON_UP_RELEASED: {
-	// 	APP_DBG_SIG("ZW_GAME BTN_UP_RELEASED\n");
-	// 	task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
-	// }
-	// 	break;
+	case AC_DISPLAY_BUTTON_UP_RELEASED: {
+		APP_DBG_SIG("ZW_GAME BTN_UP_RELEASED\n");
+		if (gunner_dir == GUNNER_DIR_UP) gunner_dir = GUNNER_DIR_NONE;
+	}
+		break;
 
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_DOWN_PRESSED\n");
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_DOWN);
+		gunner_dir = GUNNER_DIR_DOWN;
+		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_DOWN); // di 1 buoc ngay cho nhay
 	}
 		break;
 
-	// case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
-	// 	APP_DBG_SIG("ZW_GAME BTN_DOWN_RELEASED\n");
-	// 	task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_STOP);
-	// }
-	// 	break;
+	case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
+		APP_DBG_SIG("ZW_GAME BTN_DOWN_RELEASED\n");
+		if (gunner_dir == GUNNER_DIR_DOWN) gunner_dir = GUNNER_DIR_NONE;
+	}
+		break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_MODE_PRESSED\n");

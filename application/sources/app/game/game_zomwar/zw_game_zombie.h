@@ -22,7 +22,7 @@
 /*---------------------------------------------------------------------------*/
 /*  Constants                                                                */
 /*---------------------------------------------------------------------------*/
-#define NUM_ZOMBIES              (30)   // So luong zombie 
+#define NUM_ZOMBIES              (20)   // So luong zombie 
 #define NUM_ZOMBIES_INIT         (5)    // So luong zombie xuat hien tu ben phai man hinh
 #define ZOMBIE_SPEED_MAX         (6)    // Toc do toi da cua zombie
 
@@ -47,5 +47,6 @@ typedef struct {
 extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
 extern uint8_t          zw_game_zombie_speed; // toc do runtime trong van choi (LEVEL_UP tang dan)
+extern uint8_t          zombie_count;          // so zombie active, nam o slot [0..zombie_count)
 
 #endif //__ZW_GAME_ZOMBIE_H__

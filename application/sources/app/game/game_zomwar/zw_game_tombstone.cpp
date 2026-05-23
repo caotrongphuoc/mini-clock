@@ -36,19 +36,18 @@ void zw_game_tombstone_handle(ak_msg_t* msg) {
         uint8_t tidx = (uint8_t)(rand() % NUM_TOMBSTONES);
         if (!tombstones[tidx].active) return;
 
-        /* tim mot slot zombie trong roi spawn tai bia mo vua chon */
-        for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-            if (zombie[i].visible != WHITE) {
-                zombie[i].x            = tombstones[tidx].x;
-                zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
-                zombie[i].visible      = WHITE;
-                zombie[i].action_image = 1;
-                zombie[i].dy           = 0;
-                zombie[i].zigzag_timer = 0;
-                zombie[i].rising       = true;
-                zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
-                return;
-            }
+        /* spawn tai slot trong ke tiep (zombie_count) neu con cho */
+        if (zombie_count < NUM_ZOMBIES) {
+            uint8_t i = zombie_count;
+            zombie[i].x            = tombstones[tidx].x;
+            zombie[i].y            = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
+            zombie[i].visible      = WHITE;
+            zombie[i].action_image = 1;
+            zombie[i].dy           = 0;
+            zombie[i].zigzag_timer = 0;
+            zombie[i].rising       = true;
+            zombie[i].rise_ticks   = ZOMBIE_RISE_TICKS;
+            zombie_count++;
         }
     }
         break;

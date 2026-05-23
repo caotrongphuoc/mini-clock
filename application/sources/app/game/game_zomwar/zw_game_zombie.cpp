@@ -9,25 +9,24 @@ const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y] = {
 };
 
 uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT; // toc do runtime cua van choi, gan = settingdata luc vao game
+uint8_t zombie_count = 0; // so zombie dang active; chung luon nam o slot [0..zombie_count)
 
 void zw_game_zombie_handle(ak_msg_t* msg) {
-    uint8_t active_count = 0;
     switch (msg->sig) {
     case ZW_GAME_ZOMBIE_SETUP: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
         game_active = true;
         zw_game_zombie_speed = settingdata.zombie_speed; // bat dau van: lay toc do nguoi choi da chon
-        for(uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-            if(i < NUM_ZOMBIES_INIT) {
-                zombie[i].x            = (rand() % 39) + 130;
-                zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
-                zombie[i].visible      = WHITE;
-                zombie[i].action_image = rand() % 3 + 1;
-                zombie[i].dy           = 0;
-                zombie[i].zigzag_timer = rand() % 10 + 5;
-                zombie[i].rising       = false;
-                zombie[i].rise_ticks   = 0;
-            }
+        zombie_count = NUM_ZOMBIES_INIT; // bat dau van voi NUM_ZOMBIES_INIT con
+        for (uint8_t i = 0; i < zombie_count; i++) {
+            zombie[i].x            = (rand() % 39) + 130;
+            zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
+            zombie[i].visible      = WHITE;
+            zombie[i].action_image = rand() % 3 + 1;
+            zombie[i].dy           = 0;
+            zombie[i].zigzag_timer = rand() % 10 + 5;
+            zombie[i].rising       = false;
+            zombie[i].rise_ticks   = 0;
         }
     }
         break;
@@ -35,10 +34,7 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     case ZW_GAME_ZOMBIE_RUN: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN\n");
         if(!game_active) return;
-        active_count = 0;
-        for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-            if (zombie[i].visible != WHITE) continue;
-            active_count++;
+        for (uint8_t i = 0; i < zombie_count; i++) {
             // Xu ly zombie dang troi len tu bia mo
             if (zombie[i].rising) {
                 if (zombie[i].rise_ticks > 0) {
@@ -74,35 +70,29 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
             zombie[i].action_image++;
             if (zombie[i].action_image > 3) zombie[i].action_image = 1;
         }
-        // Tu dong spawn them zombie neu thieu
-        if (active_count < NUM_ZOMBIES_INIT) {
-            for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-                if (zombie[i].visible != WHITE) {
-                    zombie[i].x            = (rand() % 39) + 130;
-                    zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
-                    zombie[i].visible      = WHITE;
-                    zombie[i].action_image = rand() % 3 + 1;
-                    zombie[i].dy           = 0;
-                    zombie[i].zigzag_timer = rand() % 10 + 5;
-                    zombie[i].rising       = false;
-                    zombie[i].rise_ticks   = 0;
-                    active_count++;
-                    if (active_count >= NUM_ZOMBIES_INIT) break;
-                }
-            }
+        // Tu dong spawn them zombie tu mep phai de luon giu it nhat NUM_ZOMBIES_INIT con
+        while (zombie_count < NUM_ZOMBIES_INIT) {
+            uint8_t i = zombie_count; // slot trong ke tiep
+            zombie[i].x            = (rand() % 39) + 130;
+            zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
+            zombie[i].visible      = WHITE;
+            zombie[i].action_image = rand() % 3 + 1;
+            zombie[i].dy           = 0;
+            zombie[i].zigzag_timer = rand() % 10 + 5;
+            zombie[i].rising       = false;
+            zombie[i].rise_ticks   = 0;
+            zombie_count++;
         }
     }
         break;
 
     case ZW_GAME_ZOMBIE_DETONATOR: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_DETONATOR\n");
-        for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-            if (zombie[i].visible != WHITE) continue;
-            if (zombie[i].rising) continue;
+        for (uint8_t i = 0; i < zombie_count; ) {
+            if (zombie[i].rising) { i++; continue; }
 
-            for (uint8_t j = 0; j < MAX_NUM_BULLET; j++) {
-                if (bullet[j].visible != WHITE) continue;
-
+            bool killed = false;
+            for (uint8_t j = 0; j < bullet_count; j++) {
                 int32_t ax = bullet[j].x;
                 int32_t ay = bullet[j].y;
                 int32_t mx = zombie[i].x;
@@ -117,10 +107,11 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                     int32_t  dead_x = zombie[i].x;
                     uint32_t dead_y = zombie[i].y;
 
-                    zombie[i].visible = BLACK;
-                    zombie[i].x       = 200;    // Day zombie ra ngoai man hinh co toa do x = 200;
-                    bullet[j].visible = BLACK;  // Tieu thu (an) vien dan
-                    bullet[j].x       = 0;  
+                    // Tieu thu vien dan: xoa dan j bang swap-remove
+                    bullet_count--;
+                    bullet[j] = bullet[bullet_count];
+                    bullet[bullet_count].visible = BLACK;
+                    bullet[bullet_count].x       = 0;
 
                     uint8_t bk       = bang_alloc_slot();
                     bang[bk].visible      = WHITE;
@@ -129,9 +120,16 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                     bang[bk].action_image = 1;
                     zw_game_score += 10;
                     BUZZER_PlaySound(BUZZER_SOUND_BANG);
+
+                    // Xoa zombie i bang swap-remove: dua phan tu cuoi vao slot i
+                    zombie_count--;
+                    zombie[i] = zombie[zombie_count];
+                    zombie[zombie_count].visible = BLACK;
+                    killed = true;
                     break;
                 }
             }
+            if (!killed) i++; // chi tien khi khong xoa; neu xoa thi xet lai phan tu vua hoan doi vao i
         }
     }
         break;
@@ -139,12 +137,9 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     case ZW_GAME_ZOMBIE_RESET: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");
         game_active = false;
+        zombie_count = 0; // khong con zombie active
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-        zombie[i].visible    = BLACK;
-        zombie[i].x          = 200;
-        zombie[i].dy         = 0;
-        zombie[i].rising     = false;
-        zombie[i].rise_ticks = 0;
+            zombie[i].visible = BLACK; // dat BLACK het cho sach
         }
     }
         break;
