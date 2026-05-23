@@ -7,7 +7,7 @@ void zw_game_frame_display() {
 	view_render.setTextColor(WHITE);
 	view_render.setCursor(8,55);
 	view_render.print("Wave:");
-	//view_render.print(wave_level);
+	view_render.print(wave_level);
 	view_render.setCursor(64,55);
 	view_render.print("Score:");
 	view_render.print(zw_game_score);
@@ -160,6 +160,21 @@ void zw_game_grass_display() {
 	}
 }
 
+void zw_game_warning_display() {
+	if (wave_warning_active) {
+		// nhap nhay: cu WARNING_BLINK_RATE tick thi doi hien/an
+		if ((wave_warning_timer / WARNING_BLINK_RATE) % 2 == 0) {
+			view_render.drawBitmap(
+				(LCD_WIDTH - SIZE_BITMAP_WARNING_X) / 2,
+				(54 - SIZE_BITMAP_WARNING_Y) / 2,
+				bitmap_warning,
+				SIZE_BITMAP_WARNING_X,
+				SIZE_BITMAP_WARNING_Y,
+				WHITE);
+		}
+	}
+}
+
 void view_scr_game_zomwar() {
 	if (zw_game_state == GAME_PLAY) {
         zw_game_frame_display();
@@ -170,6 +185,7 @@ void view_scr_game_zomwar() {
 		zw_game_tombstone_display();
 		zw_game_bang_display();
 		zw_game_grass_display();
+		zw_game_warning_display();
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();

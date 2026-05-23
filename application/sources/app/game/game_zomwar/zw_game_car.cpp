@@ -42,22 +42,18 @@ void zw_game_car_handle(ak_msg_t* msg) {
         APP_DBG_SIG("ZW_GAME_CAR_RUN\n");
         if (!game_active) break; 
             
-            bool game_over = false; 
             
             for (uint8_t i = 0; i < NUM_ZOMBIES; i++) { 
-                if (game_over) break; 
                 if (zombie[i].visible != WHITE) continue; 
                 
                 if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) { 
                     int8_t m = find_nearest_mower(zombie[i].y); 
-                    if (m >= 0) { 
-                        car[m].running = true; 
-                    } else { 
-                        game_over = true; 
-                        task_post_pure_msg(ZW_GAME_SCREEN_ID, ZW_GAME_RESET); 
-                    } 
-                    zombie[i].visible = BLACK; 
-                    zombie[i].x = 200; 
+                    if (m >= 0) {
+                        car[m].running = true;
+                        zombie[i].visible = BLACK;
+                        zombie[i].x = 200;
+                    }
+                    /* khong con xe cuu -> de zombie o lai mep trai, border lo game over */
                     continue; 
                 } 
                 
@@ -73,7 +69,6 @@ void zw_game_car_handle(ak_msg_t* msg) {
                 } 
             } 
             
-            if (game_over) break; 
             
             for (uint8_t i = 0; i < NUM_LANES; i++) { 
                 if (!car[i].visible || !car[i].running) continue; 

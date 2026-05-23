@@ -25,5 +25,8 @@ extern const unsigned char PROGMEM bitmap_bang_III [];
 extern const unsigned char PROGMEM speaker_1 [];
 extern const unsigned char PROGMEM speaker_2 [];
 
+// scr_game_zomwar
+extern const unsigned char PROGMEM bitmap_warning [];
+
 
 #endif //__SCREENS_BITMAP_H__
