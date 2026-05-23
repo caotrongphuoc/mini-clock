@@ -43,5 +43,7 @@ extern void scr_game_zomwar_handle(ak_msg_t* msg);
 
 extern void zw_game_gunner_display();
 extern void zw_game_bullet_display();
+extern void zw_game_zombie_display();
+extern void zw_game_bang_display();
 
 #endif //__SCR_GAME_ZOMWAR_H__

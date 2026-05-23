@@ -88,7 +88,7 @@ void view_scr_game_setting() {
 		case 3:
 			view_render.setCursor(2, text_y);
 			view_render.print("Sound");
-			view_render.drawBitmap(110, text_y, settingdata.silent ? speaker_2 : speaker_1, 7, 7, fg);
+			view_render.drawBitmap(110, text_y, settingdata.silent ? bitmap_speaker_2 : bitmap_speaker_1, 7, 7, fg);
 			break;
 		case 4:
 			view_render.setCursor(45, text_y);

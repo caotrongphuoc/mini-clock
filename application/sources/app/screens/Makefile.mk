@@ -15,3 +15,4 @@ SOURCES_CPP += sources/app/screens/scr_game_menu.cpp
 SOURCES_CPP += sources/app/screens/scr_game_setting.cpp
 SOURCES_CPP += sources/app/screens/scr_game_car_setting.cpp
 SOURCES_CPP += sources/app/screens/scr_game_tombstone_setting.cpp
+SOURCES_CPP += sources/app/screens/scr_game_over.cpp

@@ -20,13 +20,15 @@ extern const unsigned char PROGMEM bitmap_tombstone [];
 extern const unsigned char PROGMEM bitmap_bang_I [];
 extern const unsigned char PROGMEM bitmap_bang_II [];
 extern const unsigned char PROGMEM bitmap_bang_III [];
-
-// scr_game_setting
-extern const unsigned char PROGMEM speaker_1 [];
-extern const unsigned char PROGMEM speaker_2 [];
-
-// scr_game_zomwar
 extern const unsigned char PROGMEM bitmap_warning [];
 
+// scr_game_setting
+extern const unsigned char PROGMEM bitmap_speaker_1 [];
+extern const unsigned char PROGMEM bitmap_speaker_2 [];
+
+// scr_game_over
+extern const unsigned char PROGMEM bitmap_spiderweb_L [];
+extern const unsigned char PROGMEM bitmap_spiderweb_R [];
+extern const unsigned char PROGMEM bitmap_skull [];
 
 #endif //__SCREENS_BITMAP_H__

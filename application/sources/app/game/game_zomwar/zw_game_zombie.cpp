@@ -144,6 +144,67 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     }
         break;
 
+    case ZW_GAME_ZOMBIE_SETUP_MENU: {
+        APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP_MENU\n");
+        game_active = true;
+        zombie_count = 1;
+        zombie[0].x = LCD_WIDTH + 3;
+        zombie[0].y = AXIS_Y_GUNNER - 10;
+        zombie[0].rising = false;
+        zombie[0].visible = WHITE;
+        zombie[0].action_image = 1;
+    }
+        break;
+
+    case ZW_GAME_ZOMBIE_RUN_MENU: {
+        APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN_MENU\n");
+        zombie_count = 1; // menu luon co dung 1 zombie
+
+        // di chuyen sang trai + doi frame chay
+        zombie[0].x -= MENU_ZOMBIE_SPEED;
+        zombie[0].visible = WHITE;
+        zombie[0].action_image++;
+        if (zombie[0].action_image > 3) zombie[0].action_image = 1;
+
+        // ra khoi mep trai -> quay ve mep phai
+        if (zombie[0].x < -(int32_t)SIZE_BITMAP_ZOMBIES_X) {
+            zombie[0].x = LCD_WIDTH + 3;
+            zombie[0].y = AXIS_Y_GUNNER - 10;
+        }
+
+        // va cham voi dan -> tao no roi cho zombie ve phai (khong cong diem, khong tieng)
+        for (uint8_t j = 0; j < bullet_count; j++) {
+            int32_t ax = bullet[j].x;
+            int32_t ay = bullet[j].y;
+            int32_t mx = zombie[0].x;
+            int32_t my = (int32_t)zombie[0].y;
+            bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
+                       (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&
+                       (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&
+                       (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);
+            if (hit) {
+                int32_t  dead_x = zombie[0].x;
+                uint32_t dead_y = zombie[0].y;
+                // xoa vien dan (swap-remove)
+                bullet_count--;
+                bullet[j] = bullet[bullet_count];
+                bullet[bullet_count].visible = BLACK;
+                bullet[bullet_count].x       = 0;
+                // tao hieu ung no
+                uint8_t bk = bang_alloc_slot();
+                bang[bk].visible      = WHITE;
+                bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
+                bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
+                bang[bk].action_image = 1;
+                // zombie "chet" -> quay ve mep phai
+                zombie[0].x = LCD_WIDTH + 3;
+                zombie[0].y = AXIS_Y_GUNNER - 10;
+                break;
+            }
+        }
+    }
+        break;
+
     default:
         break;
     }

@@ -244,29 +244,6 @@ const unsigned char PROGMEM bitmap_bang_III [] = {
     0x00, 0x00
 };
 
-// scr_game_setting - 7x7, loa co am thanh (sound ON)
-const unsigned char PROGMEM speaker_1 [] = {
-    0x20, // ..#....
-    0x64, // .##..#.
-    0xEA, // ###.#.#
-    0xEA, // ###.#.#
-    0xEA, // ###.#.#
-    0x64, // .##..#.
-    0x20, // ..#....
-};
-
-// scr_game_setting - 7x7, loa tat tieng (mute) - dau X o phia phat song
-const unsigned char PROGMEM speaker_2 [] = {
-    0x20, // ..#....
-    0x6A, // .##.#.#
-    0xE4, // ###..#.
-    0xE4, // ###..#.
-    0xE4, // ###..#.
-    0x6A, // .##.#.#
-    0x20, // ..#....
-};
-
-// scr_game_zomwar - 16x14, icon canh bao wave (warning)
 const unsigned char PROGMEM bitmap_warning [] = {
     0x03, 0x00,
     0x07, 0x80,
@@ -282,4 +259,81 @@ const unsigned char PROGMEM bitmap_warning [] = {
     0xC0, 0x0C,
     0xFF, 0xFC,
     0xFF, 0xFC,
+};
+
+/*****************************************************************************/
+/* scr_game_setting- Bitmap*/
+/*****************************************************************************/
+
+const unsigned char PROGMEM bitmap_speaker_1 [] = {
+    0x20, 
+    0x64, 
+    0xEA, 
+    0xEA, 
+    0xEA, 
+    0x64, 
+    0x20, 
+};
+
+const unsigned char PROGMEM bitmap_speaker_2 [] = {
+    0x20, 
+    0x6A,
+    0xE4,
+    0xE4, 
+    0xE4, 
+    0x6A, 
+    0x20, 
+};
+
+/*****************************************************************************/
+/* scr_game_over- Bitmap*/
+/*****************************************************************************/
+
+const unsigned char PROGMEM bitmap_spiderweb_L [] = {
+    0xFF, 0xFF,
+    0xC2, 0x10,
+    0xE2, 0x10,
+    0xB4, 0x10,
+    0xA8, 0x20,
+    0x94, 0x20,
+    0x92, 0x40,
+    0x89, 0x80,
+    0x88, 0x80,
+    0x86, 0x40,
+    0x84, 0x20,
+    0x82, 0x10,
+    0x82, 0x08,
+    0x81, 0x04,
+    0x81, 0x02,
+    0x80, 0x81,
+};
+
+const unsigned char PROGMEM bitmap_spiderweb_R [] = {
+    0xFF, 0xFF,
+    0x08, 0x43,
+    0x08, 0x47,
+    0x08, 0x2D,
+    0x04, 0x15,
+    0x04, 0x29,
+    0x02, 0x49,
+    0x01, 0x91,
+    0x01, 0x11,
+    0x02, 0x61,
+    0x04, 0x21,
+    0x08, 0x41,
+    0x10, 0x41,
+    0x20, 0x81,
+    0x40, 0x81,
+    0x81, 0x01
+};
+
+const unsigned char PROGMEM bitmap_skull[] = {
+    0x3E, 0x00,
+    0x7F, 0x00,
+    0xDD, 0x80,
+    0xFF, 0x80,
+    0x6B, 0x00,
+    0x3E, 0x00,
+    0x14, 0x00,
+    0x00, 0x00,
 };

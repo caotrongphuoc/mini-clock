@@ -244,6 +244,8 @@ enum {
 	ZW_GAME_ZOMBIE_RUN,
 	ZW_GAME_ZOMBIE_DETONATOR,
 	ZW_GAME_ZOMBIE_RESET,
+	ZW_GAME_ZOMBIE_SETUP_MENU,
+	ZW_GAME_ZOMBIE_RUN_MENU,
 };
 
 /*****************************************************************************/

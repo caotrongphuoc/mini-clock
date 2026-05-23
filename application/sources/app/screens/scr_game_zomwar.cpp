@@ -250,13 +250,9 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_TOMBSTONE_ID,	ZW_GAME_TOMBSTONE_RESET);
 		task_post_pure_msg(ZW_GAME_BANG_ID, 		ZW_GAME_BANG_RESET);
 		task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_BORDER_RESET);
-
-
-
-        timer_set(AC_TASK_DISPLAY_ID, 
-			ZW_GAME_TIME_TICK, 
-			ZW_GAME_TIME_TICK_INTERVAL, 
-			TIMER_PERIODIC);
+		gamescore.score_now = zw_game_score;
+		zw_game_state = GAME_OVER;
+		SCREEN_TRAN(scr_game_over_handle, &scr_game_over); 	
 	}
         break;        
 

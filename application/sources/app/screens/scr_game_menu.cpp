@@ -53,6 +53,8 @@ void view_scr_game_menu() {
 	}
     zw_game_bullet_display();
     zw_game_gunner_display();
+	zw_game_zombie_display();
+	zw_game_bang_display();
 }
 
 void scr_game_menu_handle(ak_msg_t* msg) {
@@ -63,6 +65,8 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 		current_location = 0;
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
+		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, ZW_GAME_ZOMBIE_SETUP_MENU);
+		task_post_pure_msg(ZW_GAME_BANG_ID,   ZW_GAME_BANG_SETUP);
         timer_set(AC_TASK_DISPLAY_ID, 
 			ZW_GAME_TIME_TICK, 
 			ZW_GAME_TIME_TICK_INTERVAL, 
@@ -73,6 +77,8 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RUN);
+		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, ZW_GAME_ZOMBIE_RUN_MENU);
+		task_post_pure_msg(ZW_GAME_BANG_ID,   ZW_GAME_BANG_UPDATE);
         shoot_tick_counter++;
         if(shoot_tick_counter >= 20) {
             shoot_tick_counter = 0;

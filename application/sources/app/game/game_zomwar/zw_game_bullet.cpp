@@ -19,16 +19,15 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
 
     case ZW_GAME_BULLET_RUN: {
         APP_DBG_SIG("ZW_GAME_BULLET_RUN\n");
-        for (uint8_t i = 0; i < bullet_count; ) {
+        for (uint8_t i = 0; i < bullet_count; i++) {
             bullet[i].x += STEP_BULLET_AXIS_X;
             if (bullet[i].x >= MAX_AXIS_X_BULLET) {
                 // ra khoi man hinh -> xoa bang swap-remove
+                // (giu i++ o 'for' nen vien vua hoan vao slot i se duoc xet o tick sau)
                 bullet_count--;
                 bullet[i] = bullet[bullet_count];
                 bullet[bullet_count].visible = BLACK;
                 bullet[bullet_count].x = 0;
-            } else {
-                i++;
             }
         }
     }
