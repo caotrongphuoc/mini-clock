@@ -28,7 +28,6 @@ const task_t app_task_table[] = {
 	{ZW_GAME_ZOMBIE_ID			,	TASK_PRI_LEVEL_4	,	zw_game_zombie_handle			},
 	{ZW_GAME_TOMBSTONE_ID		,	TASK_PRI_LEVEL_4	,	zw_game_tombstone_handle		},
 	{ZW_GAME_BORDER_ID			,	TASK_PRI_LEVEL_4	,	zw_game_border_handle			},
-	{ZW_GAME_SCREEN_ID			,	TASK_PRI_LEVEL_4	,	scr_game_zomwar_handle			},
 
 	#if defined(TASK_ZIGBEE_EN)
 	{AC_TASK_ZIGBEE_ID			,	TASK_PRI_LEVEL_4	,	task_zigbee			},

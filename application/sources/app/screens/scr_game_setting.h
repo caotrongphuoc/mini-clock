@@ -25,15 +25,13 @@
 
 //
 
-// chosse
-#define STEP_SETTING_CHOSSE 					(13)
-// items (5 items + EXIT)
-#define SETTING_ITEM_ARRDESS_0					(0)
-#define SETTING_ITEM_ARRDESS_1					(STEP_SETTING_CHOSSE)
-#define SETTING_ITEM_ARRDESS_2					(STEP_SETTING_CHOSSE*2)
-#define SETTING_ITEM_ARRDESS_3					(STEP_SETTING_CHOSSE*3)
-#define SETTING_ITEM_ARRDESS_4					(STEP_SETTING_CHOSSE*4)
-#define SETTING_ITEM_ARRDESS_5					(STEP_SETTING_CHOSSE*5)
+// Setting items (chi so 0..4)
+#define SETTING_ITEM_CARS						(0)
+#define SETTING_ITEM_TOMBSTONES					(1)
+#define SETTING_ITEM_SPEED						(2)
+#define SETTING_ITEM_SOUND						(3)
+#define SETTING_ITEM_EXIT						(4)
+#define NUM_SETTING_ITEMS						(5)
 // Frames (5 frames, STEP=12 để vừa màn hình 64px)
 #define ZW_GAME_SETTING_FRAMES_AXIS_X			(0)
 #define ZW_GAME_SETTING_FRAMES_AXIS_Y_1			(2)

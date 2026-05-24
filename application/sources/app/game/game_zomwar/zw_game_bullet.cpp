@@ -2,7 +2,6 @@
 
 zw_game_bullet_t bullet[MAX_NUM_BULLET];
 uint8_t bullet_count = 0; // so dan dang bay; nam o slot [0..bullet_count)
-bool zw_game_sound_enable = true;
 
 void zw_game_bullet_handle(ak_msg_t* msg) {
     switch (msg->sig) {
@@ -23,7 +22,6 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
             bullet[i].x += STEP_BULLET_AXIS_X;
             if (bullet[i].x >= MAX_AXIS_X_BULLET) {
                 // ra khoi man hinh -> xoa bang swap-remove
-                // (giu i++ o 'for' nen vien vua hoan vao slot i se duoc xet o tick sau)
                 bullet_count--;
                 bullet[i] = bullet[bullet_count];
                 bullet[bullet_count].visible = BLACK;
@@ -36,7 +34,7 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
     case ZW_GAME_BULLET_SHOOT: {
         APP_DBG_SIG("ZW_GAME_BULLET_SHOOT\n");
         if (bullet_count < MAX_NUM_BULLET) {
-            uint8_t i = bullet_count; // slot trong ke tiep
+            uint8_t i = bullet_count;
             bullet[i].visible = WHITE;
             bullet[i].x = gunner.x + 15;
             bullet[i].y = gunner.y - 8;

@@ -1,24 +1,5 @@
 #include "app_eeprom.h"
-
 #include "eeprom.h"
-
-/*
- * Bo cuc EEPROM cho du lieu ben vung cua Zomwar.
- *
- * Moi ban ghi duoc luu theo dang:
- *   [magic_number][payload struct][8-bit additive checksum]
- *
- * magic_number danh dau ban ghi da khoi tao, tranh doc nham bytes EEPROM da
- * xoa hoac cua ung dung khac thanh du lieu hop le. checksum la tong byte cua
- * magic_number + payload; chi de phat hien hong nhe, khong phai bao mat.
- *
- * Bo cuc hien tai dung dia chi co dinh:
- *   EEPROM_SCORE_START_ADDR   -> zw_game_score_eeprom_t
- *   EEPROM_SETTING_START_ADDR -> zw_game_setting_eeprom_t
- *
- * Module nay khong co wear-leveling. Ben goi nen tranh ghi lap lai khi gia tri
- * khong thay doi.
- */
 
 zw_game_setting_t settingdata;
 zw_game_score_t   gamescore;

@@ -1,5 +1,5 @@
-#ifndef __SCR_GAME_OVER_H__
-#define __SCR_GAME_OVER_H__
+#ifndef __SCR_GAME_RANK_H__
+#define __SCR_GAME_RANK_H__
 
 #include "fsm.h"
 #include "port.h"
@@ -22,10 +22,9 @@
 
 #include "screens.h"
 #include "screens_bitmap.h"
-#include "scr_game_rank.h"
 
-extern view_dynamic_t dyn_view_item_game_over;
-extern view_screen_t scr_game_over;
-extern void scr_game_over_handle(ak_msg_t* msg);
+extern view_dynamic_t dyn_view_item_game_rank;
+extern view_screen_t scr_game_rank;
+extern void scr_game_rank_handle(ak_msg_t* msg);
 
-#endif //__SCR_GAME_OVER_H__
+#endif //__SCR_GAME_RANK_H__

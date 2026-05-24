@@ -8,6 +8,7 @@
 
 static uint8_t shoot_tick_counter;   // Dem tick de vien dan duoc ban ra theo vong lap
 static uint8_t current_location = 0; // Tua de menu hien tai
+bool zw_game_sound_enable = true;
 
 static char items_name[NUMBER_ITEMS][30] = {
 	"<<   Play   >>",
@@ -109,7 +110,7 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 		switch (current_location) {
 			case 0: SCREEN_TRAN(scr_game_zomwar_handle, &scr_game_zomwar); break;
 			case 1: SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting); break;
-			// case 2: SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank); break;
+			case 2: SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank); break;
 			case 3: SCREEN_TRAN(scr_idle_handle, &scr_idle); break;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);

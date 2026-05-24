@@ -16,7 +16,6 @@ void zw_game_border_handle(ak_msg_t* msg) {
         border.x = AXIS_X_BORDER;
         border.visible = WHITE;
         border.action_image = 0;
-        /* reset tien trinh wave cho van choi moi */
         wave_last_score     = 0;
         wave_warning_timer  = 0;
         wave_warning_active = false;
@@ -30,9 +29,9 @@ void zw_game_border_handle(ak_msg_t* msg) {
             if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) { 
                 uint8_t lane = (uint8_t)((zombie[i].y - ZOMBIE_Y_MIN) / 10); 
                 if (lane >= NUM_LANES) lane = NUM_LANES - 1; 
-                if (!car[lane].visible) { 
-                    task_post_pure_msg(ZW_GAME_SCREEN_ID, ZW_GAME_RESET); 
-                } 
+                if (!car[lane].visible) {
+                    task_post_pure_msg(AC_TASK_DISPLAY_ID, ZW_GAME_RESET);
+                }
             } 
         } 
     }

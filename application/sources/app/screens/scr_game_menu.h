@@ -20,8 +20,6 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 #include "scr_game_zomwar.h"
-// #include "scr_game_setting.h"
-// #include "scr_game_rank.h"
 #include "scr_idle.h"
 
 #include "zw_game_gunner.h"
@@ -31,5 +29,7 @@
 extern view_dynamic_t dyn_view_item_game_menu;
 extern view_screen_t scr_game_menu;
 extern void scr_game_menu_handle(ak_msg_t* msg);
+
+extern bool zw_game_sound_enable;
 
 #endif //__SCR_GAME_MENU_H__

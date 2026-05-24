@@ -36,7 +36,7 @@ static uint8_t get_lane_count(uint8_t i) {
 static void view_scr_game_tombstone_setting() {
 	view_render.setTextSize(1);
 
-	uint8_t sel = (tb_count_location_chosse / TB_COUNT_STEP_CHOSSE) - 1;
+	uint8_t sel = tb_count_location_chosse;
 
 	for (uint8_t i = 0; i <= TB_COUNT_NUM_LANES; i++) {
 		uint8_t frame_y = TB_COUNT_FRAMES_AXIS_Y_1 + TB_COUNT_FRAMES_STEP * i;
@@ -81,20 +81,15 @@ void scr_game_tombstone_setting_handle(ak_msg_t* msg) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		tb_count_location_chosse = TB_COUNT_ITEM_ARRDESS_1;
+		tb_count_location_chosse = 0;
 	}
 		break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		switch (tb_count_location_chosse) {
-		case TB_COUNT_ITEM_ARRDESS_1:
-		case TB_COUNT_ITEM_ARRDESS_2:
-		case TB_COUNT_ITEM_ARRDESS_3:
-		case TB_COUNT_ITEM_ARRDESS_4:
-		case TB_COUNT_ITEM_ARRDESS_5: {
-			uint8_t idx = (tb_count_location_chosse / TB_COUNT_STEP_CHOSSE) - 1;
-			/* Cycle: 0 -> 1 -> 2 -> 0 */
+		if (tb_count_location_chosse < TB_COUNT_NUM_LANES) {
+			uint8_t idx = tb_count_location_chosse;
+			/* Cycle so bia mo: 0 -> 1 -> 2 -> 0 */
 			uint8_t cur = get_lane_count(idx);
 			cur = (cur + 1) % 3;
 			/* Clear ca 2 bit cua lane nay */
@@ -104,28 +99,21 @@ void scr_game_tombstone_setting_handle(ak_msg_t* msg) {
 			if (cur >= 1) settingdata.tombstone_lane_1 |= (1 << idx);
 			if (cur == 2) settingdata.tombstone_lane_2 |= (1 << idx);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-		}
-			break;
-
-		case TB_COUNT_ITEM_ARRDESS_6: {
-			/* Luu EEPROM va ve settings */
+		} else {
+			/* EXIT: luu EEPROM va ve settings */
 			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
-		}
-			break;
-
-		default:
-			break;
 		}
 	}
 		break;
 
 	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		tb_count_location_chosse -= TB_COUNT_STEP_CHOSSE;
-		if (tb_count_location_chosse == TB_COUNT_ITEM_ARRDESS_0) {
-			tb_count_location_chosse = TB_COUNT_ITEM_ARRDESS_6;
+		if (tb_count_location_chosse == 0) {
+			tb_count_location_chosse = TB_COUNT_ITEM_EXIT;
+		} else {
+			tb_count_location_chosse--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -133,9 +121,10 @@ void scr_game_tombstone_setting_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		tb_count_location_chosse += TB_COUNT_STEP_CHOSSE;
-		if (tb_count_location_chosse > TB_COUNT_ITEM_ARRDESS_6) {
-			tb_count_location_chosse = TB_COUNT_ITEM_ARRDESS_1;
+		if (tb_count_location_chosse == TB_COUNT_ITEM_EXIT) {
+			tb_count_location_chosse = 0;
+		} else {
+			tb_count_location_chosse++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

@@ -24,15 +24,8 @@
 #include "screens_bitmap.h"
 
 #define CAR_POS_NUM_CARS				(5)
-#define CAR_POS_STEP_CHOSSE				(10)
-// items (5 cars + EXIT)
-#define CAR_POS_ITEM_ARRDESS_0			(0)
-#define CAR_POS_ITEM_ARRDESS_1			(CAR_POS_STEP_CHOSSE)
-#define CAR_POS_ITEM_ARRDESS_2			(CAR_POS_STEP_CHOSSE*2)
-#define CAR_POS_ITEM_ARRDESS_3			(CAR_POS_STEP_CHOSSE*3)
-#define CAR_POS_ITEM_ARRDESS_4			(CAR_POS_STEP_CHOSSE*4)
-#define CAR_POS_ITEM_ARRDESS_5			(CAR_POS_STEP_CHOSSE*5)
-#define CAR_POS_ITEM_ARRDESS_6			(CAR_POS_STEP_CHOSSE*6)
+// items: chi so 0..4 = car, 5 = EXIT
+#define CAR_POS_ITEM_EXIT				(CAR_POS_NUM_CARS)
 // Frames
 #define CAR_POS_FRAMES_AXIS_X			(0)
 #define CAR_POS_FRAMES_AXIS_Y_1			(2)

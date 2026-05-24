@@ -14,6 +14,7 @@
 
 #include "buzzer.h"
 #include "scr_game_zomwar.h"
+#include "scr_game_menu.h"
 
 #include "zw_game_gunner.h"
 
@@ -31,6 +32,5 @@ typedef struct {
 
 extern zw_game_bullet_t bullet[MAX_NUM_BULLET];
 extern uint8_t bullet_count; // so dan active, nam o slot [0..bullet_count)
-extern bool zw_game_sound_enable;
 
 #endif //__ZW_GAME_BULLET_H__

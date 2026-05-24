@@ -197,6 +197,7 @@ void view_scr_game_zomwar() {
 	}
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();
+		view_render.drawBitmap(0, 0, bitmap_tomb_rip, 128, 64, WHITE);
 	}
 }
 
@@ -215,6 +216,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		zw_game_state = GAME_PLAY;
 		gunner_dir = GUNNER_DIR_NONE; // vao van moi: chua giu nut
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_EXIT_GAME);
 
         timer_set(AC_TASK_DISPLAY_ID, 
 			ZW_GAME_TIME_TICK, 
@@ -252,9 +254,12 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_BORDER_ID, 		ZW_GAME_BORDER_RESET);
 		gamescore.score_now = zw_game_score;
 		zw_game_state = GAME_OVER;
-		SCREEN_TRAN(scr_game_over_handle, &scr_game_over); 	
+		timer_set(AC_TASK_DISPLAY_ID,
+				  ZW_GAME_EXIT_GAME,
+				  ZW_GAME_TIME_EXIT_INTERVAL,
+				  TIMER_ONE_SHOT);
 	}
-        break;        
+        break;    
 
 	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_UP_PRESSED\n");
@@ -293,8 +298,9 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 	case ZW_GAME_EXIT_GAME: {
 		APP_DBG_SIG("ZW_GAME_EXIT_GAME\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_TIME_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_EXIT_GAME);
 		zw_game_state = GAME_OFF;
-		SCREEN_TRAN(scr_idle_handle, &scr_idle);
+		SCREEN_TRAN(scr_game_over_handle, &scr_game_over);
 	}
 		break;
 

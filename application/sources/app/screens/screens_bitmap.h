@@ -21,6 +21,7 @@ extern const unsigned char PROGMEM bitmap_bang_I [];
 extern const unsigned char PROGMEM bitmap_bang_II [];
 extern const unsigned char PROGMEM bitmap_bang_III [];
 extern const unsigned char PROGMEM bitmap_warning [];
+extern const unsigned char PROGMEM bitmap_tomb_rip [];
 
 // scr_game_setting
 extern const unsigned char PROGMEM bitmap_speaker_1 [];
@@ -30,5 +31,9 @@ extern const unsigned char PROGMEM bitmap_speaker_2 [];
 extern const unsigned char PROGMEM bitmap_spiderweb_L [];
 extern const unsigned char PROGMEM bitmap_spiderweb_R [];
 extern const unsigned char PROGMEM bitmap_skull [];
+
+// scr_game_rank
+extern const unsigned char PROGMEM bitmap_spider [];
+extern const unsigned char PROGMEM bitmap_tombstone_rank [];
 
 #endif //__SCREENS_BITMAP_H__

@@ -31,7 +31,7 @@ void zw_game_bang_handle(ak_msg_t* msg) {
             if(bang[i].visible == WHITE) {
                 bang[i].action_image++;
             }
-            if(bang[i].action_image > 3) { // da chay het 3 frame (I, II, III) -> tat
+            if(bang[i].action_image > 3) { 
                 bang[i].action_image = 1;
                 bang[i].visible = BLACK;
             }

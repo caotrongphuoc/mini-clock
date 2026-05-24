@@ -89,9 +89,6 @@ void scr_game_over_handle(ak_msg_t* msg) {
 
 		view_render.initialize();
 		view_render_display_on();
-
-		// gamescore.score_now da duoc man game gan = zw_game_score truoc khi chuyen sang day
-
 		rank_ranking();
 	}
 		break;
@@ -114,6 +111,16 @@ void scr_game_over_handle(ak_msg_t* msg) {
 	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		break;
+
+	case AC_DISPLAY_BUTTON_UP_PRESSED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
+
+		zw_game_score_write(&gamescore);
+		SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank);
+	}
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+		break;
+
 
 	default:
 		break;

@@ -99,7 +99,6 @@ void zw_game_car_handle(ak_msg_t* msg) {
                     bang[bk].action_image = 1;
                     zw_game_score += 10;
                     BUZZER_PlaySound(BUZZER_SOUND_BANG);
-                    // can chet zombie j bang swap-remove
                     zombie_count--;
                     zombie[j] = zombie[zombie_count];
                     zombie[zombie_count].visible = BLACK;

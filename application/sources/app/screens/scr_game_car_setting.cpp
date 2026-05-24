@@ -28,7 +28,7 @@ view_screen_t scr_game_car_setting = {
 static void view_scr_game_car_setting() {
 	view_render.setTextSize(1);
 
-	uint8_t sel = (car_pos_location_chosse / CAR_POS_STEP_CHOSSE) - 1;
+	uint8_t sel = car_pos_location_chosse;
 
 	for (uint8_t i = 0; i <= CAR_POS_NUM_CARS; i++) {
 		uint8_t frame_y  = CAR_POS_FRAMES_AXIS_Y_1 + CAR_POS_FRAMES_STEP * i;
@@ -74,43 +74,31 @@ void scr_game_car_setting_handle(ak_msg_t* msg) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		car_pos_location_chosse = CAR_POS_ITEM_ARRDESS_1;
+		car_pos_location_chosse = 0;
 	}
 		break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		switch (car_pos_location_chosse) {
-		case CAR_POS_ITEM_ARRDESS_1:
-		case CAR_POS_ITEM_ARRDESS_2:
-		case CAR_POS_ITEM_ARRDESS_3:
-		case CAR_POS_ITEM_ARRDESS_4:
-		case CAR_POS_ITEM_ARRDESS_5: {
-			uint8_t idx = (car_pos_location_chosse / CAR_POS_STEP_CHOSSE) - 1;
-			settingdata.num_car ^= (1 << idx);
+		if (car_pos_location_chosse < CAR_POS_NUM_CARS) {
+			/* Toggle bat/tat xe o lane dang chon */
+			settingdata.num_car ^= (1 << car_pos_location_chosse);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-		}
-			break;
-
-		case CAR_POS_ITEM_ARRDESS_6: {
-			/* Luu xuong EEPROM va quay lai man settings */
+		} else {
+			/* EXIT: luu xuong EEPROM va quay lai man settings */
 			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
-		}
-			break;
-
-		default:
-			break;
 		}
 	}
 		break;
 
 	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		car_pos_location_chosse -= CAR_POS_STEP_CHOSSE;
-		if (car_pos_location_chosse == CAR_POS_ITEM_ARRDESS_0) {
-			car_pos_location_chosse = CAR_POS_ITEM_ARRDESS_6;
+		if (car_pos_location_chosse == 0) {
+			car_pos_location_chosse = CAR_POS_ITEM_EXIT;
+		} else {
+			car_pos_location_chosse--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -118,9 +106,10 @@ void scr_game_car_setting_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		car_pos_location_chosse += CAR_POS_STEP_CHOSSE;
-		if (car_pos_location_chosse > CAR_POS_ITEM_ARRDESS_6) {
-			car_pos_location_chosse = CAR_POS_ITEM_ARRDESS_1;
+		if (car_pos_location_chosse == CAR_POS_ITEM_EXIT) {
+			car_pos_location_chosse = 0;
+		} else {
+			car_pos_location_chosse++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
