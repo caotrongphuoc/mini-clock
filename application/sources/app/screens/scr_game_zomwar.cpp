@@ -168,6 +168,7 @@ void view_scr_game_zomwar() {
 		view_render.drawBitmap(85, 8, bitmap_branch_right, 50, 17, WHITE);
 		view_render.drawBitmap(0, 0, bitmap_grass, 64, 64, WHITE);
 		view_render.drawBitmap(64, 0, bitmap_grass, 64, 64, WHITE);
+		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
 	}
 }
 

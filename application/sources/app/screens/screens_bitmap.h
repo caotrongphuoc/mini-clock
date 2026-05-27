@@ -31,12 +31,12 @@ extern const unsigned char PROGMEM bitmap_speaker_1 [];
 extern const unsigned char PROGMEM bitmap_speaker_2 [];
 
 // scr_game_over
-extern const unsigned char PROGMEM bitmap_spiderweb_L [];
-extern const unsigned char PROGMEM bitmap_spiderweb_R [];
 extern const unsigned char PROGMEM bitmap_skull [];
 
 // scr_game_rank
 extern const unsigned char PROGMEM bitmap_spider [];
 extern const unsigned char PROGMEM bitmap_tombstone_rank [];
+extern const unsigned char PROGMEM bitmap_spiderweb_L [];
+extern const unsigned char PROGMEM bitmap_spiderweb_R [];
 
 #endif //__SCREENS_BITMAP_H__
