@@ -29,9 +29,10 @@ void zw_game_border_handle(ak_msg_t* msg) {
                 if (lane >= NUM_LANES) lane = NUM_LANES - 1; 
                 if (!car[lane].visible) {
                     task_post_pure_msg(AC_TASK_DISPLAY_ID, ZW_GAME_RESET);
+                    break; 
                 }
-            } 
-        } 
+            }
+        }
     }
         break;
 

@@ -214,6 +214,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 
     case ZW_GAME_RESET: {
         APP_DBG_SIG("ZW_GAME_RESET\n");
+        if (zw_game_state != GAME_PLAY) break;
         timer_remove_attr(AC_TASK_DISPLAY_ID, 		ZW_GAME_TIME_TICK);
         task_post_pure_msg(ZW_GAME_GUNNER_ID, 		ZW_GAME_GUNNER_RESET);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, 		ZW_GAME_BULLET_RESET);
