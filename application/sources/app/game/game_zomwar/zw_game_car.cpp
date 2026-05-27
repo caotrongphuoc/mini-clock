@@ -85,8 +85,8 @@ void zw_game_car_handle(ak_msg_t* msg) {
                     for (uint8_t bk = 0; bk < NUM_BANG; bk++) {
                         if (bang[bk].visible == WHITE) continue; // slot dang dung
                         bang[bk].visible      = WHITE;
-                        bang[bk].x            = car[i].x;
-                        bang[bk].y            = car[i].y;
+                        bang[bk].x            = (zombie[j].x + 5 > 0) ? (uint32_t)(zombie[j].x + 5) : 0;
+                        bang[bk].y            = (zombie[j].y >= 2) ? zombie[j].y - 2 : 0;
                         bang[bk].action_image = 1;
                         break;
                     }
