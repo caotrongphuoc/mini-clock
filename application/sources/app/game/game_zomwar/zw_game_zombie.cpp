@@ -3,10 +3,6 @@
 
 zw_game_zombie_t zombie[NUM_ZOMBIES];
 static bool game_active = false;
-const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y] = {
-    {9, 8, 8, 9, 6, 9, 9, 9, 9, 8},
-    {9, 8, 8, 9, 7, 9, 9, 9, 9, 9},
-};
 
 uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT;
 
@@ -29,7 +25,7 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
             zombie[i].rising       = false;
             zombie[i].rise_ticks   = 0;
         }
-    }
+    } 
         break;
 
     case ZW_GAME_ZOMBIE_RUN: {

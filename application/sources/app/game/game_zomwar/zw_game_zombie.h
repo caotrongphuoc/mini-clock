@@ -42,7 +42,6 @@ typedef struct {
     uint8_t  rise_ticks;
 } zw_game_zombie_t;
 
-extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
 extern uint8_t          zw_game_zombie_speed;
 

@@ -79,15 +79,8 @@ void zw_game_car_handle(ak_msg_t* msg) {
                 int32_t dy = (int32_t)zombie[j].y - (int32_t)car[i].y;
                 if (dy < 0) dy = -dy;
                 if (dy > CAR_HIT_RANGE_Y) continue;
-                uint8_t fidx_c = (zombie[j].action_image == 2) ? 1 : 0;
-                bool overlap_x = false;
-                for (uint8_t r = 0; r < SIZE_BITMAP_ZOMBIES_Y && !overlap_x; r++) {
-                    int32_t lx = zombie[j].x + (int32_t)ZOMBIE_LEFT_PX[fidx_c][r];
-                    if (lx >= (int32_t)(car[i].x + 4) && lx < (int32_t)(car[i].x + SIZE_BITMAP_CAR_X)) {
-                        overlap_x = true;
-                    }
-                }
-                if (overlap_x) {
+                // va cham X: mep trai than zombie cham toi dau xe
+                if (zombie[j].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[i].x + SIZE_BITMAP_CAR_X)) {
                     // tao hieu ung no tai slot bang trong dau tien
                     for (uint8_t bk = 0; bk < NUM_BANG; bk++) {
                         if (bang[bk].visible == WHITE) continue; // slot dang dung
