@@ -235,7 +235,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_UP_PRESSED\n");
 		gunner_dir = GUNNER_DIR_UP;
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UP); // di 1 buoc ngay cho nhay
 	}
 		break;
 
@@ -248,7 +247,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
 		APP_DBG_SIG("ZW_GAME BTN_DOWN_PRESSED\n");
 		gunner_dir = GUNNER_DIR_DOWN;
-		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_DOWN); // di 1 buoc ngay cho nhay
 	}
 		break;
 
