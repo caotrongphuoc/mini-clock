@@ -22,10 +22,10 @@
 /*---------------------------------------------------------------------------*/
 /*  Constants                                                                */
 /*---------------------------------------------------------------------------*/
-#define NUM_ZOMBIES              (15)   // So luong zombie 
-#define NUM_ZOMBIES_INIT         (3)    // So luong zombie xuat hien tu ben phai man hinh
-#define ZOMBIE_SPEED_MAX         (6)    // Toc do toi da cua zombie
-#define MENU_ZOMBIE_SPEED        (2)    // Toc do zombie trang tri o man menu
+#define NUM_ZOMBIES              (20)   // So luong zombie 
+#define NUM_ZOMBIES_INIT         (5)    // So luong zombie xuat hien tu ben phai man hinh
+#define ZOMBIE_SPEED_MAX         (5)    // Toc do toi da cua zombie
+#define MENU_ZOMBIE_SPEED        (1)    // Toc do zombie trang tri o man menu
 
 #define SIZE_BITMAP_ZOMBIES_X    (25)   // Kich thuoc theo chieu ngang cua zombie
 #define SIZE_BITMAP_ZOMBIES_Y    (10)   // Kich thuoc theo chieu cao cua zombie

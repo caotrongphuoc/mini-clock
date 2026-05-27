@@ -22,6 +22,9 @@ extern const unsigned char PROGMEM bitmap_bang_II [];
 extern const unsigned char PROGMEM bitmap_bang_III [];
 extern const unsigned char PROGMEM bitmap_warning [];
 extern const unsigned char PROGMEM bitmap_tomb_rip [];
+extern const unsigned char PROGMEM bitmap_branch_left [];
+extern const unsigned char PROGMEM bitmap_branch_right [];
+extern const unsigned char PROGMEM bitmap_grass [];
 
 // scr_game_setting
 extern const unsigned char PROGMEM bitmap_speaker_1 [];

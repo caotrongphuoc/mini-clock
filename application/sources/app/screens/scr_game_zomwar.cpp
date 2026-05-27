@@ -39,89 +39,56 @@ view_screen_t scr_game_zomwar = {
 };
 
 void zw_game_gunner_display() {
-	if (gunner.visible == WHITE) {
-		const unsigned char* frame = (gunner.action_image == 2) ? bitmap_gunner_II : bitmap_gunner_I;
-		view_render.drawBitmap( gunner.x, 
-								gunner.y - 10, 
-								frame, 
-								SIZE_BITMAP_GUNNER_X, 
-								SIZE_BITMAP_GUNNER_Y, 
-								WHITE);
-	}
+	if (gunner.visible != WHITE) return;
+	const unsigned char* frame = bitmap_gunner_I;
+	if (gunner.action_image == 2) frame = bitmap_gunner_II;
+	view_render.drawBitmap(	gunner.x,
+							gunner.y - 10,
+							frame,
+							SIZE_BITMAP_GUNNER_X,
+							SIZE_BITMAP_GUNNER_Y,
+							WHITE);
 }
 
 void zw_game_bullet_display() {
 	for (uint8_t i = 0; i < bullet_count; i++) { // chi ve dan active [0..bullet_count)
-		if (bullet[i].visible == WHITE) {
-			view_render.drawBitmap(	bullet[i].x, 
-									bullet[i].y, 
-									bitmap_bullet, 
-									SIZE_BITMAP_BULLET_X, 
-									SIZE_BITMAP_BULLET_Y, 
-									WHITE);
-		}
+		if (bullet[i].visible != WHITE) continue;
+		view_render.drawBitmap(	bullet[i].x,
+								bullet[i].y,
+								bitmap_bullet,
+								SIZE_BITMAP_BULLET_X,
+								SIZE_BITMAP_BULLET_Y,
+								WHITE);
 	}
 }
 
 void zw_game_zombie_display() {
 	for (uint8_t i = 0; i < zombie_count; i++) { // chi ve zombie active [0..zombie_count)
-		if (zombie[i].visible == WHITE) {
-			if (zombie[i].action_image == 1) {
-				view_render.drawBitmap(	zombie[i].x, \
-										zombie[i].y, \
-										bitmap_zombie_I, \
-										SIZE_BITMAP_ZOMBIES_X, \
-										SIZE_BITMAP_ZOMBIES_Y, \
-										WHITE);
-			}
-			else if (zombie[i].action_image == 2) {
-				view_render.drawBitmap(	zombie[i].x, \
-										zombie[i].y, \
-										bitmap_zombie_II, \
-										SIZE_BITMAP_ZOMBIES_X, \
-										SIZE_BITMAP_ZOMBIES_Y, \
-										WHITE);
-			}
-			else if (zombie[i].action_image == 3) {
-				view_render.drawBitmap(	zombie[i].x, \
-										zombie[i].y, \
-										bitmap_zombie_III, \
-										SIZE_BITMAP_ZOMBIES_X, \
-										SIZE_BITMAP_ZOMBIES_Y, \
-										WHITE);
-			}
-		}
+		if (zombie[i].visible != WHITE) continue;
+		const unsigned char* frame = bitmap_zombie_I;
+		if      (zombie[i].action_image == 2) frame = bitmap_zombie_II;
+		else if (zombie[i].action_image == 3) frame = bitmap_zombie_III;
+		view_render.drawBitmap(	zombie[i].x,
+								zombie[i].y,
+								frame,
+								SIZE_BITMAP_ZOMBIES_X,
+								SIZE_BITMAP_ZOMBIES_Y,
+								WHITE);
 	}
 }
 
 void zw_game_car_display() {
 	for (uint8_t i = 0; i < NUM_LANES; i++) {
-		if (car[i].visible) {
-			if (car[i].action_image == 1) {
-				view_render.drawBitmap( car[i].x, \
-										car[i].y, \
-										bitmap_car_I, \
-										SIZE_BITMAP_CAR_X, \
-										SIZE_BITMAP_CAR_Y, \
-										WHITE);
-			}
-			else if (car[i].action_image == 2) {
-				view_render.drawBitmap( car[i].x, \
-										car[i].y, \
-										bitmap_car_II, \
-										SIZE_BITMAP_CAR_X, \
-										SIZE_BITMAP_CAR_Y, \
-										WHITE);
-			}
-			else if (car[i].action_image == 3) {
-				view_render.drawBitmap( car[i].x, \
-										car[i].y, \
-										bitmap_car_III, \
-										SIZE_BITMAP_CAR_X, \
-										SIZE_BITMAP_CAR_Y, \
-										WHITE);
-			}
-		}
+		if (car[i].visible != WHITE) continue;
+		const unsigned char* frame = bitmap_car_I;
+		if      (car[i].action_image == 2) frame = bitmap_car_II;
+		else if (car[i].action_image == 3) frame = bitmap_car_III;
+		view_render.drawBitmap(	car[i].x,
+								car[i].y,
+								frame,
+								SIZE_BITMAP_CAR_X,
+								SIZE_BITMAP_CAR_Y,
+								WHITE);
 	}
 }
 
@@ -142,17 +109,16 @@ void zw_game_tombstone_display() {
 
 void zw_game_bang_display() {
 	for (uint8_t i = 0; i < NUM_BANG; i++) {
-		if (bang[i].visible == WHITE) {
-			const unsigned char* frame = bitmap_bang_I;
-			if (bang[i].action_image == 2)      frame = bitmap_bang_II;
-			else if (bang[i].action_image == 3) frame = bitmap_bang_III;
-			view_render.drawBitmap( bang[i].x,
-									bang[i].y, 
-									frame, 
-									SIZE_BITMAP_BANG_I_X, 
-									SIZE_BITMAP_BANG_I_Y, 
-									WHITE);
-		}
+		if (bang[i].visible != WHITE) continue;
+		const unsigned char* frame = bitmap_bang_I;
+		if      (bang[i].action_image == 2) frame = bitmap_bang_II;
+		else if (bang[i].action_image == 3) frame = bitmap_bang_III;
+		view_render.drawBitmap(	bang[i].x,
+								bang[i].y,
+								frame,
+								SIZE_BITMAP_BANG_I_X,
+								SIZE_BITMAP_BANG_I_Y,
+								WHITE);
 	}
 }
 
@@ -198,6 +164,10 @@ void view_scr_game_zomwar() {
     else if (zw_game_state == GAME_OVER) {
 		view_render.clear();
 		view_render.drawBitmap(0, 0, bitmap_tomb_rip, 128, 64, WHITE);
+		view_render.drawBitmap(-2, 4, bitmap_branch_left, 50, 17, WHITE);
+		view_render.drawBitmap(85, 8, bitmap_branch_right, 50, 17, WHITE);
+		view_render.drawBitmap(0, 0, bitmap_grass, 64, 64, WHITE);
+		view_render.drawBitmap(64, 0, bitmap_grass, 64, 64, WHITE);
 	}
 }
 
