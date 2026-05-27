@@ -51,7 +51,7 @@ void zw_game_gunner_display() {
 }
 
 void zw_game_bullet_display() {
-	for (uint8_t i = 0; i < bullet_count; i++) { // chi ve dan active [0..bullet_count)
+	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++) { // ve dan dang visible
 		if (bullet[i].visible != WHITE) continue;
 		view_render.drawBitmap(	bullet[i].x,
 								bullet[i].y,
@@ -63,7 +63,7 @@ void zw_game_bullet_display() {
 }
 
 void zw_game_zombie_display() {
-	for (uint8_t i = 0; i < zombie_count; i++) { // chi ve zombie active [0..zombie_count)
+	for (uint8_t i = 0; i < NUM_ZOMBIES; i++) { // ve zombie dang visible
 		if (zombie[i].visible != WHITE) continue;
 		const unsigned char* frame = bitmap_zombie_I;
 		if      (zombie[i].action_image == 2) frame = bitmap_zombie_II;

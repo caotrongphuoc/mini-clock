@@ -23,8 +23,9 @@ void zw_game_border_handle(ak_msg_t* msg) {
 
     case ZW_GAME_CHECK_GAME_OVER: {
         APP_DBG_SIG("ZW_GAME_CHECK_GAME_OVER\n");
-        for (uint8_t i = 0; i < zombie_count; i++) {
-            if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) { 
+        for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
+            if (zombie[i].visible != WHITE) continue;
+            if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) {
                 uint8_t lane = (uint8_t)((zombie[i].y - ZOMBIE_Y_MIN) / 10); 
                 if (lane >= NUM_LANES) lane = NUM_LANES - 1; 
                 if (!car[lane].visible) {
@@ -53,8 +54,8 @@ void zw_game_border_handle(ak_msg_t* msg) {
                     zw_game_zombie_speed++;
                 }
                 uint8_t spawned = 0;
-                while (spawned < WAVE_SPAWN_COUNT && zombie_count < NUM_ZOMBIES) {
-                    uint8_t i = zombie_count; // slot trong ke tiep
+                for (uint8_t i = 0; i < NUM_ZOMBIES && spawned < WAVE_SPAWN_COUNT; i++) {
+                    if (zombie[i].visible == WHITE) continue; // slot dang dung
                     zombie[i].x            = (rand() % 39) + 130;
                     zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
                     zombie[i].visible      = WHITE;
@@ -63,7 +64,6 @@ void zw_game_border_handle(ak_msg_t* msg) {
                     zombie[i].zigzag_timer = rand() % 10 + 5;
                     zombie[i].rising       = false;
                     zombie[i].rise_ticks   = 0;
-                    zombie_count++;
                     spawned++;
                 }
             }

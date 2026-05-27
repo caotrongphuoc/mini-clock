@@ -20,8 +20,8 @@
 #include "zw_game_gunner.h"
 
 #define NUM_ZOMBIES              (20)  
-#define NUM_ZOMBIES_INIT         (5)    
-#define ZOMBIE_SPEED_MAX         (5)   
+#define NUM_ZOMBIES_INIT         (6)    
+#define ZOMBIE_SPEED_MAX         (6)   
 #define MENU_ZOMBIE_SPEED        (1)    
 
 #define SIZE_BITMAP_ZOMBIES_X    (25)  
@@ -44,7 +44,6 @@ typedef struct {
 
 extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
-extern uint8_t          zw_game_zombie_speed; 
-extern uint8_t          zombie_count;         
+extern uint8_t          zw_game_zombie_speed;
 
 #endif //__ZW_GAME_ZOMBIE_H__

@@ -195,24 +195,24 @@ void scr_game_rank_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
-	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	case AC_DISPLAY_BUTTON_UP_RELEASED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
-	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	case AC_DISPLAY_BUTTON_DOWN_RELEASED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_RELEASED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
-	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	default:

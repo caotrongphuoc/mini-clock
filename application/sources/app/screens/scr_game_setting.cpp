@@ -165,8 +165,8 @@ void scr_game_setting_handle(ak_msg_t* msg) {
 		} else {
 			setting_location_chosse--;
 		}
-	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
@@ -176,8 +176,8 @@ void scr_game_setting_handle(ak_msg_t* msg) {
 		} else {
 			setting_location_chosse++;
 		}
-	}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	default:

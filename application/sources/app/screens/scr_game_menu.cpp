@@ -64,7 +64,7 @@ void view_scr_game_menu() {
 
 void scr_game_menu_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
-	case SCREEN_ENTRY: 
+	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		zw_game_sound_enable = false;
 		current_location = 0;
@@ -76,9 +76,10 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 			ZW_GAME_TIME_TICK, 
 			ZW_GAME_TIME_TICK_INTERVAL, 
 			TIMER_PERIODIC);
+	}
 		break;
 
-    case ZW_GAME_TIME_TICK: 
+    case ZW_GAME_TIME_TICK: { 
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UPDATE);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_RUN);
@@ -89,27 +90,29 @@ void scr_game_menu_handle(ak_msg_t* msg) {
             shoot_tick_counter = 0;
             task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SHOOT);
         }
+	}
 		break;
 
-	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
 		current_location++;
 		if(current_location >= NUMBER_ITEMS) {
 			current_location = 0;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
-	case AC_DISPLAY_BUTTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED: {
 		if(current_location == 0) {
 			current_location = NUMBER_ITEMS - 1;
 		} else {
 			current_location--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
-
-	case AC_DISPLAY_BUTTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		zw_game_sound_enable = true;
 		switch (current_location) {
 			case 0: SCREEN_TRAN(scr_game_zomwar_handle, &scr_game_zomwar); break;
@@ -118,6 +121,7 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 			case 3: SCREEN_TRAN(scr_idle_handle, &scr_idle); break;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
 		break;
 
 	default:
