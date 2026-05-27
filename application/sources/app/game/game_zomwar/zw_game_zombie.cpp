@@ -2,22 +2,22 @@
 #include "app_eeprom.h"
 
 zw_game_zombie_t zombie[NUM_ZOMBIES];
-static bool game_active = false; // Check trang thai hien tai cua game
+static bool game_active = false; 
 const uint8_t ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y] = {
     {9, 8, 8, 9, 6, 9, 9, 9, 9, 8},
     {9, 8, 8, 9, 7, 9, 9, 9, 9, 9},
 };
 
-uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT; // toc do runtime cua van choi, gan = settingdata luc vao game
-uint8_t zombie_count = 0; // so zombie dang active; chung luon nam o slot [0..zombie_count)
+uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT; 
+uint8_t zombie_count = 0; 
 
 void zw_game_zombie_handle(ak_msg_t* msg) {
     switch (msg->sig) {
     case ZW_GAME_ZOMBIE_SETUP: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
         game_active = true;
-        zw_game_zombie_speed = settingdata.zombie_speed; // bat dau van: lay toc do nguoi choi da chon
-        zombie_count = NUM_ZOMBIES_INIT; // bat dau van voi NUM_ZOMBIES_INIT con
+        zw_game_zombie_speed = settingdata.zombie_speed;
+        zombie_count = NUM_ZOMBIES_INIT; 
         for (uint8_t i = 0; i < zombie_count; i++) {
             zombie[i].x            = (rand() % 39) + 130;
             zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
@@ -137,9 +137,9 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
     case ZW_GAME_ZOMBIE_RESET: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");
         game_active = false;
-        zombie_count = 0; // khong con zombie active
+        zombie_count = 0; 
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
-            zombie[i].visible = BLACK; // dat BLACK het cho sach
+            zombie[i].visible = BLACK;
         }
     }
         break;
@@ -158,7 +158,7 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_RUN_MENU: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN_MENU\n");
-        zombie_count = 1; // menu luon co dung 1 zombie
+        zombie_count = 1;
 
         // di chuyen sang trai + doi frame chay
         zombie[0].x -= MENU_ZOMBIE_SPEED;

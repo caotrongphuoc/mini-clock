@@ -1,7 +1,7 @@
 #include "zw_game_bullet.h"
 
 zw_game_bullet_t bullet[MAX_NUM_BULLET];
-uint8_t bullet_count = 0; // so dan dang bay; nam o slot [0..bullet_count)
+uint8_t bullet_count = 0; 
 
 void zw_game_bullet_handle(ak_msg_t* msg) {
     switch (msg->sig) {
@@ -21,7 +21,6 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
         for (uint8_t i = 0; i < bullet_count; i++) {
             bullet[i].x += STEP_BULLET_AXIS_X;
             if (bullet[i].x >= MAX_AXIS_X_BULLET) {
-                // ra khoi man hinh -> xoa bang swap-remove
                 bullet_count--;
                 bullet[i] = bullet[bullet_count];
                 bullet[bullet_count].visible = BLACK;

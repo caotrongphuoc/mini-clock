@@ -22,11 +22,11 @@
 #define AXIS_X_BORDER           (0)
 #define AXIS_Y_BORDER_ON        (2)
 #define AXIS_Y_BORDER_UNDER     (52)
-#define WAVE_SCORE_INTERVAL      (200)  // cu them 200 diem la 1 wave moi
-#define WAVE_SPAWN_COUNT         (5)    // so zombie sinh moi wave
-#define WARNING_BLINK_DURATION   (30)   // so tick hien warning (30 x 100ms = 3 giay)
-#define WARNING_BLINK_RATE       (3)    // doi hien/an moi 3 tick
-#define SIZE_BITMAP_WARNING_X    (16)   // kich thuoc icon warning
+#define WAVE_SCORE_INTERVAL      (200)  
+#define WAVE_SPAWN_COUNT         (5)    
+#define WARNING_BLINK_DURATION   (30)  
+#define WARNING_BLINK_RATE       (3)    
+#define SIZE_BITMAP_WARNING_X    (16)  
 #define SIZE_BITMAP_WARNING_Y    (14)
 
 typedef struct {

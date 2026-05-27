@@ -2,6 +2,7 @@
 
 zw_game_bang_t bang[NUM_BANG];
 static uint8_t bang_next = 0;
+
 uint8_t bang_alloc_slot(void) {
     // Uu tien slot dang trong (vu no da tat) de khong de len vu no dang chay
     for (uint8_t i = 0; i < NUM_BANG; i++) {

@@ -2,8 +2,6 @@
 
 zw_game_border_t border;
 uint32_t zw_game_score = 0;
-
-/* Trang thai wave / warning */
 uint32_t wave_last_score     = 0;
 uint8_t  wave_warning_timer  = 0;
 bool     wave_warning_active = false;
@@ -39,12 +37,10 @@ void zw_game_border_handle(ak_msg_t* msg) {
 
     case ZW_GAME_LEVEL_UP: {
         APP_DBG_SIG("ZW_GAME_LEVEL_UP\n");
-        /* Bat warning khi diem vuot nguong wave ke tiep */
         if (!wave_warning_active && zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL) {
             wave_warning_active = true;
             wave_warning_timer  = WARNING_BLINK_DURATION;
         }
-        /* Dang warning: dem nguoc; het gio thi sang wave moi */
         if (wave_warning_active) {
             if (wave_warning_timer > 0) {
                 wave_warning_timer--;
@@ -52,11 +48,9 @@ void zw_game_border_handle(ak_msg_t* msg) {
                 wave_warning_active = false;
                 wave_last_score    += WAVE_SCORE_INTERVAL;
                 wave_level++;
-                /* Level up: zombie nhanh hon (tang bien runtime, khong dung settingdata) */
                 if (zw_game_zombie_speed < ZOMBIE_SPEED_MAX) {
                     zw_game_zombie_speed++;
                 }
-                /* Sinh 1 dot WAVE_SPAWN_COUNT zombie tu mep phai */
                 uint8_t spawned = 0;
                 while (spawned < WAVE_SPAWN_COUNT && zombie_count < NUM_ZOMBIES) {
                     uint8_t i = zombie_count; // slot trong ke tiep

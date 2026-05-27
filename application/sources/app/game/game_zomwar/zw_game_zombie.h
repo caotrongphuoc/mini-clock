@@ -19,20 +19,17 @@
 #include "zw_game_bullet.h"
 #include "zw_game_gunner.h"
 
-/*---------------------------------------------------------------------------*/
-/*  Constants                                                                */
-/*---------------------------------------------------------------------------*/
-#define NUM_ZOMBIES              (20)   // So luong zombie 
-#define NUM_ZOMBIES_INIT         (5)    // So luong zombie xuat hien tu ben phai man hinh
-#define ZOMBIE_SPEED_MAX         (5)    // Toc do toi da cua zombie
-#define MENU_ZOMBIE_SPEED        (1)    // Toc do zombie trang tri o man menu
+#define NUM_ZOMBIES              (20)  
+#define NUM_ZOMBIES_INIT         (5)    
+#define ZOMBIE_SPEED_MAX         (5)   
+#define MENU_ZOMBIE_SPEED        (1)    
 
-#define SIZE_BITMAP_ZOMBIES_X    (25)   // Kich thuoc theo chieu ngang cua zombie
-#define SIZE_BITMAP_ZOMBIES_Y    (10)   // Kich thuoc theo chieu cao cua zombie
-#define ZOMBIE_MIN_LEFT_OFFSET   (6)    // Khoang cach toi thieu zombie co the di chuyen toi tinh tu ben trai
+#define SIZE_BITMAP_ZOMBIES_X    (25)  
+#define SIZE_BITMAP_ZOMBIES_Y    (10)  
+#define ZOMBIE_MIN_LEFT_OFFSET   (6)    
 
-#define ZOMBIE_Y_MIN             (2)    // zombie không lên cao hơn y=2 (giới hạn trên màn hình)
-#define ZOMBIE_Y_MAX             (42)   // zombie không xuống thấp hơn y=42 (giới hạn dưới màn hình, màn hình OLED thường 64px
+#define ZOMBIE_Y_MIN             (2)    
+#define ZOMBIE_Y_MAX             (42)   
 
 typedef struct {
     int32_t  x;
@@ -47,7 +44,7 @@ typedef struct {
 
 extern const uint8_t    ZOMBIE_LEFT_PX[2][SIZE_BITMAP_ZOMBIES_Y];
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
-extern uint8_t          zw_game_zombie_speed; // toc do runtime trong van choi (LEVEL_UP tang dan)
-extern uint8_t          zombie_count;          // so zombie active, nam o slot [0..zombie_count)
+extern uint8_t          zw_game_zombie_speed; 
+extern uint8_t          zombie_count;         
 
 #endif //__ZW_GAME_ZOMBIE_H__

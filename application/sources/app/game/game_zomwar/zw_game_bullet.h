@@ -18,11 +18,11 @@
 
 #include "zw_game_gunner.h"
 
-#define MAX_NUM_BULLET       (15)  // So luong vien dan toi da
-#define MAX_AXIS_X_BULLET    (128) // Duong bay toi da cua vien dan
-#define SIZE_BITMAP_BULLET_X (5)   // Kich thuoc chieu ngang cua vien dan
-#define SIZE_BITMAP_BULLET_Y (5)   // Kich thuoc chieu cao cua vien dan
-#define STEP_BULLET_AXIS_X   (3)   // Quang duong di chuyen cua vien dan moi tick
+#define MAX_NUM_BULLET       (15) 
+#define MAX_AXIS_X_BULLET    (128) 
+#define SIZE_BITMAP_BULLET_X (5)   
+#define SIZE_BITMAP_BULLET_Y (5)  
+#define STEP_BULLET_AXIS_X   (3)   
 
 typedef struct {
     bool visible;
@@ -31,6 +31,6 @@ typedef struct {
 } zw_game_bullet_t;
 
 extern zw_game_bullet_t bullet[MAX_NUM_BULLET];
-extern uint8_t bullet_count; // so dan active, nam o slot [0..bullet_count)
+extern uint8_t bullet_count; 
 
 #endif //__ZW_GAME_BULLET_H__

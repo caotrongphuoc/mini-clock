@@ -112,8 +112,8 @@ void scr_game_over_handle(ak_msg_t* msg) {
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		break;
 
-	case AC_DISPLAY_BUTTON_UP_PRESSED: {
-		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
+	case AC_DISPLAY_BUTTON_UP_RELEASED: {
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
 
 		zw_game_score_write(&gamescore);
 		SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank);

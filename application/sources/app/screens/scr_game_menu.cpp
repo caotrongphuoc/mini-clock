@@ -6,8 +6,8 @@
 
 #define NUMBER_ITEMS (4)
 
-static uint8_t shoot_tick_counter;   // Dem tick de vien dan duoc ban ra theo vong lap
-static uint8_t current_location = 0; // Tua de menu hien tai
+static uint8_t shoot_tick_counter;   
+static uint8_t current_location = 0; 
 bool zw_game_sound_enable = true;
 
 static char items_name[NUMBER_ITEMS][30] = {
@@ -57,6 +57,10 @@ void view_scr_game_menu() {
 	zw_game_zombie_display();
 	zw_game_bang_display();
 }
+
+/*****************************************************************************/
+/* Handle - Menu game */
+/*****************************************************************************/
 
 void scr_game_menu_handle(ak_msg_t* msg) {
 	switch (msg->sig) {

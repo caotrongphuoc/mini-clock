@@ -41,7 +41,6 @@ void zw_game_car_handle(ak_msg_t* msg) {
     case ZW_GAME_CAR_RUN: {
         APP_DBG_SIG("ZW_GAME_CAR_RUN\n");
         if (!game_active) break;
-
         // Vong 1: zombie cham mep trai -> kich hoat xe cuu (neu con); hoac zombie dam vao xe dang dung
         for (uint8_t i = 0; i < zombie_count; ) {
             if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) {

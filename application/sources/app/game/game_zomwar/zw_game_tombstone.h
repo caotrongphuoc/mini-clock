@@ -17,12 +17,12 @@
 #include "zw_game_car.h"
 #include "scr_game_zomwar.h"
 
-#define TOMBSTONES_PER_LANE      (2)    // So bia mo toi da moi lane
-#define NUM_TOMBSTONES           (10)   // Tong so luong bia mo trong game = 2 bia mo * 5 lane
-#define SIZE_BITMAP_TOMBSTONE_X  (8)    // Kich thuoc bia mo theo chieu ngang
-#define SIZE_BITMAP_TOMBSTONE_Y  (10)   // Kich thuoc bia mo theo chieu cao
-#define TOMBSTONE_SPAWN_INTERVAL (35)   // Thoi gian spawn zombie tu bia mo
-#define ZOMBIE_RISE_TICKS        (10)   // Thoi gian zombie troi len tu bia mo
+#define TOMBSTONES_PER_LANE      (2)    
+#define NUM_TOMBSTONES           (10)   
+#define SIZE_BITMAP_TOMBSTONE_X  (8)    
+#define SIZE_BITMAP_TOMBSTONE_Y  (10)   
+#define TOMBSTONE_SPAWN_INTERVAL (35)   
+#define ZOMBIE_RISE_TICKS        (10)  
 
 typedef struct {
     uint8_t x;

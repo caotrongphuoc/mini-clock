@@ -15,20 +15,13 @@
 
 #include "scr_game_zomwar.h"
 
-#define STEP_GUNNER_AXIS_Y     (10) // So buoc moi lan Gunner di chuyen len xuong
-#define SIZE_BITMAP_GUNNER_X   (25) // Kich thuoc chieu ngang cua Gunner
-#define SIZE_BITMAP_GUNNER_Y   (10) // Kich thuoc chieu cao cua Gunner
-#define AXIS_X_GUNNER          (14) // Toa do x cua Gunner ban dau
-#define AXIS_Y_GUNNER          (52) // Toa do y cua Gunner ban dau
-#define AXIS_Y_GUNNER_MIN      (12) // Toa do toi thieu cua Gunner
-#define AXIS_Y_GUNNER_MAX      (52) // Toa do toi da cua Gunner
-
-// Cac trang thai cua Gunner: dung yen, di chuyen len, di chuyen xuong
-typedef enum {
-    GUNNER_MOVE_NONE = 0,
-    GUNNER_MOVE_UP,
-    GUNNER_MOVE_DOWN,
-} gunner_move_dir_t;
+#define STEP_GUNNER_AXIS_Y     (10) 
+#define SIZE_BITMAP_GUNNER_X   (25) 
+#define SIZE_BITMAP_GUNNER_Y   (10) 
+#define AXIS_X_GUNNER          (14) 
+#define AXIS_Y_GUNNER          (52) 
+#define AXIS_Y_GUNNER_MIN      (12) 
+#define AXIS_Y_GUNNER_MAX      (52) 
 
 typedef struct {
     bool visible;

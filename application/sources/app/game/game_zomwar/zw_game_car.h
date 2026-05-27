@@ -17,13 +17,13 @@
 
 #include "zw_game_zombie.h"
 
-#define AXIS_X_CAR        (0)       // Toa do cua car
-#define NUM_LANES         (5)       // So luong lane duong
-#define CAR_SPEED         (4)       // Toc do cua car = 4px
-#define SIZE_BITMAP_CAR_X (12)      // Kich thuoc chieu ngang cua car
-#define SIZE_BITMAP_CAR_Y (10)      // Kich thuoc chieu cao cua car
-#define CAR_HIT_RANGE_Y   (8)       // Tam dung cua car
-#define LANE_Y  {2, 12, 22, 32, 42} // Toa do cua cac lane duong
+#define AXIS_X_CAR        (0)   
+#define NUM_LANES         (5)      
+#define CAR_SPEED         (4)    
+#define SIZE_BITMAP_CAR_X (12)    
+#define SIZE_BITMAP_CAR_Y (10)    
+#define CAR_HIT_RANGE_Y   (8)     
+#define LANE_Y  {2, 12, 22, 32, 42} 
 
 typedef struct {
     bool visible;
@@ -34,7 +34,5 @@ typedef struct {
 } zw_game_car_t;
 
 extern zw_game_car_t car[NUM_LANES];
-
-//void zw_game_car_handle(ak_msg_t* msg);
 
 #endif //__ZW_GAME_CAR_H__

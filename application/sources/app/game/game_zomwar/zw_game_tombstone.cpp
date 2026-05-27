@@ -25,18 +25,17 @@ void zw_game_tombstone_handle(ak_msg_t* msg) {
 
     case ZW_GAME_TOMBSTONE_SPAWN: {
         APP_DBG_SIG("ZW_GAME_TOMBSTONE_SPAWN\n");
-        /* throttle: chi spawn sau moi TOMBSTONE_SPAWN_INTERVAL tick */
+        // chi spawn sau moi TOMBSTONE_SPAWN_INTERVAL tick 
         if (tombstone_spawn_timer > 0) {
             tombstone_spawn_timer--;
             return;
         }
         tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL;
-
-        /* chon ngau nhien 1 bia mo; neu dang bat thi cho zombie troi len tu do */
+        // chon ngau nhien 1 bia mo; neu dang bat thi cho zombie troi len tu do 
         uint8_t tidx = (uint8_t)(rand() % NUM_TOMBSTONES);
         if (!tombstones[tidx].active) return;
 
-        /* spawn tai slot trong ke tiep (zombie_count) neu con cho */
+        // spawn tai slot trong ke tiep (zombie_count) neu con cho 
         if (zombie_count < NUM_ZOMBIES) {
             uint8_t i = zombie_count;
             zombie[i].x            = tombstones[tidx].x;
