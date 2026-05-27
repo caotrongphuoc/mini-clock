@@ -23,7 +23,7 @@
 #define AXIS_Y_BORDER_ON        (2)
 #define AXIS_Y_BORDER_UNDER     (52)
 #define WAVE_SCORE_INTERVAL      (200)  
-#define WAVE_SPAWN_COUNT         (5)    
+#define WAVE_SPAWN_COUNT         (10)    
 #define WARNING_BLINK_DURATION   (30)  
 #define WARNING_BLINK_RATE       (3)    
 #define SIZE_BITMAP_WARNING_X    (16)  

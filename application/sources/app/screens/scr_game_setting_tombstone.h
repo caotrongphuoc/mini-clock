@@ -1,5 +1,5 @@
-#ifndef __SCR_GAME_TOMBSTONE_SETTING_H__
-#define __SCR_GAME_TOMBSTONE_SETTING_H__
+#ifndef __SCR_GAME_SETTING_TOMBSTONE_H__
+#define __SCR_GAME_SETTING_TOMBSTONE_H__
 
 #include "fsm.h"
 #include "port.h"
@@ -34,8 +34,8 @@
 #define TB_COUNT_FRAMES_SIZE_H		(9)
 #define TB_COUNT_FRAMES_SIZE_R		(2)
 
-extern view_dynamic_t dyn_view_game_tombstone_setting;
-extern view_screen_t scr_game_tombstone_setting;
-extern void scr_game_tombstone_setting_handle(ak_msg_t* msg);
+extern view_dynamic_t dyn_view_game_setting_tombstone;
+extern view_screen_t scr_game_setting_tombstone;
+extern void scr_game_setting_tombstone_handle(ak_msg_t* msg);
 
-#endif //__SCR_GAME_TOMBSTONE_SETTING_H__
+#endif //__SCR_GAME_SETTING_TOMBSTONE_H__

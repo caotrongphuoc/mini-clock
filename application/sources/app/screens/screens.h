@@ -59,15 +59,15 @@ extern view_dynamic_t dyn_view_item_game_setting;
 extern view_screen_t scr_game_setting;
 extern void scr_game_setting_handle(ak_msg_t* msg);
 
-// scr_game_car_setting
-extern view_dynamic_t dyn_view_game_car_setting;
-extern view_screen_t scr_game_car_setting;
-extern void scr_game_car_setting_handle(ak_msg_t* msg);
+// scr_game_setting_car
+extern view_dynamic_t dyn_view_game_setting_car;
+extern view_screen_t scr_game_setting_car;
+extern void scr_game_setting_car_handle(ak_msg_t* msg);
 
-// scr_game_tombstone_setting
-extern view_dynamic_t dyn_view_game_tombstone_setting;
-extern view_screen_t scr_game_tombstone_setting;
-extern void scr_game_tombstone_setting_handle(ak_msg_t* msg);
+// scr_game_setting_tombstone
+extern view_dynamic_t dyn_view_game_setting_tombstone;
+extern view_screen_t scr_game_setting_tombstone;
+extern void scr_game_setting_tombstone_handle(ak_msg_t* msg);
 
 // scr_game_over
 extern view_dynamic_t dyn_view_item_game_over;

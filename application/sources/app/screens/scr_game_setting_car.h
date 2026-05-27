@@ -1,5 +1,5 @@
-#ifndef __SCR_GAME_CAR_SETTING_H__
-#define __SCR_GAME_CAR_SETTING_H__
+#ifndef __SCR_GAME_SETTING_CAR_H__
+#define __SCR_GAME_SETTING_CAR_H__
 
 #include "fsm.h"
 #include "port.h"
@@ -24,7 +24,7 @@
 #include "screens_bitmap.h"
 
 #define CAR_POS_NUM_CARS				(5)
-// items: chi so 0..4 = car, 5 = EXIT
+
 #define CAR_POS_ITEM_EXIT				(CAR_POS_NUM_CARS)
 // Frames
 #define CAR_POS_FRAMES_AXIS_X			(0)
@@ -34,8 +34,8 @@
 #define CAR_POS_FRAMES_SIZE_H			(9)
 #define CAR_POS_FRAMES_SIZE_R			(2)
 
-extern view_dynamic_t dyn_view_game_car_setting;
-extern view_screen_t scr_game_car_setting;
-extern void scr_game_car_setting_handle(ak_msg_t* msg);
+extern view_dynamic_t dyn_view_game_setting_car;
+extern view_screen_t scr_game_setting_car;
+extern void scr_game_setting_car_handle(ak_msg_t* msg);
 
-#endif //__SCR_GAME_CAR_SETTING_H__
+#endif //__SCR_GAME_SETTING_CAR_H__

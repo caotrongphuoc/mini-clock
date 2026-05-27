@@ -1,4 +1,4 @@
-#include "scr_game_tombstone_setting.h"
+#include "scr_game_setting_tombstone.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Tombstone count per lane */
@@ -8,17 +8,17 @@ static uint8_t tb_count_location_chosse;
 /*****************************************************************************/
 /* View - Tombstone count per lane */
 /*****************************************************************************/
-static void view_scr_game_tombstone_setting();
+static void view_scr_game_setting_tombstone();
 
-view_dynamic_t dyn_view_game_tombstone_setting = {
+view_dynamic_t dyn_view_game_setting_tombstone = {
 	{
 		.item_type = ITEM_TYPE_DYNAMIC,
 	},
-	view_scr_game_tombstone_setting
+	view_scr_game_setting_tombstone
 };
 
-view_screen_t scr_game_tombstone_setting = {
-	&dyn_view_game_tombstone_setting,
+view_screen_t scr_game_setting_tombstone = {
+	&dyn_view_game_setting_tombstone,
 	ITEM_NULL,
 	ITEM_NULL,
 
@@ -33,7 +33,7 @@ static uint8_t get_lane_count(uint8_t i) {
 	return c;
 }
 
-static void view_scr_game_tombstone_setting() {
+static void view_scr_game_setting_tombstone() {
 	view_render.setTextSize(1);
 
 	uint8_t sel = tb_count_location_chosse;
@@ -76,7 +76,7 @@ static void view_scr_game_tombstone_setting() {
 /*****************************************************************************/
 /* Handle - Tombstone count per lane */
 /*****************************************************************************/
-void scr_game_tombstone_setting_handle(ak_msg_t* msg) {
+void scr_game_setting_tombstone_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");

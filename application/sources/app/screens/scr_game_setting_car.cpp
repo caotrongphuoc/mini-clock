@@ -1,4 +1,4 @@
-#include "scr_game_car_setting.h"
+#include "scr_game_setting_car.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Car position selection */
@@ -8,24 +8,24 @@ static uint8_t car_pos_location_chosse;
 /*****************************************************************************/
 /* View - Car position selection */
 /*****************************************************************************/
-static void view_scr_game_car_setting();
+static void view_scr_game_setting_car();
 
-view_dynamic_t dyn_view_game_car_setting = {
+view_dynamic_t dyn_view_game_setting_car = {
 	{
 		.item_type = ITEM_TYPE_DYNAMIC,
 	},
-	view_scr_game_car_setting
+	view_scr_game_setting_car
 };
 
-view_screen_t scr_game_car_setting = {
-	&dyn_view_game_car_setting,
+view_screen_t scr_game_setting_car = {
+	&dyn_view_game_setting_car,
 	ITEM_NULL,
 	ITEM_NULL,
 
 	.focus_item = 0,
 };
 
-static void view_scr_game_car_setting() {
+static void view_scr_game_setting_car() {
 	view_render.setTextSize(1);
 
 	uint8_t sel = car_pos_location_chosse;
@@ -69,7 +69,7 @@ static void view_scr_game_car_setting() {
 /*****************************************************************************/
 /* Handle - Car position selection */
 /*****************************************************************************/
-void scr_game_car_setting_handle(ak_msg_t* msg) {
+void scr_game_setting_car_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");

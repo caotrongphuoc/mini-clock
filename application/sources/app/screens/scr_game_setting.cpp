@@ -118,13 +118,13 @@ void scr_game_setting_handle(ak_msg_t* msg) {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		switch (setting_location_chosse) {
 		case SETTING_ITEM_CARS: {
-			SCREEN_TRAN(scr_game_car_setting_handle, &scr_game_car_setting);
+			SCREEN_TRAN(scr_game_setting_car_handle, &scr_game_setting_car);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
 			break;
 
 		case SETTING_ITEM_TOMBSTONES: {
-			SCREEN_TRAN(scr_game_tombstone_setting_handle, &scr_game_tombstone_setting);
+			SCREEN_TRAN(scr_game_setting_tombstone_handle, &scr_game_setting_tombstone);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
 			break;
