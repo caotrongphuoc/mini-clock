@@ -34,7 +34,7 @@ Zomwar is an action survival game built directly on the AK Embedded Base Kit pla
 
 <table align="center">
   <tr>
-    <td align="center"><img src="hardware/images/ak-embedded-base-kit-version-3.jpg" alt="AK Embedded Base Kit - STM32L151 - v3.0" width="480"/></td>
+    <td align="center"><img src="resources/images/board/ak-embedded-base-kit-version-3.jpg" alt="AK Embedded Base Kit - STM32L151 - v3.0" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> AK Embedded Base Kit - STM32L151</p>
@@ -77,7 +77,7 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="hardware/images/board-view-top-bottom.png" alt="AK Embedded Base Kit - Board view Top + Bottom" width="900"/></td>
+    <td align="center"><img src="resources/images/board/board-view-top-bottom.png" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Board view Top + Bottom </p>
