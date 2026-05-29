@@ -85,9 +85,9 @@ Flash Partitions Layout
 ### II. Game Description and Objects
 "The following document outlines the gameplay and core mechanics of “Zomwar.” It will serve as a reference guide for future game design and development."
 
-<!-- <table align="center">
+<table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/gif_archery_game_menu_4x.gif" alt="menu game" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_menu.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Menu game</p>
