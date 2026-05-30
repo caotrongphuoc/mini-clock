@@ -143,7 +143,7 @@ The game starts with the **Menu game** screen with the following options:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/scr_game_over_2_4x.png" alt="archery game over screen 2" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_over_x10.png" alt="zomwar game over screen 2" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 6:</em></strong> Game_over screen 2</p>
