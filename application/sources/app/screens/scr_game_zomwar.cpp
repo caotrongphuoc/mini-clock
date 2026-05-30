@@ -187,7 +187,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		zw_game_state = GAME_PLAY;
 		gunner_dir = GUNNER_DIR_NONE; // vao van moi: chua giu nut
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
-		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_EXIT_GAME);
 
         timer_set(AC_TASK_DISPLAY_ID, 
 			ZW_GAME_TIME_TICK, 
