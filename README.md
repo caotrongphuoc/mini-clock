@@ -160,16 +160,9 @@ The game starts with the **Menu game** screen with the following options:
 <p align="center"><strong><em>Figure 4:</em></strong> Basic game sequence logic</p>
 
 ## Contact & Support
-<p style="font-size: 20px;"><strong>Phan Quoc Buu</strong> - Embedded Software Engineer</p>
+<p style="font-size: 20px;"><strong>Cao Trong Phuoc</strong> - Software Engineer - Embedded Systems</p>
 
 ``` Note
 Thank you for visiting this repository.  
 If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly
 ```
-
-**My contact:** <br/>
-<a href="https://github.com/caotrongphuoc">
-  <img src="https://img.shields.io/badge/GitHub-QuocBuu-181717?style=flat&logo=github&logoColor=white"/>
-</a>
-<a href="https://www.linkedin.com/in/cao-trong-phuoc/">
-  <img src="https://img.shields.io/badge/LinkedIn-Phan%20Quoc%20Buu-0A66C2?style=flat&logo=linkedin&logoColor=white"/>
