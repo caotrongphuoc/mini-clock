@@ -105,4 +105,16 @@ The game starts with the **Menu game** screen with the following options:
 </table>
  <p align="center"><strong><em>Figure 4:</em></strong> Game play screen and objects</p>
 
+#### Objects in the Game:
+|Object Name|Description|
+|---|---|
+|**Gunner**|Moves up and down to choose the firing position|
+|**Bullet**|Fired from the gunner, used to destroy zombies|
+|**Zombie**|An object that moves toward the gunner at an increasing speed, capable of destroying the border|
+|**Car**|An object located in front of the border, serving as the second checkpoint after the gunner; it is activated to move and destroy zombies when a zombie touches it|
+|**Bang**|An effect that appears when a zombie is destroyed|
+|**Tombstone**|Object flying towards the bow with increasing speed, capable of destroying the border|
+|**Border**|The safe zone that must be protected from zombie intrusion|
+
+> **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/game-object-sequences.md).
 
