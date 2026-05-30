@@ -87,7 +87,7 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/menu_nav_x8.gif" alt="menu game" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/menu_nav_x10.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
