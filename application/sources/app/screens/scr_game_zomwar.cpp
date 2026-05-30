@@ -51,7 +51,7 @@ void zw_game_gunner_display() {
 }
 
 void zw_game_bullet_display() {
-	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++) { // ve dan dang visible
+	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++) { 
 		if (bullet[i].visible != WHITE) continue;
 		view_render.drawBitmap(	bullet[i].x,
 								bullet[i].y,
@@ -63,7 +63,7 @@ void zw_game_bullet_display() {
 }
 
 void zw_game_zombie_display() {
-	for (uint8_t i = 0; i < NUM_ZOMBIES; i++) { // ve zombie dang visible
+	for (uint8_t i = 0; i < NUM_ZOMBIES; i++) { 
 		if (zombie[i].visible != WHITE) continue;
 		const unsigned char* frame = bitmap_zombie_I;
 		if      (zombie[i].action_image == 2) frame = bitmap_zombie_II;
@@ -136,7 +136,6 @@ void zw_game_grass_display() {
 
 void zw_game_warning_display() {
 	if (wave_warning_active) {
-		// nhap nhay: cu WARNING_BLINK_RATE tick thi doi hien/an
 		if ((wave_warning_timer / WARNING_BLINK_RATE) % 2 == 0) {
 			view_render.drawBitmap(
 				(LCD_WIDTH - SIZE_BITMAP_WARNING_X) / 2,
@@ -185,7 +184,7 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 		task_post_pure_msg(ZW_GAME_BORDER_ID,   	ZW_GAME_BORDER_SETUP);
 		
 		zw_game_state = GAME_PLAY;
-		gunner_dir = GUNNER_DIR_NONE; // vao van moi: chua giu nut
+		gunner_dir = GUNNER_DIR_NONE;
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
 
         timer_set(AC_TASK_DISPLAY_ID, 
@@ -197,7 +196,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 
 	case ZW_GAME_TIME_TICK: {
 		APP_DBG_SIG("ZW_GAME_TIME_TICK\n");
-			// giu nut: moi tick day gunner 1 buoc theo huong dang giu
 			if      (gunner_dir == GUNNER_DIR_UP)   task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_UP);
 			else if (gunner_dir == GUNNER_DIR_DOWN) task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_DOWN);
 			task_post_pure_msg(ZW_GAME_GUNNER_ID, 		ZW_GAME_GUNNER_UPDATE);
@@ -266,8 +264,6 @@ void scr_game_zomwar_handle(ak_msg_t* msg) {
 	
 	case ZW_GAME_EXIT_GAME: {
 		APP_DBG_SIG("ZW_GAME_EXIT_GAME\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_TIME_TICK);
-		timer_remove_attr(AC_TASK_DISPLAY_ID, ZW_GAME_EXIT_GAME);
 		zw_game_state = GAME_OFF;
 		SCREEN_TRAN(scr_game_over_handle, &scr_game_over);
 	}
