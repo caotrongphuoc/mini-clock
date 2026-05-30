@@ -87,9 +87,7 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="<img width="4096" height="1696" alt="menu_nav_x8" src="https://github.com/user-attachments/assets/ea22d39a-a802-4efb-be51-861a883b57f0" />
-" height="1696"/>
-" alt="scr_game_menu" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/gif_archery_game_menu_4x.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
