@@ -90,7 +90,7 @@ Flash Partitions Layout
     <td align="center"><img src="resources/images/screens/scr_game_menu.gif" alt="scr_game_menu" width="480"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 2:</em></strong> Menu game</p>
+<p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
 
 The game starts with the **Menu game** screen with the following options:
 - **Play:** Begin playing the game.
@@ -103,6 +103,6 @@ The game starts with the **Menu game** screen with the following options:
     <td align="center"><img src="resources/images/screens/scr_game_zomwar.png" alt="scr_game_zomwar" width="600"/></td>
   </tr>
 </table>
- <!-- <p align="center"><strong><em>Figure 3:</em></strong> Game play screen and objects</p>
+ <p align="center"><strong><em>Figure 3:</em></strong> Game play screen and objects</p>
 
 
