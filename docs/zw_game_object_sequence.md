@@ -1,303 +1,418 @@
 # Game Object Sequences
 
-This document describes the runtime sequence of each main object in Zomwar. Each object is handled by its own AK task and receives signals from the screen task, button callbacks, timers, or other object tasks.
+This document describes the runtime sequence of each main object in Zomwar. Each object is handled by its own AK task and receives signals from the screen task (`scr_game_zomwar`), button callbacks, the periodic game tick timer, or other object tasks.
 
 ## I. Object Summary
 
 | Object | Task ID | Handler | Main responsibility |
 |---|---|---|---|
-| Archery | `AR_GAME_ARCHERY_ID` | `ar_game_archery_handle()` | Controls the player position and bow image state. |
-| Arrow | `AR_GAME_ARROW_ID` | `ar_game_arrow_handle()` | Shoots arrows, moves active arrows, and restores available arrow count. |
-| Meteoroid | `AR_GAME_METEOROID_ID` | `ar_game_meteoroid_handle()` | Spawns meteoroids, moves them, checks collision with arrows, and updates score. |
-| Bang | `AR_GAME_BANG_ID` | `ar_game_bang_handle()` | Plays explosion animation after a meteoroid is hit. |
-| Border | `AR_GAME_BORDER_ID` | `ar_game_border_handle()` | Checks level-up condition and game-over condition. |
+| Gunner | `ZW_GAME_GUNNER_ID` | `zw_game_gunner_handle()` | Controls the player position and gunner image state. |
+| Bullet | `ZW_GAME_BULLET_ID` | `zw_game_bullet_handle()` | Shoots bullets, moves active bullets, and hides them when they exit the screen. |
+| Zombie | `ZW_GAME_ZOMBIE_ID` | `zw_game_zombie_handle()` | Spawns zombies, moves them (zigzag, rising from tombstones), checks collision with bullets, and updates score. |
+| Bang | `ZW_GAME_BANG_ID` | `zw_game_bang_handle()` | Plays explosion animation after a zombie is hit. |
+| Border | `ZW_GAME_BORDER_ID` | `zw_game_border_handle()` | Checks wave level-up and game-over conditions. |
+| Car | `ZW_GAME_CAR_ID` | `zw_game_car_handle()` | Lawnmower-style rescue cars that activate when a zombie reaches the left edge or touches a parked car. |
+| Tombstone | `ZW_GAME_TOMBSTONE_ID` | `zw_game_tombstone_handle()` | Spawns extra zombies that rise out of active tombstones. |
 
-## II. Archery Object Sequence
+The screen task posts `ZW_GAME_TIME_TICK` every `ZW_GAME_TIME_TICK_INTERVAL` (100 ms). On each tick the screen task fans out signals to every object task in a fixed order.
 
-Archery owns the player position. The screen task initializes the Archery object when gameplay starts, then the periodic game tick posts update messages every `AR_GAME_TIME_TICK_INTERVAL`. Button callbacks post movement signals directly to the Archery task while the game is playing. Movement changes the internal `archery_y` value, and the next update copies that value into the rendered `archery.y`.
+## II. Gunner Object Sequence
+
+Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it, then copies it into the rendered `gunner.y`.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Button as Button Callback
     participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(Archery Game Screen)
-    participant Archery as Archery Task
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Gunner as Gunner Task
 
-    Note over Screen,Archery: Game entry initializes Archery state
+    Note over Screen,Gunner: Game entry initializes Gunner state
 
-    Screen->>Archery: AR_GAME_ARCHERY_SETUP
-    activate Archery
-    Note right of Archery: Set x, y, visible,<br/>action_image, archery_y
-    deactivate Archery
+    Screen->>Gunner: ZW_GAME_GUNNER_SETUP
+    activate Gunner
+    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = WHITE<br/>gunner.action_image = 1<br/>gunner_y = AXIS_Y_GUNNER
+    deactivate Gunner
 
-    Note over Button,Archery: Move up request
+    Note over Button,Gunner: UP button latches direction
 
-    Button->>Archery: AR_GAME_ARCHERY_UP
-    activate Archery
-    Note right of Archery: Move upward:<br/>archery_y -= STEP_ARCHERY_AXIS_Y<br/>Clamp to AXIS_Y_ARCHERY_MIN
-    deactivate Archery
+    Button->>Screen: AC_DISPLAY_BUTTON_UP_PRESSED
+    Note right of Screen: gunner_dir = GUNNER_DIR_UP
+    Button->>Screen: AC_DISPLAY_BUTTON_UP_RELEASED
+    Note right of Screen: gunner_dir = GUNNER_DIR_NONE
 
-    Timer->>Screen: AR_GAME_TIME_TICK
+    Timer->>Screen: ZW_GAME_TIME_TICK
     activate Screen
-    Screen->>Archery: AR_GAME_ARCHERY_UPDATE
+    Screen->>Gunner: ZW_GAME_GUNNER_UP
+    activate Gunner
+    Note right of Gunner: gunner_y -= STEP_GUNNER_AXIS_Y<br/>Clamp to AXIS_Y_GUNNER_MIN<br/>gunner.y = gunner_y
+    deactivate Gunner
+    Screen->>Gunner: ZW_GAME_GUNNER_UPDATE
     deactivate Screen
-    activate Archery
-    Note right of Archery: Update rendered position:<br/>archery.y = archery_y
-    deactivate Archery
+    activate Gunner
+    Note right of Gunner: If action_image == 2:<br/>reset to 1 (end fire frame)
+    deactivate Gunner
 
-    Note over Button,Archery: Move down request
+    Note over Button,Gunner: DOWN button latches direction
 
-    Button->>Archery: AR_GAME_ARCHERY_DOWN
-    activate Archery
-    Note right of Archery: Move downward:<br/>archery_y += STEP_ARCHERY_AXIS_Y<br/>Clamp to AXIS_Y_ARCHERY_MAX
-    deactivate Archery
+    Button->>Screen: AC_DISPLAY_BUTTON_DOWN_PRESSED
+    Note right of Screen: gunner_dir = GUNNER_DIR_DOWN
 
-    Timer->>Screen: AR_GAME_TIME_TICK
+    Timer->>Screen: ZW_GAME_TIME_TICK
     activate Screen
-    Screen->>Archery: AR_GAME_ARCHERY_UPDATE
+    Screen->>Gunner: ZW_GAME_GUNNER_DOWN
+    activate Gunner
+    Note right of Gunner: gunner_y += STEP_GUNNER_AXIS_Y<br/>Clamp to AXIS_Y_GUNNER_MAX<br/>gunner.y = gunner_y
+    deactivate Gunner
+    Screen->>Gunner: ZW_GAME_GUNNER_UPDATE
     deactivate Screen
-    activate Archery
-    Note right of Archery: Update rendered position:<br/>archery.y = archery_y
-    deactivate Archery
 
-    Note over Screen,Archery: Game reset hides Archery
+    Note over Screen,Gunner: Game reset hides Gunner
 
-    Screen->>Archery: AR_GAME_ARCHERY_RESET
-    activate Archery
-    Note right of Archery: Hide Archery object:<br/>archery.visible = BLACK
-    deactivate Archery
+    Screen->>Gunner: ZW_GAME_GUNNER_RESET
+    activate Gunner
+    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = BLACK<br/>gunner_y = AXIS_Y_GUNNER
+    deactivate Gunner
 ```
 
-## III. Arrow Object Sequence
+## III. Bullet Object Sequence
 
-Arrow receives shoot input from the MODE button. The screen task posts `AR_GAME_ARROW_RUN` on every game tick so visible arrows keep moving to the right. When an arrow exits the screen, it is hidden, reset, and the available arrow count is restored.
-
-**Note:** *Because a slow arrow speed would significantly affect the gameplay experience, the arrow speed setting has been locked.*
+Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right. When a bullet exits the screen, it is hidden and its x position is cleared.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Button as Button Callback
     participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(Archery Game Screen)
-    participant Arrow as Arrow Task
-    participant Archery as Archery State
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Bullet as Bullet Task
+    participant Gunner as Gunner State
     participant Buzzer as Buzzer
 
-    Note over Screen,Arrow: Game entry initializes Arrow state
+    Note over Screen,Bullet: Game entry initializes Bullet state
 
-    Screen->>Arrow: AR_GAME_ARROW_SETUP
-    activate Arrow
-    Note right of Arrow: Clear all arrow slots:<br/>x = 0, y = 0,<br/>visible = BLACK
-    deactivate Arrow
+    Screen->>Bullet: ZW_GAME_BULLET_SETUP
+    activate Bullet
+    Note right of Bullet: For every slot:<br/>x = 0, y = 0,<br/>visible = BLACK
+    deactivate Bullet
 
-    Note over Button,Arrow: MODE button shoots an arrow
+    Note over Button,Bullet: MODE button shoots a bullet
 
-    Button->>Arrow: AR_GAME_ARROW_SHOOT
-    activate Arrow
-    alt settingsetup.num_arrow == 0
-        Arrow->>Buzzer: BUZZER_SOUND_3BEEP
-    else arrow is available
-        Note right of Arrow: Find hidden arrow slot<br/>Show arrow at archery.y - 5<br/>Decrease num_arrow
-        Arrow->>Archery: Set empty bow image<br/>when no arrow remains
-        Arrow->>Buzzer: BUZZER_SOUND_CLICK
+    Button->>Screen: AC_DISPLAY_BUTTON_MODE_PRESSED
+    Screen->>Bullet: ZW_GAME_BULLET_SHOOT
+    activate Bullet
+    Note right of Bullet: Find first free slot<br/>bullet[i].visible = WHITE<br/>bullet[i].x = gunner.x + 15<br/>bullet[i].y = gunner.y - 8
+    Bullet->>Gunner: gunner.action_image = 2 (fire frame)
+    alt zw_game_sound_enable
+        Bullet->>Buzzer: BUZZER_SOUND_CLICK
     end
-    deactivate Arrow
+    deactivate Bullet
 
-    Timer->>Screen: AR_GAME_TIME_TICK
+    Timer->>Screen: ZW_GAME_TIME_TICK
     activate Screen
-    Screen->>Arrow: AR_GAME_ARROW_RUN
+    Screen->>Bullet: ZW_GAME_BULLET_RUN
     deactivate Screen
-    activate Arrow
-    Note right of Arrow: Move visible arrows:<br/>x += settingsetup.arrow_speed
+    activate Bullet
+    Note right of Bullet: For every visible bullet:<br/>x += STEP_BULLET_AXIS_X
 
-    alt arrow reaches screen edge
-        Arrow->>Arrow: 
-        Note left of Archery: Hide arrow and reset x <br/>Increase num_arrow
+    alt bullet[i].x >= MAX_AXIS_X_BULLET
+        Note right of Bullet: visible = BLACK<br/>x = 0
     end
-    deactivate Arrow
+    deactivate Bullet
 
-    Note over Screen,Arrow: Game reset hides all arrows
+    Note over Screen,Bullet: Game reset hides all bullets
 
-    Screen->>Arrow: AR_GAME_ARROW_RESET
-    activate Arrow
-    Note right of Arrow: Hide all arrows:<br/>visible = BLACK
-    deactivate Arrow
+    Screen->>Bullet: ZW_GAME_BULLET_RESET
+    activate Bullet
+    Note right of Bullet: For every slot:<br/>x = 0, y = 0,<br/>visible = BLACK
+    deactivate Bullet
 ```
 
-## IV. Meteoroid Object Sequence
+## IV. Zombie Object Sequence
 
-Meteoroid moves from right to left. On each tick, the screen task first posts `AR_GAME_METEOROID_RUN` to move visible meteoroids and advance their animation frame, then posts `AR_GAME_METEOROID_DETONATOR` to check arrow collisions.
+Zombie moves from right to left with zigzag motion on the Y axis. On each tick, the screen task posts `ZW_GAME_ZOMBIE_RUN` to move visible zombies and advance their animation frame, then posts `ZW_GAME_ZOMBIE_DETONATOR` to check bullet collisions. Zombies that are still `rising` from a tombstone do not move horizontally — they walk up by 1 px per tick for `ZOMBIE_RISE_TICKS` ticks, then join the normal flow. The task also auto-respawns from the right edge to keep at least `NUM_ZOMBIES_INIT` zombies alive at all times.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(Archery Game Screen)
-    participant Meteoroid as Meteoroid Task
-    participant Arrow as Arrow State
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Zombie as Zombie Task
+    participant Bullet as Bullet State
     participant Bang as Bang State
     participant Buzzer as Buzzer
 
-    Note over Screen,Meteoroid: Game entry initializes Meteoroid lanes
+    Note over Screen,Zombie: Game entry initializes Zombie state
 
-    Screen->>Meteoroid: AR_GAME_METEOROID_SETUP
-    activate Meteoroid
-    Note right of Meteoroid: Create meteoroids by lane<br/>Randomize x and action_image<br/>visible = WHITE
-    deactivate Meteoroid
+    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
+    activate Zombie
+    Note right of Zombie: game_active = true<br/>zw_game_zombie_speed = settingdata.zombie_speed<br/>Hide all NUM_ZOMBIES slots<br/>Spawn NUM_ZOMBIES_INIT zombies<br/>Randomize x, y, action_image, zigzag_timer
+    deactivate Zombie
 
-    Timer->>Screen: AR_GAME_TIME_TICK
+    Timer->>Screen: ZW_GAME_TIME_TICK
     activate Screen
-    Screen->>Meteoroid: AR_GAME_METEOROID_RUN
-    Screen->>Meteoroid: AR_GAME_METEOROID_DETONATOR
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
+    Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
     deactivate Screen
 
-    activate Meteoroid
-    Note right of Meteoroid: Move visible meteoroids left:<br/>x -= meteoroid_speed<br/>Advance action_image
-    Meteoroid-->>Arrow: Check visible arrows<br/>against visible meteoroids
-
-    alt arrow collides with meteoroid
-        Note right of Meteoroid: Hide meteoroid<br/>Randomize next spawn
-        Meteoroid->>Arrow: Hide arrow and reset position
-        Note right of Arrow:Restore one arrow<br/>Add 10 score
-        Meteoroid->>Bang: Show bang at collision position
-        Meteoroid->>Buzzer: BUZZER_SOUND_BANG
-    else no collision
-        Note right of Meteoroid: Keep meteoroid moving
+    activate Zombie
+    alt zombie[i].rising
+        Note right of Zombie: y--, rise_ticks--<br/>Advance action_image<br/>End rising when ticks = 0
+    else normal motion
+        Note right of Zombie: x -= zw_game_zombie_speed<br/>Clamp at -ZOMBIE_MIN_LEFT_OFFSET<br/>Zigzag dy when zigzag_timer = 0<br/>Clamp y to [ZOMBIE_Y_MIN, ZOMBIE_Y_MAX]<br/>Advance action_image (1..3)
     end
-    deactivate Meteoroid
+    Note right of Zombie: Auto-respawn from right edge<br/>until alive count >= NUM_ZOMBIES_INIT
 
-    Note over Screen,Meteoroid: Game reset hides all meteoroids
+    Zombie-->>Bullet: Check visible bullets<br/>against visible (non-rising) zombies
 
-    Screen->>Meteoroid: AR_GAME_METEOROID_RESET
-    activate Meteoroid
-    Note right of Meteoroid: Hide all meteoroids:<br/>visible = BLACK
-    deactivate Meteoroid
+    alt bullet collides with zombie
+        Note right of Zombie: Save dead_x, dead_y
+        Zombie->>Bullet: Hide bullet (visible = BLACK, x = 0)
+        Zombie->>Bang: Spawn bang at (dead_x + 5, dead_y - 2)<br/>visible = WHITE, action_image = 1
+        Note right of Zombie: zw_game_score += 10<br/>Hide zombie (visible = BLACK)
+        Zombie->>Buzzer: BUZZER_SOUND_BANG
+    else no collision
+        Note right of Zombie: Keep zombie moving
+    end
+    deactivate Zombie
+
+    Note over Screen,Zombie: Game reset hides all zombies
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
+    activate Zombie
+    Note right of Zombie: game_active = false<br/>Hide all zombies
+    deactivate Zombie
 ```
+
+The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN_MENU` signals used by the menu screen to display a single demo zombie that loops across the screen and reacts to bullets without affecting the score.
 
 ## V. Bang Object Sequence
 
-Bang is the explosion effect. It becomes visible when Meteoroid detects a collision. On every game tick, the screen task posts `AR_GAME_BANG_UPDATE`; visible bang effects advance their animation frame, then hide themselves and restore the matching meteoroid when the animation ends.
+Bang is the explosion effect. It is not spawned by a dedicated signal — the Zombie task and Car task directly mutate the `bang[]` array when they detect a collision. On every game tick the screen task posts `ZW_GAME_BANG_UPDATE`; each visible bang advances its animation frame, and when the frame counter rolls past 3 the bang hides itself and resets its frame to 1.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Meteoroid as Meteoroid Task
+    participant Zombie as Zombie / Car Task
     participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(Archery Game Screen)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
     participant Bang as Bang Task
 
     Note over Screen,Bang: Game entry initializes Bang effects
 
-    Screen->>Bang: AR_GAME_BANG_SETUP
+    Screen->>Bang: ZW_GAME_BANG_SETUP
     activate Bang
-    Note right of Bang: Clear bang effects:<br/>visible = BLACK<br/>action_image = first frame
+    Note right of Bang: For every slot:<br/>visible = BLACK<br/>action_image = 1
     deactivate Bang
 
-    Meteoroid->>Bang: Collision creates visible bang
+    Zombie->>Bang: Collision directly writes a free slot<br/>visible = WHITE, x, y, action_image = 1
+    Note right of Bang: (No signal — direct array write)
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Bang: ZW_GAME_BANG_UPDATE
+    deactivate Screen
     activate Bang
-    Note right of Bang: Set bang[i].visible = WHITE<br/>Set x, y, action_image
-    deactivate Bang
-
-    alt bang is not visible
-        Timer->>Screen: AR_GAME_TIME_TICK
-        activate Screen
-        Screen->>Bang: AR_GAME_BANG_UPDATE
-        deactivate Screen
-        activate Bang
-        Note right of Bang: No visible explosion<br/>No frame is advanced
-        deactivate Bang
-    else bang is visible
-        Timer->>Screen: AR_GAME_TIME_TICK
-        activate Screen
-        Screen->>Bang: AR_GAME_BANG_UPDATE
-        deactivate Screen
-        activate Bang
-        Note right of Bang: Advance explosion animation frame<br/>Repeat on each game tick
-
-        alt animation reaches end
-            Note right of Bang: Hide bang and reset frame
-            Bang->>Meteoroid: Restore matching meteoroid
-        end
-        deactivate Bang
+    alt bang[i].visible == WHITE
+        Note right of Bang: action_image++
     end
+    alt action_image > 3
+        Note right of Bang: action_image = 1<br/>visible = BLACK
+    end
+    deactivate Bang
 
     Note over Screen,Bang: Game reset hides all bang effects
 
-    Screen->>Bang: AR_GAME_BANG_RESET
+    Screen->>Bang: ZW_GAME_BANG_RESET
     activate Bang
-    Note right of Bang: Hide all bang effects:<br/>visible = BLACK
+    Note right of Bang: For every slot:<br/>visible = BLACK<br/>action_image = 1
     deactivate Bang
 ```
 
 ## VI. Border Object Sequence
 
-Border protects the safe area. Each game tick asks Border to check level-up progress and game-over conditions. If the score reaches the next threshold, Border increases meteoroid speed. If a visible meteoroid reaches the border, Border posts `AR_GAME_RESET` back to the screen task.
+Border manages wave progression and the game-over check. Each game tick the screen task posts both `ZW_GAME_CHECK_GAME_OVER` and `ZW_GAME_LEVEL_UP` to the Border task. If a visible zombie reaches the left edge in a lane that has no visible car, Border posts `ZW_GAME_RESET` to the display task. When `zw_game_score` reaches the next `WAVE_SCORE_INTERVAL` threshold, Border starts a warning blink for `WARNING_BLINK_DURATION` ticks, then increases `zw_game_zombie_speed` (capped at `ZOMBIE_SPEED_MAX`), increments `wave_level`, and spawns `WAVE_SPAWN_COUNT` new zombies.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(Archery Game Screen)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
     participant Border as Border Task
-    participant Meteoroid as Meteoroid State
+    participant Zombie as Zombie State
+    participant Car as Car State
 
     Note over Screen,Border: Game entry initializes Border state
 
-    Screen->>Timer: timer_set(AR_GAME_TIME_TICK)
-    Screen->>Border: AR_GAME_BORDER_SETUP
+    Screen->>Border: ZW_GAME_BORDER_SETUP
     activate Border
-    Note right of Border: Set border x, visible,<br/>and action_image
+    Note right of Border: border.x = AXIS_X_BORDER<br/>border.visible = WHITE<br/>border.action_image = 0<br/>wave_last_score = 0<br/>wave_warning_timer = 0<br/>wave_warning_active = false<br/>wave_level = 0
     deactivate Border
 
-    alt score below threshold and meteoroid safe
-        Timer->>Screen: AR_GAME_TIME_TICK
-        activate Screen
-        Screen->>Border: AR_GAME_LEVEL_UP
-        Screen->>Border: AR_GAME_CHECK_GAME_OVER
-        deactivate Screen
-        activate Border
-        Border-->>Meteoroid: Check visible meteoroid x
-        Note right of Border: No level-up<br/>No game-over reset
-        deactivate Border
-    else score reaches next level threshold
-        Timer->>Screen: AR_GAME_TIME_TICK
-        activate Screen
-        Screen->>Border: AR_GAME_LEVEL_UP
-        Screen->>Border: AR_GAME_CHECK_GAME_OVER
-        deactivate Screen
-        activate Border
-        Note right of Border: Increase meteoroid_speed<br/>Move next level score threshold
-        Border-->>Meteoroid: Check visible meteoroid x
-        deactivate Border
-    else visible meteoroid reaches border
-        Timer->>Screen: AR_GAME_TIME_TICK
-        activate Screen
-        Screen->>Border: AR_GAME_LEVEL_UP
-        Screen->>Border: AR_GAME_CHECK_GAME_OVER
-        deactivate Screen
-        activate Border
-        Border-->>Meteoroid: Check visible meteoroid x
-        Border->>Screen: AR_GAME_RESET
-        Note right of Border: Game-over condition met
-        deactivate Border
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Border: ZW_GAME_CHECK_GAME_OVER
+    Screen->>Border: ZW_GAME_LEVEL_UP
+    deactivate Screen
+
+    activate Border
+    Border-->>Zombie: For each visible zombie at x <= -ZOMBIE_MIN_LEFT_OFFSET
+    Border-->>Car: Compute lane = (zombie.y - ZOMBIE_Y_MIN) / 10
+
+    alt no car visible in that lane
+        Border->>Screen: ZW_GAME_RESET (post to AC_TASK_DISPLAY_ID)
+    else car protects the lane
+        Note right of Border: No game-over
     end
+
+    alt zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL
+        Note right of Border: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
+    end
+    alt wave_warning_active && warning_timer > 0
+        Note right of Border: wave_warning_timer--
+    else wave_warning_active && timer == 0
+        Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++<br/>If zw_game_zombie_speed < ZOMBIE_SPEED_MAX:<br/>zw_game_zombie_speed++<br/>Spawn WAVE_SPAWN_COUNT zombies
+    end
+    deactivate Border
 
     Note over Screen,Border: Game reset hides Border
 
-    Screen->>Border: AR_GAME_BORDER_RESET
+    Screen->>Border: ZW_GAME_BORDER_RESET
     activate Border
-    Note right of Border: Hide Border object:<br/>visible = BLACK
+    Note right of Border: border.x = AXIS_X_BORDER<br/>border.visible = BLACK<br/>zw_game_score = 0<br/>wave_last_score = 0<br/>wave_warning_timer = 0<br/>wave_warning_active = false<br/>wave_level = 0
     deactivate Border
 ```
 
-## VII. Code References
+## VII. Car Object Sequence
+
+Car implements the lawnmower-style rescue. There is one car slot per lane (`NUM_LANES = 5`); whether a slot is initially visible is decided by the `settingdata.num_car` bitmask. On each tick the screen task posts `ZW_GAME_CAR_RUN`. The handler runs two loops in order: first it scans zombies — if any visible zombie has touched the left edge it activates the nearest free parked car in range (`CAR_HIT_RANGE_Y`) and kills that zombie; it also activates a parked car when a zombie walks into its bumper. Then it advances every running car to the right, mowing down zombies in the same lane (creating a Bang, +10 score, `BUZZER_SOUND_BANG`). When a running car leaves the screen its slot becomes invisible and consumed.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Car as Car Task
+    participant Zombie as Zombie State
+    participant Bang as Bang State
+    participant Buzzer as Buzzer
+
+    Note over Screen,Car: Game entry initializes Car state
+
+    Screen->>Car: ZW_GAME_CAR_SETUP
+    activate Car
+    Note right of Car: game_active = true<br/>For each lane i:<br/>car[i].x = AXIS_X_CAR<br/>car[i].y = lane_y[i]<br/>car[i].lane = i<br/>car[i].visible = (settingdata.num_car >> i) & 1<br/>car[i].running = false<br/>car[i].action_image = 1
+    deactivate Car
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Car: ZW_GAME_CAR_RUN
+    deactivate Screen
+
+    activate Car
+    Car-->>Zombie: Scan visible zombies (loop 1)
+    alt zombie at left edge
+        Note right of Car: Find nearest parked car (running=false)<br/>within CAR_HIT_RANGE_Y
+        alt car found
+            Note right of Car: car[m].running = true<br/>Hide zombie (rescued)
+        else no parked car
+            Note right of Car: Leave zombie at edge<br/>Border may trigger ZW_GAME_RESET
+        end
+    else zombie touches parked car
+        Note right of Car: car[m].running = true
+    end
+
+    Note right of Car: Loop 2: each running car<br/>x += CAR_SPEED<br/>Advance action_image (1..3)
+    Car-->>Zombie: For zombies in same lane within CAR_HIT_RANGE_Y
+    alt zombie x reaches car front
+        Car->>Bang: Spawn bang at (zombie.x + 5, zombie.y - 2)
+        Note right of Car: zw_game_score += 10<br/>Hide zombie
+        Car->>Buzzer: BUZZER_SOUND_BANG
+    end
+    alt car[i].x > LCD_WIDTH
+        Note right of Car: car[i].visible = false<br/>car[i].running = false
+    end
+    deactivate Car
+
+    Note over Screen,Car: Game reset hides all cars
+
+    Screen->>Car: ZW_GAME_CAR_RESET
+    activate Car
+    Note right of Car: game_active = false<br/>For each lane i:<br/>car[i].x = AXIS_X_CAR<br/>car[i].y = lane_y[i]<br/>car[i].visible = false<br/>car[i].running = false
+    deactivate Car
+```
+
+## VIII. Tombstone Object Sequence
+
+Tombstone produces extra zombies that rise out of decorative tombstones. `NUM_TOMBSTONES = 10` slots, laid out as `TOMBSTONES_PER_LANE = 2` per lane. Whether each slot is active is decided by the `settingdata.tombstone_lane_1` and `settingdata.tombstone_lane_2` bitmasks. On every tick the screen task posts `ZW_GAME_TOMBSTONE_SPAWN`; the handler decrements a spawn timer and only acts every `TOMBSTONE_SPAWN_INTERVAL` ticks. When it fires, it picks a random tombstone — if active, it inserts a `rising` zombie into the first free zombie slot.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Tombstone as Tombstone Task
+    participant Zombie as Zombie State
+
+    Note over Screen,Tombstone: Game entry initializes Tombstone state
+
+    Screen->>Tombstone: ZW_GAME_TOMBSTONE_SETUP
+    activate Tombstone
+    Note right of Tombstone: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>For each lane l:<br/>tombstones[l].x = rand()%20 + 65<br/>tombstones[l].lane = l<br/>tombstones[l].active = (settingdata.tombstone_lane_1 >> l) & 1<br/>tombstones[l+NUM_LANES].x = rand()%20 + 90<br/>tombstones[l+NUM_LANES].lane = l<br/>tombstones[l+NUM_LANES].active = (settingdata.tombstone_lane_2 >> l) & 1
+    deactivate Tombstone
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Tombstone: ZW_GAME_TOMBSTONE_SPAWN
+    deactivate Screen
+    activate Tombstone
+    alt tombstone_spawn_timer > 0
+        Note right of Tombstone: tombstone_spawn_timer--<br/>(no spawn this tick)
+    else timer reaches 0
+        Note right of Tombstone: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>tidx = rand() % NUM_TOMBSTONES
+        alt tombstones[tidx].active
+            Tombstone->>Zombie: Use first free slot:<br/>x = tombstones[tidx].x<br/>y = lane_y[lane] + SIZE_BITMAP_TOMBSTONE_Y<br/>visible = WHITE<br/>action_image = 1<br/>dy = 0, zigzag_timer = 0<br/>rising = true<br/>rise_ticks = ZOMBIE_RISE_TICKS
+        else inactive tombstone
+            Note right of Tombstone: Skip spawn
+        end
+    end
+    deactivate Tombstone
+
+    Note over Screen,Tombstone: Game reset clears all tombstones
+
+    Screen->>Tombstone: ZW_GAME_TOMBSTONE_RESET
+    activate Tombstone
+    Note right of Tombstone: tombstone_spawn_timer = 0<br/>For every slot:<br/>x = 0, lane = 0, active = false
+    deactivate Tombstone
+```
+
+## IX. Per-Tick Signal Order
+
+The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME_TIME_TICK`:
+
+1. `ZW_GAME_GUNNER_UP` or `ZW_GAME_GUNNER_DOWN` (depending on `gunner_dir`)
+2. `ZW_GAME_GUNNER_UPDATE`
+3. `ZW_GAME_BULLET_RUN`
+4. `ZW_GAME_ZOMBIE_RUN`
+5. `ZW_GAME_ZOMBIE_DETONATOR`
+6. `ZW_GAME_TOMBSTONE_SPAWN`
+7. `ZW_GAME_CAR_RUN`
+8. `ZW_GAME_BANG_UPDATE`
+9. `ZW_GAME_CHECK_GAME_OVER`
+10. `ZW_GAME_LEVEL_UP`
+
+On `SCREEN_ENTRY` the screen task posts the matching `*_SETUP` signals to all object tasks and starts the periodic `ZW_GAME_TIME_TICK` timer. On `ZW_GAME_RESET` it removes the timer, posts the `*_RESET` signals, saves `gamescore.score_now = zw_game_score`, transitions to `GAME_OVER`, and arms a one-shot `ZW_GAME_EXIT_GAME` timer.
+
+## X. Code References
 
 | Object | Source file | Header file |
 |---|---|---|
-| Archery | `application/sources/app/game/archery_game/ar_game_archery.cpp` | `application/sources/app/game/archery_game/ar_game_archery.h` |
-| Arrow | `application/sources/app/game/archery_game/ar_game_arrow.cpp` | `application/sources/app/game/archery_game/ar_game_arrow.h` |
-| Meteoroid | `application/sources/app/game/archery_game/ar_game_meteoroid.cpp` | `application/sources/app/game/archery_game/ar_game_meteoroid.h` |
-| Bang | `application/sources/app/game/archery_game/ar_game_bang.cpp` | `application/sources/app/game/archery_game/ar_game_bang.h` |
-| Border | `application/sources/app/game/archery_game/ar_game_border.cpp` | `application/sources/app/game/archery_game/ar_game_border.h` |
+| Gunner | `application/sources/app/game/game_zomwar/zw_game_gunner.cpp` | `application/sources/app/game/game_zomwar/zw_game_gunner.h` |
+| Bullet | `application/sources/app/game/game_zomwar/zw_game_bullet.cpp` | `application/sources/app/game/game_zomwar/zw_game_bullet.h` |
+| Zombie | `application/sources/app/game/game_zomwar/zw_game_zombie.cpp` | `application/sources/app/game/game_zomwar/zw_game_zombie.h` |
+| Bang | `application/sources/app/game/game_zomwar/zw_game_bang.cpp` | `application/sources/app/game/game_zomwar/zw_game_bang.h` |
+| Border | `application/sources/app/game/game_zomwar/zw_game_border.cpp` | `application/sources/app/game/game_zomwar/zw_game_border.h` |
+| Car | `application/sources/app/game/game_zomwar/zw_game_car.cpp` | `application/sources/app/game/game_zomwar/zw_game_car.h` |
+| Tombstone | `application/sources/app/game/game_zomwar/zw_game_tombstone.cpp` | `application/sources/app/game/game_zomwar/zw_game_tombstone.h` |
+| Screen | `application/sources/app/screens/scr_game_zomwar.cpp` | `application/sources/app/screens/scr_game_zomwar.h` |
