@@ -118,3 +118,32 @@ The game starts with the **Menu game** screen with the following options:
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/game-object-sequences.md).
 
+### III. How to Play:
+- In this game, you control the Gunner, moving up/down with the two buttons [Up]/[Down] to choose the position to fire the Bullet. In addition, to make the Gunner move faster, you can press and hold the [Up] button to go up or [Down] to go down.
+- When you press the [Mode] button, the Bullet is fired in order to destroy the approaching Zombies.
+- The goal of the game is to score as many points as possible; the game ends when a Zombie touches the Border.
+
+#### Game Mechanics:
+- **Scoring:** The score is counted by the number of Zombies destroyed. Each Zombie destroyed corresponds to 10 points. The accumulated score is displayed in the bottom-right corner of the screen. In addition, you can observe the number of Zombies destroyed in the bottom-left corner of the screen.
+- **Difficulty:** At certain time intervals, waves of Zombies attack. Each time you survive a Zombie wave, the Zombies' movement speed increases by one level. The Zombies' initial movement speed can be customized in the Setting section.
+- **Difficulty:** To make the game more lively, the objects also have animations while moving. Objects with animation include: Gunner, Zombie, and Car.
+- **Game Over:** When a Zombie touches the Border, the game ends. The objects are reset and the score is saved. A "RIP" screen will appear for a short time, after which you enter the "Game Over" screen with 3 options:
+    - Retry: play again.
+    - Rank: view the leaderboard.
+    - Home: return to the game menu.
+
+ > **Note:** In the new game version, you will receive a screen of "RIP" before entering the Game Over screen, so try to score many points and survive as possible to earn praise.
+
+> <table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/gif_game_over_x4.gif" alt="archery game over screen 1" width="480"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 5:</em></strong> Game_over screen 1</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/scr_game_over_2_4x.png" alt="archery game over screen 2" width="480"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 6:</em></strong> Game_over screen 2</p>
