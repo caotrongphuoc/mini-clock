@@ -163,7 +163,7 @@ The game opens on the **Main Menu**, which offers the following options:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence_logic.png" alt="basic zomwar game sequence logic" width="720"/></td>
+    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="720"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>
