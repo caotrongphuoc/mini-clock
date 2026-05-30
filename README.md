@@ -88,7 +88,7 @@ Flash Partitions Layout
 The following section describes the gameplay and core mechanics of **"Zomwar"**. It serves as a reference for ongoing game design and firmware development.
 
 <table align="center">
-  <tr>`
+  <tr>
     <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
@@ -176,3 +176,15 @@ The game opens on the **Main Menu**, which offers the following options:
 Thank you for visiting this repository.
 If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
 ```
+
+<a href="https://github.com/caotrongphuoc">
+  <img src="https://img.shields.io/badge/GitHub-caotrongphuoc-181717?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
+
+<a href="https://www.linkedin.com/in/cao-trong-phuoc/">
+  <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+</a>
+
+<a href="mailto:caotrongphuoc@gmail.com">
+  <img src="https://img.shields.io/badge/Gmail-caotrongphuoc%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white"/>
+</a>
