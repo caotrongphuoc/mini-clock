@@ -18,17 +18,18 @@
 | [README.md](README.md) | Main project overview, hardware information, gameplay rules, and object descriptions. |
 | [docs/runtime-signal-processing.md](docs/runtime-signal-processing.md) | Runtime signal-processing flow for button input, AK task messages, timers, game-loop ticks, object updates, and Mermaid sequence diagrams. |
 | [docs/eeprom-data-storage.md](docs/eeprom-data-storage.md) | EEPROM storage layout for game settings and scores, including magic-number validation, checksum protection, read/write flow, and related APIs. |
-| [docs/game-object-sequences.md](docs/game-object-sequences.md) | Runtime sequence diagrams for gameplay objects: Archery, Arrow, Meteoroid, Bang, and Border. |
+| [docs/game-object-sequences.md](docs/game-object-sequences.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
 | [docs/display-design.md](docs/display-design.md) | Display design notes for screen layout, bitmap assets, rendering flow, and screen transitions. |
 | [docs/buzzer-audio.md](docs/buzzer-audio.md) | Buzzer and audio behavior notes for sound effects, silent mode, playback timing, and related APIs. |
 
 ## Introduction
 
-Zomwar is an action survival game built directly on the AK Embedded Base Kit platform — a hands-on learning resource for embedded programming enthusiasts to explore Event-driven Programming in depth. Through building and running Zomwar, learners apply core concepts of modern embedded engineering:
-- System design: Using UML to model complex logic flows.
-- Process management: Coordinating and executing Tasks efficiently.
-- Communication: How Signal, Timer, and Message handle real-time responses.
-- Control logic: Building robust state machines for the character, Zombies, and match progression.
+Zomwar is an action survival game built on top of the AK Embedded Base Kit — a hands-on platform for embedded programming enthusiasts to explore event-driven design in depth. While building and playing Zomwar, you put the following core concepts of modern embedded engineering into practice:
+
+- **System design:** Modelling complex logic flows with UML.
+- **Process management:** Coordinating cooperative Tasks and scheduling them efficiently.
+- **Communication:** Using Signals, Timers, and Messages to react in real time.
+- **Control logic:** Building robust state machines for the player, the Zombies, and the overall match progression.
 
 ### I. Hardware
 
@@ -39,10 +40,10 @@ Zomwar is an action survival game built directly on the AK Embedded Base Kit pla
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> AK Embedded Base Kit - STM32L151</p>
 
-[AK Embedded Base Kit](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu) is an evaluation kit for advanced embedded software learners.
+[AK Embedded Base Kit](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu) is an evaluation kit aimed at intermediate and advanced embedded software learners.
 
-The KIT integrates **1.54" Oled LCD**, **3 push buttons**, and **1 Buzzers** that play music, to learn **the event-driven system** through hands-on game machine design.
-The KIT also integrates **RS485**, **Qwiic Connect System**, and **Grove Ecosystems**, suitable for prototyping practical applications in embedded systems.
+The kit integrates a **1.54" OLED LCD**, **3 push buttons**, and **a buzzer** capable of playing short melodies, giving you everything you need to study **event-driven systems** through hands-on game-machine design.
+It also exposes **RS485**, the **Qwiic Connect System**, and **Grove** connectors, so it doubles as a convenient prototyping board for real-world embedded projects.
 
 **MCU Overview:**
 
@@ -83,7 +84,8 @@ Flash Partitions Layout
 <p align="center"><strong><em>Figure 2:</em></strong> Board view Top + Bottom </p>
 
 ### II. Game Description and Objects
-"The following document outlines the gameplay and core mechanics of “Zomwar.” It will serve as a reference guide for future game design and development."
+
+The following section describes the gameplay and core mechanics of **"Zomwar"**. It serves as a reference for ongoing game design and firmware development.
 
 <table align="center">
   <tr>
@@ -92,11 +94,12 @@ Flash Partitions Layout
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
 
-The game starts with the **Menu game** screen with the following options:
-- **Play:** Begin playing the game.
-- **Setting:** Configure the game's parameters.
-- **Rank:** View the top 3 highest scores achieved.
-- **Exit:** Exit the game menu to the idle screen.
+The game opens on the **Main Menu**, which offers the following options:
+
+- **Play:** Start a new match.
+- **Setting:** Configure gameplay parameters such as starting difficulty and sound.
+- **Rank:** View the top 3 highest scores.
+- **Exit:** Leave the menu and return to the idle screen.
 
 <table align="center">
   <tr>
@@ -106,47 +109,50 @@ The game starts with the **Menu game** screen with the following options:
  <p align="center"><strong><em>Figure 4:</em></strong> Game play screen and objects</p>
 
 #### Objects in the Game:
-|Object Name|Description|
+
+| Object Name | Description |
 |---|---|
-|**Gunner**|Moves up and down to choose the firing position|
-|**Bullet**|Fired from the gunner, used to destroy zombies|
-|**Zombie**|An object that moves toward the gunner at an increasing speed, capable of destroying the border|
-|**Car**|An object located in front of the border, serving as the second checkpoint after the gunner; it is activated to move and destroy zombies when a zombie touches it|
-|**Bang**|An effect that appears when a zombie is destroyed|
-|**Tombstone**|Object flying towards the bow with increasing speed, capable of destroying the border|
-|**Border**|The safe zone that must be protected from zombie intrusion|
+| **Gunner** | The player. Moves up and down to choose a firing lane. |
+| **Bullet** | Fired by the Gunner; destroys Zombies on contact. |
+| **Zombie** | Walks toward the Gunner, getting faster each wave, and will destroy the Border on contact. |
+| **Car** | Parked in front of the Border as a second line of defence. Activates and crushes Zombies the moment one touches it. |
+| **Bang** | A short impact effect that appears when a Zombie is destroyed. |
+| **Tombstone** | A long-range projectile that flies toward the Gunner with increasing speed and can destroy the Border. |
+| **Border** | The safe zone that must be protected from any Zombie intrusion. |
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/game-object-sequences.md).
 
 ### III. How to Play:
-- In this game, you control the Gunner, moving up/down with the two buttons [Up]/[Down] to choose the position to fire the Bullet. In addition, to make the Gunner move faster, you can press and hold the [Up] button to go up or [Down] to go down.
-- When you press the [Mode] button, the Bullet is fired in order to destroy the approaching Zombies.
-- The goal of the game is to score as many points as possible; the game ends when a Zombie touches the Border.
+
+- You control the **Gunner**. Use the **[Up]** and **[Down]** buttons to move up and down and pick a firing lane. Holding either button moves the Gunner faster.
+- Press the **[Mode]** button to fire a **Bullet** and destroy the approaching **Zombies**.
+- The goal is to score as many points as possible. The match ends the moment a Zombie reaches the **Border**.
 
 #### Game Mechanics:
-- **Scoring:** The score is counted by the number of Zombies destroyed. Each Zombie destroyed corresponds to 10 points. The accumulated score is displayed in the bottom-right corner of the screen. In addition, you can observe the number of Zombies destroyed in the bottom-left corner of the screen.
-- **Difficulty:** At certain time intervals, waves of Zombies attack. Each time you survive a Zombie wave, the Zombies' movement speed increases by one level. The Zombies' initial movement speed can be customized in the Setting section.
-- **Difficulty:** To make the game more lively, the objects also have animations while moving. Objects with animation include: Gunner, Zombie, and Car.
-- **Game Over:** When a Zombie touches the Border, the game ends. The objects are reset and the score is saved. A "RIP" screen will appear for a short time, after which you enter the "Game Over" screen with 3 options:
-    - Retry: play again.
-    - Rank: view the leaderboard.
-    - Home: return to the game menu.
 
- > **Note:** In the new game version, you will receive a screen of "RIP" before entering the Game Over screen, so try to score many points and survive as possible to earn praise.
+- **Scoring:** Each Zombie destroyed is worth **10 points**. The running score is shown in the bottom-right corner of the screen, and the total kill count in the bottom-left corner.
+- **Difficulty:** Zombies arrive in waves. Surviving a wave increases their movement speed by one level. The starting speed can be customised in the **Setting** menu.
+- **Animation:** To keep the action lively, several objects play animation while moving — including the **Gunner**, **Zombie**, and **Car**.
+- **Game Over:** When a Zombie touches the Border the match ends, the objects reset, and the score is saved. A short **"RIP"** screen plays before the **Game Over** screen, which offers 3 options:
+    - **Retry:** play again.
+    - **Rank:** view the leaderboard.
+    - **Home:** return to the main menu.
 
-> <table align="center">
+> **Note:** In the latest game version, a "RIP" screen plays before the Game Over screen — try to score as many points and survive as long as possible to earn praise.
+
+<table align="center">
   <tr>
     <td align="center"><img src="resources/images/screens/scr_game_over_1_x10.png" alt="zomwar game over screen 1" width="480"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 5:</em></strong> Game_over screen 1</p>
+<p align="center"><strong><em>Figure 5:</em></strong> Game Over screen 1</p>
 
 <table align="center">
   <tr>
     <td align="center"><img src="resources/images/screens/scr_game_over_2_x10.png" alt="zomwar game over screen 2" width="480"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 6:</em></strong> Game_over screen 2</p>
+<p align="center"><strong><em>Figure 6:</em></strong> Game Over screen 2</p>
 
 ### IV. Basic Game Sequence Logic
 
@@ -157,12 +163,13 @@ The game starts with the **Menu game** screen with the following options:
     <td align="center"><img src="resources/images/sequence_object/basic_archery_game_sequence_logic.png" alt="basic archery game sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 4:</em></strong> Basic game sequence logic</p>
+<p align="center"><strong><em>Figure 7:</em></strong> Basic game sequence logic</p>
 
 ## Contact & Support
+
 <p style="font-size: 20px;"><strong>Cao Trong Phuoc</strong> - Software Engineer - Embedded Systems</p>
 
 ``` Note
-Thank you for visiting this repository.  
-If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly
+Thank you for visiting this repository.
+If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
 ```
