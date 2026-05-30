@@ -88,7 +88,7 @@ Flash Partitions Layout
 The following section describes the gameplay and core mechanics of **"Zomwar"**. It serves as a reference for ongoing game design and firmware development.
 
 <table align="center">
-  <tr>`
+  <tr>
     <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
