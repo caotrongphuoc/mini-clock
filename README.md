@@ -100,7 +100,7 @@ The game starts with the **Menu game** screen with the following options:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/scr_game_zomwar.png" alt="scr_game_zomwar" width="600"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_zomwar_charts.png" alt="scr_game_zomwar" width="600"/></td>
   </tr>
 </table>
  <p align="center"><strong><em>Figure 4:</em></strong> Game play screen and objects</p>
