@@ -88,7 +88,7 @@ Flash Partitions Layout
 The following section describes the gameplay and core mechanics of **"Zomwar"**. It serves as a reference for ongoing game design and firmware development.
 
 <table align="center">
-  <tr>
+  <tr>`
     <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="menu game" width="480"/></td>
   </tr>
 </table>
@@ -112,28 +112,31 @@ The game opens on the **Main Menu**, which offers the following options:
 
 | Object Name | Description |
 |---|---|
-| **Gunner** | The player. Moves up and down to choose a firing lane. |
-| **Bullet** | Fired by the Gunner; destroys Zombies on contact. |
-| **Zombie** | Walks toward the Gunner, getting faster each wave, and will destroy the Border on contact. |
-| **Car** | Parked in front of the Border as a second line of defence. Activates and crushes Zombies the moment one touches it. |
-| **Bang** | A short impact effect that appears when a Zombie is destroyed. |
-| **Tombstone** | A long-range projectile that flies toward the Gunner with increasing speed and can destroy the Border. |
-| **Border** | The safe zone that must be protected from any Zombie intrusion. |
+| **Gunner** | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
+| **Bullet** | Projectile fired by the Gunner. Flies to the right and destroys any Zombie it touches.  |
+| **Zombie** | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
+| **Tombstone** | A static graveyard tile placed on the map (up to 2 per lane). While active, it periodically makes a new Zombie rise out of the grave into its lane. Which Tombstones are active can be configured in **Setting**. |
+| **Car** | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
+| **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
+| **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/game-object-sequences.md).
 
 ### III. How to Play:
 
-- You control the **Gunner**. Use the **[Up]** and **[Down]** buttons to move up and down and pick a firing lane. Holding either button moves the Gunner faster.
-- Press the **[Mode]** button to fire a **Bullet** and destroy the approaching **Zombies**.
-- The goal is to score as many points as possible. The match ends the moment a Zombie reaches the **Border**.
+- You control the **Gunner**. Use the **[Up]** and **[Down]** buttons to move between the 5 firing rows. Holding either button moves the Gunner faster.
+- Press the **[Mode]** button to fire a **Bullet** at the incoming **Zombies**.
+- Zombies appear from the right edge of the screen and also rise up from any active **Tombstones** on the map.
+- The goal is to score as many points as possible. The match ends when a Zombie crosses the **Border** in a lane that no longer has a **Car** to defend it.
 
 #### Game Mechanics:
 
-- **Scoring:** Each Zombie destroyed is worth **10 points**. The running score is shown in the bottom-right corner of the screen, and the total kill count in the bottom-left corner.
-- **Difficulty:** Zombies arrive in waves. Surviving a wave increases their movement speed by one level. The starting speed can be customised in the **Setting** menu.
-- **Animation:** To keep the action lively, several objects play animation while moving — including the **Gunner**, **Zombie**, and **Car**.
-- **Game Over:** When a Zombie touches the Border the match ends, the objects reset, and the score is saved. A short **"RIP"** screen plays before the **Game Over** screen, which offers 3 options:
+- **Scoring:** Each Zombie destroyed — whether by a Bullet or by a Car — is worth **10 points**. The running score is shown in the bottom-right corner of the screen, and the total kill count in the bottom-left corner.
+- **Waves & difficulty:** Every **200 points**, a warning blinks on screen, a fresh batch of Zombies is spawned, and the Zombie movement speed goes up by one level (capped at level 6). The starting speed can be customised in the **Setting** menu.
+- **Cars as a second line of defence:** A Car parked on a lane stays still until a Zombie reaches the left edge of that lane (or runs into the Car). It then drives across the lane once, crushes every Zombie in its path, and exits the screen — meaning each Car can only save the lane one time. Use **Setting** to choose which lanes start with a Car.
+- **Tombstones as Zombie spawners:** Tombstones sit at fixed positions on the map; every active Tombstone occasionally lifts a new Zombie out of the grave into its lane. Toggle individual Tombstones on or off in **Setting**.
+- **Animation:** To keep the action lively, the Gunner, the Zombies, and the Cars all play sprite animations while they move.
+- **Game Over:** When a Zombie crosses the Border in an undefended lane, the match ends, the objects reset, and the score is saved. A short **"RIP"** screen plays before the **Game Over** screen, which offers 3 options:
     - **Retry:** play again.
     - **Rank:** view the leaderboard.
     - **Home:** return to the main menu.
