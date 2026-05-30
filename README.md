@@ -147,3 +147,29 @@ The game starts with the **Menu game** screen with the following options:
   </tr>
 </table>
 <p align="center"><strong><em>Figure 6:</em></strong> Game_over screen 2</p>
+
+### IV. Basic Game Sequence Logic
+
+> **Note:** For a more detailed sequence flow, see [Runtime Signal Processing](docs/runtime-signal-processing.md).
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/sequence_object/basic_archery_game_sequence_logic.png" alt="basic archery game sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 4:</em></strong> Basic game sequence logic</p>
+
+## Contact & Support
+<p style="font-size: 20px;"><strong>Phan Quoc Buu</strong> - Embedded Software Engineer</p>
+
+``` Note
+Thank you for visiting this repository.  
+If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly
+```
+
+**My contact:** <br/>
+<a href="https://github.com/caotrongphuoc">
+  <img src="https://img.shields.io/badge/GitHub-QuocBuu-181717?style=flat&logo=github&logoColor=white"/>
+</a>
+<a href="https://www.linkedin.com/in/cao-trong-phuoc/">
+  <img src="https://img.shields.io/badge/LinkedIn-Phan%20Quoc%20Buu-0A66C2?style=flat&logo=linkedin&logoColor=white"/>
