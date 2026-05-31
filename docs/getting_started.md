@@ -198,16 +198,32 @@ From here, anyone can visit your GitHub link to follow your progress and try out
 
 ---
 
-## Contact & Support
-
-- LinkedIn: [www.linkedin.com/in/cao-trong-phuoc](https://www.linkedin.com/in/cao-trong-phuoc)
-- Phone: 0936310918
-
 ## References
 
 - Blog: [AK Embedded Software](https://epcb.vn/blogs/ak-embedded-software)
 
 ---
+
+## Contact & Support
+
+<p style="font-size: 20px;"><strong>Cao Trong Phuoc</strong> - Software Engineer - Embedded Systems</p>
+
+``` Note
+Thank you for visiting this repository.
+If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
+```
+
+<a href="https://github.com/caotrongphuoc">
+  <img src="https://img.shields.io/badge/GitHub-caotrongphuoc-181717?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
+
+<a href="https://www.linkedin.com/in/cao-trong-phuoc/">
+  <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+</a>
+
+<a href="mailto:caotrongphuoc@gmail.com">
+  <img src="https://img.shields.io/badge/Gmail-caotrongphuoc%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white"/>
+</a>
 
 <p align="center">
   <i>Happy coding, and may you build some truly fun games!</i>
