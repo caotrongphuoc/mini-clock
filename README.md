@@ -118,7 +118,7 @@ The game opens on the **Main Menu**, which offers the following options:
 | **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
 | **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
 
-> **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/game-object-sequences.md).
+> **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/object_sequence.md).
 
 ### III. How to Play:
 
@@ -157,7 +157,7 @@ The game opens on the **Main Menu**, which offers the following options:
 
 ### IV. Basic Game Sequence Logic
 
-> **Note:** For a more detailed sequence flow, see [Runtime Signal Processing](docs/runtime-signal-processing.md).
+> **Note:** For a more detailed sequence flow, see [Runtime Signal Processing](docs/runtime_signal_processing.md).
 
 <table align="center">
   <tr>
