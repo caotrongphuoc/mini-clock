@@ -30,13 +30,13 @@ Nhấn nút **Fork** ở góc trên bên phải để tạo một bản sao dự
 Ngoài ra, bạn có thể nhấn nút **Star** ở bên phải nút **Fork** để ủng hộ tác giả nhé.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/repo-ak.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/repo-ak.png" />
 </p>
 
 ### 3. Tạo bản fork
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-fork.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-fork.png" />
 </p>
 
 > **Note:**
@@ -46,7 +46,7 @@ Ngoài ra, bạn có thể nhấn nút **Star** ở bên phải nút **Fork** đ
 Sau khi fork thành công, GitHub sẽ chuyển đến repository mới — đây chính là "bộ khung" để bạn phát triển và hoàn thiện game:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/repo-after-create-fork.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/repo-after-create-fork.png" />
 </p>
 
 ---
@@ -68,7 +68,7 @@ Sau khi fork thành công, GitHub sẽ chuyển đến repository mới — đâ
 Từ thư mục `Home`, tạo một thư mục đặt tên là **Workspace** — đây sẽ là nơi chứa toàn bộ source code và công cụ lập trình.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-workspace.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-workspace.png" />
 </p>
 
 Bên trong `Workspace`, tạo thêm 2 thư mục con:
@@ -79,7 +79,7 @@ Bên trong `Workspace`, tạo thêm 2 thư mục con:
 | `Tools`   | Chứa các công cụ lập trình (xem chi tiết tại [phần II](#ii-quick-start-guide-setup-môi-trường)) |
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-sources-and-tools.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-sources-and-tools.png" />
 </p>
 
 ---
@@ -95,7 +95,7 @@ git clone https://github.com/<ten-cua-ban>/<ten-repo-da-clone>.git
 ```
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/open-terminal-in-sources.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/open-terminal-in-sources.png" />
 </p>
 
 ---
@@ -107,13 +107,13 @@ Mở **VSCode** trên Linux, sau đó mở repository vừa clone để bắt đ
 Trước tiên, hãy đặt tên cho game của bạn trong file `Makefile.mk` ở thư mục `application/`:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/name-your-game.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/name-your-game.png" />
 </p>
 
 Toàn bộ logic game được viết trong thư mục `application/sources/app`.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/application.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/application.png" />
 </p>
 
 #### Ví dụ: Hiển thị màn hình Peashooter (Cây đậu bắn súng) trong game Plants vs. Zombies
@@ -121,49 +121,49 @@ Toàn bộ logic game được viết trong thư mục `application/sources/app`
 **Bước 3.1 —** Tạo file header `scr_peashooter.h` trong thư mục `screens/` để khai báo các hàm vẽ màn hình Peashooter:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-header-peashooter.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-header-peashooter.png" />
 </p>
 
 **Bước 3.2 —** Tạo file `scr_peashooter.cpp` để xử lý dữ liệu bitmap và hiển thị Peashooter lên màn hình:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-scr-peashooter.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-scr-peashooter.png" />
 </p>
 
 **Bước 3.3 —** Tạo file header `screens_bitmap.h` trong thư mục `screens/` để khai báo dữ liệu bitmap dùng chung:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-header-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-header-bitmap.png" />
 </p>
 
 **Bước 3.4 —** Tạo file `screens_bitmap.cpp` chứa dữ liệu bitmap của Peashooter:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/create-scr-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/create-scr-bitmap.png" />
 </p>
 
 **Bước 3.5 —** Include file header của Peashooter vào `task_display.h`:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/inlcude-header-to-task-display.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/inlcude-header-to-task-display.png" />
 </p>
 
 **Bước 3.6 —** Cập nhật lại case `AC_DISPLAY_BUTTON_MODE_RELEASED`:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/update-case.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/update-case.png" />
 </p>
 
 **Bước 3.7 —** Thêm hai file `scr_peashooter.cpp` và `screens_bitmap.cpp` vào `Makefile.mk` trong thư mục `screens/` để biên dịch:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/add-2-peashooter-and-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/add-2-peashooter-and-bitmap.png" />
 </p>
 
 **Bước 3.8 —** Build và nạp firmware lên kit (xem hướng dẫn chi tiết tại [phần II](#ii-quick-start-guide-setup-môi-trường)):
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/result.jpg" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/result.jpg" />
 </p>
 
 ---
@@ -181,17 +181,17 @@ git push origin main
 **Kết quả sau khi chạy lệnh:**
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/push-code-to-github.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/push-code-to-github.png" />
 </p>
 
 **Repository đã được cập nhật trên GitHub:**
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/github-after-update-1.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/github-after-update-1.png" />
 </p>
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="hardware/images/Quickstartguide/github-after-update-2.png" />
+  <img width="1338" height="640" alt="repo-ak" src="resources/images/getting_started/github-after-update-2.png" />
 </p>
 
 Từ đây, bất kỳ ai cũng có thể truy cập link GitHub của bạn để theo dõi tiến độ và trải nghiệm tựa game mà bạn đã tạo ra.
