@@ -17,7 +17,7 @@
 |---|---|
 | [README.md](README.md) | Main project overview, hardware information, gameplay rules, and object descriptions. |
 | [docs/runtime-signal-processing.md](docs/zw_game_runtime_signal_processing.md) | Runtime signal-processing flow for button input, AK task messages, timers, game-loop ticks, object updates, and Mermaid sequence diagrams. |
-| [docs/game-object-sequences.md](docs/game-object-sequences.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
+| [docs/game-object-sequences.md](docs/zw_game_object_sequence.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
 
 ## Introduction
 
