@@ -8,7 +8,6 @@
 
 static uint8_t shoot_tick_counter;   
 static uint8_t current_location = 0; 
-bool zw_game_sound_enable = true;
 
 static char items_name[NUMBER_ITEMS][30] = {
 	"<<   Play   >>",
@@ -66,7 +65,6 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 	switch (msg->sig) {
 	case SCREEN_ENTRY: {
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		zw_game_sound_enable = false;
 		current_location = 0;
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
@@ -113,7 +111,6 @@ void scr_game_menu_handle(ak_msg_t* msg) {
 		break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
-		zw_game_sound_enable = true;
 		switch (current_location) {
 			case 0: SCREEN_TRAN(scr_game_zomwar_handle, &scr_game_zomwar); break;
 			case 1: SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting); break;

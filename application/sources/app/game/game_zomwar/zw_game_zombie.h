@@ -21,7 +21,7 @@
 
 #define NUM_ZOMBIES              (20)  
 #define NUM_ZOMBIES_INIT         (6)    
-#define ZOMBIE_SPEED_MAX         (6)   
+#define ZOMBIE_SPEED_MAX         (7)   
 #define MENU_ZOMBIE_SPEED        (1)    
 
 #define SIZE_BITMAP_ZOMBIES_X    (25)  

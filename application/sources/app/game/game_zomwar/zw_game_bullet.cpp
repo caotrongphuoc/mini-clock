@@ -35,9 +35,7 @@ void zw_game_bullet_handle(ak_msg_t* msg) {
             bullet[i].x = gunner.x + 15;
             bullet[i].y = gunner.y - 8;
             gunner.action_image = 2;
-            if(zw_game_sound_enable) {
-                BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-            }
+            BUZZER_PlaySound(BUZZER_SOUND_CLICK);
             break; 
         }
     }
