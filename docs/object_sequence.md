@@ -31,54 +31,12 @@ Gunner owns the player position. The screen task initializes the Gunner object w
 
 Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right. When a bullet exits the screen, it is hidden and its x position is cleared.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Button as Button Callback
-    participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(scr_game_zomwar)
-    participant Bullet as Bullet Task
-    participant Gunner as Gunner State
-    participant Buzzer as Buzzer
-
-    Note over Screen,Bullet: Game entry initializes Bullet state
-
-    Screen->>Bullet: ZW_GAME_BULLET_SETUP
-    activate Bullet
-    Note right of Bullet: For every slot:<br/>x = 0, y = 0,<br/>visible = BLACK
-    deactivate Bullet
-
-    Note over Button,Bullet: MODE button shoots a bullet
-
-    Button->>Screen: AC_DISPLAY_BUTTON_MODE_PRESSED
-    Screen->>Bullet: ZW_GAME_BULLET_SHOOT
-    activate Bullet
-    Note right of Bullet: Find first free slot<br/>bullet[i].visible = WHITE<br/>bullet[i].x = gunner.x + 15<br/>bullet[i].y = gunner.y - 8
-    Bullet->>Gunner: gunner.action_image = 2 (fire frame)
-    alt zw_game_sound_enable
-        Bullet->>Buzzer: BUZZER_SOUND_CLICK
-    end
-    deactivate Bullet
-
-    Timer->>Screen: ZW_GAME_TIME_TICK
-    activate Screen
-    Screen->>Bullet: ZW_GAME_BULLET_RUN
-    deactivate Screen
-    activate Bullet
-    Note right of Bullet: For every visible bullet:<br/>x += STEP_BULLET_AXIS_X
-
-    alt bullet[i].x >= MAX_AXIS_X_BULLET
-        Note right of Bullet: visible = BLACK<br/>x = 0
-    end
-    deactivate Bullet
-
-    Note over Screen,Bullet: Game reset hides all bullets
-
-    Screen->>Bullet: ZW_GAME_BULLET_RESET
-    activate Bullet
-    Note right of Bullet: For every slot:<br/>x = 0, y = 0,<br/>visible = BLACK
-    deactivate Bullet
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="bullet sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 1:</em></strong> Bullet sequence logic</p>
 
 ## IV. Zombie Object Sequence
 
