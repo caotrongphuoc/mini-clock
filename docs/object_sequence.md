@@ -25,7 +25,7 @@ Gunner owns the player position. The screen task initializes the Gunner object w
     <td align="center"><img src="resources/images/sequence_object/zw_game_gunner_sequence.png" alt="gunner sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 7:</em></strong> Gunner sequence logic</p>
+<p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
 
 ## III. Bullet Object Sequence
 
