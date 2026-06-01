@@ -21,7 +21,6 @@ void zw_game_gunner_handle(ak_msg_t* msg) {
         if(gunner_y < AXIS_Y_GUNNER_MIN) {
             gunner_y = AXIS_Y_GUNNER_MIN;
         }
-        gunner.y = gunner_y; 
     } break;
 
     case ZW_GAME_GUNNER_DOWN: {
@@ -30,10 +29,10 @@ void zw_game_gunner_handle(ak_msg_t* msg) {
         if(gunner_y > AXIS_Y_GUNNER_MAX) {
             gunner_y = AXIS_Y_GUNNER_MAX;
         }
-        gunner.y = gunner_y; 
     } break;
 
     case ZW_GAME_GUNNER_UPDATE: {
+        gunner.y = gunner_y;
         if (gunner.action_image == 2) {
             gunner.action_image = 1;
         }
