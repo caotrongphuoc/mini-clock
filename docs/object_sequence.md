@@ -55,44 +55,12 @@ The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN
 
 Bang is the explosion effect. It is not spawned by a dedicated signal — the Zombie task and Car task directly mutate the `bang[]` array when they detect a collision. On every game tick the screen task posts `ZW_GAME_BANG_UPDATE`; each visible bang advances its animation frame, and when the frame counter rolls past 3 the bang hides itself and resets its frame to 1.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Zombie as Zombie / Car Task
-    participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(scr_game_zomwar)
-    participant Bang as Bang Task
-
-    Note over Screen,Bang: Game entry initializes Bang effects
-
-    Screen->>Bang: ZW_GAME_BANG_SETUP
-    activate Bang
-    Note right of Bang: For every slot:<br/>visible = BLACK<br/>action_image = 1
-    deactivate Bang
-
-    Zombie->>Bang: Collision directly writes a free slot<br/>visible = WHITE, x, y, action_image = 1
-    Note right of Bang: (No signal — direct array write)
-
-    Timer->>Screen: ZW_GAME_TIME_TICK
-    activate Screen
-    Screen->>Bang: ZW_GAME_BANG_UPDATE
-    deactivate Screen
-    activate Bang
-    alt bang[i].visible == WHITE
-        Note right of Bang: action_image++
-    end
-    alt action_image > 3
-        Note right of Bang: action_image = 1<br/>visible = BLACK
-    end
-    deactivate Bang
-
-    Note over Screen,Bang: Game reset hides all bang effects
-
-    Screen->>Bang: ZW_GAME_BANG_RESET
-    activate Bang
-    Note right of Bang: For every slot:<br/>visible = BLACK<br/>action_image = 1
-    deactivate Bang
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_bang_sequence.png" alt="bullet sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 1:</em></strong> Zombie sequence logic</p>
 
 ## VI. Border Object Sequence
 
