@@ -42,57 +42,12 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
 
 Zombie moves from right to left with zigzag motion on the Y axis. On each tick, the screen task posts `ZW_GAME_ZOMBIE_RUN` to move visible zombies and advance their animation frame, then posts `ZW_GAME_ZOMBIE_DETONATOR` to check bullet collisions. Zombies that are still `rising` from a tombstone do not move horizontally — they walk up by 1 px per tick for `ZOMBIE_RISE_TICKS` ticks, then join the normal flow. The task also auto-respawns from the right edge to keep at least `NUM_ZOMBIES_INIT` zombies alive at all times.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(scr_game_zomwar)
-    participant Zombie as Zombie Task
-    participant Bullet as Bullet State
-    participant Bang as Bang State
-    participant Buzzer as Buzzer
-
-    Note over Screen,Zombie: Game entry initializes Zombie state
-
-    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
-    activate Zombie
-    Note right of Zombie: game_active = true<br/>zw_game_zombie_speed = settingdata.zombie_speed<br/>Hide all NUM_ZOMBIES slots<br/>Spawn NUM_ZOMBIES_INIT zombies<br/>Randomize x, y, action_image, zigzag_timer
-    deactivate Zombie
-
-    Timer->>Screen: ZW_GAME_TIME_TICK
-    activate Screen
-    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
-    Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
-    deactivate Screen
-
-    activate Zombie
-    alt zombie[i].rising
-        Note right of Zombie: y--, rise_ticks--<br/>Advance action_image<br/>End rising when ticks = 0
-    else normal motion
-        Note right of Zombie: x -= zw_game_zombie_speed<br/>Clamp at -ZOMBIE_MIN_LEFT_OFFSET<br/>Zigzag dy when zigzag_timer = 0<br/>Clamp y to [ZOMBIE_Y_MIN, ZOMBIE_Y_MAX]<br/>Advance action_image (1..3)
-    end
-    Note right of Zombie: Auto-respawn from right edge<br/>until alive count >= NUM_ZOMBIES_INIT
-
-    Zombie-->>Bullet: Check visible bullets<br/>against visible (non-rising) zombies
-
-    alt bullet collides with zombie
-        Note right of Zombie: Save dead_x, dead_y
-        Zombie->>Bullet: Hide bullet (visible = BLACK, x = 0)
-        Zombie->>Bang: Spawn bang at (dead_x + 5, dead_y - 2)<br/>visible = WHITE, action_image = 1
-        Note right of Zombie: zw_game_score += 10<br/>Hide zombie (visible = BLACK)
-        Zombie->>Buzzer: BUZZER_SOUND_BANG
-    else no collision
-        Note right of Zombie: Keep zombie moving
-    end
-    deactivate Zombie
-
-    Note over Screen,Zombie: Game reset hides all zombies
-
-    Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
-    activate Zombie
-    Note right of Zombie: game_active = false<br/>Hide all zombies
-    deactivate Zombie
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="bullet sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 1:</em></strong> Zombie sequence logic</p>
 
 The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN_MENU` signals used by the menu screen to display a single demo zombie that loops across the screen and reacts to bullets without affecting the score.
 
