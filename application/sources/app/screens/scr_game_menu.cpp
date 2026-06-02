@@ -1,7 +1,7 @@
 #include "scr_game_menu.h"
 
 /*****************************************************************************/
-/* Variable and Struct Declaration - Menu game */
+/* Variable and Struct Declaration - Game menu */
 /*****************************************************************************/
 
 #define NUMBER_ITEMS (4)
@@ -17,8 +17,9 @@ static char items_name[NUMBER_ITEMS][30] = {
 };
 
 /*****************************************************************************/
-/* View - Menu game */
+/* View - Game menu */
 /*****************************************************************************/
+
 static void view_scr_game_menu();
 
 view_dynamic_t dyn_view_game_menu = {
@@ -58,7 +59,7 @@ void view_scr_game_menu()
 }
 
 /*****************************************************************************/
-/* Handle - Menu game */
+/* Handle - Game menu */
 /*****************************************************************************/
 
 void scr_game_menu_handle(ak_msg_t *msg)

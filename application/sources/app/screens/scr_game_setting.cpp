@@ -1,13 +1,15 @@
 #include "scr_game_setting.h"
 
 /*****************************************************************************/
-/* Variable Declaration - Setting game */
+/* Variable Declaration - Game setting */
 /*****************************************************************************/
+
 static uint8_t setting_location_chosse;
 
 /*****************************************************************************/
-/* View - Setting game */
+/* View - Game setting */
 /*****************************************************************************/
+
 static void view_scr_game_setting();
 
 view_dynamic_t dyn_view_item_game_setting = {
@@ -115,8 +117,9 @@ void view_scr_game_setting()
 }
 
 /*****************************************************************************/
-/* Handle - Setting game */
+/* Handle - Game setting */
 /*****************************************************************************/
+
 void scr_game_setting_handle(ak_msg_t *msg)
 {
 	switch (msg->sig)

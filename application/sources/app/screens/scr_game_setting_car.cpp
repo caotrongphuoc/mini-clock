@@ -1,13 +1,15 @@
 #include "scr_game_setting_car.h"
 
 /*****************************************************************************/
-/* Variable Declaration - Car position selection */
+/* Variable Declaration - Game setting car */
 /*****************************************************************************/
+
 static uint8_t car_pos_location_chosse;
 
 /*****************************************************************************/
-/* View - Car position selection */
+/* View - Game setting car */
 /*****************************************************************************/
+
 static void view_scr_game_setting_car();
 
 view_dynamic_t dyn_view_game_setting_car = {
@@ -74,8 +76,9 @@ static void view_scr_game_setting_car()
 }
 
 /*****************************************************************************/
-/* Handle - Car position selection */
+/* Handle - Game setting car */
 /*****************************************************************************/
+
 void scr_game_setting_car_handle(ak_msg_t *msg)
 {
 	switch (msg->sig)

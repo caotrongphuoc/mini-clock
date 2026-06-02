@@ -1,8 +1,9 @@
 #include "scr_game_rank.h"
 
 /*****************************************************************************/
-/* Variable Declaration - Charts game */
+/* Variable Declaration - Game rank */
 /*****************************************************************************/
+
 #define SPIDER_COUNT (3)
 #define SPIDER_THREAD_COL (7)
 #define SPIDER_BOB_RANGE (3)
@@ -17,8 +18,9 @@ static int8_t spider_dir[SPIDER_COUNT];
 static uint8_t spider_state;
 
 /*****************************************************************************/
-/* View - Charts game */
+/* View - Game rank */
 /*****************************************************************************/
+
 static void view_scr_game_rank();
 
 view_dynamic_t dyn_view_item_game_rank = {
@@ -134,8 +136,9 @@ void view_scr_game_rank()
 }
 
 /*****************************************************************************/
-/* Handle - Charts game */
+/* Handle - Game rank */
 /*****************************************************************************/
+
 void scr_game_rank_handle(ak_msg_t *msg)
 {
 	switch (msg->sig)
@@ -155,14 +158,14 @@ void scr_game_rank_handle(ak_msg_t *msg)
 		}
 		spider_state = 0;
 		timer_set(AC_TASK_DISPLAY_ID,
-				  AC_DISPLAY_CHARTS_SPIDER_UPDATE,
-				  AC_DISPLAY_CHARTS_SPIDER_UPDATE_INTERVAL,
+				  AC_DISPLAY_SPIDER_UPDATE,
+				  AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
 				  TIMER_ONE_SHOT);
 		BUZZER_PlaySound(BUZZER_SOUND_HIGHSCORE);
 	}
 	break;
 
-	case AC_DISPLAY_CHARTS_SPIDER_UPDATE:
+	case AC_DISPLAY_SPIDER_UPDATE:
 	{
 		if (spider_state == 0)
 		{
@@ -209,8 +212,8 @@ void scr_game_rank_handle(ak_msg_t *msg)
 		view_render_screen(&scr_game_rank);
 
 		timer_set(AC_TASK_DISPLAY_ID,
-				  AC_DISPLAY_CHARTS_SPIDER_UPDATE,
-				  AC_DISPLAY_CHARTS_SPIDER_UPDATE_INTERVAL,
+				  AC_DISPLAY_SPIDER_UPDATE,
+				  AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
 				  TIMER_ONE_SHOT);
 
 		SCREEN_NONE_UPDATE_MASK();
@@ -220,7 +223,7 @@ void scr_game_rank_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -229,7 +232,7 @@ void scr_game_rank_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_UP_RELEASED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -238,7 +241,7 @@ void scr_game_rank_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_DOWN_RELEASED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_RELEASED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_CHARTS_SPIDER_UPDATE);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SPIDER_UPDATE);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

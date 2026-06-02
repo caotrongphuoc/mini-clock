@@ -3,11 +3,13 @@
 /*****************************************************************************/
 /* Variable Declaration - Tombstone count per lane */
 /*****************************************************************************/
+
 static uint8_t tb_count_location_chosse;
 
 /*****************************************************************************/
 /* View - Tombstone count per lane */
 /*****************************************************************************/
+
 static void view_scr_game_setting_tombstone();
 
 view_dynamic_t dyn_view_game_setting_tombstone = {
@@ -24,7 +26,6 @@ view_screen_t scr_game_setting_tombstone = {
 	.focus_item = 0,
 };
 
-/* Lay so bia mo hien tai cua lane i (0, 1, hoac 2) */
 static uint8_t get_lane_count(uint8_t i)
 {
 	uint8_t c = 0;
@@ -86,6 +87,7 @@ static void view_scr_game_setting_tombstone()
 /*****************************************************************************/
 /* Handle - Tombstone count per lane */
 /*****************************************************************************/
+
 void scr_game_setting_tombstone_handle(ak_msg_t *msg)
 {
 	switch (msg->sig)

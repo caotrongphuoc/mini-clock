@@ -1,11 +1,14 @@
 #include "scr_game_zomwar.h"
 
-static uint8_t zw_game_state;
+/*****************************************************************************/
+/* Variable Declaration - Game Zomwar */
+/*****************************************************************************/
 
-// huong gunner dang giu: 0=dung, 1=len, 2=xuong
 #define GUNNER_DIR_NONE (0)
 #define GUNNER_DIR_UP (1)
 #define GUNNER_DIR_DOWN (2)
+
+static uint8_t zw_game_state;
 static uint8_t gunner_dir = GUNNER_DIR_NONE;
 
 void zw_game_frame_display()
@@ -21,6 +24,10 @@ void zw_game_frame_display()
 	view_render.drawLine(0, LCD_HEIGHT - 11, LCD_WIDTH, LCD_HEIGHT - 11, WHITE);
 	view_render.drawRect(0, 0, 128, 64, 1);
 }
+
+/*****************************************************************************/
+/* View - Game Zomwar */
+/*****************************************************************************/
 
 static void view_scr_game_zomwar();
 
@@ -203,6 +210,10 @@ void view_scr_game_zomwar()
 	}
 }
 
+/*****************************************************************************/
+/* Handle - Game Zomwar */
+/*****************************************************************************/
+
 void scr_game_zomwar_handle(ak_msg_t *msg)
 {
 	switch (msg->sig)
@@ -217,11 +228,9 @@ void scr_game_zomwar_handle(ak_msg_t *msg)
 		task_post_pure_msg(ZW_GAME_TOMBSTONE_ID, ZW_GAME_TOMBSTONE_SETUP);
 		task_post_pure_msg(ZW_GAME_BANG_ID, ZW_GAME_BANG_SETUP);
 		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_SETUP);
-
 		zw_game_state = GAME_PLAY;
 		gunner_dir = GUNNER_DIR_NONE;
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_IDLE);
-
 		timer_set(AC_TASK_DISPLAY_ID,
 				  ZW_GAME_TIME_TICK,
 				  ZW_GAME_TIME_TICK_INTERVAL,

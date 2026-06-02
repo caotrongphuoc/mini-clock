@@ -33,9 +33,9 @@
 #include "zw_game_bang.h"
 #include "zw_game_border.h"
 
-#define GAME_OFF (0)  // Trang thai LCD khi khong choi game
-#define GAME_PLAY (1) // Trang thai LCD khi choi game
-#define GAME_OVER (2) // Trang thai LCD khi thua
+#define GAME_OFF (0) 
+#define GAME_PLAY (1) 
+#define GAME_OVER (2)
 
 extern view_dynamic_t dyn_view_zomwar;
 extern view_screen_t scr_game_zomwar;

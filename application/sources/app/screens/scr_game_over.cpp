@@ -1,8 +1,9 @@
 #include "scr_game_over.h"
 
 /*****************************************************************************/
-/* View - game over */
+/* View - Game over */
 /*****************************************************************************/
+
 static void view_scr_game_over();
 
 view_dynamic_t dyn_view_item_game_over = {
@@ -60,8 +61,9 @@ void view_scr_game_over()
 }
 
 /*****************************************************************************/
-/* Handle - game over */
+/* Handle - Game over */
 /*****************************************************************************/
+
 static void rank_ranking()
 {
 	if (gamescore.score_now > gamescore.score_1st)
