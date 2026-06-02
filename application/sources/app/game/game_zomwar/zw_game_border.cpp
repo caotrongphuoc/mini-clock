@@ -55,7 +55,7 @@ void zw_game_border_handle(ak_msg_t* msg) {
                 }
                 uint8_t spawned = 0;
                 for (uint8_t i = 0; i < NUM_ZOMBIES && spawned < WAVE_SPAWN_COUNT; i++) {
-                    if (zombie[i].visible == WHITE) continue; // slot dang dung
+                    if (zombie[i].visible == WHITE) continue; 
                     zombie[i].x            = (rand() % 39) + 130;
                     zombie[i].y            = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
                     zombie[i].visible      = WHITE;
