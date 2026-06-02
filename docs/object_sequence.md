@@ -25,7 +25,7 @@ Gunner owns the player position. The screen task initializes the Gunner object w
     <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 7:</em></strong> Gunner sequence logic</p>
+<p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
 
 ## III. Bullet Object Sequence
 
@@ -36,7 +36,7 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
     <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="Bullet game sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 7:</em></strong> Bullet sequence logic</p>
+<p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
 
 ## IV. Zombie Object Sequence
 
