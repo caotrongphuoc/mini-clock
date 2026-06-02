@@ -31,8 +31,8 @@
 
 typedef struct
 {
-    int32_t x;
-    uint32_t y;
+    int16_t x;
+    uint8_t y;
     int8_t dy;
     uint8_t zigzag_timer;
     uint8_t action_image;

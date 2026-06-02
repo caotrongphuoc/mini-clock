@@ -29,7 +29,7 @@ typedef struct
 {
     bool visible;
     bool running;
-    uint32_t x, y;
+    uint16_t x, y;
     uint8_t lane;
     uint8_t action_image;
 } zw_game_car_t;

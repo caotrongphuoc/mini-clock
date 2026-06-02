@@ -21,7 +21,7 @@
 
 typedef struct
 {
-    uint32_t x, y;
+    uint16_t x, y;
     uint8_t action_image;
     bool visible;
 } zw_game_bang_t;

@@ -31,17 +31,15 @@
 
 typedef struct
 {
-    bool visible;
     uint32_t x, y;
-    uint8_t action_image;
 } zw_game_border_t;
 
-extern uint32_t zw_game_score;
 extern zw_game_border_t border;
 
-extern uint32_t wave_last_score;
+extern uint16_t zw_game_score;
+extern uint16_t wave_last_score;
 extern uint8_t wave_warning_timer;
-extern bool wave_warning_active;
 extern uint8_t wave_level;
+extern bool wave_warning_active;
 
 #endif //__ZW_GAME_BORDER_H__

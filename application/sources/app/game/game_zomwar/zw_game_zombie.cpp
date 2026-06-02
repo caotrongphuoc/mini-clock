@@ -56,13 +56,13 @@ void zw_game_zombie_handle(ak_msg_t *msg)
                     zombie[i].action_image = 1;
                 continue;
             }
-            if (zombie[i].x - (int32_t)zw_game_zombie_speed < -(int32_t)ZOMBIE_MIN_LEFT_OFFSET)
+            if (zombie[i].x - zw_game_zombie_speed < -ZOMBIE_MIN_LEFT_OFFSET)
             {
-                zombie[i].x = -(int32_t)ZOMBIE_MIN_LEFT_OFFSET;
+                zombie[i].x = -ZOMBIE_MIN_LEFT_OFFSET;
             }
             else
             {
-                zombie[i].x -= (int32_t)zw_game_zombie_speed;
+                zombie[i].x -= zw_game_zombie_speed;
             }
             if (zombie[i].zigzag_timer > 0)
             {
@@ -73,7 +73,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
                 zombie[i].dy = (int8_t)(rand() % 3) - 1;
                 zombie[i].zigzag_timer = rand() % 10 + 5;
             }
-            int32_t new_y = (int32_t)zombie[i].y + zombie[i].dy;
+            int16_t new_y = (int16_t)zombie[i].y + zombie[i].dy;
             if (new_y < ZOMBIE_Y_MIN)
             {
                 new_y = ZOMBIE_Y_MIN;
@@ -84,7 +84,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
                 new_y = ZOMBIE_Y_MAX;
                 zombie[i].dy = 0;
             }
-            zombie[i].y = (uint32_t)new_y;
+            zombie[i].y = (uint8_t)new_y;
             zombie[i].action_image++;
             if (zombie[i].action_image > 3)
                 zombie[i].action_image = 1;
@@ -119,18 +119,18 @@ void zw_game_zombie_handle(ak_msg_t *msg)
             {
                 if (bullet[j].visible != WHITE)
                     continue;
-                int32_t ax = bullet[j].x;
-                int32_t ay = bullet[j].y;
-                int32_t mx = zombie[i].x;
-                int32_t my = (int32_t)zombie[i].y;
+                int16_t ax = bullet[j].x;
+                int16_t ay = bullet[j].y;
+                int16_t mx = zombie[i].x;
+                int16_t my = zombie[i].y;
                 bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
-                           (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&
-                           (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&
-                           (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);
+                           (ax < mx + SIZE_BITMAP_ZOMBIES_X) &&
+                           (ay + SIZE_BITMAP_BULLET_Y > my) &&
+                           (ay < my + SIZE_BITMAP_ZOMBIES_Y);
                 if (hit)
                 {
-                    int32_t dead_x = zombie[i].x;
-                    uint32_t dead_y = zombie[i].y;
+                    int16_t dead_x = zombie[i].x;
+                    uint8_t dead_y = zombie[i].y;
                     bullet[j].visible = BLACK;
                     bullet[j].x = 0;
                     for (uint8_t bk = 0; bk < NUM_BANG; bk++)
@@ -186,7 +186,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
         zombie[0].action_image++;
         if (zombie[0].action_image > 3)
             zombie[0].action_image = 1;
-        if (zombie[0].x < -(int32_t)SIZE_BITMAP_ZOMBIES_X)
+        if (zombie[0].x < -SIZE_BITMAP_ZOMBIES_X)
         {
             zombie[0].x = LCD_WIDTH + 3;
             zombie[0].y = AXIS_Y_GUNNER - 10;
@@ -195,18 +195,18 @@ void zw_game_zombie_handle(ak_msg_t *msg)
         {
             if (bullet[j].visible != WHITE)
                 continue;
-            int32_t ax = bullet[j].x;
-            int32_t ay = bullet[j].y;
-            int32_t mx = zombie[0].x;
-            int32_t my = (int32_t)zombie[0].y;
+            int16_t ax = bullet[j].x;
+            int16_t ay = bullet[j].y;
+            int16_t mx = zombie[0].x;
+            int16_t my = zombie[0].y;
             bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
-                       (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&
-                       (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&
-                       (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);
+                       (ax < mx + (int16_t)SIZE_BITMAP_ZOMBIES_X) &&
+                       (ay + (int16_t)SIZE_BITMAP_BULLET_Y > my) &&
+                       (ay < my + (int16_t)SIZE_BITMAP_ZOMBIES_Y);
             if (hit)
             {
-                int32_t dead_x = zombie[0].x;
-                uint32_t dead_y = zombie[0].y;
+                int16_t dead_x = zombie[0].x;
+                uint8_t dead_y = zombie[0].y;
                 bullet[j].visible = BLACK;
                 bullet[j].x = 0;
                 for (uint8_t bk = 0; bk < NUM_BANG; bk++)
