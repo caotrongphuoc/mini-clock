@@ -9,8 +9,7 @@ view_dynamic_t dyn_view_item_game_over = {
 	{
 		.item_type = ITEM_TYPE_DYNAMIC,
 	},
-	view_scr_game_over
-};
+	view_scr_game_over};
 
 view_screen_t scr_game_over = {
 	&dyn_view_item_game_over,
@@ -20,7 +19,8 @@ view_screen_t scr_game_over = {
 	.focus_item = 0,
 };
 
-void view_scr_game_over() {
+void view_scr_game_over()
+{
 	view_render.fillScreen(BLACK);
 
 	view_render.drawRoundRect(29, 0, 70, 54, 18, WHITE);
@@ -32,7 +32,7 @@ void view_scr_game_over() {
 	view_render.drawLine(29, 52, 98, 52, WHITE);
 	view_render.drawBitmap(60, 3, bitmap_skull, 9, 8, WHITE);
 	view_render.drawLine(32, 11, 95, 11, WHITE);
-	
+
 	view_render.setTextSize(2);
 	view_render.setTextColor(WHITE);
 	view_render.setCursor(40, 13);
@@ -62,55 +62,64 @@ void view_scr_game_over() {
 /*****************************************************************************/
 /* Handle - game over */
 /*****************************************************************************/
-static void rank_ranking() {
-	if (gamescore.score_now > gamescore.score_1st) {
+static void rank_ranking()
+{
+	if (gamescore.score_now > gamescore.score_1st)
+	{
 		gamescore.score_3rd = gamescore.score_2nd;
 		gamescore.score_2nd = gamescore.score_1st;
 		gamescore.score_1st = gamescore.score_now;
 	}
-	else if (gamescore.score_now > gamescore.score_2nd) {
+	else if (gamescore.score_now > gamescore.score_2nd)
+	{
 		gamescore.score_3rd = gamescore.score_2nd;
 		gamescore.score_2nd = gamescore.score_now;
 	}
-	else if (gamescore.score_now > gamescore.score_3rd) {
+	else if (gamescore.score_now > gamescore.score_3rd)
+	{
 		gamescore.score_3rd = gamescore.score_now;
 	}
 }
 
-void scr_game_over_handle(ak_msg_t* msg) {
-	switch (msg->sig) {
-	case SCREEN_ENTRY: {
+void scr_game_over_handle(ak_msg_t *msg)
+{
+	switch (msg->sig)
+	{
+	case SCREEN_ENTRY:
+	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.initialize();
 		view_render_display_on();
 		rank_ranking();
 	}
-		break;
+	break;
 
-	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		zw_game_score_write(&gamescore);
 		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
-		break;
+	break;
 
-
-	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 		zw_game_score_write(&gamescore);
 		SCREEN_TRAN(scr_game_zomwar_handle, &scr_game_zomwar);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
-		break;
+	break;
 
-	case AC_DISPLAY_BUTTON_UP_RELEASED: {
+	case AC_DISPLAY_BUTTON_UP_RELEASED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_RELEASED\n");
 		zw_game_score_write(&gamescore);
 		SCREEN_TRAN(scr_game_rank_handle, &scr_game_rank);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
-		break;
+	break;
 
 	default:
 		break;

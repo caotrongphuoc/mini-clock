@@ -17,15 +17,16 @@
 
 #include "zw_game_zombie.h"
 
-#define AXIS_X_CAR        (0)   
-#define NUM_LANES         (5)      
-#define CAR_SPEED         (4)    
-#define SIZE_BITMAP_CAR_X (12)    
-#define SIZE_BITMAP_CAR_Y (10)    
-#define CAR_HIT_RANGE_Y   (8)     
-#define LANE_Y  {2, 12, 22, 32, 42} 
+#define AXIS_X_CAR (0)
+#define NUM_LANES (5)
+#define CAR_SPEED (4)
+#define SIZE_BITMAP_CAR_X (12)
+#define SIZE_BITMAP_CAR_Y (10)
+#define CAR_HIT_RANGE_Y (8)
+#define LANE_Y {2, 12, 22, 32, 42}
 
-typedef struct {
+typedef struct
+{
     bool visible;
     bool running;
     uint32_t x, y;

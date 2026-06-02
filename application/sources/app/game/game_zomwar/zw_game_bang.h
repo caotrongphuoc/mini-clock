@@ -13,13 +13,14 @@
 
 #include "scr_game_zomwar.h"
 
-#define NUM_BANG                    (20)
-#define SIZE_BITMAP_BANG_I_X        (15)
-#define SIZE_BITMAP_BANG_I_Y        (15)
-#define SIZE_BITMAP_BANG_II_X       (10)
-#define SIZE_BITMAP_BANG_II_Y       (10)
+#define NUM_BANG (20)
+#define SIZE_BITMAP_BANG_I_X (15)
+#define SIZE_BITMAP_BANG_I_Y (15)
+#define SIZE_BITMAP_BANG_II_X (10)
+#define SIZE_BITMAP_BANG_II_Y (10)
 
-typedef struct {
+typedef struct
+{
     uint32_t x, y;
     uint8_t action_image;
     bool visible;

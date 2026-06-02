@@ -18,13 +18,14 @@
 
 #include "zw_game_gunner.h"
 
-#define MAX_NUM_BULLET       (15) 
-#define MAX_AXIS_X_BULLET    (128) 
-#define SIZE_BITMAP_BULLET_X (5)   
-#define SIZE_BITMAP_BULLET_Y (5)  
-#define STEP_BULLET_AXIS_X   (3)   
+#define MAX_NUM_BULLET (15)
+#define MAX_AXIS_X_BULLET (128)
+#define SIZE_BITMAP_BULLET_X (5)
+#define SIZE_BITMAP_BULLET_Y (5)
+#define STEP_BULLET_AXIS_X (3)
 
-typedef struct {
+typedef struct
+{
     bool visible;
     uint32_t x, y;
     uint8_t action_image;

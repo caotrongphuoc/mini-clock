@@ -10,13 +10,11 @@ static uint8_t setting_location_chosse;
 /*****************************************************************************/
 static void view_scr_game_setting();
 
-
 view_dynamic_t dyn_view_item_game_setting = {
 	{
 		.item_type = ITEM_TYPE_DYNAMIC,
 	},
-	view_scr_game_setting
-};
+	view_scr_game_setting};
 
 view_screen_t scr_game_setting = {
 	&dyn_view_item_game_setting,
@@ -26,22 +24,27 @@ view_screen_t scr_game_setting = {
 	.focus_item = 0,
 };
 
-void view_scr_game_setting() {
+void view_scr_game_setting()
+{
 	view_render.setTextSize(1);
 
 	uint8_t sel = setting_location_chosse;
 
-	for (uint8_t f = 0; f < 5; f++) {
+	for (uint8_t f = 0; f < 5; f++)
+	{
 		uint8_t frame_y = ZW_GAME_SETTING_FRAMES_AXIS_Y_1 + ZW_GAME_SETTING_FRAMES_STEP * f;
-		bool selected  = (f == sel);
-		uint8_t fg     = selected ? BLACK : WHITE;
+		bool selected = (f == sel);
+		uint8_t fg = selected ? BLACK : WHITE;
 
-		if (selected) {
+		if (selected)
+		{
 			view_render.fillRoundRect(
 				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
 				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
 				ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
-		} else {
+		}
+		else
+		{
 			view_render.drawRoundRect(
 				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
 				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
@@ -51,11 +54,15 @@ void view_scr_game_setting() {
 		view_render.setTextColor(fg);
 		uint8_t text_y = frame_y + 2;
 
-		switch (f) {
-		case 0: {
+		switch (f)
+		{
+		case 0:
+		{
 			uint8_t car_count = 0;
-			for (uint8_t i = 0; i < 5; i++) {
-				if ((settingdata.num_car >> i) & 1) car_count++;
+			for (uint8_t i = 0; i < 5; i++)
+			{
+				if ((settingdata.num_car >> i) & 1)
+					car_count++;
 			}
 			view_render.setCursor(2, text_y);
 			view_render.print("Cars");
@@ -63,12 +70,17 @@ void view_scr_game_setting() {
 			view_render.print("[");
 			view_render.print(car_count);
 			view_render.print("]");
-		} break;
-		case 1: {
+		}
+		break;
+		case 1:
+		{
 			uint8_t total_t = 0;
-			for (uint8_t i = 0; i < 5; i++) {
-				if ((settingdata.tombstone_lane_1 >> i) & 1) total_t++;
-				if ((settingdata.tombstone_lane_2 >> i) & 1) total_t++;
+			for (uint8_t i = 0; i < 5; i++)
+			{
+				if ((settingdata.tombstone_lane_1 >> i) & 1)
+					total_t++;
+				if ((settingdata.tombstone_lane_2 >> i) & 1)
+					total_t++;
 			}
 			view_render.setCursor(2, text_y);
 			view_render.print("Tombstones");
@@ -76,7 +88,8 @@ void view_scr_game_setting() {
 			view_render.print("[");
 			view_render.print(total_t);
 			view_render.print("]");
-		} break;
+		}
+		break;
 		case 2:
 			view_render.setCursor(2, text_y);
 			view_render.print("Zombies speed");
@@ -104,81 +117,100 @@ void view_scr_game_setting() {
 /*****************************************************************************/
 /* Handle - Setting game */
 /*****************************************************************************/
-void scr_game_setting_handle(ak_msg_t* msg) {
-	switch (msg->sig) {
-	case SCREEN_ENTRY: {
+void scr_game_setting_handle(ak_msg_t *msg)
+{
+	switch (msg->sig)
+	{
+	case SCREEN_ENTRY:
+	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
 		setting_location_chosse = SETTING_ITEM_CARS;
 		zw_game_setting_read(&settingdata);
 	}
-		break;
+	break;
 
-	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		switch (setting_location_chosse) {
-		case SETTING_ITEM_CARS: {
+		switch (setting_location_chosse)
+		{
+		case SETTING_ITEM_CARS:
+		{
 			SCREEN_TRAN(scr_game_setting_car_handle, &scr_game_setting_car);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
-			break;
+		break;
 
-		case SETTING_ITEM_TOMBSTONES: {
+		case SETTING_ITEM_TOMBSTONES:
+		{
 			SCREEN_TRAN(scr_game_setting_tombstone_handle, &scr_game_setting_tombstone);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
-			break;
+		break;
 
-		case SETTING_ITEM_SPEED: {
+		case SETTING_ITEM_SPEED:
+		{
 			settingdata.zombie_speed++;
-			if (settingdata.zombie_speed > 5) {
+			if (settingdata.zombie_speed > 5)
+			{
 				settingdata.zombie_speed = 1;
 			}
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
-			break;
+		break;
 
-		case SETTING_ITEM_SOUND: {
+		case SETTING_ITEM_SOUND:
+		{
 			settingdata.silent = !settingdata.silent;
 			BUZZER_Silent(settingdata.silent ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
-			break;
+		break;
 
-		case SETTING_ITEM_EXIT: {
+		case SETTING_ITEM_EXIT:
+		{
 			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		}
-			break;
+		break;
 
 		default:
 			break;
 		}
 	}
-		break;
+	break;
 
-	case AC_DISPLAY_BUTTON_UP_PRESSED: {
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_CARS) {
+		if (setting_location_chosse == SETTING_ITEM_CARS)
+		{
 			setting_location_chosse = SETTING_ITEM_EXIT;
-		} else {
+		}
+		else
+		{
 			setting_location_chosse--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
-		break;
+	break;
 
-	case AC_DISPLAY_BUTTON_DOWN_PRESSED: {
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
+	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_EXIT) {
+		if (setting_location_chosse == SETTING_ITEM_EXIT)
+		{
 			setting_location_chosse = SETTING_ITEM_CARS;
-		} else {
+		}
+		else
+		{
 			setting_location_chosse++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
-		break;
+	break;
 
 	default:
 		break;

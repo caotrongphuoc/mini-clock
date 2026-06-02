@@ -17,21 +17,22 @@
 #include "zw_game_car.h"
 #include "scr_game_zomwar.h"
 
-#define TOMBSTONES_PER_LANE      (2)    
-#define NUM_TOMBSTONES           (10)   
-#define SIZE_BITMAP_TOMBSTONE_X  (8)    
-#define SIZE_BITMAP_TOMBSTONE_Y  (10)   
-#define TOMBSTONE_SPAWN_INTERVAL (35)   
-#define ZOMBIE_RISE_TICKS        (10)  
+#define TOMBSTONES_PER_LANE (2)
+#define NUM_TOMBSTONES (10)
+#define SIZE_BITMAP_TOMBSTONE_X (8)
+#define SIZE_BITMAP_TOMBSTONE_Y (10)
+#define TOMBSTONE_SPAWN_INTERVAL (35)
+#define ZOMBIE_RISE_TICKS (10)
 
-typedef struct {
+typedef struct
+{
     uint8_t x;
     uint8_t lane;
-    bool    active;
+    bool active;
 } zw_game_tombstone_t;
 
 extern zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
 
-void zw_game_tombstone_handle(ak_msg_t* msg);
+void zw_game_tombstone_handle(ak_msg_t *msg);
 
 #endif //__ZW_GAME_TOMBSTONE_H__

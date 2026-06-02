@@ -15,21 +15,21 @@
 
 #include "scr_game_zomwar.h"
 
-#define STEP_GUNNER_AXIS_Y     (10) 
-#define SIZE_BITMAP_GUNNER_X   (25) 
-#define SIZE_BITMAP_GUNNER_Y   (10) 
-#define AXIS_X_GUNNER          (14) 
-#define AXIS_Y_GUNNER          (52) 
-#define AXIS_Y_GUNNER_MIN      (12) 
-#define AXIS_Y_GUNNER_MAX      (52) 
+#define STEP_GUNNER_AXIS_Y (10)
+#define SIZE_BITMAP_GUNNER_X (25)
+#define SIZE_BITMAP_GUNNER_Y (10)
+#define AXIS_X_GUNNER (14)
+#define AXIS_Y_GUNNER (52)
+#define AXIS_Y_GUNNER_MIN (12)
+#define AXIS_Y_GUNNER_MAX (52)
 
-typedef struct {
+typedef struct
+{
     bool visible;
     uint32_t x, y;
     uint8_t action_image;
 } zw_game_gunner_t;
 
 extern zw_game_gunner_t gunner;
-
 
 #endif //__ZW_GAME_GUNNER_H__

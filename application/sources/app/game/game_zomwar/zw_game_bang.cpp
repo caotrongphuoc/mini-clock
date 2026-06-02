@@ -16,6 +16,7 @@ void zw_game_bang_handle(ak_msg_t *msg)
         }
     }
     break;
+
     case ZW_GAME_BANG_UPDATE:
     {
         APP_DBG_SIG("ZW_GAME_BANG_UPDATE\n");
@@ -23,16 +24,20 @@ void zw_game_bang_handle(ak_msg_t *msg)
         {
             if (bang[i].visible == WHITE)
             {
-                bang[i].action_image++;
-            }
-            if (bang[i].action_image > 3)
-            {
-                bang[i].action_image = 1;
-                bang[i].visible = BLACK;
+                if (bang[i].action_image >= 3)
+                {
+                    bang[i].action_image = 1;
+                    bang[i].visible = BLACK;
+                }
+                else
+                {
+                    bang[i].action_image++;
+                }
             }
         }
     }
     break;
+
     case ZW_GAME_BANG_RESET:
     {
         APP_DBG_SIG("ZW_GAME_BANG_RESET\n");
@@ -43,6 +48,7 @@ void zw_game_bang_handle(ak_msg_t *msg)
         }
     }
     break;
+
     default:
         break;
     }
