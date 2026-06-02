@@ -2,15 +2,12 @@
 #include "app_eeprom.h"
 
 zw_game_zombie_t zombie[NUM_ZOMBIES];
-static bool game_active = false;
-
-uint8_t zw_game_zombie_speed = ZW_GAME_SETTING_ZOMBIE_SPEED_DEFAULT;
+uint8_t zw_game_zombie_speed;
 
 void zw_game_zombie_handle(ak_msg_t* msg) {
     switch (msg->sig) {
     case ZW_GAME_ZOMBIE_SETUP: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
-        game_active = true;
         zw_game_zombie_speed = settingdata.zombie_speed;
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             zombie[i].visible = BLACK;
@@ -30,7 +27,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_RUN: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN\n");
-        if(!game_active) return;
         uint8_t alive = 0;
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             if (zombie[i].visible != WHITE) continue;
@@ -63,8 +59,12 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
             }
 
             int32_t new_y = (int32_t)zombie[i].y + zombie[i].dy;
-            if (new_y < ZOMBIE_Y_MIN) { new_y = ZOMBIE_Y_MIN; zombie[i].dy = 0; }
-            if (new_y > ZOMBIE_Y_MAX) { new_y = ZOMBIE_Y_MAX; zombie[i].dy = 0; }
+            if (new_y < ZOMBIE_Y_MIN) { 
+                new_y = ZOMBIE_Y_MIN; zombie[i].dy = 0; 
+            }
+            if (new_y > ZOMBIE_Y_MAX) { 
+                new_y = ZOMBIE_Y_MAX; zombie[i].dy = 0; 
+            }
             zombie[i].y = (uint32_t)new_y;
 
             zombie[i].action_image++;
@@ -135,7 +135,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_RESET: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");
-        game_active = false;
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             zombie[i].visible = BLACK;
         }
@@ -144,7 +143,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_SETUP_MENU: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP_MENU\n");
-        game_active = true;
         // chi giu 1 zombie cho man hinh menu
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             zombie[i].visible = BLACK;
