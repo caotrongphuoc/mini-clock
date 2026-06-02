@@ -16,6 +16,23 @@ void zw_game_zombie_spawn(uint8_t i)
     zombie[i].rise_ticks = 0;
 }
 
+void zw_game_zombie_dead(uint8_t i)
+{
+    for (uint8_t bk = 0; bk < NUM_BANG; bk++)
+    {
+        if (bang[bk].visible == WHITE)
+            continue;
+        bang[bk].visible = WHITE;
+        bang[bk].x = (zombie[i].x + 5 > 0) ? (uint32_t)(zombie[i].x + 5) : 0;
+        bang[bk].y = (zombie[i].y >= 2) ? zombie[i].y - 2 : 0;
+        bang[bk].action_image = 1;
+        break;
+    }
+    zw_game_score += 10;
+    BUZZER_PlaySound(BUZZER_SOUND_BANG);
+    zombie[i].visible = BLACK;
+}
+
 void zw_game_zombie_handle(ak_msg_t *msg)
 {
     switch (msg->sig)
@@ -127,23 +144,9 @@ void zw_game_zombie_handle(ak_msg_t *msg)
                            (ay < my + SIZE_BITMAP_ZOMBIES_Y);
                 if (hit)
                 {
-                    int16_t dead_x = zombie[i].x;
-                    uint8_t dead_y = zombie[i].y;
                     bullet[j].visible = BLACK;
                     bullet[j].x = 0;
-                    for (uint8_t bk = 0; bk < NUM_BANG; bk++)
-                    {
-                        if (bang[bk].visible == WHITE)
-                            continue;
-                        bang[bk].visible = WHITE;
-                        bang[bk].x = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
-                        bang[bk].y = (dead_y >= 2) ? dead_y - 2 : 0;
-                        bang[bk].action_image = 1;
-                        break;
-                    }
-                    zw_game_score += 10;
-                    BUZZER_PlaySound(BUZZER_SOUND_BANG);
-                    zombie[i].visible = BLACK;
+                    zw_game_zombie_dead(i);
                     break;
                 }
             }
