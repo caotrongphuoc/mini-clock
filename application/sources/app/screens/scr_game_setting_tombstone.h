@@ -24,9 +24,7 @@
 #include "screens_bitmap.h"
 
 #define TB_COUNT_NUM_LANES			(5)
-// items: chi so 0..4 = lane, 5 = EXIT
 #define TB_COUNT_ITEM_EXIT			(TB_COUNT_NUM_LANES)
-// Frames
 #define TB_COUNT_FRAMES_AXIS_X		(0)
 #define TB_COUNT_FRAMES_AXIS_Y_1	(2)
 #define TB_COUNT_FRAMES_STEP		(10)

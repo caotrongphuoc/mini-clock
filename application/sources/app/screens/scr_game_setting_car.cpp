@@ -81,11 +81,9 @@ void scr_game_setting_car_handle(ak_msg_t* msg) {
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		if (car_pos_location_chosse < CAR_POS_NUM_CARS) {
-			/* Toggle bat/tat xe o lane dang chon */
 			settingdata.num_car ^= (1 << car_pos_location_chosse);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		} else {
-			/* EXIT: luu xuong EEPROM va quay lai man settings */
 			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);

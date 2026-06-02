@@ -31,7 +31,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             if (zombie[i].visible != WHITE) continue;
             alive++;
-            // Xu ly zombie dang troi len tu bia mo
             if (zombie[i].rising) {
                 if (zombie[i].rise_ticks > 0) {
                     zombie[i].y--;
@@ -44,20 +43,17 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                 if (zombie[i].action_image > 3) zombie[i].action_image = 1;
                 continue;
             }
-            // Zombie di chuyen sang trai
             if (zombie[i].x - (int32_t)zw_game_zombie_speed < -(int32_t)ZOMBIE_MIN_LEFT_OFFSET) {
                 zombie[i].x = -(int32_t)ZOMBIE_MIN_LEFT_OFFSET;
             } else {
                 zombie[i].x -= (int32_t)zw_game_zombie_speed;
             }
-            // Xu ly di chuyen zigzag theo truc Y
             if (zombie[i].zigzag_timer > 0) {
                 zombie[i].zigzag_timer--;
             } else {
                 zombie[i].dy           = (int8_t)(rand() % 3) - 1;
                 zombie[i].zigzag_timer = rand() % 10 + 5;
             }
-
             int32_t new_y = (int32_t)zombie[i].y + zombie[i].dy;
             if (new_y < ZOMBIE_Y_MIN) { 
                 new_y = ZOMBIE_Y_MIN; zombie[i].dy = 0; 
@@ -66,11 +62,9 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                 new_y = ZOMBIE_Y_MAX; zombie[i].dy = 0; 
             }
             zombie[i].y = (uint32_t)new_y;
-
             zombie[i].action_image++;
             if (zombie[i].action_image > 3) zombie[i].action_image = 1;
         }
-        // Tu dong spawn them zombie tu mep phai de luon giu it nhat NUM_ZOMBIES_INIT con
         for (uint8_t i = 0; i < NUM_ZOMBIES && alive < NUM_ZOMBIES_INIT; i++) {
             if (zombie[i].visible == WHITE) continue; // slot dang dung
             zombie[i].x            = (rand() % 39) + 130;
@@ -91,30 +85,23 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             if (zombie[i].visible != WHITE) continue;
             if (zombie[i].rising) continue;
-
             for (uint8_t j = 0; j < MAX_NUM_BULLET; j++) {
                 if (bullet[j].visible != WHITE) continue;
                 int32_t ax = bullet[j].x;
                 int32_t ay = bullet[j].y;
                 int32_t mx = zombie[i].x;
                 int32_t my = (int32_t)zombie[i].y;
-                // Kiem tra va cham (dan co ban dinh zombie hay chua)
-                bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&     // Dan qua phan than zombie 12 px
-                        (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&   // Dan chua qua ben phai zombie
-                        (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&    // Dan khong o tren zombie
-                        (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y);     // Dan khong o duoi zombie
-                // Neu dinh luu vi tri de tao hieu ung no
+                bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&     
+                        (ax < mx + (int32_t)SIZE_BITMAP_ZOMBIES_X) &&   
+                        (ay + (int32_t)SIZE_BITMAP_BULLET_Y > my) &&   
+                        (ay < my + (int32_t)SIZE_BITMAP_ZOMBIES_Y); 
                 if (hit) {
                     int32_t  dead_x = zombie[i].x;
                     uint32_t dead_y = zombie[i].y;
-
-                    // Tieu thu vien dan: tra slot dan j ve trong
                     bullet[j].visible = BLACK;
                     bullet[j].x       = 0;
-
-                    // tao hieu ung no tai slot bang trong dau tien
                     for (uint8_t bk = 0; bk < NUM_BANG; bk++) {
-                        if (bang[bk].visible == WHITE) continue; // slot dang dung
+                        if (bang[bk].visible == WHITE) continue; 
                         bang[bk].visible      = WHITE;
                         bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
                         bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
@@ -123,8 +110,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
                     }
                     zw_game_score += 10;
                     BUZZER_PlaySound(BUZZER_SOUND_BANG);
-
-                    // Xoa zombie i: tra slot ve trong
                     zombie[i].visible = BLACK;
                     break;
                 }
@@ -143,7 +128,6 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_SETUP_MENU: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP_MENU\n");
-        // chi giu 1 zombie cho man hinh menu
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++) {
             zombie[i].visible = BLACK;
         }
@@ -157,19 +141,14 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
 
     case ZW_GAME_ZOMBIE_RUN_MENU: {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN_MENU\n");
-        // di chuyen sang trai + doi frame chay
         zombie[0].x -= MENU_ZOMBIE_SPEED;
         zombie[0].visible = WHITE;
         zombie[0].action_image++;
         if (zombie[0].action_image > 3) zombie[0].action_image = 1;
-
-        // ra khoi mep trai -> quay ve mep phai
         if (zombie[0].x < -(int32_t)SIZE_BITMAP_ZOMBIES_X) {
             zombie[0].x = LCD_WIDTH + 3;
             zombie[0].y = AXIS_Y_GUNNER - 10;
         }
-
-        // va cham voi dan -> tao no roi cho zombie ve phai (khong cong diem, khong tieng)
         for (uint8_t j = 0; j < MAX_NUM_BULLET; j++) {
             if (bullet[j].visible != WHITE) continue;
             int32_t ax = bullet[j].x;
@@ -183,19 +162,16 @@ void zw_game_zombie_handle(ak_msg_t* msg) {
             if (hit) {
                 int32_t  dead_x = zombie[0].x;
                 uint32_t dead_y = zombie[0].y;
-                // tra slot vien dan ve trong
                 bullet[j].visible = BLACK;
                 bullet[j].x       = 0;
-                // tao hieu ung no tai slot bang trong dau tien
                 for (uint8_t bk = 0; bk < NUM_BANG; bk++) {
-                    if (bang[bk].visible == WHITE) continue; // slot dang dung
+                    if (bang[bk].visible == WHITE) continue; 
                     bang[bk].visible      = WHITE;
                     bang[bk].x            = (dead_x + 5 > 0) ? (uint32_t)(dead_x + 5) : 0;
                     bang[bk].y            = (dead_y >= 2) ? dead_y - 2 : 0;
                     bang[bk].action_image = 1;
                     break;
                 }
-                // zombie "chet" -> quay ve mep phai
                 zombie[0].x = LCD_WIDTH + 3;
                 zombie[0].y = AXIS_Y_GUNNER - 10;
                 break;

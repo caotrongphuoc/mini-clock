@@ -24,9 +24,7 @@
 #include "screens_bitmap.h"
 
 #define CAR_POS_NUM_CARS				(5)
-
 #define CAR_POS_ITEM_EXIT				(CAR_POS_NUM_CARS)
-// Frames
 #define CAR_POS_FRAMES_AXIS_X			(0)
 #define CAR_POS_FRAMES_AXIS_Y_1			(2)
 #define CAR_POS_FRAMES_STEP				(10)

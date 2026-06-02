@@ -23,14 +23,12 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
-// items
 #define SETTING_ITEM_CARS						(0)
 #define SETTING_ITEM_TOMBSTONES					(1)
 #define SETTING_ITEM_SPEED						(2)
 #define SETTING_ITEM_SOUND						(3)
 #define SETTING_ITEM_EXIT						(4)
 #define NUM_SETTING_ITEMS						(5)
-// frames
 #define ZW_GAME_SETTING_FRAMES_AXIS_X			(0)
 #define ZW_GAME_SETTING_FRAMES_AXIS_Y_1			(2)
 #define ZW_GAME_SETTING_FRAMES_STEP 			(12)
