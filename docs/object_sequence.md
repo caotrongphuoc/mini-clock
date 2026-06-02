@@ -18,36 +18,213 @@ The screen task posts `ZW_GAME_TIME_TICK` every `ZW_GAME_TIME_TICK_INTERVAL` (10
 
 ## II. Gunner Object Sequence
 
-Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it, then copies it into the rendered `gunner.y`.
+Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it (`AXIS_Y_GUNNER_MIN`..`AXIS_Y_GUNNER_MAX`), then copies it into the rendered `gunner.y`. `ZW_GAME_GUNNER_UPDATE` also clears the recoil frame by resetting `gunner.action_image` from `2` back to `1` (the recoil frame is raised by the Bullet task on `ZW_GAME_BULLET_SHOOT`).
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="gunner sequence logic" width="720"/></td>
-  </tr>
-</table>
-<p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Btn as Buttons<br/>(UP / DOWN)
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Gunner as Gunner Task
+
+    Note over Screen,Gunner: Game entry initializes Gunner state
+
+    Screen->>Gunner: ZW_GAME_GUNNER_SETUP
+    activate Gunner
+    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = WHITE<br/>gunner.action_image = 1<br/>gunner_y = AXIS_Y_GUNNER
+    deactivate Gunner
+
+    Note over Btn,Screen: Buttons only latch direction in the screen task
+
+    Btn->>Screen: AC_DISPLAY_BUTTON_UP_PRESSED
+    Note right of Screen: gunner_dir = GUNNER_DIR_UP
+    Btn->>Screen: AC_DISPLAY_BUTTON_UP_RELEASED
+    Note right of Screen: if gunner_dir == UP: gunner_dir = NONE
+    Btn->>Screen: AC_DISPLAY_BUTTON_DOWN_PRESSED
+    Note right of Screen: gunner_dir = GUNNER_DIR_DOWN
+    Btn->>Screen: AC_DISPLAY_BUTTON_DOWN_RELEASED
+    Note right of Screen: if gunner_dir == DOWN: gunner_dir = NONE
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    alt gunner_dir == GUNNER_DIR_UP
+        Screen->>Gunner: ZW_GAME_GUNNER_UP
+        activate Gunner
+        Note right of Gunner: gunner_y -= STEP_GUNNER_AXIS_Y<br/>if gunner_y < AXIS_Y_GUNNER_MIN:<br/>gunner_y = AXIS_Y_GUNNER_MIN
+        deactivate Gunner
+    else gunner_dir == GUNNER_DIR_DOWN
+        Screen->>Gunner: ZW_GAME_GUNNER_DOWN
+        activate Gunner
+        Note right of Gunner: gunner_y += STEP_GUNNER_AXIS_Y<br/>if gunner_y > AXIS_Y_GUNNER_MAX:<br/>gunner_y = AXIS_Y_GUNNER_MAX
+        deactivate Gunner
+    else gunner_dir == GUNNER_DIR_NONE
+        Note right of Screen: No UP/DOWN posted
+    end
+    Screen->>Gunner: ZW_GAME_GUNNER_UPDATE
+    deactivate Screen
+    activate Gunner
+    Note right of Gunner: gunner.y = gunner_y<br/>if gunner.action_image == 2:<br/>gunner.action_image = 1 (clear recoil)
+    deactivate Gunner
+
+    Note over Screen,Gunner: Game reset hides Gunner
+
+    Screen->>Gunner: ZW_GAME_GUNNER_RESET
+    activate Gunner
+    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = BLACK<br/>gunner_y = AXIS_Y_GUNNER
+    deactivate Gunner
+```
 
 ## III. Bullet Object Sequence
 
-Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right. When a bullet exits the screen, it is hidden and its x position is cleared.
+Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). `ZW_GAME_BULLET_SHOOT` picks the first free slot in `bullet[]`, spawns it at `(gunner.x + 15, gunner.y - 8)`, sets `gunner.action_image = 2` to show the recoil frame, and plays `BUZZER_SOUND_CLICK`. The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right by `STEP_BULLET_AXIS_X`. When a bullet reaches `MAX_AXIS_X_BULLET`, it is hidden and its x position is cleared.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="bullet sequence logic" width="720"/></td>
-  </tr>
-</table>
-<p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Btn as MODE Button
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Bullet as Bullet Task
+    participant Gunner as Gunner State
+    participant Buzzer as Buzzer
+
+    Note over Screen,Bullet: Game entry initializes Bullet state
+
+    Screen->>Bullet: ZW_GAME_BULLET_SETUP
+    activate Bullet
+    Note right of Bullet: For each i in [0..MAX_NUM_BULLET):<br/>bullet[i].x = 0<br/>bullet[i].y = 0<br/>bullet[i].visible = BLACK
+    deactivate Bullet
+
+    Note over Btn,Screen: Shoot input gated by zw_game_state == GAME_PLAY
+
+    Btn->>Screen: AC_DISPLAY_BUTTON_MODE_PRESSED
+    activate Screen
+    alt zw_game_state == GAME_PLAY
+        Screen->>Bullet: ZW_GAME_BULLET_SHOOT
+        activate Bullet
+        Note right of Bullet: Pick first free slot (visible != WHITE):<br/>bullet[i].visible = WHITE<br/>bullet[i].x = gunner.x + 15<br/>bullet[i].y = gunner.y - 8
+        Bullet->>Gunner: gunner.action_image = 2 (recoil)
+        Bullet->>Buzzer: BUZZER_SOUND_CLICK
+        deactivate Bullet
+    else other state
+        Note right of Screen: Ignore shoot
+    end
+    deactivate Screen
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Bullet: ZW_GAME_BULLET_RUN
+    deactivate Screen
+    activate Bullet
+    Note right of Bullet: For each visible bullet:<br/>bullet.x += STEP_BULLET_AXIS_X
+    alt bullet.x >= MAX_AXIS_X_BULLET
+        Note right of Bullet: bullet.visible = BLACK<br/>bullet.x = 0
+    end
+    deactivate Bullet
+
+    Note over Screen,Bullet: Game reset clears all bullets
+
+    Screen->>Bullet: ZW_GAME_BULLET_RESET
+    activate Bullet
+    Note right of Bullet: For each i in [0..MAX_NUM_BULLET):<br/>bullet[i].x = 0<br/>bullet[i].y = 0<br/>bullet[i].visible = BLACK
+    deactivate Bullet
+```
 
 ## IV. Zombie Object Sequence
 
-Zombie moves from right to left with zigzag motion on the Y axis. On each tick, the screen task posts `ZW_GAME_ZOMBIE_RUN` to move visible zombies and advance their animation frame, then posts `ZW_GAME_ZOMBIE_DETONATOR` to check bullet collisions. Zombies that are still `rising` from a tombstone do not move horizontally — they walk up by 1 px per tick for `ZOMBIE_RISE_TICKS` ticks, then join the normal flow. The task also auto-respawns from the right edge to keep at least `NUM_ZOMBIES_INIT` zombies alive at all times.
+Zombie moves from right to left with zigzag motion on the Y axis. On each tick, the screen task posts `ZW_GAME_ZOMBIE_RUN` to move visible zombies (clamped at `-ZOMBIE_MIN_LEFT_OFFSET` on the left) and advance their animation frame, then posts `ZW_GAME_ZOMBIE_DETONATOR` to check bullet collisions. Zombies that are still `rising` from a tombstone do not move horizontally — they walk up by 1 px per tick for `ZOMBIE_RISE_TICKS` ticks, then join the normal flow. The task also auto-respawns from the right edge to keep at least `NUM_ZOMBIES_INIT` zombies alive at all times.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="bullet sequence logic" width="720"/></td>
-  </tr>
-</table>
-<p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
+`ZW_GAME_ZOMBIE_DETONATOR` scans every visible non-rising zombie against every visible bullet using an AABB check (bullet must have passed 12 px into the zombie body). On a hit, the bullet slot is freed, the zombie slot is freed, a Bang is spawned in the first free `bang[]` slot at `(zombie.x + 5, zombie.y - 2)`, `zw_game_score` is increased by 10, and `BUZZER_SOUND_BANG` is played. Rising zombies are immune to bullets.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Zombie as Zombie Task
+    participant Bullet as Bullet State
+    participant Bang as Bang State
+    participant Buzzer as Buzzer
+
+    Note over Screen,Zombie: Game entry initializes Zombie state
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
+    activate Zombie
+    Note right of Zombie: game_active = true<br/>zw_game_zombie_speed = settingdata.zombie_speed<br/>For all NUM_ZOMBIES: visible = BLACK<br/>For first NUM_ZOMBIES_INIT:<br/>x = rand()%39 + 130<br/>y = rand()%(ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1) + ZOMBIE_Y_MIN<br/>visible = WHITE, action_image = rand()%3 + 1<br/>dy = 0, zigzag_timer = rand()%10 + 5<br/>rising = false, rise_ticks = 0
+    deactivate Zombie
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
+    Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
+    deactivate Screen
+
+    activate Zombie
+    Note right of Zombie: ZW_GAME_ZOMBIE_RUN
+    alt !game_active
+        Note right of Zombie: return
+    end
+    Note right of Zombie: alive = 0<br/>For each visible zombie i:
+    alt zombie[i].rising
+        alt rise_ticks > 0
+            Note right of Zombie: zombie.y--<br/>rise_ticks--
+        else rise_ticks == 0
+            Note right of Zombie: rising = false<br/>zigzag_timer = rand()%10 + 5
+        end
+        Note right of Zombie: action_image cycles 1->2->3->1<br/>continue (no horizontal move)
+    else not rising
+        alt x - speed < -ZOMBIE_MIN_LEFT_OFFSET
+            Note right of Zombie: zombie.x = -ZOMBIE_MIN_LEFT_OFFSET
+        else
+            Note right of Zombie: zombie.x -= zw_game_zombie_speed
+        end
+        alt zigzag_timer > 0
+            Note right of Zombie: zigzag_timer--
+        else
+            Note right of Zombie: dy = (rand()%3) - 1<br/>zigzag_timer = rand()%10 + 5
+        end
+        Note right of Zombie: new_y = y + dy clamped to [ZOMBIE_Y_MIN, ZOMBIE_Y_MAX]<br/>(dy = 0 if clamped)<br/>action_image cycles 1->2->3->1
+    end
+    Note right of Zombie: Auto-respawn while alive < NUM_ZOMBIES_INIT:<br/>fill free slot with random x/y/action_image/zigzag_timer
+    deactivate Zombie
+
+    activate Zombie
+    Note right of Zombie: ZW_GAME_ZOMBIE_DETONATOR<br/>For each visible non-rising zombie i,<br/>for each visible bullet j:
+    alt AABB hit (bullet has passed 12 px into zombie body)
+        Note right of Zombie: bullet[j].visible = BLACK, bullet[j].x = 0
+        Zombie->>Bang: First free slot:<br/>visible = WHITE<br/>x = zombie.x + 5, y = zombie.y - 2<br/>action_image = 1
+        Note right of Zombie: zw_game_score += 10
+        Zombie->>Buzzer: BUZZER_SOUND_BANG
+        Note right of Zombie: zombie[i].visible = BLACK<br/>break inner loop
+    end
+    deactivate Zombie
+
+    Note over Screen,Zombie: Game reset hides all zombies
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
+    activate Zombie
+    Note right of Zombie: game_active = false<br/>For all NUM_ZOMBIES: visible = BLACK
+    deactivate Zombie
+
+    Note over Screen,Zombie: Menu screen reuses zombie[0] only
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP_MENU
+    activate Zombie
+    Note right of Zombie: game_active = true<br/>All visible = BLACK<br/>zombie[0]: x = LCD_WIDTH + 3, y = AXIS_Y_GUNNER - 10<br/>visible = WHITE, action_image = 1, rising = false
+    deactivate Zombie
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN_MENU
+    activate Zombie
+    Note right of Zombie: zombie[0].x -= MENU_ZOMBIE_SPEED<br/>action_image cycles 1->2->3->1
+    alt zombie[0].x < -SIZE_BITMAP_ZOMBIES_X
+        Note right of Zombie: Wrap back to x = LCD_WIDTH + 3<br/>y = AXIS_Y_GUNNER - 10
+    end
+    alt AABB hit vs any visible bullet
+        Note right of Zombie: bullet freed<br/>spawn Bang at (x+5, y-2) (no score, no sound)<br/>zombie[0] wraps to right edge
+    end
+    deactivate Zombie
+```
 
 The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN_MENU` signals used by the menu screen to display a single demo zombie that loops across the screen and reacts to bullets without affecting the score.
 
@@ -55,12 +232,48 @@ The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN
 
 Bang is the explosion effect. It is not spawned by a dedicated signal — the Zombie task and Car task directly mutate the `bang[]` array when they detect a collision. On every game tick the screen task posts `ZW_GAME_BANG_UPDATE`; each visible bang advances its animation frame, and when the frame counter rolls past 3 the bang hides itself and resets its frame to 1.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_bang_sequence.png" alt="bullet sequence logic" width="720"/></td>
-  </tr>
-</table>
-<p align="center"><strong><em>Figure 4:</em></strong> Zombie sequence logic</p>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Timer as Game Tick Timer<br/>(100 ms)
+    participant Screen as Display Task<br/>(scr_game_zomwar)
+    participant Zombie as Zombie Task
+    participant Car as Car Task
+    participant Bang as Bang Task
+
+    Note over Screen,Bang: Game entry initializes Bang state
+
+    Screen->>Bang: ZW_GAME_BANG_SETUP
+    activate Bang
+    Note right of Bang: For each i in [0..NUM_BANG):<br/>bang[i].visible = BLACK<br/>bang[i].action_image = 1
+    deactivate Bang
+
+    Note over Zombie,Bang: Bang is spawned by direct array mutation,<br/>not via a signal
+
+    Zombie-->>Bang: On bullet/zombie hit (ZW_GAME_ZOMBIE_DETONATOR):<br/>first free slot -> visible = WHITE,<br/>x = zombie.x + 5, y = zombie.y - 2,<br/>action_image = 1
+    Car-->>Bang: On car/zombie hit (ZW_GAME_CAR_RUN):<br/>first free slot -> visible = WHITE,<br/>x = zombie.x + 5, y = zombie.y - 2,<br/>action_image = 1
+
+    Timer->>Screen: ZW_GAME_TIME_TICK
+    activate Screen
+    Screen->>Bang: ZW_GAME_BANG_UPDATE
+    deactivate Screen
+    activate Bang
+    Note right of Bang: For each i in [0..NUM_BANG):
+    alt bang[i].visible == WHITE
+        Note right of Bang: bang[i].action_image++
+    end
+    alt bang[i].action_image > 3
+        Note right of Bang: bang[i].action_image = 1<br/>bang[i].visible = BLACK
+    end
+    deactivate Bang
+
+    Note over Screen,Bang: Game reset clears all bangs
+
+    Screen->>Bang: ZW_GAME_BANG_RESET
+    activate Bang
+    Note right of Bang: For each i in [0..NUM_BANG):<br/>bang[i].visible = BLACK<br/>bang[i].action_image = 1
+    deactivate Bang
+```
 
 ## VI. Border Object Sequence
 
@@ -90,21 +303,23 @@ sequenceDiagram
 
     activate Border
     Border-->>Zombie: For each visible zombie at x <= -ZOMBIE_MIN_LEFT_OFFSET
-    Border-->>Car: Compute lane = (zombie.y - ZOMBIE_Y_MIN) / 10
+    Border-->>Car: lane = (zombie.y - ZOMBIE_Y_MIN) / 10<br/>if (lane >= NUM_LANES) lane = NUM_LANES - 1
 
-    alt no car visible in that lane
-        Border->>Screen: ZW_GAME_RESET (post to AC_TASK_DISPLAY_ID)
+    alt !car[lane].visible
+        Border->>Screen: ZW_GAME_RESET (post to AC_TASK_DISPLAY_ID)<br/>break out of loop
     else car protects the lane
-        Note right of Border: No game-over
+        Note right of Border: No game-over for this zombie
     end
 
-    alt zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL
+    alt !wave_warning_active && zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL
         Note right of Border: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
     end
-    alt wave_warning_active && warning_timer > 0
-        Note right of Border: wave_warning_timer--
-    else wave_warning_active && timer == 0
-        Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++<br/>If zw_game_zombie_speed < ZOMBIE_SPEED_MAX:<br/>zw_game_zombie_speed++<br/>Spawn WAVE_SPAWN_COUNT zombies
+    alt wave_warning_active
+        alt wave_warning_timer > 0
+            Note right of Border: wave_warning_timer--
+        else wave_warning_timer == 0
+            Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++<br/>if zw_game_zombie_speed < ZOMBIE_SPEED_MAX:<br/>zw_game_zombie_speed++<br/>Spawn up to WAVE_SPAWN_COUNT zombies into free slots
+        end
     end
     deactivate Border
 
@@ -118,7 +333,7 @@ sequenceDiagram
 
 ## VII. Car Object Sequence
 
-Car implements the lawnmower-style rescue. There is one car slot per lane (`NUM_LANES = 5`); whether a slot is initially visible is decided by the `settingdata.num_car` bitmask. On each tick the screen task posts `ZW_GAME_CAR_RUN`. The handler runs two loops in order: first it scans zombies — if any visible zombie has touched the left edge it activates the nearest free parked car in range (`CAR_HIT_RANGE_Y`) and kills that zombie; it also activates a parked car when a zombie walks into its bumper. Then it advances every running car to the right, mowing down zombies in the same lane (creating a Bang, +10 score, `BUZZER_SOUND_BANG`). When a running car leaves the screen its slot becomes invisible and consumed.
+Car implements the lawnmower-style rescue. There is one car slot per lane (`NUM_LANES = 5`); whether a slot is initially visible is decided by the `settingdata.num_car` bitmask. On each tick the screen task posts `ZW_GAME_CAR_RUN`. The handler runs two loops in order. **Loop 1** scans every visible zombie: if a zombie has reached the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`), `find_nearest_mower()` picks the parked car (`visible && !running`) whose `y` is closest to the zombie within `CAR_HIT_RANGE_Y`; if one is found, that car starts running and the zombie is hidden (rescued), otherwise the zombie is left at the edge for Border to detect a game over. For zombies not at the left edge, the loop activates a parked car whose bumper has been reached (`zombie.x + ZOMBIE_MIN_LEFT_OFFSET <= car.x + SIZE_BITMAP_CAR_X` and within `CAR_HIT_RANGE_Y`). **Loop 2** advances every running car by `CAR_SPEED`, cycles `action_image` through 1→2→3→1, and mows down zombies in the same lane (creates a Bang at `(zombie.x + 5, zombie.y - 2)`, +10 score, plays `BUZZER_SOUND_BANG`, hides the zombie). When a running car leaves the screen (`car.x > LCD_WIDTH`) its slot is marked `visible = false` and `running = false`.
 
 ```mermaid
 sequenceDiagram
@@ -143,23 +358,25 @@ sequenceDiagram
     deactivate Screen
 
     activate Car
-    Car-->>Zombie: Scan visible zombies (loop 1)
-    alt zombie at left edge
-        Note right of Car: Find nearest parked car (running=false)<br/>within CAR_HIT_RANGE_Y
-        alt car found
-            Note right of Car: car[m].running = true<br/>Hide zombie (rescued)
-        else no parked car
-            Note right of Car: Leave zombie at edge<br/>Border may trigger ZW_GAME_RESET
+    Note right of Car: Loop 1: scan visible zombies
+    Car-->>Zombie: For each visible zombie i
+    alt zombie[i].x <= -ZOMBIE_MIN_LEFT_OFFSET
+        Note right of Car: find_nearest_mower(zombie.y):<br/>pick car with visible && !running<br/>minimising |zombie.y - car.y|, must be <= CAR_HIT_RANGE_Y
+        alt mower found (m >= 0)
+            Note right of Car: car[m].running = true<br/>zombie[i].visible = BLACK (rescued)
+        else no parked car in range
+            Note right of Car: Leave zombie at edge<br/>Border will trigger ZW_GAME_RESET
         end
-    else zombie touches parked car
-        Note right of Car: car[m].running = true
+        Note right of Car: continue to next zombie
+    else zombie not at left edge
+        Note right of Car: For each car m with visible && !running:<br/>if |zombie.y - car.y| <= CAR_HIT_RANGE_Y<br/>and zombie.x + ZOMBIE_MIN_LEFT_OFFSET<br/>     <= car.x + SIZE_BITMAP_CAR_X<br/>then car[m].running = true
     end
 
-    Note right of Car: Loop 2: each running car<br/>x += CAR_SPEED<br/>Advance action_image (1..3)
-    Car-->>Zombie: For zombies in same lane within CAR_HIT_RANGE_Y
-    alt zombie x reaches car front
-        Car->>Bang: Spawn bang at (zombie.x + 5, zombie.y - 2)
-        Note right of Car: zw_game_score += 10<br/>Hide zombie
+    Note right of Car: Loop 2: for each car with visible && running<br/>car.x += CAR_SPEED<br/>action_image cycles 1->2->3->1
+    Car-->>Zombie: For each visible zombie j with<br/>|zombie.y - car.y| <= CAR_HIT_RANGE_Y
+    alt zombie.x + ZOMBIE_MIN_LEFT_OFFSET <= car.x + SIZE_BITMAP_CAR_X
+        Car->>Bang: First free bang slot:<br/>x = zombie.x + 5, y = zombie.y - 2<br/>action_image = 1, visible = WHITE
+        Note right of Car: zw_game_score += 10<br/>zombie[j].visible = BLACK
         Car->>Buzzer: BUZZER_SOUND_BANG
     end
     alt car[i].x > LCD_WIDTH
