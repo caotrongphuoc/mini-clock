@@ -4,6 +4,18 @@
 zw_game_zombie_t zombie[NUM_ZOMBIES];
 uint8_t zw_game_zombie_speed;
 
+void zw_game_zombie_spawn(uint8_t i)
+{
+    zombie[i].x = (rand() % 39) + 130;
+    zombie[i].y = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
+    zombie[i].visible = WHITE;
+    zombie[i].action_image = rand() % 3 + 1;
+    zombie[i].dy = 0;
+    zombie[i].zigzag_timer = rand() % 10 + 5;
+    zombie[i].rising = false;
+    zombie[i].rise_ticks = 0;
+}
+
 void zw_game_zombie_handle(ak_msg_t *msg)
 {
     switch (msg->sig)
@@ -18,14 +30,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
         }
         for (uint8_t i = 0; i < NUM_ZOMBIES_INIT; i++)
         {
-            zombie[i].x = (rand() % 39) + 130;
-            zombie[i].y = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
-            zombie[i].visible = WHITE;
-            zombie[i].action_image = rand() % 3 + 1;
-            zombie[i].dy = 0;
-            zombie[i].zigzag_timer = rand() % 10 + 5;
-            zombie[i].rising = false;
-            zombie[i].rise_ticks = 0;
+            zw_game_zombie_spawn(i);
         }
     }
     break;
@@ -93,14 +98,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
         {
             if (zombie[i].visible == WHITE)
                 continue; // slot dang dung
-            zombie[i].x = (rand() % 39) + 130;
-            zombie[i].y = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
-            zombie[i].visible = WHITE;
-            zombie[i].action_image = rand() % 3 + 1;
-            zombie[i].dy = 0;
-            zombie[i].zigzag_timer = rand() % 10 + 5;
-            zombie[i].rising = false;
-            zombie[i].rise_ticks = 0;
+            zw_game_zombie_spawn(i);
             alive++;
         }
     }

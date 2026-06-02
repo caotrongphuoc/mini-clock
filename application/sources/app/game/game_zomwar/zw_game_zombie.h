@@ -44,4 +44,6 @@ typedef struct
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];
 extern uint8_t zw_game_zombie_speed;
 
+extern void zw_game_zombie_spawn(uint8_t i);
+
 #endif //__ZW_GAME_ZOMBIE_H__

@@ -77,14 +77,7 @@ void zw_game_border_handle(ak_msg_t *msg)
         {
             if (zombie[i].visible == WHITE)
                 continue;
-            zombie[i].x = (rand() % 39) + 130;
-            zombie[i].y = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
-            zombie[i].visible = WHITE;
-            zombie[i].action_image = rand() % 3 + 1;
-            zombie[i].dy = 0;
-            zombie[i].zigzag_timer = rand() % 10 + 5;
-            zombie[i].rising = false;
-            zombie[i].rise_ticks = 0;
+            zw_game_zombie_spawn(i);
             spawned++;
         }
     }
