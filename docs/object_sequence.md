@@ -36,7 +36,7 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
     <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="bullet sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 1:</em></strong> Bullet sequence logic</p>
+<p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
 
 ## IV. Zombie Object Sequence
 
@@ -47,7 +47,7 @@ Zombie moves from right to left with zigzag motion on the Y axis. On each tick, 
     <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="bullet sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 1:</em></strong> Zombie sequence logic</p>
+<p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
 The Zombie task also exposes `ZW_GAME_ZOMBIE_SETUP_MENU` and `ZW_GAME_ZOMBIE_RUN_MENU` signals used by the menu screen to display a single demo zombie that loops across the screen and reacts to bullets without affecting the score.
 
@@ -60,7 +60,7 @@ Bang is the explosion effect. It is not spawned by a dedicated signal — the Zo
     <td align="center"><img src="../resources/images/sequence_object/zw_game_bang_sequence.png" alt="bullet sequence logic" width="720"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 1:</em></strong> Zombie sequence logic</p>
+<p align="center"><strong><em>Figure 4:</em></strong> Zombie sequence logic</p>
 
 ## VI. Border Object Sequence
 
