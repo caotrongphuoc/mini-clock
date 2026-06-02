@@ -31,57 +31,12 @@ Gunner owns the player position. The screen task initializes the Gunner object w
 
 Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). `ZW_GAME_BULLET_SHOOT` picks the first free slot in `bullet[]`, spawns it at `(gunner.x + 15, gunner.y - 8)`, sets `gunner.action_image = 2` to show the recoil frame, and plays `BUZZER_SOUND_CLICK`. The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right by `STEP_BULLET_AXIS_X`. When a bullet reaches `MAX_AXIS_X_BULLET`, it is hidden and its x position is cleared.
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Btn as MODE Button
-    participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(scr_game_zomwar)
-    participant Bullet as Bullet Task
-    participant Gunner as Gunner State
-    participant Buzzer as Buzzer
-
-    Note over Screen,Bullet: Game entry initializes Bullet state
-
-    Screen->>Bullet: ZW_GAME_BULLET_SETUP
-    activate Bullet
-    Note right of Bullet: For each i in [0..MAX_NUM_BULLET):<br/>bullet[i].x = 0<br/>bullet[i].y = 0<br/>bullet[i].visible = BLACK
-    deactivate Bullet
-
-    Note over Btn,Screen: Shoot input gated by zw_game_state == GAME_PLAY
-
-    Btn->>Screen: AC_DISPLAY_BUTTON_MODE_PRESSED
-    activate Screen
-    alt zw_game_state == GAME_PLAY
-        Screen->>Bullet: ZW_GAME_BULLET_SHOOT
-        activate Bullet
-        Note right of Bullet: Pick first free slot (visible != WHITE):<br/>bullet[i].visible = WHITE<br/>bullet[i].x = gunner.x + 15<br/>bullet[i].y = gunner.y - 8
-        Bullet->>Gunner: gunner.action_image = 2 (recoil)
-        Bullet->>Buzzer: BUZZER_SOUND_CLICK
-        deactivate Bullet
-    else other state
-        Note right of Screen: Ignore shoot
-    end
-    deactivate Screen
-
-    Timer->>Screen: ZW_GAME_TIME_TICK
-    activate Screen
-    Screen->>Bullet: ZW_GAME_BULLET_RUN
-    deactivate Screen
-    activate Bullet
-    Note right of Bullet: For each visible bullet:<br/>bullet.x += STEP_BULLET_AXIS_X
-    alt bullet.x >= MAX_AXIS_X_BULLET
-        Note right of Bullet: bullet.visible = BLACK<br/>bullet.x = 0
-    end
-    deactivate Bullet
-
-    Note over Screen,Bullet: Game reset clears all bullets
-
-    Screen->>Bullet: ZW_GAME_BULLET_RESET
-    activate Bullet
-    Note right of Bullet: For each i in [0..MAX_NUM_BULLET):<br/>bullet[i].x = 0<br/>bullet[i].y = 0<br/>bullet[i].visible = BLACK
-    deactivate Bullet
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="Bullet game sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Bullet sequence logic</p>
 
 ## IV. Zombie Object Sequence
 
