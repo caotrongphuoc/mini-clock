@@ -16,6 +16,30 @@ void zw_game_zombie_spawn(uint8_t i)
     zombie[i].rise_ticks = 0;
 }
 
+void zw_game_zombie_spawn_rise(uint8_t i, int16_t x, uint8_t y)
+{
+    zombie[i].x = x;
+    zombie[i].y = y;
+    zombie[i].visible = WHITE;
+    zombie[i].action_image = 1;
+    zombie[i].dy = 0;
+    zombie[i].zigzag_timer = 0;
+    zombie[i].rising = true;
+    zombie[i].rise_ticks = ZOMBIE_RISE_TICKS;
+}
+
+bool zw_game_zombie_check_hit(uint8_t b, uint8_t z)
+{
+    int16_t ax = bullet[b].x;
+    int16_t ay = bullet[b].y;
+    int16_t mx = zombie[z].x;
+    int16_t my = zombie[z].y;
+    return (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
+           (ax < mx + (int16_t)SIZE_BITMAP_ZOMBIES_X) &&
+           (ay + (int16_t)SIZE_BITMAP_BULLET_Y > my) &&
+           (ay < my + (int16_t)SIZE_BITMAP_ZOMBIES_Y);
+}
+
 void zw_game_zombie_handle(ak_msg_t *msg)
 {
     switch (msg->sig)
@@ -113,29 +137,38 @@ void zw_game_zombie_handle(ak_msg_t *msg)
                 continue;
             if (zombie[i].rising)
                 continue;
-            for (uint8_t j = 0; j < MAX_NUM_BULLET; j++)
+            for (uint8_t j = 0; j < NUM_BULLET; j++)
             {
                 if (bullet[j].visible != WHITE)
                     continue;
-                int16_t ax = bullet[j].x;
-                int16_t ay = bullet[j].y;
-                int16_t mx = zombie[i].x;
-                int16_t my = zombie[i].y;
-                bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
-                           (ax < mx + SIZE_BITMAP_ZOMBIES_X) &&
-                           (ay + SIZE_BITMAP_BULLET_Y > my) &&
-                           (ay < my + SIZE_BITMAP_ZOMBIES_Y);
-                if (hit)
-                {
-                    bullet[j].visible = BLACK;
-                    bullet[j].x = 0;
-                    zw_game_bang_spawn(zombie[i].x, zombie[i].y);
-                    zw_game_score += 10;
-                    BUZZER_PlaySound(BUZZER_SOUND_BANG);
-                    zombie[i].visible = BLACK;
-                    break;
-                }
+                if (!zw_game_zombie_check_hit(j, i))
+                    continue;
+                bullet[j].visible = BLACK;
+                bullet[j].x = 0;
+                zw_game_bang_spawn(zombie[i].x, zombie[i].y);
+                zw_game_score += 10;
+                BUZZER_PlaySound(BUZZER_SOUND_BANG);
+                zombie[i].visible = BLACK;
+                break;
             }
+        }
+    }
+    break;
+
+    case ZW_GAME_ZOMBIE_WAVE_SPAWN:
+    {
+        APP_DBG_SIG("ZW_GAME_ZOMBIE_WAVE_SPAWN\n");
+        if (zw_game_zombie_speed < ZOMBIE_SPEED_MAX)
+        {
+            zw_game_zombie_speed++;
+        }
+        uint8_t spawned = 0;
+        for (uint8_t i = 0; i < NUM_ZOMBIES && spawned < ZOMBIE_WAVE_SPAWN; i++)
+        {
+            if (zombie[i].visible == WHITE)
+                continue;
+            zw_game_zombie_spawn(i);
+            spawned++;
         }
     }
     break;
@@ -178,27 +211,18 @@ void zw_game_zombie_handle(ak_msg_t *msg)
             zombie[0].x = LCD_WIDTH + 3;
             zombie[0].y = AXIS_Y_GUNNER - 10;
         }
-        for (uint8_t j = 0; j < MAX_NUM_BULLET; j++)
+        for (uint8_t j = 0; j < NUM_BULLET; j++)
         {
             if (bullet[j].visible != WHITE)
                 continue;
-            int16_t ax = bullet[j].x;
-            int16_t ay = bullet[j].y;
-            int16_t mx = zombie[0].x;
-            int16_t my = zombie[0].y;
-            bool hit = (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
-                       (ax < mx + (int16_t)SIZE_BITMAP_ZOMBIES_X) &&
-                       (ay + (int16_t)SIZE_BITMAP_BULLET_Y > my) &&
-                       (ay < my + (int16_t)SIZE_BITMAP_ZOMBIES_Y);
-            if (hit)
-            {
-                bullet[j].visible = BLACK;
-                bullet[j].x = 0;
-                zw_game_bang_spawn(zombie[0].x, zombie[0].y);
-                zombie[0].x = LCD_WIDTH + 3;
-                zombie[0].y = AXIS_Y_GUNNER - 10;
-                break;
-            }
+            if (!zw_game_zombie_check_hit(j, 0))
+                continue;
+            bullet[j].visible = BLACK;
+            bullet[j].x = 0;
+            zw_game_bang_spawn(zombie[0].x, zombie[0].y);
+            zombie[0].x = LCD_WIDTH + 3;
+            zombie[0].y = AXIS_Y_GUNNER - 10;
+            break;
         }
     }
     break;

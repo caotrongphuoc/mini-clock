@@ -15,6 +15,7 @@ void zw_game_border_handle(ak_msg_t *msg)
     {
         APP_DBG_SIG("ZW_GAME_BORDER_SETUP\n");
         border.x = AXIS_X_BORDER;
+        zw_game_score = 0;
         wave_last_score = 0;
         wave_warning_timer = 0;
         wave_warning_active = false;
@@ -68,18 +69,7 @@ void zw_game_border_handle(ak_msg_t *msg)
         wave_warning_active = false;
         wave_last_score += WAVE_SCORE_INTERVAL;
         wave_level++;
-        if (zw_game_zombie_speed < ZOMBIE_SPEED_MAX)
-        {
-            zw_game_zombie_speed++;
-        }
-        uint8_t spawned = 0;
-        for (uint8_t i = 0; i < NUM_ZOMBIES && spawned < WAVE_SPAWN_COUNT; i++)
-        {
-            if (zombie[i].visible == WHITE)
-                continue;
-            zw_game_zombie_spawn(i);
-            spawned++;
-        }
+        task_post_pure_msg(ZW_GAME_ZOMBIE_ID, ZW_GAME_ZOMBIE_WAVE_SPAWN);
     }
     break;
 

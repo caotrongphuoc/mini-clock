@@ -1,6 +1,6 @@
 #include "zw_game_bullet.h"
 
-zw_game_bullet_t bullet[MAX_NUM_BULLET];
+zw_game_bullet_t bullet[NUM_BULLET];
 
 void zw_game_bullet_handle(ak_msg_t *msg)
 {
@@ -9,7 +9,7 @@ void zw_game_bullet_handle(ak_msg_t *msg)
     case ZW_GAME_BULLET_SETUP:
     {
         APP_DBG_SIG("ZW_GAME_BULLET_SETUP\n");
-        for (uint8_t i = 0; i < MAX_NUM_BULLET; i++)
+        for (uint8_t i = 0; i < NUM_BULLET; i++)
         {
             bullet[i].x = 0;
             bullet[i].y = 0;
@@ -21,7 +21,7 @@ void zw_game_bullet_handle(ak_msg_t *msg)
     case ZW_GAME_BULLET_RUN:
     {
         APP_DBG_SIG("ZW_GAME_BULLET_RUN\n");
-        for (uint8_t i = 0; i < MAX_NUM_BULLET; i++)
+        for (uint8_t i = 0; i < NUM_BULLET; i++)
         {
             if (bullet[i].visible != WHITE)
                 continue;
@@ -38,7 +38,7 @@ void zw_game_bullet_handle(ak_msg_t *msg)
     case ZW_GAME_BULLET_SHOOT:
     {
         APP_DBG_SIG("ZW_GAME_BULLET_SHOOT\n");
-        for (uint8_t i = 0; i < MAX_NUM_BULLET; i++)
+        for (uint8_t i = 0; i < NUM_BULLET; i++)
         {
             if (bullet[i].visible == WHITE)
                 continue;
@@ -55,7 +55,7 @@ void zw_game_bullet_handle(ak_msg_t *msg)
     case ZW_GAME_BULLET_RESET:
     {
         APP_DBG_SIG("ZW_GAME_BULLET_RESET\n");
-        for (uint8_t i = 0; i < MAX_NUM_BULLET; i++)
+        for (uint8_t i = 0; i < NUM_BULLET; i++)
         {
             bullet[i].x = 0;
             bullet[i].y = 0;

@@ -18,7 +18,8 @@
 
 #include "zw_game_gunner.h"
 
-#define MAX_NUM_BULLET (15)
+
+#define NUM_BULLET (15)
 #define MAX_AXIS_X_BULLET (128)
 #define SIZE_BITMAP_BULLET_X (5)
 #define SIZE_BITMAP_BULLET_Y (5)
@@ -30,6 +31,6 @@ typedef struct
     uint16_t x, y;
 } zw_game_bullet_t;
 
-extern zw_game_bullet_t bullet[MAX_NUM_BULLET];
+extern zw_game_bullet_t bullet[NUM_BULLET];
 
 #endif //__ZW_GAME_BULLET_H__

@@ -128,7 +128,7 @@ sequenceDiagram
       Note right of AK: Handle signal (ZW_GAME_BULLET_SETUP)
       AK->>Bullet:
       activate Bullet
-      Note right of Bullet: Clear all MAX_NUM_BULLET slots
+      Note right of Bullet: Clear all NUM_BULLET slots
       deactivate Bullet
 
       Note right of AK: Handle signal (ZW_GAME_ZOMBIE_SETUP)

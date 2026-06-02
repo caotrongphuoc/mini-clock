@@ -13,7 +13,10 @@
 
 #include "scr_game_zomwar.h"
 
+// Number of BangS
 #define NUM_BANG (20)
+
+// Size of Bang (I AND II)
 #define SIZE_BITMAP_BANG_I_X (15)
 #define SIZE_BITMAP_BANG_I_Y (15)
 #define SIZE_BITMAP_BANG_II_X (10)

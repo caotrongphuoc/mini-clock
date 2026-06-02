@@ -22,7 +22,6 @@
 #define SIZE_BITMAP_TOMBSTONE_X (8)
 #define SIZE_BITMAP_TOMBSTONE_Y (10)
 #define TOMBSTONE_SPAWN_INTERVAL (35)
-#define ZOMBIE_RISE_TICKS (10)
 
 typedef struct
 {

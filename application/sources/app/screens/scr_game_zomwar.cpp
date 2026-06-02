@@ -62,7 +62,7 @@ void zw_game_gunner_display()
 
 void zw_game_bullet_display()
 {
-	for (uint8_t i = 0; i < MAX_NUM_BULLET; i++)
+	for (uint8_t i = 0; i < NUM_BULLET; i++)
 	{
 		if (bullet[i].visible != WHITE)
 			continue;

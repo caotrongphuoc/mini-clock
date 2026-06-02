@@ -43,14 +43,9 @@ void zw_game_tombstone_handle(ak_msg_t *msg)
         {
             if (zombie[i].visible == WHITE)
                 continue;
-            zombie[i].x = tombstones[tidx].x;
-            zombie[i].y = (uint32_t)lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
-            zombie[i].visible = WHITE;
-            zombie[i].action_image = 1;
-            zombie[i].dy = 0;
-            zombie[i].zigzag_timer = 0;
-            zombie[i].rising = true;
-            zombie[i].rise_ticks = ZOMBIE_RISE_TICKS;
+            int16_t x = tombstones[tidx].x;
+            uint8_t y = lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
+            zw_game_zombie_spawn_rise(i, x, y);
             break;
         }
     }

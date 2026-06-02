@@ -24,6 +24,14 @@ static int8_t find_nearest_car(uint32_t zy)
     return best;
 }
 
+bool zw_game_car_check_hit(uint8_t c, uint8_t z)
+{
+    int32_t dy = (int32_t)zombie[z].y - (int32_t)car[c].y;
+    if (dy < 0) dy = -dy;
+    return (dy <= CAR_HIT_RANGE_Y) &&
+           (zombie[z].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[c].x + SIZE_BITMAP_CAR_X));
+}
+
 void zw_game_car_handle(ak_msg_t *msg)
 {
     switch (msg->sig)
@@ -65,16 +73,8 @@ void zw_game_car_handle(ak_msg_t *msg)
             {
                 if (!car[m].visible || car[m].running)
                     continue;
-                int32_t dy = (int32_t)zombie[i].y - (int32_t)car[m].y;
-                if (dy < 0)
-                    dy = -dy;
-                if (dy <= CAR_HIT_RANGE_Y)
-                {
-                    if (zombie[i].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[m].x + SIZE_BITMAP_CAR_X))
-                    {
-                        car[m].running = true;
-                    }
-                }
+                if (zw_game_car_check_hit(m, i))
+                    car[m].running = true;
             }
         }
 
@@ -106,18 +106,12 @@ void zw_game_car_handle(ak_msg_t *msg)
             {
                 if (zombie[j].visible != WHITE)
                     continue;
-                int32_t dy = (int32_t)zombie[j].y - (int32_t)car[i].y;
-                if (dy < 0)
-                    dy = -dy;
-                if (dy > CAR_HIT_RANGE_Y)
+                if (!zw_game_car_check_hit(i, j))
                     continue;
-                if (zombie[j].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[i].x + SIZE_BITMAP_CAR_X))
-                {
-                    zw_game_bang_spawn(zombie[j].x, zombie[j].y);
-                    zw_game_score += 10;
-                    BUZZER_PlaySound(BUZZER_SOUND_BANG);
-                    zombie[j].visible = BLACK;
-                }
+                zw_game_bang_spawn(zombie[j].x, zombie[j].y);
+                zw_game_score += 10;
+                BUZZER_PlaySound(BUZZER_SOUND_BANG);
+                zombie[j].visible = BLACK;
             }
         }
     }
