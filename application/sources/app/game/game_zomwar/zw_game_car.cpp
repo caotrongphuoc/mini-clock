@@ -113,7 +113,10 @@ void zw_game_car_handle(ak_msg_t *msg)
                     continue;
                 if (zombie[j].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[i].x + SIZE_BITMAP_CAR_X))
                 {
-                    zw_game_zombie_dead(j);
+                    zw_game_bang_spawn(zombie[j].x, zombie[j].y);
+                    zw_game_score += 10;
+                    BUZZER_PlaySound(BUZZER_SOUND_BANG);
+                    zombie[j].visible = BLACK;
                 }
             }
         }

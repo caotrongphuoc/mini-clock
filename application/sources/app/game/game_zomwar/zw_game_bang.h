@@ -28,4 +28,6 @@ typedef struct
 
 extern zw_game_bang_t bang[NUM_BANG];
 
+extern void zw_game_bang_spawn(int16_t x, uint8_t y);
+
 #endif //__ZW_GAME_BANG_H__
