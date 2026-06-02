@@ -49,9 +49,11 @@ The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME
 5. `ZW_GAME_ZOMBIE_DETONATOR`
 6. `ZW_GAME_TOMBSTONE_SPAWN`
 7. `ZW_GAME_CAR_RUN`
-8. `ZW_GAME_BANG_UPDATE`
-9. `ZW_GAME_CHECK_GAME_OVER`
-10. `ZW_GAME_LEVEL_UP`
+8. `ZW_GAME_CAR_HIT`
+9. `ZW_GAME_BANG_UPDATE`
+10. `ZW_GAME_CHECK_GAME_OVER`
+11. `ZW_GAME_WAVE_CHECK`
+12. `ZW_GAME_LEVEL_UP`
 
 On `SCREEN_ENTRY` the screen task posts the matching `*_SETUP` signals to all object tasks and starts the periodic `ZW_GAME_TIME_TICK` timer. On `ZW_GAME_RESET` it removes the timer, posts the `*_RESET` signals, saves `gamescore.score_now = zw_game_score`, transitions to `GAME_OVER`, and arms a one-shot `ZW_GAME_EXIT_GAME` timer.
 
