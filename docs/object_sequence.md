@@ -20,60 +20,12 @@ The screen task posts `ZW_GAME_TIME_TICK` every `ZW_GAME_TIME_TICK_INTERVAL` (10
 
 Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it (`AXIS_Y_GUNNER_MIN`..`AXIS_Y_GUNNER_MAX`), then copies it into the rendered `gunner.y`. `ZW_GAME_GUNNER_UPDATE` also clears the recoil frame by resetting `gunner.action_image` from `2` back to `1` (the recoil frame is raised by the Bullet task on `ZW_GAME_BULLET_SHOOT`).
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant Btn as Buttons<br/>(UP / DOWN)
-    participant Timer as Game Tick Timer<br/>(100 ms)
-    participant Screen as Display Task<br/>(scr_game_zomwar)
-    participant Gunner as Gunner Task
-
-    Note over Screen,Gunner: Game entry initializes Gunner state
-
-    Screen->>Gunner: ZW_GAME_GUNNER_SETUP
-    activate Gunner
-    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = WHITE<br/>gunner.action_image = 1<br/>gunner_y = AXIS_Y_GUNNER
-    deactivate Gunner
-
-    Note over Btn,Screen: Buttons only latch direction in the screen task
-
-    Btn->>Screen: AC_DISPLAY_BUTTON_UP_PRESSED
-    Note right of Screen: gunner_dir = GUNNER_DIR_UP
-    Btn->>Screen: AC_DISPLAY_BUTTON_UP_RELEASED
-    Note right of Screen: if gunner_dir == UP: gunner_dir = NONE
-    Btn->>Screen: AC_DISPLAY_BUTTON_DOWN_PRESSED
-    Note right of Screen: gunner_dir = GUNNER_DIR_DOWN
-    Btn->>Screen: AC_DISPLAY_BUTTON_DOWN_RELEASED
-    Note right of Screen: if gunner_dir == DOWN: gunner_dir = NONE
-
-    Timer->>Screen: ZW_GAME_TIME_TICK
-    activate Screen
-    alt gunner_dir == GUNNER_DIR_UP
-        Screen->>Gunner: ZW_GAME_GUNNER_UP
-        activate Gunner
-        Note right of Gunner: gunner_y -= STEP_GUNNER_AXIS_Y<br/>if gunner_y < AXIS_Y_GUNNER_MIN:<br/>gunner_y = AXIS_Y_GUNNER_MIN
-        deactivate Gunner
-    else gunner_dir == GUNNER_DIR_DOWN
-        Screen->>Gunner: ZW_GAME_GUNNER_DOWN
-        activate Gunner
-        Note right of Gunner: gunner_y += STEP_GUNNER_AXIS_Y<br/>if gunner_y > AXIS_Y_GUNNER_MAX:<br/>gunner_y = AXIS_Y_GUNNER_MAX
-        deactivate Gunner
-    else gunner_dir == GUNNER_DIR_NONE
-        Note right of Screen: No UP/DOWN posted
-    end
-    Screen->>Gunner: ZW_GAME_GUNNER_UPDATE
-    deactivate Screen
-    activate Gunner
-    Note right of Gunner: gunner.y = gunner_y<br/>if gunner.action_image == 2:<br/>gunner.action_image = 1 (clear recoil)
-    deactivate Gunner
-
-    Note over Screen,Gunner: Game reset hides Gunner
-
-    Screen->>Gunner: ZW_GAME_GUNNER_RESET
-    activate Gunner
-    Note right of Gunner: gunner.x = AXIS_X_GUNNER<br/>gunner.y = AXIS_Y_GUNNER<br/>gunner.visible = BLACK<br/>gunner_y = AXIS_Y_GUNNER
-    deactivate Gunner
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.pngunner" alt="Gunner game sequence logic" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Gunner sequence logic</p>
 
 ## III. Bullet Object Sequence
 
