@@ -61,10 +61,10 @@ Main runtime flow:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_reset_sequence.png" alt="Gameplay sequence logic" width="1000"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_reset_sequence.png" alt="Game reset sequence logic" width="1000"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 3:</em></strong> Gameplay sequence logic</p>
+<p align="center"><strong><em>Figure 3:</em></strong> Game reset sequence logic</p>
 
 ## II. Code References
 
