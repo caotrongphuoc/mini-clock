@@ -63,152 +63,64 @@ Main runtime flow:
 sequenceDiagram
     autonumber
 
-      participant Border as Border Task
-      participant Screen as Display Task<br/>(Zomwar Game Screen)
-      participant AK as AK OS Event-Driven<br/>(Message Pool and Scheduler)
-      participant Gunner as Gunner Task
-      participant Bullet as Bullet Task
-      participant Zombie as Zombie Task
-      participant Car as Car Task
-      participant Tombstone as Tombstone Task
-      participant Bang as Bang Task
-      participant Timer as Game Tick Timer
-      participant GameOver as Display Task<br/>(Game Over Screen)
+    participant Screen as Screen
+    participant AKOS as AKOS<br/>(Message Pool)
+    participant Gunner as Gunner
+    participant Bullet as Bullet[n]
+    participant Zombie as Zombie[n]
+    participant Car as Car[n]
+    participant Tombstone as Tombstone[n]
+    participant Bang as Bang[n]
+    participant Border as Border
+    participant Tick as Game tick
+    participant GameOver as Game Over Screen
 
-      Note over Border,GameOver: GAME RESET
+    Note over Border: Zombie reaches left edge<br/>and that lane has no car
+    Border->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_RESET
+    AKOS->>Screen: Handle signal
 
-      Note right of Border: Zombie reaches left edge<br/>and that lane has no car
-      Border->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_RESET<br/>(to AC_TASK_DISPLAY_ID)
-      deactivate AK
+    Note over Screen: Guard: zw_game_state == GAME_PLAY
+    Screen->>Tick: Stop periodic timer<br/>(ZW_GAME_TIME_TICK)
 
-      Note over AK,Screen: AK task scheduler processes reset message
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_GUNNER_RESET
+    AKOS->>Gunner: Handle signal
 
-      Note right of AK: Handle signal (ZW_GAME_RESET)
-      AK->>Screen:
-      activate Screen
-      Note right of Screen: Guard: only if zw_game_state == GAME_PLAY
-      Note right of Screen: Stop ZW_GAME_TIME_TICK timer
-      Screen->>Timer:
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_BULLET_RESET
+    AKOS->>Bullet: Handle signal
 
-      Note over Screen,AK: Post reset messages to AK Message Pool
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_ZOMBIE_RESET
+    AKOS->>Zombie: Handle signal
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_GUNNER_RESET
-      deactivate AK
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_CAR_RESET
+    AKOS->>Car: Handle signal
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_BULLET_RESET
-      deactivate AK
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_TOMBSTONE_RESET
+    AKOS->>Tombstone: Handle signal
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_ZOMBIE_RESET
-      deactivate AK
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_BANG_RESET
+    AKOS->>Bang: Handle signal
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_CAR_RESET
-      deactivate AK
+    Screen->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_BORDER_RESET
+    AKOS->>Border: Handle signal
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_TOMBSTONE_RESET
-      deactivate AK
+    Note over Screen: gamescore.score_now = zw_game_score
+    Note over Screen: STATE (GAME_OVER)
+    Screen->>Tick: Create one-shot timer<br/>(ZW_GAME_EXIT_GAME, 3000 ms)
+    Note over Screen: Screen render<br/>(GAME_OVER bitmap)
 
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_BANG_RESET
-      deactivate AK
-
-      Note right of Screen: Task post message
-      Screen->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_BORDER_RESET
-      deactivate AK
-
-      Note right of Screen: Latch current score in RAM<br/>gamescore.score_now = zw_game_score<br/>(EEPROM write happens later on Game Over screen)
-
-      Note right of Screen: Arm exit timer
-      Screen->>Timer:
-      Note right of Timer: ZW_GAME_EXIT_GAME<br/>(One-shot after 3000 ms)
-
-      Note right of Screen: State = GAME_OVER
-      Screen->>Screen:
-      Note right of Screen: Screen Render<br/>(GAME_OVER bitmap)
-      deactivate Screen
-
-      Note over AK,Border: AK task scheduler processes reset object messages
-
-      Note right of AK: Handle signal (ZW_GAME_GUNNER_RESET)
-      AK->>Gunner:
-      activate Gunner
-      Note right of Gunner: gunner.visible = BLACK<br/>Reset gunner_y
-      deactivate Gunner
-
-      Note right of AK: Handle signal (ZW_GAME_BULLET_RESET)
-      AK->>Bullet:
-      activate Bullet
-      Note right of Bullet: Hide all bullets
-      deactivate Bullet
-
-      Note right of AK: Handle signal (ZW_GAME_ZOMBIE_RESET)
-      AK->>Zombie:
-      activate Zombie
-      Note right of Zombie: game_active = false<br/>Hide all zombies
-      deactivate Zombie
-
-      Note right of AK: Handle signal (ZW_GAME_CAR_RESET)
-      AK->>Car:
-      activate Car
-      Note right of Car: game_active = false<br/>Park and hide all cars
-      deactivate Car
-
-      Note right of AK: Handle signal (ZW_GAME_TOMBSTONE_RESET)
-      AK->>Tombstone:
-      activate Tombstone
-      Note right of Tombstone: spawn_timer = 0<br/>Deactivate all tombstones
-      deactivate Tombstone
-
-      Note right of AK: Handle signal (ZW_GAME_BANG_RESET)
-      AK->>Bang:
-      activate Bang
-      Note right of Bang: Hide all bang effects
-      deactivate Bang
-
-      Note right of AK: Handle signal (ZW_GAME_BORDER_RESET)
-      AK->>Border:
-      activate Border
-      Note right of Border: border.visible = BLACK<br/>zw_game_score = 0<br/>Reset wave state
-      deactivate Border
-
-      Note over Timer,GameOver: Exit game-over animation
-      Note right of Timer: One-shot timer fires after 3000 ms
-      Timer->>AK:
-      activate AK
-      Note right of AK: ZW_GAME_EXIT_GAME
-      deactivate AK
-
-      Note right of AK: Handle signal (ZW_GAME_EXIT_GAME)
-      AK->>Screen:
-      activate Screen
-      Note right of Screen: State = GAME_OFF
-      Screen->>GameOver: SCREEN_TRAN(scr_game_over)
-      deactivate Screen
-      Note right of GameOver: SCREEN_ENTRY: rank_ranking()
-      activate GameOver
-      GameOver->>GameOver:
-      Note right of GameOver: Screen Render<br/>(GAME OVER + score + Retry / Rank / Home)
-      deactivate GameOver
+    Tick->>AKOS: Task post message
+    Note over AKOS: ZW_GAME_EXIT_GAME
+    AKOS->>Screen: Handle signal
+    Note over Screen: STATE (GAME_OFF)
+    Screen->>GameOver: SCREEN_TRAN(scr_game_over)
 ```
 
 ## II. Code References
