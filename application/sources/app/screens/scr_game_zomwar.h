@@ -41,6 +41,8 @@ extern view_dynamic_t dyn_view_zomwar;
 extern view_screen_t scr_game_zomwar;
 extern void scr_game_zomwar_handle(ak_msg_t *msg);
 
+extern zw_game_setting_t settingsetup;
+
 extern void zw_game_gunner_display();
 extern void zw_game_bullet_display();
 extern void zw_game_zombie_display();

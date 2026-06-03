@@ -11,6 +11,8 @@
 static uint8_t zw_game_state;
 static uint8_t gunner_dir = GUNNER_DIR_NONE;
 
+zw_game_setting_t settingsetup;
+
 void zw_game_frame_display()
 {
 	view_render.setTextSize(1);
@@ -221,6 +223,7 @@ void scr_game_zomwar_handle(ak_msg_t *msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("ZW_GAME SCREEN_ENTRY\n");
+		zw_game_setting_read(&settingsetup);
 		task_post_pure_msg(ZW_GAME_GUNNER_ID, ZW_GAME_GUNNER_SETUP);
 		task_post_pure_msg(ZW_GAME_BULLET_ID, ZW_GAME_BULLET_SETUP);
 		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, ZW_GAME_ZOMBIE_SETUP);

@@ -47,7 +47,7 @@ void zw_game_zombie_handle(ak_msg_t *msg)
     case ZW_GAME_ZOMBIE_SETUP:
     {
         APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
-        zw_game_zombie_speed = settingdata.zombie_speed;
+        zw_game_zombie_speed = settingsetup.zombie_speed;
         for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
         {
             zombie[i].visible = BLACK;

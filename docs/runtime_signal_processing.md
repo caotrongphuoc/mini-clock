@@ -59,10 +59,10 @@ sequenceDiagram
 
       Note over Screen,Timer: GAME START
 
-      Note right of Screen: Read game settings
+      Note right of Screen: Read game settings into per-session snapshot
       Screen->>Setting:
       activate Screen
-      Note right of Setting: Read EEPROM<br/>(settingdata: zombie_speed,<br/>num_car, tombstone_lane_1/_2)
+      Note right of Setting: zw_game_setting_read(&settingsetup)<br/>(snapshot for this play session:<br/>zombie_speed, num_car,<br/>tombstone_lane_1/_2)
 
       Note over Screen,AK: Post setup messages to AK Message Pool
 
@@ -134,19 +134,19 @@ sequenceDiagram
       Note right of AK: Handle signal (ZW_GAME_ZOMBIE_SETUP)
       AK->>Zombie:
       activate Zombie
-      Note right of Zombie: game_active = true<br/>zw_game_zombie_speed = settingdata.zombie_speed<br/>Spawn NUM_ZOMBIES_INIT zombies
+      Note right of Zombie: game_active = true<br/>zw_game_zombie_speed = settingsetup.zombie_speed<br/>Spawn NUM_ZOMBIES_INIT zombies
       deactivate Zombie
 
       Note right of AK: Handle signal (ZW_GAME_CAR_SETUP)
       AK->>Car:
       activate Car
-      Note right of Car: Place 1 car per lane<br/>visible bitmask from settingdata.num_car
+      Note right of Car: Place 1 car per lane<br/>visible bitmask from settingsetup.num_car
       deactivate Car
 
       Note right of AK: Handle signal (ZW_GAME_TOMBSTONE_SETUP)
       AK->>Tombstone:
       activate Tombstone
-      Note right of Tombstone: Place TOMBSTONES_PER_LANE per lane<br/>active bitmask from settingdata.tombstone_lane_1/_2<br/>Reset spawn timer
+      Note right of Tombstone: Place TOMBSTONES_PER_LANE per lane<br/>active bitmask from settingsetup.tombstone_lane_1/_2<br/>Reset spawn timer
       deactivate Tombstone
 
       Note right of AK: Handle signal (ZW_GAME_BANG_SETUP)
