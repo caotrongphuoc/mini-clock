@@ -55,7 +55,7 @@ Main runtime flow:
     <td align="center"><img src="../resources/images/sequence_object/zw_game_play_sequence.png" alt="Gameplay sequence logic" width="1000"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 1:</em></strong> Gameplay sequence logic</p>
+<p align="center"><strong><em>Figure 2:</em></strong> Gameplay sequence logic</p>
 
 #### 3. Game Reset
 
