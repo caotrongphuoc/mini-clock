@@ -44,7 +44,7 @@ Main runtime flow:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_start_sequence.drawio.png" alt="Game start sequence logic" width="900"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_start_sequence.drawio.png" alt="Game start sequence logic" width="1000"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> Game start sequence logic</p>
