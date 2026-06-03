@@ -80,41 +80,42 @@ sequenceDiagram
     Note over AKOS: ZW_GAME_RESET
     AKOS->>Screen: Handle signal
 
-    Note over Screen: Guard: zw_game_state == GAME_PLAY
-    Screen->>Tick: Stop periodic timer<br/>(ZW_GAME_TIME_TICK)
+    opt zw_game_state == GAME_PLAY
+        Screen->>Tick: Stop periodic timer<br/>(ZW_GAME_TIME_TICK)
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_GUNNER_RESET
-    AKOS->>Gunner: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_GUNNER_RESET
+        AKOS->>Gunner: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_BULLET_RESET
-    AKOS->>Bullet: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_BULLET_RESET
+        AKOS->>Bullet: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_ZOMBIE_RESET
-    AKOS->>Zombie: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_ZOMBIE_RESET
+        AKOS->>Zombie: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_CAR_RESET
-    AKOS->>Car: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_CAR_RESET
+        AKOS->>Car: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_TOMBSTONE_RESET
-    AKOS->>Tombstone: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_TOMBSTONE_RESET
+        AKOS->>Tombstone: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_BANG_RESET
-    AKOS->>Bang: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_BANG_RESET
+        AKOS->>Bang: Handle signal
 
-    Screen->>AKOS: Task post message
-    Note over AKOS: ZW_GAME_BORDER_RESET
-    AKOS->>Border: Handle signal
+        Screen->>AKOS: Task post message
+        Note over AKOS: ZW_GAME_BORDER_RESET
+        AKOS->>Border: Handle signal
 
-    Note over Screen: gamescore.score_now = zw_game_score
-    Note over Screen: STATE (GAME_OVER)
-    Screen->>Tick: Create one-shot timer<br/>(ZW_GAME_EXIT_GAME, 3000 ms)
-    Note over Screen: Screen render<br/>(GAME_OVER bitmap)
+        Note over Screen: gamescore.score_now = zw_game_score
+        Note over Screen: STATE (GAME_OVER)
+        Screen->>Tick: Create one-shot timer<br/>(ZW_GAME_EXIT_GAME, 3000 ms)
+        Note over Screen: Screen render<br/>(GAME_OVER bitmap)
+    end
 
     Tick->>AKOS: Task post message
     Note over AKOS: ZW_GAME_EXIT_GAME
