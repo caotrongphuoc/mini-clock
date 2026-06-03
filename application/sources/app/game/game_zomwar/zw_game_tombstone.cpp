@@ -18,11 +18,11 @@ void zw_game_tombstone_handle(ak_msg_t *msg)
         {
             tombstones[l].x = (uint8_t)(rand() % 20 + 65);
             tombstones[l].lane = l;
-            tombstones[l].active = (bool)((settingdata.tombstone_lane_1 >> l) & 1);
+            tombstones[l].active = (bool)((settingsetup.tombstone_lane_1 >> l) & 1);
 
             tombstones[l + NUM_LANES].x = (uint8_t)(rand() % 20 + 90);
             tombstones[l + NUM_LANES].lane = l;
-            tombstones[l + NUM_LANES].active = (bool)((settingdata.tombstone_lane_2 >> l) & 1);
+            tombstones[l + NUM_LANES].active = (bool)((settingsetup.tombstone_lane_2 >> l) & 1);
         }
     }
     break;
