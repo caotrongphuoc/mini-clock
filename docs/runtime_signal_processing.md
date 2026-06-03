@@ -76,52 +76,75 @@ sequenceDiagram
     participant GameOver as Game Over Screen
 
     Note over Border: Zombie reaches left edge<br/>and that lane has no car
-    Border->>AKOS: Task post message
+    activate Border
+    Border->>+AKOS: Task post message
     Note over AKOS: ZW_GAME_RESET
-    AKOS->>Screen: Handle signal
+    deactivate Border
+    AKOS->>+Screen: Handle signal
+    deactivate AKOS
 
     opt zw_game_state == GAME_PLAY
-        Screen->>Tick: Stop periodic timer<br/>(ZW_GAME_TIME_TICK)
+        Screen->>+Tick: Stop periodic timer<br/>(ZW_GAME_TIME_TICK)
+        deactivate Tick
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_GUNNER_RESET
-        AKOS->>Gunner: Handle signal
+        AKOS->>+Gunner: Handle signal
+        deactivate AKOS
+        deactivate Gunner
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_BULLET_RESET
-        AKOS->>Bullet: Handle signal
+        AKOS->>+Bullet: Handle signal
+        deactivate AKOS
+        deactivate Bullet
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_ZOMBIE_RESET
-        AKOS->>Zombie: Handle signal
+        AKOS->>+Zombie: Handle signal
+        deactivate AKOS
+        deactivate Zombie
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_CAR_RESET
-        AKOS->>Car: Handle signal
+        AKOS->>+Car: Handle signal
+        deactivate AKOS
+        deactivate Car
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_TOMBSTONE_RESET
-        AKOS->>Tombstone: Handle signal
+        AKOS->>+Tombstone: Handle signal
+        deactivate AKOS
+        deactivate Tombstone
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_BANG_RESET
-        AKOS->>Bang: Handle signal
+        AKOS->>+Bang: Handle signal
+        deactivate AKOS
+        deactivate Bang
 
-        Screen->>AKOS: Task post message
+        Screen->>+AKOS: Task post message
         Note over AKOS: ZW_GAME_BORDER_RESET
-        AKOS->>Border: Handle signal
+        AKOS->>+Border: Handle signal
+        deactivate AKOS
+        deactivate Border
 
         Note over Screen: gamescore.score_now = zw_game_score
         Note over Screen: STATE (GAME_OVER)
-        Screen->>Tick: Create one-shot timer<br/>(ZW_GAME_EXIT_GAME, 3000 ms)
+        Screen->>+Tick: Create one-shot timer<br/>(ZW_GAME_EXIT_GAME, 3000 ms)
         Note over Screen: Screen render<br/>(GAME_OVER bitmap)
+        deactivate Screen
     end
 
-    Tick->>AKOS: Task post message
+    Tick->>+AKOS: Task post message
     Note over AKOS: ZW_GAME_EXIT_GAME
-    AKOS->>Screen: Handle signal
+    deactivate Tick
+    AKOS->>+Screen: Handle signal
+    deactivate AKOS
     Note over Screen: STATE (GAME_OFF)
-    Screen->>GameOver: SCREEN_TRAN(scr_game_over)
+    Screen->>+GameOver: SCREEN_TRAN(scr_game_over)
+    deactivate Screen
+    deactivate GameOver
 ```
 
 ## II. Code References
