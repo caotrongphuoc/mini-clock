@@ -87,10 +87,10 @@ The following section describes the gameplay and core mechanics of **"Zomwar"**.
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="menu game" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="Game menu" width="480"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
+<p align="center"><strong><em>Figure 3:</em></strong> Menu screen</p>
 
 The game opens on the **Main Menu**, which offers the following options:
 
@@ -101,10 +101,10 @@ The game opens on the **Main Menu**, which offers the following options:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/clean_gameplay.png" alt="Zomwar Clean Gameplay" width="600"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_zomwar.png" alt="Gameplay" width="600"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 4:</em></strong> Game play screen</p>
+<p align="center"><strong><em>Figure 4:</em></strong> Gameplay screen</p>
 
 #### Objects in the Game:
 
