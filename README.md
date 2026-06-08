@@ -108,7 +108,7 @@ The game opens on the **Main Menu**, which offers the following options:
 
 #### Objects in the Game:
 
-| Sprite | Object Name | Type | Description |
+| Bitmap | Object Name | Type | Description |
 | :---: | :--- | :--- | :--- |
 | <img src="resources/images/sprites/gunner.png" width="30"/> | **Gunner** | Player | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
 | <img src="resources/images/sprites/bullet.png" width="20"/> | **Bullet** | Projectile | Projectile fired by the Gunner. Flies to the right and destroys any Zombie it touches. |
