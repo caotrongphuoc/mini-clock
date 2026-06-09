@@ -117,7 +117,6 @@ The game opens on the **Main Menu**, which offers the following options:
 | <img src="resources/images/bitmap/bitmap_car.png" width="80"/> | **Car** | Defense | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
 | <img src="resources/images/bitmap/bitmap_bang.png" width="80"/> | **Bang** | Effect | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
 | <img src="resources/images/bitmap/bitmap_border.png" height="80"/> | **Border** | Environment | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
-| `1500` | **Score & Wave** | UI/HUD | The current gameplay progress and points earned. |
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/object_sequence.md).
 
