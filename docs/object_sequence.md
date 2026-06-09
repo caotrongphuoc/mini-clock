@@ -66,7 +66,7 @@ sequenceDiagram
             else zombie[i].rising && rise_ticks == 0
                 Note right of ZOM: rising = false<br/>zigzag_timer = rand()%10 + 5
             else walking
-                Note right of ZOM: x -= zw_game_zombie_speed<br/>(clamp to -ZOMBIE_MIN_LEFT_OFFSET)<br/>zigzag_timer--; on 0 re-roll dy ∈ {-1,0,1}<br/>y += dy, clamp [ZOMBIE_Y_MIN..ZOMBIE_Y_MAX]<br/>action_image cycles 1→2→3
+                Note right of ZOM: x -= zw_game_zombie_speed<br/>(clamp to -ZOMBIE_MIN_LEFT_OFFSET)<br/>zigzag_timer-- and on 0 re-roll dy to -1/0/1<br/>y += dy and clamp ZOMBIE_Y_MIN..ZOMBIE_Y_MAX<br/>action_image cycles 1→2→3
             end
         end
         Note right of ZOM: Top up alive count to NUM_ZOMBIES_INIT<br/>by re-spawning hidden slots
