@@ -38,69 +38,6 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
 
-## IV. Zombie Object Sequence
-
-Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_speed` from `settingsetup.zombie_speed`, hides every slot in `zombie[]`, then spawns the first `NUM_ZOMBIES_INIT` zombies at random `(x, y)` inside the right margin. The screen task posts `ZW_GAME_ZOMBIE_RUN` on every game tick: each visible zombie either rises one pixel up (when it was spawned from a tombstone via `zw_game_zombie_spawn_rise()` and `rise_ticks > 0`), or steps left by `zw_game_zombie_speed`, applies a vertical zigzag (`dy` re-rolled every `zigzag_timer` ticks, clamped to `ZOMBIE_Y_MIN`..`ZOMBIE_Y_MAX`), and cycles `action_image` through frames `1→2→3`. After moving, the task tops the alive count back up to `NUM_ZOMBIES_INIT` by re-spawning hidden slots. `ZW_GAME_ZOMBIE_DETONATOR` runs right after on the same tick: for every visible non-rising zombie it walks `bullet[]`, calls `zw_game_zombie_check_hit()`, and on a hit hides the bullet, calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_ZOMBIE_WAVE_SPAWN` (posted from the Border task on level-up) increments `zw_game_zombie_speed` up to `ZOMBIE_SPEED_MAX` and respawns up to `ZOMBIE_WAVE_SPAWN` hidden slots. `ZW_GAME_ZOMBIE_RESET` hides every slot.
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant SCR as Screen (scr_game_zomwar)
-    participant ZOM as Zombie task
-    participant BUL as Bullet state
-    participant BANG as Bang task
-    participant BUZ as Buzzer
-
-    Note over SCR,ZOM: SCREEN_ENTRY
-    SCR->>ZOM: ZW_GAME_ZOMBIE_SETUP
-    activate ZOM
-    Note right of ZOM: zw_game_zombie_speed = settingsetup.zombie_speed<br/>zombie[0..NUM_ZOMBIES-1].visible = BLACK<br/>spawn zombie[0..NUM_ZOMBIES_INIT-1]
-    deactivate ZOM
-
-    loop Every ZW_GAME_TIME_TICK (100 ms)
-        SCR->>ZOM: ZW_GAME_ZOMBIE_RUN
-        activate ZOM
-        loop For each zombie[i] where visible == WHITE
-            alt zombie[i].rising && rise_ticks > 0
-                Note right of ZOM: y--, rise_ticks--<br/>action_image cycles 1→2→3
-            else zombie[i].rising && rise_ticks == 0
-                Note right of ZOM: rising = false<br/>zigzag_timer = rand()%10 + 5
-            else walking
-                Note right of ZOM: x -= zw_game_zombie_speed<br/>(clamp to -ZOMBIE_MIN_LEFT_OFFSET)<br/>zigzag_timer--; on 0 re-roll dy ∈ {-1,0,1}<br/>y += dy, clamp [ZOMBIE_Y_MIN..ZOMBIE_Y_MAX]<br/>action_image cycles 1→2→3
-            end
-        end
-        Note right of ZOM: Top up alive count to NUM_ZOMBIES_INIT<br/>by re-spawning hidden slots
-        deactivate ZOM
-
-        SCR->>ZOM: ZW_GAME_ZOMBIE_DETONATOR
-        activate ZOM
-        loop For each visible non-rising zombie[i] × bullet[j]
-            ZOM->>ZOM: zw_game_zombie_check_hit(j, i)
-            alt hit
-                ZOM->>BUL: bullet[j].visible = BLACK; x = 0
-                ZOM->>BANG: zw_game_bang_spawn(zombie[i].x, zombie[i].y)
-                Note right of ZOM: zw_game_score += 10
-                ZOM->>BUZ: BUZZER_PlaySound(BUZZER_SOUND_BANG)
-                Note right of ZOM: zombie[i].visible = BLACK<br/>break inner loop
-            end
-        end
-        deactivate ZOM
-    end
-
-    Note over SCR,ZOM: On wave level-up (from Border)
-    SCR->>ZOM: ZW_GAME_ZOMBIE_WAVE_SPAWN
-    activate ZOM
-    Note right of ZOM: if zw_game_zombie_speed < ZOMBIE_SPEED_MAX → ++<br/>respawn up to ZOMBIE_WAVE_SPAWN hidden slots
-    deactivate ZOM
-
-    Note over SCR,ZOM: ZW_GAME_RESET
-    SCR->>ZOM: ZW_GAME_ZOMBIE_RESET
-    activate ZOM
-    Note right of ZOM: zombie[0..NUM_ZOMBIES-1].visible = BLACK
-    deactivate ZOM
-```
-<p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
-
 ## IX. Per-Tick Signal Order
 
 The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME_TIME_TICK`:
