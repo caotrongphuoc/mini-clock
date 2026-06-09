@@ -110,13 +110,13 @@ The game opens on the **Main Menu**, which offers the following options:
 
 | Bitmap | Object Name | Type | Description |
 | :---: | :--- | :--- | :--- |
-| <img src="resources/images/bitmap/bitmap_gunner.gif" width="80"/> | **Gunner** | Player | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
-| <img src="resources/images/bitmap/bitmap_bullet.png" width="80"/> | **Bullet** | Projectile | Projectile fired by the Gunner. Flies to the right and destroys any Zombie it touches. |
-| <img src="resources/images/bitmap/bitmap_zombie.gif" width="80"/> | **Zombie** | Enemy | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
-| <img src="resources/images/bitmap/bitmap_tombstone.png" width="80"/> | **Tombstone** | Spawner | A static graveyard tile placed on the map (up to 2 per lane). While active, it periodically makes a new Zombie rise out of the grave into its lane. Which Tombstones are active can be configured in **Setting**. |
-| <img src="resources/images/bitmap/bitmap_car.gif" width="80"/> | **Car** | Defense | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
-| <img src="resources/images/bitmap/bitmap_bang.gif" width="80"/> | **Bang** | Effect | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
-| <img src="resources/images/bitmap/bitmap_border.png" height="80"/> | **Border** | Environment | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
+| <img src="resources/images/bitmap/bitmap_gunner.gif" width="80"/> | **Gunner** | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
+| <img src="resources/images/bitmap/bitmap_bullet.png" width="80"/> | **Bullet** | Bullet fired by the Gunner. Flies to the right and destroys any Zombie it touches. |
+| <img src="resources/images/bitmap/bitmap_zombie.gif" width="80"/> | **Zombie** | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
+| <img src="resources/images/bitmap/bitmap_tombstone.png" width="80"/> | **Tombstone** | A static graveyard tile placed on the map (up to 2 per lane). While active, it periodically makes a new Zombie rise out of the grave into its lane. Which Tombstones are active can be configured in **Setting**. |
+| <img src="resources/images/bitmap/bitmap_car.gif" width="80"/> | **Car** | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
+| <img src="resources/images/bitmap/bitmap_bang.gif" width="80"/> | **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
+| <img src="resources/images/bitmap/bitmap_border.png" height="80"/> | **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/object_sequence.md).
 
