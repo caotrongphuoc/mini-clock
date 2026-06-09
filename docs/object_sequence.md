@@ -40,7 +40,47 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
 
 ## IV. Zombie Object Sequence
 
-Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_speed` from `settingsetup.zombie_speed`, hides every slot in `zombie[]`, then spawns the first `NUM_ZOMBIES_INIT` zombies at random `(x, y)` inside the right margin. The screen task posts `ZW_GAME_ZOMBIE_RUN` on every game tick: each visible zombie either rises one pixel up (when it was spawned from a tombstone via `zw_game_zombie_spawn_rise()` and `rise_ticks > 0`), or steps left by `zw_game_zombie_speed`, applies a vertical zigzag (`dy` re-rolled every `zigzag_timer` ticks, clamped to `ZOMBIE_Y_MIN`..`ZOMBIE_Y_MAX`), and cycles `action_image` through frames `1→2→3`. After moving, the task tops the alive count back up to `NUM_ZOMBIES_INIT` by re-spawning hidden slots. `ZW_GAME_ZOMBIE_DETONATOR` runs right after on the same tick: for every visible non-rising zombie it walks `bullet[]`, calls `zw_game_zombie_check_hit()`, and on a hit hides the bullet, calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_ZOMBIE_WAVE_SPAWN` (posted from the Border task on level-up) increments `zw_game_zombie_speed` up to `ZOMBIE_SPEED_MAX` and respawns up to `ZOMBIE_WAVE_SPAWN` hidden slots. `ZW_GAME_ZOMBIE_RESET` hides every slot.
+Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_speed` from `settingsetup.zombie_speed`, hides every slot in `zombie[]`, then spawns the first `NUM_ZOMBIES_INIT` zombies at random `(x, y)` inside the right margin (x in `130..168`, y in `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX`). On every `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_ZOMBIE_RUN` followed by `ZW_GAME_ZOMBIE_DETONATOR`. In `RUN`, each visible zombie either rises one pixel up (when it was spawned from a tombstone via `zw_game_zombie_spawn_rise()` and `rise_ticks > 0`; when `rise_ticks` reaches zero, `rising` is cleared and `zigzag_timer` is re-rolled), or steps left by `zw_game_zombie_speed` (clamped at `-ZOMBIE_MIN_LEFT_OFFSET`), applies a vertical zigzag (`dy` re-rolled to `-1..+1` every `zigzag_timer` ticks, clamped to `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX` and reset to `0` on clamp), and cycles `action_image` through frames `1→2→3`. After moving, the task tops the alive count back up to `NUM_ZOMBIES_INIT` by re-spawning hidden slots. In `DETONATOR`, for every visible non-rising zombie it walks `bullet[]`, calls `zw_game_zombie_check_hit()`, and on a hit hides the bullet (`visible = BLACK`, `x = 0`), calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_ZOMBIE_WAVE_SPAWN` (posted from the Border task on level-up) increments `zw_game_zombie_speed` up to `ZOMBIE_SPEED_MAX` and respawns up to `ZOMBIE_WAVE_SPAWN` hidden slots. `ZW_GAME_ZOMBIE_RESET` hides every slot.
+
+```mermaid
+sequenceDiagram
+    participant Border
+    participant Screen
+    participant Zombie as zombie[n]
+    participant Bullet as bullet[m]
+    participant Bang as bang[k]
+
+    Note over Screen: timer_set<br/>ZW_GAME_TIME_TICK<br/>(100 ms, periodic)
+
+    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
+    Note right of Zombie: zw_game_zombie_speed = settingsetup.zombie_speed<br/>For i in 0..NUM_ZOMBIES: zombie[i].visible = BLACK<br/>For i in 0..NUM_ZOMBIES_INIT: zw_game_zombie_spawn(i)<br/>• x = rand()%39 + 130<br/>• y = rand()%(ZOMBIE_Y_MAX-ZOMBIE_Y_MIN+1) + ZOMBIE_Y_MIN<br/>• action_image = rand()%3 + 1<br/>• dy = 0, zigzag_timer = rand()%10 + 5<br/>• rising = false, rise_ticks = 0, visible = WHITE
+
+    loop every ZW_GAME_TIME_TICK
+        Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
+        Note right of Zombie: alive = 0<br/>For each i in 0..NUM_ZOMBIES:<br/>  if visible != WHITE: continue<br/>  alive++<br/>  if rising:<br/>    if rise_ticks > 0: y--; rise_ticks--<br/>    else: rising = false; zigzag_timer = rand()%10 + 5<br/>    action_image cycle 1→2→3; continue<br/>  else (walking):<br/>    if x - speed < -ZOMBIE_MIN_LEFT_OFFSET:<br/>      x = -ZOMBIE_MIN_LEFT_OFFSET<br/>    else: x -= zw_game_zombie_speed<br/>    if zigzag_timer > 0: zigzag_timer--<br/>    else: dy = (rand()%3) - 1; zigzag_timer = rand()%10 + 5<br/>    new_y = y + dy, clamp to ZOMBIE_Y_MIN..ZOMBIE_Y_MAX (dy=0 on clamp)<br/>    y = new_y; action_image cycle 1→2→3<br/>Re-spawn hidden slots until alive == NUM_ZOMBIES_INIT:<br/>  zw_game_zombie_spawn(i); alive++
+
+        Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
+        loop for each visible non-rising zombie i
+            loop for each visible bullet j
+                Zombie->>Bullet: zw_game_zombie_check_hit(j, i)
+                alt hit
+                    Zombie->>Bullet: bullet[j].visible = BLACK<br/>bullet[j].x = 0
+                    Zombie->>Bang: zw_game_bang_spawn(zombie[i].x, zombie[i].y)
+                    Note right of Zombie: zw_game_score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)<br/>zombie[i].visible = BLACK<br/>break (next zombie)
+                end
+            end
+        end
+    end
+
+    Note over Border: on wave level-up
+    Border->>Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
+    Note right of Zombie: if zw_game_zombie_speed < ZOMBIE_SPEED_MAX:<br/>  zw_game_zombie_speed++<br/>Re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots:<br/>  zw_game_zombie_spawn(i); spawned++
+
+    Note over Screen: on ZW_GAME_RESET
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
+    Note right of Zombie: For i in 0..NUM_ZOMBIES:<br/>  zombie[i].visible = BLACK
+```
+<p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
 ## IX. Per-Tick Signal Order
 
