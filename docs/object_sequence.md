@@ -50,23 +50,23 @@ sequenceDiagram
     participant Bullet as bullet[m]
     participant Bang as bang[k]
 
-    Note over Screen: timer_set<br/>ZW_GAME_TIME_TICK<br/>(100 ms, periodic)
+    Note over Screen: timer_set ZW_GAME_TIME_TICK (100 ms, periodic)
 
     Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
-    Note right of Zombie: zw_game_zombie_speed = settingsetup.zombie_speed<br/>For i in 0..NUM_ZOMBIES: zombie[i].visible = BLACK<br/>For i in 0..NUM_ZOMBIES_INIT: zw_game_zombie_spawn(i)<br/>• x = rand()%39 + 130<br/>• y = rand()%(ZOMBIE_Y_MAX-ZOMBIE_Y_MIN+1) + ZOMBIE_Y_MIN<br/>• action_image = rand()%3 + 1<br/>• dy = 0, zigzag_timer = rand()%10 + 5<br/>• rising = false, rise_ticks = 0, visible = WHITE
+    Note right of Zombie: zw_game_zombie_speed = settingsetup.zombie_speed. For i in 0..NUM_ZOMBIES set zombie[i].visible = BLACK. For i in 0..NUM_ZOMBIES_INIT call zw_game_zombie_spawn(i): x = rand()%39 + 130; y = rand()%(ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1) + ZOMBIE_Y_MIN; action_image = rand()%3 + 1; dy = 0; zigzag_timer = rand()%10 + 5; rising = false; rise_ticks = 0; visible = WHITE.
 
     loop every ZW_GAME_TIME_TICK
         Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
-        Note right of Zombie: alive = 0<br/>For each i in 0..NUM_ZOMBIES:<br/>  if visible != WHITE: continue<br/>  alive++<br/>  if rising:<br/>    if rise_ticks > 0: y--; rise_ticks--<br/>    else: rising = false; zigzag_timer = rand()%10 + 5<br/>    action_image cycle 1→2→3; continue<br/>  else (walking):<br/>    if x - speed < -ZOMBIE_MIN_LEFT_OFFSET:<br/>      x = -ZOMBIE_MIN_LEFT_OFFSET<br/>    else: x -= zw_game_zombie_speed<br/>    if zigzag_timer > 0: zigzag_timer--<br/>    else: dy = (rand()%3) - 1; zigzag_timer = rand()%10 + 5<br/>    new_y = y + dy, clamp to ZOMBIE_Y_MIN..ZOMBIE_Y_MAX (dy=0 on clamp)<br/>    y = new_y; action_image cycle 1→2→3<br/>Re-spawn hidden slots until alive == NUM_ZOMBIES_INIT:<br/>  zw_game_zombie_spawn(i); alive++
+        Note right of Zombie: alive = 0. For each i in 0..NUM_ZOMBIES skip if visible != WHITE, else alive += 1. If rising and rise_ticks positive then y -= 1 and rise_ticks -= 1; when rise_ticks reaches 0 set rising = false and zigzag_timer = rand()%10 + 5; cycle action_image 1 to 2 to 3 then continue. Else (walking) step left: if (x - speed) below -ZOMBIE_MIN_LEFT_OFFSET set x = -ZOMBIE_MIN_LEFT_OFFSET, else x -= zw_game_zombie_speed. If zigzag_timer positive then zigzag_timer -= 1, else dy = (rand()%3) - 1 and zigzag_timer = rand()%10 + 5. new_y = y + dy, clamp to ZOMBIE_Y_MIN..ZOMBIE_Y_MAX (dy = 0 on clamp), y = new_y, cycle action_image 1 to 2 to 3. After the loop, re-spawn hidden slots until alive == NUM_ZOMBIES_INIT via zw_game_zombie_spawn(i); alive += 1.
 
         Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
         loop for each visible non-rising zombie i
             loop for each visible bullet j
                 Zombie->>Bullet: zw_game_zombie_check_hit(j, i)
                 alt hit
-                    Zombie->>Bullet: bullet[j].visible = BLACK<br/>bullet[j].x = 0
+                    Zombie->>Bullet: bullet[j].visible = BLACK; bullet[j].x = 0
                     Zombie->>Bang: zw_game_bang_spawn(zombie[i].x, zombie[i].y)
-                    Note right of Zombie: zw_game_score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)<br/>zombie[i].visible = BLACK<br/>break (next zombie)
+                    Note right of Zombie: zw_game_score += 10; BUZZER_PlaySound(BUZZER_SOUND_BANG); zombie[i].visible = BLACK; break to next zombie
                 end
             end
         end
@@ -74,11 +74,11 @@ sequenceDiagram
 
     Note over Border: on wave level-up
     Border->>Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
-    Note right of Zombie: if zw_game_zombie_speed < ZOMBIE_SPEED_MAX:<br/>  zw_game_zombie_speed++<br/>Re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots:<br/>  zw_game_zombie_spawn(i); spawned++
+    Note right of Zombie: if zw_game_zombie_speed below ZOMBIE_SPEED_MAX then zw_game_zombie_speed += 1. Re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots via zw_game_zombie_spawn(i); spawned += 1.
 
     Note over Screen: on ZW_GAME_RESET
     Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
-    Note right of Zombie: For i in 0..NUM_ZOMBIES:<br/>  zombie[i].visible = BLACK
+    Note right of Zombie: For i in 0..NUM_ZOMBIES set zombie[i].visible = BLACK.
 ```
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
