@@ -108,8 +108,8 @@ The game opens on the **Main Menu**, which offers the following options:
 
 #### Objects in the Game:
 
-| Bitmap | Object Name | Type | Description |
-| :---: | :--- | :--- | :--- |
+| Bitmap | Object Name | Description |
+| :---: | :--- |:--- |
 | <img src="resources/images/bitmap/bitmap_gunner.gif" width="80"/> | **Gunner** | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
 | <img src="resources/images/bitmap/bitmap_bullet.png" width="80"/> | **Bullet** | Bullet fired by the Gunner. Flies to the right and destroys any Zombie it touches. |
 | <img src="resources/images/bitmap/bitmap_zombie.gif" width="80"/> | **Zombie** | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
