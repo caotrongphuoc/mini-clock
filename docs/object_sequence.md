@@ -80,15 +80,25 @@ sequenceDiagram
     Timer-->>Screen: ZW_GAME_TIME_TICK
     Note over Screen,Bang: next tick repeats RUN + DETONATOR
 
-    activate Border
-    Note over Border: on ZW_GAME_LEVEL_UP:<br/>wave_warning_active &&<br/>wave_warning_timer == 0
-    Border->>+Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
-    deactivate Border
-    alt zw_game_zombie_speed < ZOMBIE_SPEED_MAX
-        Note right of Zombie: zw_game_zombie_speed++
+    Screen->>+Border: ZW_GAME_WAVE_CHECK
+    alt score >= wave_last_score + WAVE_SCORE_INTERVAL && !wave_warning_active
+        Note right of Border: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
     end
-    Note right of Zombie: respawn up to ZOMBIE_WAVE_SPAWN hidden slots
-    deactivate Zombie
+    deactivate Border
+
+    Screen->>+Border: ZW_GAME_LEVEL_UP
+    alt wave_warning_active && wave_warning_timer == 0
+        Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++
+        Border->>+Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
+        alt zw_game_zombie_speed < ZOMBIE_SPEED_MAX
+            Note right of Zombie: zw_game_zombie_speed++
+        end
+        Note right of Zombie: respawn up to ZOMBIE_WAVE_SPAWN hidden slots
+        deactivate Zombie
+    else wave_warning_active && wave_warning_timer > 0
+        Note right of Border: wave_warning_timer--
+    end
+    deactivate Border
 
     Screen->>+Zombie: ZW_GAME_ZOMBIE_RESET
     Note right of Zombie: hide all NUM_ZOMBIES slots (visible=BLACK)
