@@ -44,59 +44,36 @@ Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_
 
 ```mermaid
 sequenceDiagram
-    participant Border
+    participant Timer as 100ms
     participant Screen
     participant Zombie as zombie[n]
-    participant Bullet as bullet[m]
-    participant Bang as bang[k]
+    participant Bullet as bullet State
+    participant Bang as bang State
 
-    Note over Screen: timer_set ZW_GAME_TIME_TICK 100 ms periodic
-
+    Timer-->>Screen: timer_set
     Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
-    Note right of Zombie: read zw_game_zombie_speed from settingsetup.zombie_speed
-    Note right of Zombie: hide all NUM_ZOMBIES slots, visible = BLACK
-    Note right of Zombie: spawn first NUM_ZOMBIES_INIT via zw_game_zombie_spawn i
-    Note right of Zombie: x = rand mod 39 + 130, y in ZOMBIE_Y_MIN to ZOMBIE_Y_MAX
-    Note right of Zombie: action_image in 1 to 3, dy = 0, zigzag_timer in 5 to 14
-    Note right of Zombie: rising = false, rise_ticks = 0, visible = WHITE
+    Note right of Zombie: load zw_game_zombie_speed<br/>hide all slots<br/>spawn NUM_ZOMBIES_INIT
 
-    loop every ZW_GAME_TIME_TICK
-        Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
-        Note right of Zombie: alive = 0, iterate i over 0 to NUM_ZOMBIES
-        Note right of Zombie: skip if visible not equal WHITE, otherwise alive plus 1
-        Note right of Zombie: if rising and rise_ticks positive then y minus 1 and rise_ticks minus 1
-        Note right of Zombie: when rise_ticks reaches 0 set rising = false and re-roll zigzag_timer
-        Note right of Zombie: rising branch cycles action_image 1 to 2 to 3 then continue
-        Note right of Zombie: walking branch steps x left by zw_game_zombie_speed
-        Note right of Zombie: x is clamped at minus ZOMBIE_MIN_LEFT_OFFSET
-        Note right of Zombie: if zigzag_timer positive decrement it, else re-roll dy in minus 1 to plus 1 and zigzag_timer in 5 to 14
-        Note right of Zombie: new_y = y + dy, clamp to ZOMBIE_Y_MIN to ZOMBIE_Y_MAX, dy reset to 0 on clamp
-        Note right of Zombie: cycle action_image 1 to 2 to 3
-        Note right of Zombie: refill hidden slots until alive equals NUM_ZOMBIES_INIT via zw_game_zombie_spawn
+    Timer-->>Screen: ZW_GAME_TIME_TICK
+    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
+    Note right of Zombie: rising: y--, rise_ticks--<br/>walking: x -= speed, zigzag dy<br/>clamp y, cycle action_image<br/>refill alive to NUM_ZOMBIES_INIT
 
-        Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
-        loop for each visible non rising zombie i
-            loop for each visible bullet j
-                Zombie->>Bullet: zw_game_zombie_check_hit j i
-                alt on hit
-                    Zombie->>Bullet: bullet j visible = BLACK and bullet j x = 0
-                    Zombie->>Bang: zw_game_bang_spawn at zombie i x and zombie i y
-                    Note right of Zombie: zw_game_score plus 10
-                    Note right of Zombie: BUZZER_PlaySound BUZZER_SOUND_BANG
-                    Note right of Zombie: zombie i visible = BLACK then break to next zombie
-                end
-            end
-        end
+    Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
+    Zombie->>Bullet: check hit (visible bullets vs visible zombies)
+    alt bullet hits zombie
+        Zombie->>Bullet: hide bullet (visible=BLACK, x=0)
+        Zombie->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
+        Note right of Zombie: score += 10<br/>play BUZZER_SOUND_BANG<br/>hide zombie (visible=BLACK)
     end
 
-    Note over Border: on wave level up
-    Border->>Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
-    Note right of Zombie: if zw_game_zombie_speed below ZOMBIE_SPEED_MAX increment by 1
-    Note right of Zombie: re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots via zw_game_zombie_spawn
+    Timer-->>Screen: ZW_GAME_TIME_TICK
+    Note over Screen,Bang: next tick repeats RUN + DETONATOR
 
-    Note over Screen: on ZW_GAME_RESET
+    Screen->>Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
+    Note right of Zombie: speed++ (cap ZOMBIE_SPEED_MAX)<br/>respawn up to ZOMBIE_WAVE_SPAWN slots
+
     Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
-    Note right of Zombie: hide all NUM_ZOMBIES slots, visible = BLACK
+    Note right of Zombie: hide all slots (visible=BLACK)
 ```
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
