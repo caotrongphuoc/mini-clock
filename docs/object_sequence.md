@@ -57,7 +57,12 @@ sequenceDiagram
 
     Timer-->>Screen: ZW_GAME_TIME_TICK
     Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
-    Note right of Zombie: for each visible zombie:<br/>- if rising: y--, rise_ticks--, cycle action_image<br/>- else: x -= speed (clamp -ZOMBIE_MIN_LEFT_OFFSET),<br/>  zigzag dy, clamp y [Y_MIN..Y_MAX], cycle action_image<br/>refill hidden slots until alive >= NUM_ZOMBIES_INIT
+    alt zombie[i].rising
+        Note right of Zombie: y--, rise_ticks--<br/>end rising when rise_ticks = 0<br/>cycle action_image (1..3)
+    else normal motion
+        Note right of Zombie: x -= zw_game_zombie_speed<br/>clamp x at -ZOMBIE_MIN_LEFT_OFFSET<br/>zigzag dy when zigzag_timer = 0<br/>clamp y to [ZOMBIE_Y_MIN..ZOMBIE_Y_MAX]<br/>cycle action_image (1..3)
+    end
+    Note right of Zombie: refill hidden slots until alive >= NUM_ZOMBIES_INIT
 
     Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
     Zombie->>Bullet: check hit (visible bullets vs visible non-rising zombies)
