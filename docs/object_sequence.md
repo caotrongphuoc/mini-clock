@@ -80,8 +80,14 @@ sequenceDiagram
     Timer-->>Screen: ZW_GAME_TIME_TICK
     Note over Screen,Bang: next tick repeats RUN + DETONATOR
 
+    activate Border
+    Note over Border: on ZW_GAME_LEVEL_UP:<br/>wave_warning_active &&<br/>wave_warning_timer == 0
     Border->>+Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
-    Note right of Zombie: if speed < ZOMBIE_SPEED_MAX: speed++<br/>respawn up to ZOMBIE_WAVE_SPAWN hidden slots
+    deactivate Border
+    alt zw_game_zombie_speed < ZOMBIE_SPEED_MAX
+        Note right of Zombie: zw_game_zombie_speed++
+    end
+    Note right of Zombie: respawn up to ZOMBIE_WAVE_SPAWN hidden slots
     deactivate Zombie
 
     Screen->>+Zombie: ZW_GAME_ZOMBIE_RESET
