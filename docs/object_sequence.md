@@ -51,35 +51,44 @@ sequenceDiagram
     participant Bullet as bullet State
     participant Bang as bang State
 
-    Timer-->>Screen: timer_set
-    Screen->>Zombie: ZW_GAME_ZOMBIE_SETUP
+    Timer-->>+Screen: timer_set
+    Screen->>+Zombie: ZW_GAME_ZOMBIE_SETUP
     Note right of Zombie: zw_game_zombie_speed = settingsetup.zombie_speed<br/>hide all NUM_ZOMBIES slots<br/>spawn NUM_ZOMBIES_INIT via zw_game_zombie_spawn
+    deactivate Zombie
+    deactivate Screen
 
-    Timer-->>Screen: ZW_GAME_TIME_TICK
-    Screen->>Zombie: ZW_GAME_ZOMBIE_RUN
+    Timer-->>+Screen: ZW_GAME_TIME_TICK
+    Screen->>+Zombie: ZW_GAME_ZOMBIE_RUN
     alt zombie[i].rising
         Note right of Zombie: y--, rise_ticks--<br/>end rising when rise_ticks = 0<br/>cycle action_image (1..3)
     else normal motion
         Note right of Zombie: x -= zw_game_zombie_speed<br/>clamp x at -ZOMBIE_MIN_LEFT_OFFSET<br/>zigzag dy when zigzag_timer = 0<br/>clamp y to [ZOMBIE_Y_MIN..ZOMBIE_Y_MAX]<br/>cycle action_image (1..3)
     end
     Note right of Zombie: refill hidden slots until alive >= NUM_ZOMBIES_INIT
+    deactivate Zombie
 
-    Screen->>Zombie: ZW_GAME_ZOMBIE_DETONATOR
-    Zombie->>Bullet: check hit (visible bullets vs visible non-rising zombies)
+    Screen->>+Zombie: ZW_GAME_ZOMBIE_DETONATOR
+    Zombie->>+Bullet: check hit (visible bullets vs visible non-rising zombies)
     alt bullet hits zombie
         Zombie->>Bullet: hide bullet (visible=BLACK, x=0)
-        Zombie->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
+        Zombie->>+Bang: zw_game_bang_spawn(zombie.x, zombie.y)
+        deactivate Bang
         Note right of Zombie: score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)<br/>hide zombie (visible=BLACK), break
     end
+    deactivate Bullet
+    deactivate Zombie
+    deactivate Screen
 
     Timer-->>Screen: ZW_GAME_TIME_TICK
     Note over Screen,Bang: next tick repeats RUN + DETONATOR
 
-    Border->>Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
+    Border->>+Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
     Note right of Zombie: if speed < ZOMBIE_SPEED_MAX: speed++<br/>respawn up to ZOMBIE_WAVE_SPAWN hidden slots
+    deactivate Zombie
 
-    Screen->>Zombie: ZW_GAME_ZOMBIE_RESET
+    Screen->>+Zombie: ZW_GAME_ZOMBIE_RESET
     Note right of Zombie: hide all NUM_ZOMBIES slots (visible=BLACK)
+    deactivate Zombie
 ```
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
