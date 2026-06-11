@@ -42,72 +42,11 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
 
 Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_speed` from `settingsetup.zombie_speed`, hides every slot in `zombie[]`, then spawns the first `NUM_ZOMBIES_INIT` zombies at random `(x, y)` inside the right margin (x in `130..168`, y in `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX`). On every `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_ZOMBIE_RUN` followed by `ZW_GAME_ZOMBIE_DETONATOR`. In `RUN`, each visible zombie either rises one pixel up (when it was spawned from a tombstone via `zw_game_zombie_spawn_rise()` and `rise_ticks > 0`; when `rise_ticks` reaches zero, `rising` is cleared and `zigzag_timer` is re-rolled), or steps left by `zw_game_zombie_speed` (clamped at `-ZOMBIE_MIN_LEFT_OFFSET`), applies a vertical zigzag (`dy` re-rolled to `-1..+1` every `zigzag_timer` ticks, clamped to `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX` and reset to `0` on clamp), and cycles `action_image` through frames `1→2→3`. After moving, the task tops the alive count back up to `NUM_ZOMBIES_INIT` by re-spawning hidden slots. In `DETONATOR`, for every visible non-rising zombie it walks `bullet[]`, calls `zw_game_zombie_check_hit()`, and on a hit hides the bullet (`visible = BLACK`, `x = 0`), calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_ZOMBIE_WAVE_SPAWN` (posted from the Border task on level-up) increments `zw_game_zombie_speed` up to `ZOMBIE_SPEED_MAX` and respawns up to `ZOMBIE_WAVE_SPAWN` hidden slots. `ZW_GAME_ZOMBIE_RESET` hides every slot.
 
-```mermaid
-sequenceDiagram
-    participant Timer as 100ms
-    participant Screen
-    participant Border
-    participant Zombie as zombie[n]
-    participant Bullet as bullet State
-    participant Bang as bang State
-
-    Timer-->>+Screen: timer_set
-    Screen->>+Zombie: ZW_GAME_ZOMBIE_SETUP
-    Note right of Zombie: zw_game_zombie_speed = settingsetup.zombie_speed<br/>hide all NUM_ZOMBIES slots<br/>spawn NUM_ZOMBIES_INIT via zw_game_zombie_spawn
-    deactivate Zombie
-    deactivate Screen
-
-    Timer-->>+Screen: ZW_GAME_TIME_TICK
-    Screen->>+Zombie: ZW_GAME_ZOMBIE_RUN
-    alt zombie[i].rising
-        Note right of Zombie: y--, rise_ticks--<br/>end rising when rise_ticks = 0<br/>cycle action_image (1..3)
-    else normal motion
-        Note right of Zombie: x -= zw_game_zombie_speed<br/>clamp x at -ZOMBIE_MIN_LEFT_OFFSET<br/>zigzag dy when zigzag_timer = 0<br/>clamp y to [ZOMBIE_Y_MIN..ZOMBIE_Y_MAX]<br/>cycle action_image (1..3)
-    end
-    Note right of Zombie: refill hidden slots until alive >= NUM_ZOMBIES_INIT
-    deactivate Zombie
-
-    Screen->>+Zombie: ZW_GAME_ZOMBIE_DETONATOR
-    Zombie->>Bullet: read bullet[j] (check hit on visible non-rising zombies)
-    alt bullet hits zombie
-        Zombie->>Bullet: hide bullet (visible=BLACK, x=0)
-        Zombie->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
-        Note right of Zombie: score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)<br/>hide zombie (visible=BLACK), break
-    end
-    deactivate Zombie
-    deactivate Screen
-
-    Timer-->>+Screen: ZW_GAME_TIME_TICK
-    Note over Screen,Bang: next tick repeats RUN + DETONATOR (omitted)
-
-    Screen->>+Border: ZW_GAME_WAVE_CHECK
-    alt score >= wave_last_score + WAVE_SCORE_INTERVAL && !wave_warning_active
-        Note right of Border: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
-    end
-    deactivate Border
-
-    Screen->>+Border: ZW_GAME_LEVEL_UP
-    alt wave_warning_active && wave_warning_timer == 0
-        Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++
-        Border->>+Zombie: ZW_GAME_ZOMBIE_WAVE_SPAWN
-        alt zw_game_zombie_speed < ZOMBIE_SPEED_MAX
-            Note right of Zombie: zw_game_zombie_speed++
-        end
-        Note right of Zombie: respawn up to ZOMBIE_WAVE_SPAWN hidden slots
-        deactivate Zombie
-    else wave_warning_active && wave_warning_timer > 0
-        Note right of Border: wave_warning_timer--
-    end
-    deactivate Border
-    deactivate Screen
-
-    activate Screen
-    Note over Screen: on ZW_GAME_RESET (game over)
-    Screen->>+Zombie: ZW_GAME_ZOMBIE_RESET
-    Note right of Zombie: hide all NUM_ZOMBIES slots (visible=BLACK)
-    deactivate Zombie
-    deactivate Screen
-```
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="Zombie game sequence logic" width="720"/></td>
+  </tr>
+</table>
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
 ## IX. Per-Tick Signal Order
