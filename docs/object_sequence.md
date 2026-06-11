@@ -68,14 +68,12 @@ sequenceDiagram
     deactivate Zombie
 
     Screen->>+Zombie: ZW_GAME_ZOMBIE_DETONATOR
-    Zombie->>+Bullet: check hit (visible bullets vs visible non-rising zombies)
+    Zombie->>Bullet: read bullet[j] (check hit on visible non-rising zombies)
     alt bullet hits zombie
         Zombie->>Bullet: hide bullet (visible=BLACK, x=0)
-        Zombie->>+Bang: zw_game_bang_spawn(zombie.x, zombie.y)
-        deactivate Bang
+        Zombie->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
         Note right of Zombie: score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)<br/>hide zombie (visible=BLACK), break
     end
-    deactivate Bullet
     deactivate Zombie
     deactivate Screen
 
