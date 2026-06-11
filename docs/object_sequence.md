@@ -77,8 +77,8 @@ sequenceDiagram
     deactivate Zombie
     deactivate Screen
 
-    Timer-->>Screen: ZW_GAME_TIME_TICK
-    Note over Screen,Bang: next tick repeats RUN + DETONATOR
+    Timer-->>+Screen: ZW_GAME_TIME_TICK
+    Note over Screen,Bang: next tick repeats RUN + DETONATOR (omitted)
 
     Screen->>+Border: ZW_GAME_WAVE_CHECK
     alt score >= wave_last_score + WAVE_SCORE_INTERVAL && !wave_warning_active
@@ -99,10 +99,14 @@ sequenceDiagram
         Note right of Border: wave_warning_timer--
     end
     deactivate Border
+    deactivate Screen
 
+    activate Screen
+    Note over Screen: on ZW_GAME_RESET (game over)
     Screen->>+Zombie: ZW_GAME_ZOMBIE_RESET
     Note right of Zombie: hide all NUM_ZOMBIES slots (visible=BLACK)
     deactivate Zombie
+    deactivate Screen
 ```
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
