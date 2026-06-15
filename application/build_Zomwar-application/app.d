@@ -232,8 +232,7 @@ build_Zomwar-application/app.o: sources/app/app.cpp \
  sources/app/game/game_zomwar/zw_game_zombie.h \
  sources/app/game/game_zomwar/zw_game_tombstone.h \
  sources/app/game/game_zomwar/zw_game_car.h \
- sources/app/game/game_zomwar/zw_game_border.h sources/app/task_zigbee.h \
- sources/sys/sys_irq.h \
+ sources/app/game/game_zomwar/zw_game_border.h sources/sys/sys_irq.h \
  sources/platform/stm32l/arduino/libraries/SPI/SPI.h \
  sources/platform/stm32l/arduino/cores/WString.h \
  sources/platform/stm32l/arduino/cores/HardwareSerial.h \
