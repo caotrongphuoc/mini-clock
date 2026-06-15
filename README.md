@@ -7,9 +7,9 @@
 
 ## Gameplay Demo
 
-<!-- <div align="center">
-    <video src="https://github.com/ak-embedded-software/archery-game/assets/54855481/d493703c-bf5b-4fd2-ae04-b86784a01231" alt="epcb archery game" height=200/>
-</div> -->
+<div align="center">
+    <video src="resources/videos/scr_game_zomwar.mp4" alt="scr_game_zomwar" height=200/>
+</div>
 
 ## Documentation
 
