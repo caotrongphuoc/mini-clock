@@ -1,0 +1,2 @@
+sources/app/game/game_zomwar/zw_game_bullet.cpp:5:13:void zw_game_bullet_clear()	0	static
+sources/app/game/game_zomwar/zw_game_bullet.cpp:15:6:void zw_game_bullet_handle(ak_msg_t*)	4	static

@@ -1,0 +1,3 @@
+sources/app/game/game_zomwar/zw_game_bang.cpp:5:6:void zw_game_bang_clear()	0	static
+sources/app/game/game_zomwar/zw_game_bang.cpp:14:6:void zw_game_bang_spawn(int16_t, uint8_t)	20	static
+sources/app/game/game_zomwar/zw_game_bang.cpp:28:6:void zw_game_bang_handle(ak_msg_t*)	4	static

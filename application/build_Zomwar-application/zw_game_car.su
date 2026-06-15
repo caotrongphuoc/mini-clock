@@ -1,0 +1,4 @@
+sources/app/game/game_zomwar/zw_game_car.cpp:7:15:int8_t find_nearest_car(uint8_t)	12	static
+sources/app/game/game_zomwar/zw_game_car.cpp:27:13:void zw_game_car_clear(uint8_t)	0	static
+sources/app/game/game_zomwar/zw_game_car.cpp:36:6:bool zw_game_car_check_hit(uint8_t, uint8_t)	16	static
+sources/app/game/game_zomwar/zw_game_car.cpp:53:6:void zw_game_car_handle(ak_msg_t*)	48	static
