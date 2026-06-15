@@ -1,7 +1,7 @@
 #include "zw_game_zombie.h"
 #include "app_eeprom.h"
 
-zw_game_zombie_t zombie[NUM_ZOMBIES];
+zw_game_zombie_t zombie[NUM_ZOMBIE];
 uint8_t zw_game_zombie_speed;
 
 void zw_game_zombie_spawn(uint8_t i)
@@ -44,11 +44,11 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
 		zw_game_zombie_speed = settingsetup.zombie_speed;
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
-		for (uint8_t i = 0; i < NUM_ZOMBIES_INIT; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE_INIT; i++)
 		{
 			zw_game_zombie_spawn(i);
 		}
@@ -59,7 +59,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN\n");
 		uint8_t alive = 0;
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
@@ -114,7 +114,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			if (zombie[i].action_image > 3)
 				zombie[i].action_image = 1;
 		}
-		for (uint8_t i = 0; i < NUM_ZOMBIES && alive < NUM_ZOMBIES_INIT; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE && alive < NUM_ZOMBIE_INIT; i++)
 		{
 			if (zombie[i].visible == WHITE)
 				continue; // slot in use
@@ -127,7 +127,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_DETONATOR:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_DETONATOR\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
@@ -159,7 +159,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			zw_game_zombie_speed++;
 		}
 		uint8_t spawned = 0;
-		for (uint8_t i = 0; i < NUM_ZOMBIES && spawned < ZOMBIE_WAVE_SPAWN; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE && spawned < ZOMBIE_WAVE_SPAWN; i++)
 		{
 			if (zombie[i].visible == WHITE)
 				continue;
@@ -172,7 +172,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_RESET:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
@@ -182,7 +182,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_SETUP_MENU:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP_MENU\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
@@ -202,7 +202,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 		zombie[0].action_image++;
 		if (zombie[0].action_image > 3)
 			zombie[0].action_image = 1;
-		if (zombie[0].x < -SIZE_BITMAP_ZOMBIES_X)
+		if (zombie[0].x < -SIZE_BITMAP_ZOMBIE_X)
 		{
 			zombie[0].x = LCD_WIDTH + 3;
 			zombie[0].y = AXIS_Y_GUNNER - 10;

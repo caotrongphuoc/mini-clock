@@ -1,14 +1,14 @@
 #include "zw_game_car.h"
 #include "app_eeprom.h"
 
-zw_game_car_t car[NUM_LANES];
-const uint8_t lane_y[NUM_LANES] = LANE_Y;
+zw_game_car_t car[NUM_LANE];
+const uint8_t lane_y[NUM_LANE] = LANE_Y;
 
 static int8_t find_nearest_car(uint8_t zy)
 {
 	int8_t best = -1;
 	uint8_t best_dist = CAR_HIT_RANGE_Y + 1;
-	for (uint8_t i = 0; i < NUM_LANES; i++)
+	for (uint8_t i = 0; i < NUM_LANE; i++)
 	{
 		if (!car[i].visible || car[i].running)
 			continue;
@@ -57,7 +57,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_SETUP:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
-		for (uint8_t i = 0; i < NUM_LANES; i++)
+		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
 			zw_game_car_clear(i);
 			car[i].visible = (settingsetup.num_car >> i) & 1;
@@ -68,7 +68,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_RUN:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_RUN\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
@@ -93,7 +93,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 			}
 		}
 
-		for (uint8_t i = 0; i < NUM_LANES; i++)
+		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
 			if (!car[i].visible || !car[i].running)
 				continue;
@@ -113,11 +113,11 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_HIT:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_HIT\n");
-		for (uint8_t i = 0; i < NUM_LANES; i++)
+		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
 			if (!car[i].visible || !car[i].running)
 				continue;
-			for (uint8_t j = 0; j < NUM_ZOMBIES; j++)
+			for (uint8_t j = 0; j < NUM_ZOMBIE; j++)
 			{
 				if (zombie[j].visible != WHITE)
 					continue;
@@ -135,7 +135,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_RESET:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_RESET\n");
-		for (uint8_t i = 0; i < NUM_LANES; i++)
+		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
 			zw_game_car_clear(i);
 			car[i].visible = false;

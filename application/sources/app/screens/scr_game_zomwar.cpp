@@ -79,7 +79,7 @@ void zw_game_bullet_display()
 
 void zw_game_zombie_display()
 {
-	for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+	for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 	{
 		if (zombie[i].visible != WHITE)
 			continue;
@@ -91,15 +91,15 @@ void zw_game_zombie_display()
 		view_render.drawBitmap(zombie[i].x,
 		                       zombie[i].y,
 		                       frame,
-		                       SIZE_BITMAP_ZOMBIES_X,
-		                       SIZE_BITMAP_ZOMBIES_Y,
+		                       SIZE_BITMAP_ZOMBIE_X,
+		                       SIZE_BITMAP_ZOMBIE_Y,
 		                       WHITE);
 	}
 }
 
 void zw_game_car_display()
 {
-	for (uint8_t i = 0; i < NUM_LANES; i++)
+	for (uint8_t i = 0; i < NUM_LANE; i++)
 	{
 		if (car[i].visible != WHITE)
 			continue;
@@ -119,13 +119,13 @@ void zw_game_car_display()
 
 void zw_game_tombstone_display()
 {
-	for (uint8_t i = 0; i < NUM_TOMBSTONES; i++)
+	for (uint8_t i = 0; i < NUM_TOMBSTONE; i++)
 	{
-		if (!tombstones[i].active)
+		if (!tombstone[i].active)
 			continue;
 		view_render.drawBitmap(
-		    tombstones[i].x,
-		    lane_y[tombstones[i].lane],
+		    tombstone[i].x,
+		    lane_y[tombstone[i].lane],
 		    bitmap_tombstone,
 		    SIZE_BITMAP_TOMBSTONE_X,
 		    SIZE_BITMAP_TOMBSTONE_Y,
@@ -155,7 +155,7 @@ void zw_game_bang_display()
 
 void zw_game_grass_display()
 {
-	for (uint8_t l = 0; l < NUM_LANES; l++)
+	for (uint8_t l = 0; l < NUM_LANE; l++)
 	{
 		uint8_t gy = lane_y[l] + 9;
 		for (uint8_t x = 0; x < LCD_WIDTH; x += 5)

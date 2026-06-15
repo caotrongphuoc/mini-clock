@@ -29,15 +29,15 @@ void zw_game_border_handle(ak_msg_t* msg)
 	case ZW_GAME_CHECK_GAME_OVER:
 	{
 		APP_DBG_SIG("ZW_GAME_CHECK_GAME_OVER\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIES; i++)
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
 			if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET)
 			{
 				uint8_t lane = (uint8_t)((zombie[i].y - ZOMBIE_Y_MIN) / 10);
-				if (lane >= NUM_LANES)
-					lane = NUM_LANES - 1;
+				if (lane >= NUM_LANE)
+					lane = NUM_LANE - 1;
 				if (!car[lane].visible)
 				{
 					task_post_pure_msg(AC_TASK_DISPLAY_ID, ZW_GAME_RESET);

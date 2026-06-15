@@ -42,7 +42,7 @@ static void view_scr_game_setting_tombstone()
 
 	uint8_t sel = tb_count_location_choose;
 
-	for (uint8_t i = 0; i <= TB_COUNT_NUM_LANES; i++)
+	for (uint8_t i = 0; i <= TB_COUNT_NUM_LANE; i++)
 	{
 		uint8_t frame_y = TB_COUNT_FRAMES_AXIS_Y_1 + TB_COUNT_FRAMES_STEP * i;
 		bool selected = (i == sel);
@@ -63,7 +63,7 @@ static void view_scr_game_setting_tombstone()
 
 		view_render.setTextColor(fg);
 
-		if (i < TB_COUNT_NUM_LANES)
+		if (i < TB_COUNT_NUM_LANE)
 		{
 			view_render.setCursor(2, frame_y + 1);
 			view_render.print("Lane ");
@@ -103,7 +103,7 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		if (tb_count_location_choose < TB_COUNT_NUM_LANES)
+		if (tb_count_location_choose < TB_COUNT_NUM_LANE)
 		{
 			uint8_t idx = tb_count_location_choose;
 			/* Cycle tombstone count: 0 -> 1 -> 2 -> 0 */

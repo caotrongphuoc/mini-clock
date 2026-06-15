@@ -18,7 +18,7 @@
 #include "scr_game_zomwar.h"
 
 #define TOMBSTONES_PER_LANE (2)
-#define NUM_TOMBSTONES (10)
+#define NUM_TOMBSTONE (10)
 #define SIZE_BITMAP_TOMBSTONE_X (8)
 #define SIZE_BITMAP_TOMBSTONE_Y (10)
 #define TOMBSTONE_SPAWN_INTERVAL (35)
@@ -30,7 +30,7 @@ typedef struct
 	bool active;
 } zw_game_tombstone_t;
 
-extern zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
+extern zw_game_tombstone_t tombstone[NUM_TOMBSTONE];
 
 void zw_game_tombstone_handle(ak_msg_t* msg);
 

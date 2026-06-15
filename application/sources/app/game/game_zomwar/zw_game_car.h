@@ -18,7 +18,7 @@
 #include "zw_game_zombie.h"
 
 #define AXIS_X_CAR (0)
-#define NUM_LANES (5)
+#define NUM_LANE (5)
 #define CAR_SPEED (4)
 #define SIZE_BITMAP_CAR_X (12)
 #define SIZE_BITMAP_CAR_Y (10)
@@ -37,8 +37,8 @@ typedef struct
 	uint8_t action_image;
 } zw_game_car_t;
 
-extern zw_game_car_t car[NUM_LANES];
-extern const uint8_t lane_y[NUM_LANES];
+extern zw_game_car_t car[NUM_LANE];
+extern const uint8_t lane_y[NUM_LANE];
 
 extern bool zw_game_car_check_hit(uint8_t c, uint8_t z);
 

@@ -23,8 +23,8 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
-#define TB_COUNT_NUM_LANES (5)
-#define TB_COUNT_ITEM_EXIT (TB_COUNT_NUM_LANES)
+#define TB_COUNT_NUM_LANE (5)
+#define TB_COUNT_ITEM_EXIT (TB_COUNT_NUM_LANE)
 #define TB_COUNT_FRAMES_AXIS_X (0)
 #define TB_COUNT_FRAMES_AXIS_Y_1 (2)
 #define TB_COUNT_FRAMES_STEP (10)

@@ -4922,9 +4922,9 @@ Linker script and memory map
                 0x000000002000170b                car
  .bss._ZL21tombstone_spawn_timer
                 0x0000000020001729        0x1 build_Zomwar-application/zw_game_tombstone.o
- .bss.tombstones
+ .bss.tombstone
                 0x000000002000172a       0x1e build_Zomwar-application/zw_game_tombstone.o
-                0x000000002000172a                tombstones
+                0x000000002000172a                tombstone
  .bss.bang      0x0000000020001748       0x50 build_Zomwar-application/zw_game_bang.o
                 0x0000000020001748                bang
  .bss.wave_last_score
@@ -5836,7 +5836,7 @@ LOAD /home/phuoc/Workspace/Tools/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc
  .debug_line    0x0000000000028b5d      0x8fa build_Zomwar-application/twi.o
  .debug_line    0x0000000000029457      0x6b8 build_Zomwar-application/mini_cpp.o
 
-.debug_str      0x0000000000000000    0x16b9f
+.debug_str      0x0000000000000000    0x16b94
  .debug_str     0x0000000000000000      0x1bb build_Zomwar-application/fsm.o
                                         0x24f (size before relaxing)
  .debug_str     0x00000000000001bb      0x51c build_Zomwar-application/task.o
@@ -5907,97 +5907,97 @@ LOAD /home/phuoc/Workspace/Tools/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc
                                        0x4fc9 (size before relaxing)
  .debug_str     0x000000000000a504      0x1e3 build_Zomwar-application/scr_startup.o
                                        0x1849 (size before relaxing)
- .debug_str     0x000000000000a6e7      0x65b build_Zomwar-application/scr_game_zomwar.o
-                                       0x2164 (size before relaxing)
- .debug_str     0x000000000000ad42       0xe2 build_Zomwar-application/scr_game_menu.o
+ .debug_str     0x000000000000a6e7      0x650 build_Zomwar-application/scr_game_zomwar.o
+                                       0x2163 (size before relaxing)
+ .debug_str     0x000000000000ad37       0xe2 build_Zomwar-application/scr_game_menu.o
                                        0x1bfc (size before relaxing)
- .debug_str     0x000000000000ae24      0x117 build_Zomwar-application/scr_game_setting.o
+ .debug_str     0x000000000000ae19      0x117 build_Zomwar-application/scr_game_setting.o
                                        0x18bf (size before relaxing)
- .debug_str     0x000000000000af3b       0xbf build_Zomwar-application/scr_game_setting_car.o
+ .debug_str     0x000000000000af30       0xbf build_Zomwar-application/scr_game_setting_car.o
                                        0x1847 (size before relaxing)
- .debug_str     0x000000000000affa       0xed build_Zomwar-application/scr_game_setting_tombstone.o
+ .debug_str     0x000000000000afef       0xed build_Zomwar-application/scr_game_setting_tombstone.o
                                        0x187b (size before relaxing)
- .debug_str     0x000000000000b0e7       0xaa build_Zomwar-application/scr_game_over.o
+ .debug_str     0x000000000000b0dc       0xaa build_Zomwar-application/scr_game_over.o
                                        0x1827 (size before relaxing)
- .debug_str     0x000000000000b191      0x16c build_Zomwar-application/scr_game_rank.o
+ .debug_str     0x000000000000b186      0x16c build_Zomwar-application/scr_game_rank.o
                                        0x1ade (size before relaxing)
- .debug_str     0x000000000000b2fd       0x73 build_Zomwar-application/zw_game_gunner.o
+ .debug_str     0x000000000000b2f2       0x73 build_Zomwar-application/zw_game_gunner.o
                                        0x1290 (size before relaxing)
- .debug_str     0x000000000000b370       0x7f build_Zomwar-application/zw_game_bullet.o
+ .debug_str     0x000000000000b365       0x7f build_Zomwar-application/zw_game_bullet.o
                                        0x1495 (size before relaxing)
- .debug_str     0x000000000000b3ef      0x161 build_Zomwar-application/zw_game_zombie.o
+ .debug_str     0x000000000000b3e4      0x161 build_Zomwar-application/zw_game_zombie.o
                                        0x169b (size before relaxing)
- .debug_str     0x000000000000b550       0xf1 build_Zomwar-application/zw_game_car.o
+ .debug_str     0x000000000000b545       0xf1 build_Zomwar-application/zw_game_car.o
                                        0x1617 (size before relaxing)
- .debug_str     0x000000000000b641       0x8e build_Zomwar-application/zw_game_tombstone.o
-                                       0x13ae (size before relaxing)
- .debug_str     0x000000000000b6cf       0x8f build_Zomwar-application/zw_game_bang.o
+ .debug_str     0x000000000000b636       0x8e build_Zomwar-application/zw_game_tombstone.o
+                                       0x13ad (size before relaxing)
+ .debug_str     0x000000000000b6c4       0x8f build_Zomwar-application/zw_game_bang.o
                                        0x12a4 (size before relaxing)
- .debug_str     0x000000000000b75e       0x8f build_Zomwar-application/zw_game_border.o
+ .debug_str     0x000000000000b753       0x8f build_Zomwar-application/zw_game_border.o
                                        0x159c (size before relaxing)
- .debug_str     0x000000000000b7ed       0xa8 build_Zomwar-application/task_system.o
+ .debug_str     0x000000000000b7e2       0xa8 build_Zomwar-application/task_system.o
                                         0x5c0 (size before relaxing)
- .debug_str     0x000000000000b895       0xfc build_Zomwar-application/app_eeprom.o
+ .debug_str     0x000000000000b88a       0xfc build_Zomwar-application/app_eeprom.o
                                         0x613 (size before relaxing)
- .debug_str     0x000000000000b991     0x682e build_Zomwar-application/app.o
+ .debug_str     0x000000000000b986     0x682e build_Zomwar-application/app.o
                                        0x8836 (size before relaxing)
- .debug_str     0x00000000000121bf       0x22 build_Zomwar-application/app_non_clear_ram.o
+ .debug_str     0x00000000000121b4       0x22 build_Zomwar-application/app_non_clear_ram.o
                                         0x3cc (size before relaxing)
- .debug_str     0x00000000000121e1       0x97 build_Zomwar-application/app_bsp.o
+ .debug_str     0x00000000000121d6       0x97 build_Zomwar-application/app_bsp.o
                                         0x8be (size before relaxing)
- .debug_str     0x0000000000012278      0x3c8 build_Zomwar-application/shell.o
+ .debug_str     0x000000000001226d      0x3c8 build_Zomwar-application/shell.o
                                        0x1a1b (size before relaxing)
- .debug_str     0x0000000000012640       0x49 build_Zomwar-application/task_shell.o
+ .debug_str     0x0000000000012635       0x49 build_Zomwar-application/task_shell.o
                                         0x692 (size before relaxing)
- .debug_str     0x0000000000012689       0x3b build_Zomwar-application/task_life.o
+ .debug_str     0x000000000001267e       0x3b build_Zomwar-application/task_life.o
                                         0x552 (size before relaxing)
- .debug_str     0x00000000000126c4      0x356 build_Zomwar-application/task_fw.o
+ .debug_str     0x00000000000126b9      0x356 build_Zomwar-application/task_fw.o
                                         0xf96 (size before relaxing)
- .debug_str     0x0000000000012a1a       0x1a build_Zomwar-application/task_list.o
+ .debug_str     0x0000000000012a0f       0x1a build_Zomwar-application/task_list.o
                                         0x610 (size before relaxing)
- .debug_str     0x0000000000012a34       0x75 build_Zomwar-application/task_display.o
+ .debug_str     0x0000000000012a29       0x75 build_Zomwar-application/task_display.o
                                        0x1209 (size before relaxing)
- .debug_str     0x0000000000012aa9       0x4e build_Zomwar-application/task_if.o
+ .debug_str     0x0000000000012a9e       0x4e build_Zomwar-application/task_if.o
                                         0x6b7 (size before relaxing)
- .debug_str     0x0000000000012af7      0x14a build_Zomwar-application/task_uart_if.o
+ .debug_str     0x0000000000012aec      0x14a build_Zomwar-application/task_uart_if.o
                                         0x7c6 (size before relaxing)
- .debug_str     0x0000000000012c41       0x38 build_Zomwar-application/task_dbg.o
+ .debug_str     0x0000000000012c36       0x38 build_Zomwar-application/task_dbg.o
                                         0x41a (size before relaxing)
- .debug_str     0x0000000000012c79      0x17f build_Zomwar-application/view_render.o
+ .debug_str     0x0000000000012c6e      0x17f build_Zomwar-application/view_render.o
                                        0x1154 (size before relaxing)
- .debug_str     0x0000000000012df8      0x154 build_Zomwar-application/screen_manager.o
+ .debug_str     0x0000000000012ded      0x154 build_Zomwar-application/screen_manager.o
                                        0x1573 (size before relaxing)
- .debug_str     0x0000000000012f4c      0x793 build_Zomwar-application/Adafruit_GFX.o
+ .debug_str     0x0000000000012f41      0x793 build_Zomwar-application/Adafruit_GFX.o
                                        0x197b (size before relaxing)
- .debug_str     0x00000000000136df      0x5b4 build_Zomwar-application/Adafruit_oled_drv.o
+ .debug_str     0x00000000000136d4      0x5b4 build_Zomwar-application/Adafruit_oled_drv.o
                                        0x1570 (size before relaxing)
- .debug_str     0x0000000000013c93       0x21 build_Zomwar-application/eeprom.o
+ .debug_str     0x0000000000013c88       0x21 build_Zomwar-application/eeprom.o
                                         0x3b0 (size before relaxing)
- .debug_str     0x0000000000013cb4       0xdd build_Zomwar-application/link_hal.o
+ .debug_str     0x0000000000013ca9       0xdd build_Zomwar-application/link_hal.o
                                         0x4fc (size before relaxing)
- .debug_str     0x0000000000013d91      0x3e4 build_Zomwar-application/link.o
+ .debug_str     0x0000000000013d86      0x3e4 build_Zomwar-application/link.o
                                         0xd38 (size before relaxing)
- .debug_str     0x0000000000014175      0x556 build_Zomwar-application/link_mac.o
+ .debug_str     0x000000000001416a      0x556 build_Zomwar-application/link_mac.o
                                         0xfe4 (size before relaxing)
- .debug_str     0x00000000000146cb      0x46a build_Zomwar-application/link_phy.o
+ .debug_str     0x00000000000146c0      0x46a build_Zomwar-application/link_phy.o
                                         0xea7 (size before relaxing)
- .debug_str     0x0000000000014b35       0xe9 build_Zomwar-application/link_data.o
+ .debug_str     0x0000000000014b2a       0xe9 build_Zomwar-application/link_data.o
                                         0x601 (size before relaxing)
- .debug_str     0x0000000000014c1e       0x56 build_Zomwar-application/wiring_digital.o
+ .debug_str     0x0000000000014c13       0x56 build_Zomwar-application/wiring_digital.o
                                         0xed2 (size before relaxing)
- .debug_str     0x0000000000014c74      0x330 build_Zomwar-application/Print.o
+ .debug_str     0x0000000000014c69      0x330 build_Zomwar-application/Print.o
                                        0x10a6 (size before relaxing)
- .debug_str     0x0000000000014fa4     0x1122 build_Zomwar-application/HardwareSerial.o
+ .debug_str     0x0000000000014f99     0x1122 build_Zomwar-application/HardwareSerial.o
                                        0x1f7b (size before relaxing)
- .debug_str     0x00000000000160c6       0xc7 build_Zomwar-application/HardwareSerial2.o
+ .debug_str     0x00000000000160bb       0xc7 build_Zomwar-application/HardwareSerial2.o
                                        0x1fb3 (size before relaxing)
- .debug_str     0x000000000001618d      0x104 build_Zomwar-application/SPI.o
+ .debug_str     0x0000000000016182      0x104 build_Zomwar-application/SPI.o
                                         0x9d5 (size before relaxing)
- .debug_str     0x0000000000016291      0x6d5 build_Zomwar-application/Wire.o
+ .debug_str     0x0000000000016286      0x6d5 build_Zomwar-application/Wire.o
                                        0x24be (size before relaxing)
- .debug_str     0x0000000000016966       0xee build_Zomwar-application/twi.o
+ .debug_str     0x000000000001695b       0xee build_Zomwar-application/twi.o
                                        0x13fe (size before relaxing)
- .debug_str     0x0000000000016a54      0x14b build_Zomwar-application/mini_cpp.o
+ .debug_str     0x0000000000016a49      0x14b build_Zomwar-application/mini_cpp.o
                                         0x974 (size before relaxing)
 
 .comment        0x0000000000000000       0x49
