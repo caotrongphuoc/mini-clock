@@ -1,4 +1,4 @@
-<h1 align="center">Game Programming Getting Started Guide</h1>
+<h1 align="center">Game programming getting started guide</h1>
 
 Welcome to the game programming project on the STM32L151 microcontroller! This repository provides a foundational source code base along with detailed documentation to help you quickly get familiar with the system architecture and start building your own game.
 

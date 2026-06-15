@@ -16,7 +16,7 @@
 | File | Description |
 |---|---|
 | [README.md](README.md) | Main project overview, hardware information, gameplay rules, and object descriptions. |
-| [docs/getting_started.md](docs/getting_started.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
+| [docs/getting_started.md](docs/getting_started.md) | Game programming getting started guide. |
 | [docs/object_sequence.md](docs/object_sequence.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
 | [docs/runtime_signal_processing.md](docs/runtime_signal_processing.md) | Runtime signal-processing flow for button input, AK task messages, timers, game-loop ticks, object updates, and Mermaid sequence diagrams. |
 
@@ -87,10 +87,10 @@ The following section describes the gameplay and core mechanics of **"Zomwar"**.
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="menu game" width="480"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_menu_x10.gif" alt="Game menu" width="480"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 3:</em></strong> Menu game</p>
+<p align="center"><strong><em>Figure 3:</em></strong> Menu screen</p>
 
 The game opens on the **Main Menu**, which offers the following options:
 
@@ -101,22 +101,22 @@ The game opens on the **Main Menu**, which offers the following options:
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/screens/scr_game_zomwar_charts.png" alt="scr_game_zomwar" width="600"/></td>
+    <td align="center"><img src="resources/images/screens/scr_game_zomwar.png" alt="Gameplay" width="600"/></td>
   </tr>
 </table>
- <p align="center"><strong><em>Figure 4:</em></strong> Game play screen and objects</p>
+<p align="center"><strong><em>Figure 4:</em></strong> Gameplay screen</p>
 
 #### Objects in the Game:
 
-| Object Name | Description |
-|---|---|
-| **Gunner** | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
-| **Bullet** | Projectile fired by the Gunner. Flies to the right and destroys any Zombie it touches.  |
-| **Zombie** | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
-| **Tombstone** | A static graveyard tile placed on the map (up to 2 per lane). While active, it periodically makes a new Zombie rise out of the grave into its lane. Which Tombstones are active can be configured in **Setting**. |
-| **Car** | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
-| **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
-| **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
+| Bitmap | Object Name | Description |
+| :---: | :--- |:--- |
+| <img src="resources/images/bitmap/bitmap_gunner.gif" width="100"/> | **Gunner** | The player character, positioned on the left side of the screen. Moves vertically to line up with one of the 5 firing rows and shoots Bullets when the player presses **[Mode]**. |
+| <img src="resources/images/bitmap/bitmap_bullet.png" width="100"/> | **Bullet** | Bullet fired by the Gunner. Flies to the right and destroys any Zombie it touches. |
+| <img src="resources/images/bitmap/bitmap_zombie.gif" width="100"/> | **Zombie** | The main enemy. Walks left toward the Border with a slight zigzag motion along the Y axis, and gets faster after every wave. Each Zombie destroyed is worth **10 points**. |
+| <img src="resources/images/bitmap/bitmap_tombstone.png" width="100"/> | **Tombstone** | A static graveyard tile placed on the map (up to 2 per lane). While active, it periodically makes a new Zombie rise out of the grave into its lane. Which Tombstones are active can be configured in **Setting**. |
+| <img src="resources/images/bitmap/bitmap_car.gif" width="100"/> | **Car** | A defensive vehicle parked on the left edge of a lane. When a Zombie reaches the left edge (or rams the parked car), the nearest available Car switches on and drives right, crushing every Zombie in its lane before leaving the screen — single use. Which lanes start with a Car is configured in **Setting**. |
+| <img src="resources/images/bitmap/bitmap_bang.gif" width="100"/> | **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
+| <img src="resources/images/bitmap/bitmap_border.png" height="100"/> | **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
 
 > **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/object_sequence.md).
 
