@@ -155,15 +155,12 @@ void zw_game_bang_display()
 
 void zw_game_grass_display()
 {
-	static const uint8_t ly[NUM_LANES] = LANE_Y;
 	for (uint8_t l = 0; l < NUM_LANES; l++)
 	{
-		uint8_t gy = ly[l] + 9;
-		for (uint8_t x = 0; x < 128; x += 5)
+		uint8_t gy = lane_y[l] + 9;
+		for (uint8_t x = 0; x < LCD_WIDTH; x += 5)
 		{
-			view_render.drawPixel(x, gy, WHITE);
-			view_render.drawPixel(x + 1, gy, WHITE);
-			view_render.drawPixel(x + 2, gy, WHITE);
+			view_render.drawFastHLine(x, gy, 3, WHITE);
 		}
 	}
 }
