@@ -61,6 +61,17 @@ Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SE
 <p align="center"><strong><em>Figure 4:</em></strong> Car sequence logic</p>
 
 
+## VI. Tombstone Object Sequence
+
+Tombstone owns the `tombstone[NUM_TOMBSTONE]` array (2 tombstones per lane: group 1 at `x = 65..84` and group 2 at `x = 90..109`). On `ZW_GAME_TOMBSTONE_SETUP` it arms `tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL` and, for each lane, sets `active` from the i-th bit of `settingsetup.tombstone_lane_1` (group 1) and `settingsetup.tombstone_lane_2` (group 2). Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_TOMBSTONE_SPAWN`: while `tombstone_spawn_timer > 0` the task just decrements it and returns; once it reaches `0` the timer is rearmed and a random index `tidx = rand() % NUM_TOMBSTONE` is rolled. If `tombstone[tidx].active` is false the tick is skipped; otherwise it walks `zombie[]` to find the first hidden slot and calls `zw_game_zombie_spawn_from_tombstone(i, tombstone[tidx].x, lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y)`, which starts a zombie rising out of the tombstone over `ZOMBIE_RISE_TICKS` frames. `ZW_GAME_TOMBSTONE_RESET` clears the timer and zeros every slot (`x = 0`, `lane = 0`, `active = false`).
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_tombstone_sequence.png" alt="Tombstone game sequence logic" width="900"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 5:</em></strong> Tombstone sequence logic</p>
+
 ## IX. Per-Tick Signal Order
 
 The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME_TIME_TICK`:
