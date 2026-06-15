@@ -22,7 +22,7 @@ Gunner owns the player position. The screen task initializes the Gunner object w
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="800"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
@@ -33,7 +33,7 @@ Bullet receives shoot input from the MODE button (only while `zw_game_state == G
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="Bullet game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="Bullet game sequence logic" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
@@ -44,7 +44,7 @@ Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="Zombie game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="Zombie game sequence logic" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
@@ -55,7 +55,7 @@ Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SE
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_car.sequence.png" alt="Car game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_car.sequence.png" alt="Car game sequence logic" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 4:</em></strong> Car sequence logic</p>
