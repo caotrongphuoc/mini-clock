@@ -72,15 +72,22 @@ sequenceDiagram
     Car->>Zombie: read zombie[i] (visible zombies)
     alt zombie.x <= -ZOMBIE_MIN_LEFT_OFFSET (reached left edge)
         Note right of Car: m = zw_game_car_find_nearest(zombie.y)<br/>(non-running, within CAR_HIT_RANGE_Y)
-        alt nearest car found (m >= 0)
-            Note right of Car: car[m].running = true<br/>zw_game_bang_spawn(zombie.x, zombie.y)<br/>score += 10, BUZZER_SOUND_BANG
-            Car->>Bang: spawn explosion
+        alt m >= 0 (nearest car found)
+            Note right of Car: car[m].running = true<br/>score += 10
+            Car->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
+            Note right of Car: BUZZER_PlaySound(BUZZER_SOUND_BANG)
             Car->>Zombie: hide zombie (visible=BLACK)
         end
     else zombie still on screen
-        Note right of Car: m = zw_game_car_find_nearest(zombie.y)<br/>if zw_game_car_check_hit(m, i):<br/>car[m].running = true
+        Note right of Car: m = zw_game_car_find_nearest(zombie.y)
+        alt m >= 0 && zw_game_car_check_hit(m, i)
+            Note right of Car: car[m].running = true
+        end
     end
-    Note right of Car: movement pass — for each visible running car:<br/>x += CAR_SPEED, cycle action_image (1..3)<br/>if x > LCD_WIDTH: visible=false, running=false
+    Note right of Car: movement pass — for each visible running car:<br/>x += CAR_SPEED, cycle action_image (1..3)
+    alt car.x > LCD_WIDTH
+        Note right of Car: visible = false, running = false
+    end
     deactivate Car
 
     Screen->>+Car: ZW_GAME_CAR_HIT
