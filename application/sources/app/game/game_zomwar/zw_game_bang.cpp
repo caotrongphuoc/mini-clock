@@ -32,11 +32,7 @@ void zw_game_bang_handle(ak_msg_t *msg)
     case ZW_GAME_BANG_SETUP:
     {
         APP_DBG_SIG("ZW_GAME_BANG_SETUP\n");
-        for (uint8_t i = 0; i < NUM_BANG; i++)
-        {
-            bang[i].visible = BLACK;
-            bang[i].action_image = 1;
-        }
+        zw_game_bang_clear();
     }
     break;
 
@@ -64,11 +60,7 @@ void zw_game_bang_handle(ak_msg_t *msg)
     case ZW_GAME_BANG_RESET:
     {
         APP_DBG_SIG("ZW_GAME_BANG_RESET\n");
-        for (uint8_t i = 0; i < NUM_BANG; i++)
-        {
-            bang[i].visible = BLACK;
-            bang[i].action_image = 1;
-        }
+        zw_game_bang_clear();
     }
     break;
 
