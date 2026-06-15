@@ -38,16 +38,16 @@ bool zw_game_car_check_hit(uint8_t c, uint8_t z)
 	int16_t dy = (int16_t)zombie[z].y - (int16_t)car[c].y;
 	if (dy < 0)
 		dy = -dy;
+	if (dy > CAR_HIT_RANGE_Y)
+		return false;
 
 	int16_t car_left = car[c].x;
 	int16_t car_right = car_left + SIZE_BITMAP_CAR_X;
 
-	int16_t zombie_left = zombie[z].x + ZOMBIE_MIN_LEFT_OFFSET;
-	int16_t zombie_right = zombie[z].x + SIZE_BITMAP_ZOMBIES_X;
+	int16_t zombie_left = zombie[z].x + ZOMBIE_HITBOX_LEFT_OFFSET;
+	int16_t zombie_right = zombie[z].x + ZOMBIE_HITBOX_RIGHT_OFFSET;
 
-	return (dy <= CAR_HIT_RANGE_Y) &&
-	       (car_right > zombie_left) &&
-	       (car_left < zombie_right);
+	return (car_right > zombie_left) && (car_left < zombie_right);
 }
 
 void zw_game_car_handle(ak_msg_t* msg)
@@ -78,6 +78,9 @@ void zw_game_car_handle(ak_msg_t* msg)
 				if (m >= 0)
 				{
 					car[m].running = true;
+					zw_game_bang_spawn(zombie[i].x, zombie[i].y);
+					zw_game_score += 10;
+					BUZZER_PlaySound(BUZZER_SOUND_BANG);
 					zombie[i].visible = BLACK;
 				}
 				continue;

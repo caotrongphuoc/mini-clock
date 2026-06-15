@@ -216,6 +216,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			bullet[j].visible = BLACK;
 			bullet[j].x = 0;
 			zw_game_bang_spawn(zombie[0].x, zombie[0].y);
+			BUZZER_PlaySound(BUZZER_SOUND_BANG);
 			zombie[0].x = LCD_WIDTH + 3;
 			zombie[0].y = AXIS_Y_GUNNER - 10;
 			break;
