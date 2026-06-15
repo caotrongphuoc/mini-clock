@@ -41,5 +41,6 @@ extern zw_game_car_t car[NUM_LANE];
 extern const uint8_t lane_y[NUM_LANE];
 
 extern bool zw_game_car_check_hit(uint8_t c, uint8_t z);
+extern int8_t zw_game_car_find_nearest(uint8_t zy);
 
 #endif //__ZW_GAME_CAR_H__

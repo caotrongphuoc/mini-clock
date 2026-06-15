@@ -35,10 +35,7 @@ void zw_game_border_handle(ak_msg_t* msg)
 				continue;
 			if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET)
 			{
-				uint8_t lane = (uint8_t)((zombie[i].y - ZOMBIE_Y_MIN) / 10);
-				if (lane >= NUM_LANE)
-					lane = NUM_LANE - 1;
-				if (!car[lane].visible)
+				if (zw_game_car_find_nearest(zombie[i].y) < 0)
 				{
 					task_post_pure_msg(AC_TASK_DISPLAY_ID, ZW_GAME_RESET);
 					break;
