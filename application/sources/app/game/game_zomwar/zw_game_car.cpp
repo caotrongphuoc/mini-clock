@@ -135,8 +135,7 @@ void zw_game_car_handle(ak_msg_t *msg)
         for (uint8_t i = 0; i < NUM_LANES; i++)
         {
             zw_game_car_clear(i);
-            car[i].visible = false;
-  
+            car[i].visible = false;  
         }
     }
     break;

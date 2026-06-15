@@ -30,14 +30,10 @@ void zw_game_zombie_spawn_rise(uint8_t i, int16_t x, uint8_t y)
 
 bool zw_game_zombie_check_hit(uint8_t b, uint8_t z)
 {
-    int16_t ax = bullet[b].x;
-    int16_t ay = bullet[b].y;
-    int16_t mx = zombie[z].x;
-    int16_t my = zombie[z].y;
-    return (ax + SIZE_BITMAP_BULLET_X > mx + 12) &&
-           (ax < mx + (int16_t)SIZE_BITMAP_ZOMBIES_X) &&
-           (ay + (int16_t)SIZE_BITMAP_BULLET_Y > my) &&
-           (ay < my + (int16_t)SIZE_BITMAP_ZOMBIES_Y);
+    return ((int16_t)bullet[b].x + SIZE_BITMAP_BULLET_X > zombie[z].x + ZOMBIE_HITBOX_LEFT_OFFSET) &&
+           ((int16_t)bullet[b].x < zombie[z].x + ZOMBIE_HITBOX_RIGHT_OFFSET) &&
+           ((int16_t)bullet[b].y + SIZE_BITMAP_BULLET_Y > zombie[z].y + ZOMBIE_HITBOX_TOP_OFFSET) &&
+           ((int16_t)bullet[b].y < zombie[z].y + ZOMBIE_HITBOX_BOTTOM_OFFSET);
 }
 
 void zw_game_zombie_handle(ak_msg_t *msg)
