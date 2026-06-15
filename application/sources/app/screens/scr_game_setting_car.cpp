@@ -4,7 +4,7 @@
 /* Variable Declaration - Game setting car */
 /*****************************************************************************/
 
-static uint8_t car_pos_location_chosse;
+static uint8_t car_pos_location_choose;
 
 /*****************************************************************************/
 /* View - Game setting car */
@@ -30,7 +30,7 @@ static void view_scr_game_setting_car()
 {
 	view_render.setTextSize(1);
 
-	uint8_t sel = car_pos_location_chosse;
+	uint8_t sel = car_pos_location_choose;
 
 	for (uint8_t i = 0; i <= CAR_POS_NUM_CARS; i++)
 	{
@@ -87,16 +87,16 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		car_pos_location_chosse = 0;
+		car_pos_location_choose = 0;
 	}
 	break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		if (car_pos_location_chosse < CAR_POS_NUM_CARS)
+		if (car_pos_location_choose < CAR_POS_NUM_CARS)
 		{
-			settingdata.num_car ^= (1 << car_pos_location_chosse);
+			settingdata.num_car ^= (1 << car_pos_location_choose);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
 		else
@@ -111,13 +111,13 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		if (car_pos_location_chosse == 0)
+		if (car_pos_location_choose == 0)
 		{
-			car_pos_location_chosse = CAR_POS_ITEM_EXIT;
+			car_pos_location_choose = CAR_POS_ITEM_EXIT;
 		}
 		else
 		{
-			car_pos_location_chosse--;
+			car_pos_location_choose--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -126,13 +126,13 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (car_pos_location_chosse == CAR_POS_ITEM_EXIT)
+		if (car_pos_location_choose == CAR_POS_ITEM_EXIT)
 		{
-			car_pos_location_chosse = 0;
+			car_pos_location_choose = 0;
 		}
 		else
 		{
-			car_pos_location_chosse++;
+			car_pos_location_choose++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

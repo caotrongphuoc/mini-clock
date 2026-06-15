@@ -4,7 +4,7 @@
 /* Variable Declaration - Game setting */
 /*****************************************************************************/
 
-static uint8_t setting_location_chosse;
+static uint8_t setting_location_choose;
 
 /*****************************************************************************/
 /* View - Game setting */
@@ -30,7 +30,7 @@ void view_scr_game_setting()
 {
 	view_render.setTextSize(1);
 
-	uint8_t sel = setting_location_chosse;
+	uint8_t sel = setting_location_choose;
 
 	for (uint8_t f = 0; f < 5; f++)
 	{
@@ -128,7 +128,7 @@ void scr_game_setting_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		setting_location_chosse = SETTING_ITEM_CARS;
+		setting_location_choose = SETTING_ITEM_CARS;
 		zw_game_setting_read(&settingdata);
 	}
 	break;
@@ -136,7 +136,7 @@ void scr_game_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		switch (setting_location_chosse)
+		switch (setting_location_choose)
 		{
 		case SETTING_ITEM_CARS:
 		{
@@ -188,13 +188,13 @@ void scr_game_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_CARS)
+		if (setting_location_choose == SETTING_ITEM_CARS)
 		{
-			setting_location_chosse = SETTING_ITEM_EXIT;
+			setting_location_choose = SETTING_ITEM_EXIT;
 		}
 		else
 		{
-			setting_location_chosse--;
+			setting_location_choose--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -203,13 +203,13 @@ void scr_game_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_EXIT)
+		if (setting_location_choose == SETTING_ITEM_EXIT)
 		{
-			setting_location_chosse = SETTING_ITEM_CARS;
+			setting_location_choose = SETTING_ITEM_CARS;
 		}
 		else
 		{
-			setting_location_chosse++;
+			setting_location_choose++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

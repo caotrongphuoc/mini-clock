@@ -1,6 +1,8 @@
 #ifndef __SCR_GAME_MENU_H__
 #define __SCR_GAME_MENU_H__
 
+#include <stdlib.h>
+
 #include "fsm.h"
 #include "port.h"
 #include "message.h"

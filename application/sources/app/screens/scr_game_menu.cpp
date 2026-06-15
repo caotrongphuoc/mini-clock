@@ -9,7 +9,7 @@
 static uint8_t shoot_tick_counter;
 static uint8_t current_location = 0;
 
-static char items_name[NUMBER_ITEMS][30] = {
+static const char* const items_name[NUMBER_ITEMS] = {
     "<<   Play   >>",
     "<<  Setting >>",
     "<<   Rank   >>",

@@ -4,7 +4,7 @@
 /* Variable Declaration - Tombstone count per lane */
 /*****************************************************************************/
 
-static uint8_t tb_count_location_chosse;
+static uint8_t tb_count_location_choose;
 
 /*****************************************************************************/
 /* View - Tombstone count per lane */
@@ -40,7 +40,7 @@ static void view_scr_game_setting_tombstone()
 {
 	view_render.setTextSize(1);
 
-	uint8_t sel = tb_count_location_chosse;
+	uint8_t sel = tb_count_location_choose;
 
 	for (uint8_t i = 0; i <= TB_COUNT_NUM_LANES; i++)
 	{
@@ -96,16 +96,16 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		tb_count_location_chosse = 0;
+		tb_count_location_choose = 0;
 	}
 	break;
 
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		if (tb_count_location_chosse < TB_COUNT_NUM_LANES)
+		if (tb_count_location_choose < TB_COUNT_NUM_LANES)
 		{
-			uint8_t idx = tb_count_location_chosse;
+			uint8_t idx = tb_count_location_choose;
 			/* Cycle so bia mo: 0 -> 1 -> 2 -> 0 */
 			uint8_t cur = get_lane_count(idx);
 			cur = (cur + 1) % 3;
@@ -132,13 +132,13 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		if (tb_count_location_chosse == 0)
+		if (tb_count_location_choose == 0)
 		{
-			tb_count_location_chosse = TB_COUNT_ITEM_EXIT;
+			tb_count_location_choose = TB_COUNT_ITEM_EXIT;
 		}
 		else
 		{
-			tb_count_location_chosse--;
+			tb_count_location_choose--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -147,13 +147,13 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (tb_count_location_chosse == TB_COUNT_ITEM_EXIT)
+		if (tb_count_location_choose == TB_COUNT_ITEM_EXIT)
 		{
-			tb_count_location_chosse = 0;
+			tb_count_location_choose = 0;
 		}
 		else
 		{
-			tb_count_location_chosse++;
+			tb_count_location_choose++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
