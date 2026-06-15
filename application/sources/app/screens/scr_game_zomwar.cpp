@@ -119,14 +119,13 @@ void zw_game_car_display()
 
 void zw_game_tombstone_display()
 {
-	static const uint8_t ly[NUM_LANES] = LANE_Y;
 	for (uint8_t i = 0; i < NUM_TOMBSTONES; i++)
 	{
 		if (!tombstones[i].active)
 			continue;
 		view_render.drawBitmap(
 			tombstones[i].x,
-			ly[tombstones[i].lane],
+			lane_y[tombstones[i].lane],
 			bitmap_tombstone,
 			SIZE_BITMAP_TOMBSTONE_X,
 			SIZE_BITMAP_TOMBSTONE_Y,

@@ -2,7 +2,7 @@
 #include "app_eeprom.h"
 
 zw_game_car_t car[NUM_LANES];
-static const int8_t lane_y[NUM_LANES] = LANE_Y;
+const uint8_t lane_y[NUM_LANES] = LANE_Y; 
 
 static int8_t find_nearest_car(uint8_t zy)
 {

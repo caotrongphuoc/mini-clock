@@ -35,6 +35,7 @@ typedef struct
 } zw_game_car_t;
 
 extern zw_game_car_t car[NUM_LANES];
+extern const uint8_t lane_y[NUM_LANES];
 
 extern bool zw_game_car_check_hit(uint8_t c, uint8_t z);
 

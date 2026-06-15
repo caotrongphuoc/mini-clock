@@ -2,7 +2,6 @@
 #include "app_eeprom.h"
 
 zw_game_tombstone_t tombstones[NUM_TOMBSTONES];
-static const uint8_t lane_y_arr[NUM_LANES] = LANE_Y;
 static uint8_t tombstone_spawn_timer = 0;
 
 void zw_game_tombstone_handle(ak_msg_t *msg)
@@ -44,7 +43,7 @@ void zw_game_tombstone_handle(ak_msg_t *msg)
             if (zombie[i].visible == WHITE)
                 continue;
             int16_t x = tombstones[tidx].x;
-            uint8_t y = lane_y_arr[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
+            uint8_t y = lane_y[tombstones[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
             zw_game_zombie_spawn_rise(i, x, y);
             break;
         }
