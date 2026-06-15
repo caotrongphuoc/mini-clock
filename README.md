@@ -8,7 +8,7 @@
 ## Gameplay Demo
 
 <div align="center">
-    <video src="resources/videos/scr_game_zomwar.mp4" controls height="200"></video>
+    <video src="[resources/videos/scr_game_zomwar.mp4](https://github.com/caotrongphuoc/zomwar-game/blob/main/resources/videos/scr_game_zomwar.mp4)" controls height="200"></video>
 </div>
 
 ## Documentation
