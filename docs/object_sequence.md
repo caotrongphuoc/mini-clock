@@ -49,13 +49,13 @@ Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
-## VII. Car Object Sequence
+## V. Car Object Sequence
 
 Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SETUP` it parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_CAR_RUN` then `ZW_GAME_CAR_HIT`. In `RUN`, the task walks `zombie[]`: a visible zombie that reaches the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`) wakes the nearest non-running car within `CAR_HIT_RANGE_Y` via `zw_game_car_find_nearest()` — that car starts running, `zw_game_bang_spawn()` plays, `zw_game_score += 10`, `BUZZER_SOUND_BANG` is played, and the zombie is hidden; a zombie still on screen whose nearest car overlaps it (`zw_game_car_check_hit`) wakes that car too. After the activation pass, every visible running car slides right by `CAR_SPEED`, cycles `action_image` through `1→2→3`, and despawns (`visible = false`, `running = false`) once `x > LCD_WIDTH`. In `HIT`, every visible running car walks `zombie[]` and for each overlap calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_car_sequence.png" alt="Car game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_car.sequence.png" alt="Car game sequence logic" width="720"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 4:</em></strong> Car sequence logic</p>
