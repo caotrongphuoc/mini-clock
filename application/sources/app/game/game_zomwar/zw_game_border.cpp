@@ -1,6 +1,6 @@
 #include "zw_game_border.h"
 
-zw_game_border_t border;
+// zw_game_border_t border;
 uint16_t zw_game_score = 0;
 uint16_t wave_last_score = 0;
 uint8_t wave_warning_timer = 0;
@@ -14,7 +14,6 @@ void zw_game_border_handle(ak_msg_t *msg)
     case ZW_GAME_BORDER_SETUP:
     {
         APP_DBG_SIG("ZW_GAME_BORDER_SETUP\n");
-        border.x = AXIS_X_BORDER;
         zw_game_score = 0;
         wave_last_score = 0;
         wave_warning_timer = 0;
@@ -76,7 +75,6 @@ void zw_game_border_handle(ak_msg_t *msg)
     case ZW_GAME_BORDER_RESET:
     {
         APP_DBG_SIG("ZW_GAME_BORDER_RESET\n");
-        border.x = AXIS_X_BORDER;
         zw_game_score = 0;
         wave_last_score = 0;
         wave_warning_timer = 0;

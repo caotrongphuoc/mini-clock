@@ -28,7 +28,7 @@
 typedef struct
 {
     bool visible;
-    uint16_t x, y;
+    uint8_t x, y;
 } zw_game_bullet_t;
 
 extern zw_game_bullet_t bullet[NUM_BULLET];

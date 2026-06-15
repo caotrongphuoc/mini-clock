@@ -25,10 +25,10 @@
 
 typedef struct
 {
-    bool visible;
-    uint32_t x;
+    uint8_t x;
     uint8_t y;
     uint8_t action_image;
+    bool visible;
 } zw_game_gunner_t;
 
 extern zw_game_gunner_t gunner;

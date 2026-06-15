@@ -4,7 +4,7 @@
 zw_game_car_t car[NUM_LANES];
 static const int8_t lane_y[NUM_LANES] = LANE_Y;
 
-static int8_t find_nearest_car(uint32_t zy)
+static int8_t find_nearest_car(uint8_t zy)
 {
     int8_t best = -1;
     int32_t best_dist = CAR_HIT_RANGE_Y + 1;

@@ -22,11 +22,15 @@ void zw_game_gunner_handle(ak_msg_t *msg)
     case ZW_GAME_GUNNER_UP:
     {
         APP_DBG_SIG("ZW_GAME_GUNNER_UP\n");
-        gunner_y -= STEP_GUNNER_AXIS_Y;
-        if (gunner_y < AXIS_Y_GUNNER_MIN)
-        {
+        // gunner_y -= STEP_GUNNER_AXIS_Y;
+        // if (gunner_y < AXIS_Y_GUNNER_MIN)
+        // {
+        //     gunner_y = AXIS_Y_GUNNER_MIN;
+        // }
+        if (gunner_y <= AXIS_Y_GUNNER_MIN + STEP_GUNNER_AXIS_Y)
             gunner_y = AXIS_Y_GUNNER_MIN;
-        }
+        else
+            gunner_y -= STEP_GUNNER_AXIS_Y;
     }
     break;
 

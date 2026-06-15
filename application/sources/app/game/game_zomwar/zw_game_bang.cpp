@@ -2,6 +2,15 @@
 
 zw_game_bang_t bang[NUM_BANG];
 
+void zw_game_bang_clear()
+{
+    for (uint8_t i = 0; i < NUM_BANG; i++)
+    {
+        bang[i].visible = BLACK;
+        bang[i].action_image = 1;
+    }
+}
+
 void zw_game_bang_spawn(int16_t x, uint8_t y)
 {
     for (uint8_t bk = 0; bk < NUM_BANG; bk++)
@@ -9,7 +18,7 @@ void zw_game_bang_spawn(int16_t x, uint8_t y)
         if (bang[bk].visible == WHITE)
             continue;
         bang[bk].visible = WHITE;
-        bang[bk].x = (x + 5 > 0) ? (uint32_t)(x + 5) : 0;
+        bang[bk].x = (x + 5 > 0) ? (uint8_t)(x + 5) : 0;
         bang[bk].y = (y >= 2) ? y - 2 : 0;
         bang[bk].action_image = 1;
         break;
