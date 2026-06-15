@@ -49,6 +49,62 @@ Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_
 </table>
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
+ VII. Car Object Sequence
+
+Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SETUP` it parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_CAR_RUN` then `ZW_GAME_CAR_HIT`. In `RUN`, the task walks `zombie[]`: a visible zombie that reaches the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`) wakes the nearest non-running car within `CAR_HIT_RANGE_Y` (the zombie is hidden and that car starts running); a zombie still on screen that overlaps a parked car (`zw_game_car_check_hit`) also starts that car running. After the activation pass, every visible running car slides right by `CAR_SPEED`, cycles `action_image` through `1→2→3`, and despawns (`visible = false`, `running = false`) once `x > LCD_WIDTH`. In `HIT`, every visible running car walks `zombie[]` and for each overlap calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
+
+```mermaid
+sequenceDiagram
+    participant Timer as 100ms
+    participant Screen
+    participant Car as car[n]
+    participant Zombie as zombie State
+    participant Bang as bang State
+
+    Timer-->>+Screen: timer_set
+    Screen->>+Car: ZW_GAME_CAR_SETUP
+    Note right of Car: for each lane i in 0..NUM_LANES:<br/>x = AXIS_X_CAR, y = lane_y[i], lane = i<br/>visible = (settingsetup.num_car >> i) & 1<br/>running = false, action_image = 1
+    deactivate Car
+    deactivate Screen
+
+    Timer-->>+Screen: ZW_GAME_TIME_TICK
+    Screen->>+Car: ZW_GAME_CAR_RUN
+    Car->>Zombie: read zombie[i] (visible zombies)
+    alt zombie.x <= -ZOMBIE_MIN_LEFT_OFFSET (reached left edge)
+        Note right of Car: m = find_nearest_car(zombie.y)<br/>(non-running, within CAR_HIT_RANGE_Y)
+        alt nearest car found (m >= 0)
+            Note right of Car: car[m].running = true
+            Car->>Zombie: hide zombie (visible=BLACK)
+        end
+    else zombie still on screen
+        Note right of Car: for each visible non-running car m:<br/>if zw_game_car_check_hit(m, i):<br/>car[m].running = true
+    end
+    Note right of Car: movement pass — for each visible running car:<br/>x += CAR_SPEED, cycle action_image (1..3)<br/>if x > LCD_WIDTH: visible=false, running=false
+    deactivate Car
+
+    Screen->>+Car: ZW_GAME_CAR_HIT
+    Car->>Zombie: check_hit (visible running cars vs visible zombies)
+    alt running car overlaps zombie
+        Car->>Bang: zw_game_bang_spawn(zombie.x, zombie.y)
+        Note right of Car: score += 10<br/>BUZZER_PlaySound(BUZZER_SOUND_BANG)
+        Car->>Zombie: hide zombie (visible=BLACK)
+    end
+    deactivate Car
+    deactivate Screen
+
+    Timer-->>Screen: ZW_GAME_TIME_TICK
+    Note over Screen,Bang: next tick repeats RUN + HIT (omitted)
+
+    activate Screen
+    Note over Screen: on ZW_GAME_RESET (game over)
+    Screen->>+Car: ZW_GAME_CAR_RESET
+    Note right of Car: for each lane i in 0..NUM_LANES:<br/>x = AXIS_X_CAR, y = lane_y[i]<br/>visible = false, running = false
+    deactivate Car
+    deactivate Screen
+```
+<p align="center"><strong><em>Figure 7:</em></strong> Car sequence logic</p>
+
+
 ## IX. Per-Tick Signal Order
 
 The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME_TIME_TICK`:
