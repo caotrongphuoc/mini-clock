@@ -23,15 +23,18 @@
 #define SIZE_BITMAP_CAR_X (12)
 #define SIZE_BITMAP_CAR_Y (10)
 #define CAR_HIT_RANGE_Y (8)
-#define LANE_Y {2, 12, 22, 32, 42}
+#define LANE_Y            \
+	{                     \
+		2, 12, 22, 32, 42 \
+	}
 
 typedef struct
 {
-    bool visible;
-    bool running;
-    uint8_t x, y;
-    uint8_t lane;
-    uint8_t action_image;
+	bool visible;
+	bool running;
+	uint8_t x, y;
+	uint8_t lane;
+	uint8_t action_image;
 } zw_game_car_t;
 
 extern zw_game_car_t car[NUM_LANES];

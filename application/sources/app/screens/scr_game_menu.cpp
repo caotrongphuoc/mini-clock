@@ -10,10 +10,10 @@ static uint8_t shoot_tick_counter;
 static uint8_t current_location = 0;
 
 static char items_name[NUMBER_ITEMS][30] = {
-	"<<   Play   >>",
-	"<<  Setting >>",
-	"<<   Rank   >>",
-	"<<   Exit   >>",
+    "<<   Play   >>",
+    "<<  Setting >>",
+    "<<   Rank   >>",
+    "<<   Exit   >>",
 };
 
 /*****************************************************************************/
@@ -23,16 +23,16 @@ static char items_name[NUMBER_ITEMS][30] = {
 static void view_scr_game_menu();
 
 view_dynamic_t dyn_view_game_menu = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_menu};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_menu};
 
 view_screen_t scr_game_menu = {
-	&dyn_view_game_menu,
-	ITEM_NULL,
-	ITEM_NULL,
-	.focus_item = 0,
+    &dyn_view_game_menu,
+    ITEM_NULL,
+    ITEM_NULL,
+    .focus_item = 0,
 };
 
 void view_scr_game_menu()
@@ -62,7 +62,7 @@ void view_scr_game_menu()
 /* Handle - Game menu */
 /*****************************************************************************/
 
-void scr_game_menu_handle(ak_msg_t *msg)
+void scr_game_menu_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{
@@ -75,9 +75,9 @@ void scr_game_menu_handle(ak_msg_t *msg)
 		task_post_pure_msg(ZW_GAME_ZOMBIE_ID, ZW_GAME_ZOMBIE_SETUP_MENU);
 		task_post_pure_msg(ZW_GAME_BANG_ID, ZW_GAME_BANG_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
-				  ZW_GAME_TIME_TICK,
-				  ZW_GAME_TIME_TICK_INTERVAL,
-				  TIMER_PERIODIC);
+		          ZW_GAME_TIME_TICK,
+		          ZW_GAME_TIME_TICK_INTERVAL,
+		          TIMER_PERIODIC);
 	}
 	break;
 

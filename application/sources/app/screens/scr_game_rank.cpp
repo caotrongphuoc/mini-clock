@@ -24,17 +24,17 @@ static uint8_t spider_state;
 static void view_scr_game_rank();
 
 view_dynamic_t dyn_view_item_game_rank = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_rank};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_rank};
 
 view_screen_t scr_game_rank = {
-	&dyn_view_item_game_rank,
-	ITEM_NULL,
-	ITEM_NULL,
+    &dyn_view_item_game_rank,
+    ITEM_NULL,
+    ITEM_NULL,
 
-	.focus_item = 0,
+    .focus_item = 0,
 };
 
 void view_scr_game_rank()
@@ -139,7 +139,7 @@ void view_scr_game_rank()
 /* Handle - Game rank */
 /*****************************************************************************/
 
-void scr_game_rank_handle(ak_msg_t *msg)
+void scr_game_rank_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{
@@ -158,9 +158,9 @@ void scr_game_rank_handle(ak_msg_t *msg)
 		}
 		spider_state = 0;
 		timer_set(AC_TASK_DISPLAY_ID,
-				  AC_DISPLAY_SPIDER_UPDATE,
-				  AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
-				  TIMER_ONE_SHOT);
+		          AC_DISPLAY_SPIDER_UPDATE,
+		          AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
+		          TIMER_ONE_SHOT);
 		BUZZER_PlaySound(BUZZER_SOUND_HIGHSCORE);
 	}
 	break;
@@ -212,9 +212,9 @@ void scr_game_rank_handle(ak_msg_t *msg)
 		view_render_screen(&scr_game_rank);
 
 		timer_set(AC_TASK_DISPLAY_ID,
-				  AC_DISPLAY_SPIDER_UPDATE,
-				  AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
-				  TIMER_ONE_SHOT);
+		          AC_DISPLAY_SPIDER_UPDATE,
+		          AC_DISPLAY_SPIDER_UPDATE_INTERVAL,
+		          TIMER_ONE_SHOT);
 
 		SCREEN_NONE_UPDATE_MASK();
 	}

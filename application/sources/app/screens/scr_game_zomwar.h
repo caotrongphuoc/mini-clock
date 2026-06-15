@@ -33,13 +33,13 @@
 #include "zw_game_bang.h"
 #include "zw_game_border.h"
 
-#define GAME_OFF (0) 
-#define GAME_PLAY (1) 
+#define GAME_OFF (0)
+#define GAME_PLAY (1)
 #define GAME_OVER (2)
 
 extern view_dynamic_t dyn_view_zomwar;
 extern view_screen_t scr_game_zomwar;
-extern void scr_game_zomwar_handle(ak_msg_t *msg);
+extern void scr_game_zomwar_handle(ak_msg_t* msg);
 
 extern zw_game_setting_t settingsetup;
 

@@ -13,17 +13,17 @@ static uint8_t car_pos_location_chosse;
 static void view_scr_game_setting_car();
 
 view_dynamic_t dyn_view_game_setting_car = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_setting_car};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_setting_car};
 
 view_screen_t scr_game_setting_car = {
-	&dyn_view_game_setting_car,
-	ITEM_NULL,
-	ITEM_NULL,
+    &dyn_view_game_setting_car,
+    ITEM_NULL,
+    ITEM_NULL,
 
-	.focus_item = 0,
+    .focus_item = 0,
 };
 
 static void view_scr_game_setting_car()
@@ -41,14 +41,14 @@ static void view_scr_game_setting_car()
 		if (selected)
 		{
 			view_render.fillRoundRect(CAR_POS_FRAMES_AXIS_X, frame_y,
-									  CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
-									  CAR_POS_FRAMES_SIZE_R, WHITE);
+			                          CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
+			                          CAR_POS_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
 			view_render.drawRoundRect(CAR_POS_FRAMES_AXIS_X, frame_y,
-									  CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
-									  CAR_POS_FRAMES_SIZE_R, WHITE);
+			                          CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
+			                          CAR_POS_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
@@ -79,7 +79,7 @@ static void view_scr_game_setting_car()
 /* Handle - Game setting car */
 /*****************************************************************************/
 
-void scr_game_setting_car_handle(ak_msg_t *msg)
+void scr_game_setting_car_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{

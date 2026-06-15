@@ -28,23 +28,23 @@
 #define SIZE_BITMAP_ZOMBIES_X (25)
 #define SIZE_BITMAP_ZOMBIES_Y (10)
 #define ZOMBIE_MIN_LEFT_OFFSET (6)
-#define ZOMBIE_HITBOX_LEFT_OFFSET  (12)
+#define ZOMBIE_HITBOX_LEFT_OFFSET (12)
 #define ZOMBIE_HITBOX_RIGHT_OFFSET (22)
-#define ZOMBIE_HITBOX_TOP_OFFSET   (1)
+#define ZOMBIE_HITBOX_TOP_OFFSET (1)
 #define ZOMBIE_HITBOX_BOTTOM_OFFSET (9)
 #define ZOMBIE_Y_MIN (2)
 #define ZOMBIE_Y_MAX (42)
 
 typedef struct
 {
-    int16_t x;
-    uint8_t y;
-    int8_t dy;
-    uint8_t zigzag_timer;
-    uint8_t action_image;
-    bool visible;
-    bool rising;
-    uint8_t rise_ticks;
+	int16_t x;
+	uint8_t y;
+	int8_t dy;
+	uint8_t zigzag_timer;
+	uint8_t action_image;
+	bool visible;
+	bool rising;
+	uint8_t rise_ticks;
 } zw_game_zombie_t;
 
 extern zw_game_zombie_t zombie[NUM_ZOMBIES];

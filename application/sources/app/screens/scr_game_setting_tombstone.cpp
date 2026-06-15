@@ -13,17 +13,17 @@ static uint8_t tb_count_location_chosse;
 static void view_scr_game_setting_tombstone();
 
 view_dynamic_t dyn_view_game_setting_tombstone = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_setting_tombstone};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_setting_tombstone};
 
 view_screen_t scr_game_setting_tombstone = {
-	&dyn_view_game_setting_tombstone,
-	ITEM_NULL,
-	ITEM_NULL,
+    &dyn_view_game_setting_tombstone,
+    ITEM_NULL,
+    ITEM_NULL,
 
-	.focus_item = 0,
+    .focus_item = 0,
 };
 
 static uint8_t get_lane_count(uint8_t i)
@@ -51,14 +51,14 @@ static void view_scr_game_setting_tombstone()
 		if (selected)
 		{
 			view_render.fillRoundRect(TB_COUNT_FRAMES_AXIS_X, frame_y,
-									  TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
-									  TB_COUNT_FRAMES_SIZE_R, WHITE);
+			                          TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
+			                          TB_COUNT_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
 			view_render.drawRoundRect(TB_COUNT_FRAMES_AXIS_X, frame_y,
-									  TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
-									  TB_COUNT_FRAMES_SIZE_R, WHITE);
+			                          TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
+			                          TB_COUNT_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
@@ -88,7 +88,7 @@ static void view_scr_game_setting_tombstone()
 /* Handle - Tombstone count per lane */
 /*****************************************************************************/
 
-void scr_game_setting_tombstone_handle(ak_msg_t *msg)
+void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{

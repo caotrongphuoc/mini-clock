@@ -13,17 +13,17 @@ static uint8_t setting_location_chosse;
 static void view_scr_game_setting();
 
 view_dynamic_t dyn_view_item_game_setting = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_setting};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_setting};
 
 view_screen_t scr_game_setting = {
-	&dyn_view_item_game_setting,
-	ITEM_NULL,
-	ITEM_NULL,
+    &dyn_view_item_game_setting,
+    ITEM_NULL,
+    ITEM_NULL,
 
-	.focus_item = 0,
+    .focus_item = 0,
 };
 
 void view_scr_game_setting()
@@ -41,16 +41,16 @@ void view_scr_game_setting()
 		if (selected)
 		{
 			view_render.fillRoundRect(
-				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-				ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
+			    ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
+			    ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
 			view_render.drawRoundRect(
-				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-				ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
+			    ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
+			    ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
@@ -120,7 +120,7 @@ void view_scr_game_setting()
 /* Handle - Game setting */
 /*****************************************************************************/
 
-void scr_game_setting_handle(ak_msg_t *msg)
+void scr_game_setting_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{

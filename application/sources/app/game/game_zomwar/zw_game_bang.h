@@ -24,9 +24,9 @@
 
 typedef struct
 {
-    uint8_t x, y;
-    uint8_t action_image;
-    bool visible;
+	uint8_t x, y;
+	uint8_t action_image;
+	bool visible;
 } zw_game_bang_t;
 
 extern zw_game_bang_t bang[NUM_BANG];

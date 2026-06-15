@@ -34,6 +34,6 @@
 
 extern view_dynamic_t dyn_view_game_setting_car;
 extern view_screen_t scr_game_setting_car;
-extern void scr_game_setting_car_handle(ak_msg_t *msg);
+extern void scr_game_setting_car_handle(ak_msg_t* msg);
 
 #endif //__SCR_GAME_SETTING_CAR_H__
