@@ -51,7 +51,7 @@ extern zw_game_zombie_t zombie[NUM_ZOMBIE];
 extern uint8_t zw_game_zombie_speed;
 
 extern void zw_game_zombie_spawn(uint8_t i);
-extern void zw_game_zombie_spawn_rise(uint8_t i, int16_t x, uint8_t y);
+extern void zw_game_zombie_spawn_from_tombstone(uint8_t i, int16_t x, uint8_t y);
 extern bool zw_game_zombie_check_hit(uint8_t b, uint8_t z);
 
 #endif //__ZW_GAME_ZOMBIE_H__

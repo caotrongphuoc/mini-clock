@@ -4,7 +4,7 @@
 zw_game_car_t car[NUM_LANE];
 const uint8_t lane_y[NUM_LANE] = LANE_Y;
 
-static int8_t find_nearest_car(uint8_t zy)
+static int8_t zw_game_car_find_nearest(uint8_t zy)
 {
 	int8_t best = -1;
 	uint8_t best_dist = CAR_HIT_RANGE_Y + 1;
@@ -24,7 +24,7 @@ static int8_t find_nearest_car(uint8_t zy)
 	return best;
 }
 
-static void zw_game_car_clear(uint8_t i)
+static void zw_game_car_reset_slot(uint8_t i)
 {
 	car[i].x = AXIS_X_CAR;
 	car[i].y = lane_y[i];
@@ -59,7 +59,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 		APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
 		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
-			zw_game_car_clear(i);
+			zw_game_car_reset_slot(i);
 			car[i].visible = (settingsetup.num_car >> i) & 1;
 		}
 	}
@@ -74,7 +74,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 				continue;
 			if (zombie[i].x <= -(int32_t)ZOMBIE_MIN_LEFT_OFFSET)
 			{
-				int8_t m = find_nearest_car(zombie[i].y);
+				int8_t m = zw_game_car_find_nearest(zombie[i].y);
 				if (m >= 0)
 				{
 					car[m].running = true;
@@ -86,7 +86,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 				continue;
 			}
 
-			int8_t m = find_nearest_car(zombie[i].y);
+			int8_t m = zw_game_car_find_nearest(zombie[i].y);
 			if (m >= 0 && zw_game_car_check_hit((uint8_t)m, i))
 			{
 				car[m].running = true;
@@ -137,7 +137,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 		APP_DBG_SIG("ZW_GAME_CAR_RESET\n");
 		for (uint8_t i = 0; i < NUM_LANE; i++)
 		{
-			zw_game_car_clear(i);
+			zw_game_car_reset_slot(i);
 			car[i].visible = false;
 		}
 	}

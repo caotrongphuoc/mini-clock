@@ -2,7 +2,7 @@
 
 zw_game_bang_t bang[NUM_BANG];
 
-void zw_game_bang_clear()
+void zw_game_bang_reset_all()
 {
 	for (uint8_t i = 0; i < NUM_BANG; i++)
 	{
@@ -32,7 +32,7 @@ void zw_game_bang_handle(ak_msg_t* msg)
 	case ZW_GAME_BANG_SETUP:
 	{
 		APP_DBG_SIG("ZW_GAME_BANG_SETUP\n");
-		zw_game_bang_clear();
+		zw_game_bang_reset_all();
 	}
 	break;
 
@@ -60,7 +60,7 @@ void zw_game_bang_handle(ak_msg_t* msg)
 	case ZW_GAME_BANG_RESET:
 	{
 		APP_DBG_SIG("ZW_GAME_BANG_RESET\n");
-		zw_game_bang_clear();
+		zw_game_bang_reset_all();
 	}
 	break;
 

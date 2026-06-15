@@ -16,7 +16,7 @@ void zw_game_zombie_spawn(uint8_t i)
 	zombie[i].rise_ticks = 0;
 }
 
-void zw_game_zombie_spawn_rise(uint8_t i, int16_t x, uint8_t y)
+void zw_game_zombie_spawn_from_tombstone(uint8_t i, int16_t x, uint8_t y)
 {
 	zombie[i].x = x;
 	zombie[i].y = y;

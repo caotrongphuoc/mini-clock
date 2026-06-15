@@ -44,7 +44,7 @@ void zw_game_tombstone_handle(ak_msg_t* msg)
 				continue;
 			int16_t x = tombstone[tidx].x;
 			uint8_t y = lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y;
-			zw_game_zombie_spawn_rise(i, x, y);
+			zw_game_zombie_spawn_from_tombstone(i, x, y);
 			break;
 		}
 	}
