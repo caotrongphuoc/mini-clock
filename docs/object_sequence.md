@@ -55,7 +55,7 @@ Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SE
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_car_sequence.png" alt="Gunner game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_car_sequence.png" alt="Car game sequence logic" width="720"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 4:</em></strong> Car sequence logic</p>
