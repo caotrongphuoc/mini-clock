@@ -7,14 +7,14 @@ static const int8_t lane_y[NUM_LANES] = LANE_Y;
 static int8_t find_nearest_car(uint8_t zy)
 {
     int8_t best = -1;
-    int32_t best_dist = CAR_HIT_RANGE_Y + 1;
+    uint8_t best_dist = CAR_HIT_RANGE_Y + 1;
     for (uint8_t i = 0; i < NUM_LANES; i++)
     {
         if (!car[i].visible || car[i].running)
             continue;
-        int32_t dist = (int32_t)zy - (int32_t)car[i].y;
-        if (dist < 0)
-            dist = -dist;
+        uint8_t dist = (zy > car[i].y) ? (zy - car[i].y) : (car[i].y - zy);
+        if (dist > CAR_HIT_RANGE_Y) 
+            continue;
         if (dist < best_dist)
         {
             best_dist = dist;
@@ -22,6 +22,15 @@ static int8_t find_nearest_car(uint8_t zy)
         }
     }
     return best;
+}
+
+static void zw_game_car_clear(uint8_t i)
+{
+    car[i].x = AXIS_X_CAR;
+    car[i].y = lane_y[i];
+    car[i].lane = i;
+    car[i].running = false;
+    car[i].action_image = 1;
 }
 
 bool zw_game_car_check_hit(uint8_t c, uint8_t z)
@@ -41,12 +50,8 @@ void zw_game_car_handle(ak_msg_t *msg)
         APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
         for (uint8_t i = 0; i < NUM_LANES; i++)
         {
-            car[i].x = AXIS_X_CAR;
-            car[i].y = lane_y[i];
-            car[i].lane = i;
+            zw_game_car_clear(i);
             car[i].visible = (settingsetup.num_car >> i) & 1;
-            car[i].running = false;
-            car[i].action_image = 1;
         }
     }
     break;
@@ -69,12 +74,10 @@ void zw_game_car_handle(ak_msg_t *msg)
                 continue;
             }
 
-            for (uint8_t m = 0; m < NUM_LANES; m++)
+            int8_t m = find_nearest_car(zombie[i].y);
+            if (m >= 0 && zw_game_car_check_hit((uint8_t)m, i))
             {
-                if (!car[m].visible || car[m].running)
-                    continue;
-                if (zw_game_car_check_hit(m, i))
-                    car[m].running = true;
+                car[m].running = true;
             }
         }
 
@@ -122,10 +125,9 @@ void zw_game_car_handle(ak_msg_t *msg)
         APP_DBG_SIG("ZW_GAME_CAR_RESET\n");
         for (uint8_t i = 0; i < NUM_LANES; i++)
         {
-            car[i].x = AXIS_X_CAR;
-            car[i].y = lane_y[i];
+            zw_game_car_clear(i);
             car[i].visible = false;
-            car[i].running = false;
+  
         }
     }
     break;

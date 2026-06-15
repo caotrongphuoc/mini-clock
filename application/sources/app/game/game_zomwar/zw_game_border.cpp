@@ -1,5 +1,11 @@
 #include "zw_game_border.h"
 
+uint16_t zw_game_score = 0;
+uint16_t wave_last_score = 0;
+uint8_t wave_warning_timer = 0;
+uint8_t wave_level = 0;
+bool wave_warning_active = false;
+
 static void zw_game_border_clear()
 {
     zw_game_score = 0;
@@ -57,7 +63,8 @@ void zw_game_border_handle(ak_msg_t *msg)
     case ZW_GAME_LEVEL_UP:
     {
         APP_DBG_SIG("ZW_GAME_LEVEL_UP\n");
-        if (!wave_warning_active) break;
+        if (!wave_warning_active)
+            break;
         if (wave_warning_timer > 0)
         {
             wave_warning_timer--;
