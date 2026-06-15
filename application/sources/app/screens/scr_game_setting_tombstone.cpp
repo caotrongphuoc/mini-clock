@@ -106,13 +106,13 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 		if (tb_count_location_choose < TB_COUNT_NUM_LANES)
 		{
 			uint8_t idx = tb_count_location_choose;
-			/* Cycle so bia mo: 0 -> 1 -> 2 -> 0 */
+			/* Cycle tombstone count: 0 -> 1 -> 2 -> 0 */
 			uint8_t cur = get_lane_count(idx);
 			cur = (cur + 1) % 3;
-			/* Clear ca 2 bit cua lane nay */
+			/* Clear both bits of this lane */
 			settingdata.tombstone_lane_1 &= ~(1 << idx);
 			settingdata.tombstone_lane_2 &= ~(1 << idx);
-			/* Set theo gia tri moi */
+			/* Set bits to new value */
 			if (cur >= 1)
 				settingdata.tombstone_lane_1 |= (1 << idx);
 			if (cur == 2)
@@ -121,7 +121,7 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 		}
 		else
 		{
-			/* EXIT: luu EEPROM va ve settings */
+			/* EXIT: save EEPROM and return to settings */
 			zw_game_setting_write(&settingdata);
 			SCREEN_TRAN(scr_game_setting_handle, &scr_game_setting);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);

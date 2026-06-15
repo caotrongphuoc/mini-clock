@@ -117,7 +117,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 		for (uint8_t i = 0; i < NUM_ZOMBIES && alive < NUM_ZOMBIES_INIT; i++)
 		{
 			if (zombie[i].visible == WHITE)
-				continue; // slot dang dung
+				continue; // slot in use
 			zw_game_zombie_spawn(i);
 			alive++;
 		}
