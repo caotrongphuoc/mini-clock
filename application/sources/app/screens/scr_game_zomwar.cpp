@@ -208,7 +208,6 @@ void view_scr_game_zomwar()
 		view_render.drawBitmap(85, 8, bitmap_branch_right, 50, 17, WHITE);
 		view_render.drawBitmap(0, 0, bitmap_grass, 64, 64, WHITE);
 		view_render.drawBitmap(64, 0, bitmap_grass, 64, 64, WHITE);
-		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
 	}
 }
 
@@ -279,6 +278,7 @@ void scr_game_zomwar_handle(ak_msg_t *msg)
 		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_RESET);
 		gamescore.score_now = zw_game_score;
 		zw_game_state = GAME_OVER;
+		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
 		timer_set(AC_TASK_DISPLAY_ID,
 				  ZW_GAME_EXIT_GAME,
 				  ZW_GAME_TIME_EXIT_INTERVAL,
