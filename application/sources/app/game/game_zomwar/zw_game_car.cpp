@@ -13,7 +13,7 @@ static int8_t find_nearest_car(uint8_t zy)
         if (!car[i].visible || car[i].running)
             continue;
         uint8_t dist = (zy > car[i].y) ? (zy - car[i].y) : (car[i].y - zy);
-        if (dist > CAR_HIT_RANGE_Y) 
+        if (dist > CAR_HIT_RANGE_Y)
             continue;
         if (dist < best_dist)
         {
@@ -35,10 +35,19 @@ static void zw_game_car_clear(uint8_t i)
 
 bool zw_game_car_check_hit(uint8_t c, uint8_t z)
 {
-    int32_t dy = (int32_t)zombie[z].y - (int32_t)car[c].y;
-    if (dy < 0) dy = -dy;
+    int16_t dy = (int16_t)zombie[z].y - (int16_t)car[c].y;
+    if (dy < 0)
+        dy = -dy;
+
+    int16_t car_left = car[c].x;
+    int16_t car_right = car_left + SIZE_BITMAP_CAR_X;
+
+    int16_t zombie_left = zombie[z].x + ZOMBIE_MIN_LEFT_OFFSET;
+    int16_t zombie_right = zombie[z].x + SIZE_BITMAP_ZOMBIES_X;
+
     return (dy <= CAR_HIT_RANGE_Y) &&
-           (zombie[z].x + (int32_t)ZOMBIE_MIN_LEFT_OFFSET <= (int32_t)(car[c].x + SIZE_BITMAP_CAR_X));
+           (car_right > zombie_left) &&
+           (car_left < zombie_right);
 }
 
 void zw_game_car_handle(ak_msg_t *msg)
