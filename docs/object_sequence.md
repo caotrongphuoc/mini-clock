@@ -22,7 +22,7 @@ Gunner owns the player position. The screen task initializes the Gunner object w
 
 <table align="center">
   <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="720"/></td>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="800"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
