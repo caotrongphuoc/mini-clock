@@ -208,7 +208,16 @@ sequenceDiagram
 
 ## V. Car Object Sequence
 
-Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SETUP` it parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_CAR_RUN` then `ZW_GAME_CAR_HIT`. In `RUN`, the task walks `zombie[]`: a visible zombie that reaches the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`) wakes the nearest non-running car within `CAR_HIT_RANGE_Y` via `zw_game_car_find_nearest()` — that car starts running, `zw_game_bang_spawn()` plays, `zw_game_score += 10`, `BUZZER_SOUND_BANG` is played, and the zombie is hidden; a zombie still on screen whose nearest car overlaps it (`zw_game_car_check_hit`) wakes that car too. After the activation pass, every visible running car slides right by `CAR_SPEED`, cycles `action_image` through `1→2→3`, and despawns (`visible = false`, `running = false`) once `x > LCD_WIDTH`. In `HIT`, every visible running car walks `zombie[]` and for each overlap calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
+Car owns the lawnmower-style rescue cars (`car[NUM_LANE]`, one slot per lane).
+
+**Setup.** `ZW_GAME_CAR_SETUP` parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`.
+
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_CAR_RUN` then `ZW_GAME_CAR_HIT`.
+
+- `RUN` — first walks `zombie[]`: a visible zombie that reaches the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`) wakes the nearest non-running car within `CAR_HIT_RANGE_Y` via `zw_game_car_find_nearest()` — that car starts running, `zw_game_bang_spawn()` plays, `zw_game_score += 10`, `BUZZER_SOUND_BANG` is played, and the zombie is hidden; a zombie still on screen whose nearest car overlaps it (`zw_game_car_check_hit`) wakes that car too (kill deferred to `HIT`). After the activation pass, every visible running car slides right by `CAR_SPEED`, cycles `action_image` through `1→2→3`, and despawns (`visible = false`, `running = false`) once `x > LCD_WIDTH`.
+- `HIT` — every visible running car walks `zombie[]` and for each overlap calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie.
+
+**Reset.** `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
 
 ```mermaid
 sequenceDiagram
@@ -282,7 +291,16 @@ sequenceDiagram
 
 ## VI. Tombstone Object Sequence
 
-Tombstone owns the `tombstone[NUM_TOMBSTONE]` array (2 tombstones per lane: group 1 at `x = 65..84` and group 2 at `x = 90..109`). On `ZW_GAME_TOMBSTONE_SETUP` it arms `tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL` and, for each lane, sets `active` from the i-th bit of `settingsetup.tombstone_lane_1` (group 1) and `settingsetup.tombstone_lane_2` (group 2). Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_TOMBSTONE_SPAWN`: while `tombstone_spawn_timer > 0` the task just decrements it and returns; once it reaches `0` the timer is rearmed and a random index `tidx = rand() % NUM_TOMBSTONE` is rolled. If `tombstone[tidx].active` is false the tick is skipped; otherwise it walks `zombie[]` to find the first hidden slot and calls `zw_game_zombie_spawn_from_tombstone(i, tombstone[tidx].x, lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y)`, which starts a zombie rising out of the tombstone over `ZOMBIE_RISE_TICKS` frames. `ZW_GAME_TOMBSTONE_RESET` clears the timer and zeros every slot (`x = 0`, `lane = 0`, `active = false`).
+Tombstone owns the `tombstone[NUM_TOMBSTONE]` array — 2 tombstones per lane (group 1 at `x = 65..84`, group 2 at `x = 90..109`).
+
+**Setup.** `ZW_GAME_TOMBSTONE_SETUP` arms `tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL` and, for each lane, sets `active` from the i-th bit of `settingsetup.tombstone_lane_1` (group 1) and `settingsetup.tombstone_lane_2` (group 2).
+
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_TOMBSTONE_SPAWN`.
+
+- While `tombstone_spawn_timer > 0` the task just decrements it and returns.
+- Once it reaches `0` the timer is rearmed and a random index `tidx = rand() % NUM_TOMBSTONE` is rolled. If `tombstone[tidx].active` is false the tick is skipped; otherwise it walks `zombie[]` to find the first hidden slot and calls `zw_game_zombie_spawn_from_tombstone(i, tombstone[tidx].x, lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y)`, which starts a zombie rising out of the tombstone over `ZOMBIE_RISE_TICKS` frames.
+
+**Reset.** `ZW_GAME_TOMBSTONE_RESET` clears the timer and zeros every slot (`x = 0`, `lane = 0`, `active = false`).
 
 ```mermaid
 sequenceDiagram
@@ -333,7 +351,15 @@ sequenceDiagram
 
 ## VII. Bang Object Sequence
 
-Bang owns the `bang[NUM_BANG]` array of short-lived explosion sprites that play whenever a zombie is killed. It exposes no spawn signal: instead, the Zombie task (on a bullet hit, `zw_game_zombie.cpp`) and the Car task (on car activation at the screen edge, and on a running car overlapping a zombie, `zw_game_car.cpp`) call `zw_game_bang_spawn(x, y)` directly, which walks `bang[]`, picks the first slot whose `visible != WHITE`, and writes `visible = WHITE`, `x = max(x + 5, 0)`, `y = max(y - 2, 0)`, `action_image = 1` — the small `(+5, -2)` offset centers the explosion bitmap over the zombie hit point. On `ZW_GAME_BANG_SETUP` the task calls `zw_game_bang_reset_all()`, clearing every slot to `visible = BLACK`, `action_image = 1`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_BANG_UPDATE`: for every visible slot, if `action_image >= 3` the slot is retired (`action_image = 1`, `visible = BLACK`); otherwise `action_image` is incremented, so each explosion plays frames `1 → 2 → 3` over three ticks (~300 ms at the 100 ms tick interval) before its slot becomes free for the next hit. `ZW_GAME_BANG_RESET` runs the same `zw_game_bang_reset_all()` as setup.
+Bang owns the `bang[NUM_BANG]` array of short-lived explosion sprites that play whenever a zombie is killed. It exposes no spawn signal — Zombie (on a bullet hit, `zw_game_zombie.cpp`) and Car (on car activation at the screen edge and on a running car overlapping a zombie, `zw_game_car.cpp`) call `zw_game_bang_spawn(x, y)` directly.
+
+**Setup.** `ZW_GAME_BANG_SETUP` calls `zw_game_bang_reset_all()`, clearing every slot to `visible = BLACK`, `action_image = 1`.
+
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_BANG_UPDATE`: for every visible slot, if `action_image >= 3` the slot is retired (`action_image = 1`, `visible = BLACK`); otherwise `action_image` is incremented. Each explosion plays frames `1 → 2 → 3` over three ticks (~300 ms at the 100 ms tick interval) before its slot becomes free for the next hit.
+
+**Cross-task.** `zw_game_bang_spawn(x, y)` walks `bang[]`, picks the first slot whose `visible != WHITE`, and writes `visible = WHITE`, `x = max(x + 5, 0)`, `y = max(y - 2, 0)`, `action_image = 1` — the small `(+5, -2)` offset centers the explosion bitmap over the zombie hit point.
+
+**Reset.** `ZW_GAME_BANG_RESET` runs the same `zw_game_bang_reset_all()` as setup.
 
 ```mermaid
 sequenceDiagram
