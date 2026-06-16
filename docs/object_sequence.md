@@ -276,11 +276,51 @@ sequenceDiagram
 
 Tombstone owns the `tombstone[NUM_TOMBSTONE]` array (2 tombstones per lane: group 1 at `x = 65..84` and group 2 at `x = 90..109`). On `ZW_GAME_TOMBSTONE_SETUP` it arms `tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL` and, for each lane, sets `active` from the i-th bit of `settingsetup.tombstone_lane_1` (group 1) and `settingsetup.tombstone_lane_2` (group 2). Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_TOMBSTONE_SPAWN`: while `tombstone_spawn_timer > 0` the task just decrements it and returns; once it reaches `0` the timer is rearmed and a random index `tidx = rand() % NUM_TOMBSTONE` is rolled. If `tombstone[tidx].active` is false the tick is skipped; otherwise it walks `zombie[]` to find the first hidden slot and calls `zw_game_zombie_spawn_from_tombstone(i, tombstone[tidx].x, lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y)`, which starts a zombie rising out of the tombstone over `ZOMBIE_RISE_TICKS` frames. `ZW_GAME_TOMBSTONE_RESET` clears the timer and zeros every slot (`x = 0`, `lane = 0`, `active = false`).
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_tombstone_sequence.png" alt="Tombstone game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Scr as Screen task
+    participant Tmb as Tombstone task
+    participant Zmb as Zombie task
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Tmb: ZW_GAME_TOMBSTONE_SETUP
+    activate Tmb
+    Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>for each lane l (0..NUM_LANE-1):<br/>  slot l (group 1): x=rand(65..84), lane=l, active=bit l of tombstone_lane_1<br/>  slot l+NUM_LANE (group 2): x=rand(90..109), lane=l, active=bit l of tombstone_lane_2
+    deactivate Tmb
+    Note over Scr: arm 100 ms periodic tick
+
+    loop Each ZW_GAME_TIME_TICK
+        Scr-)Tmb: ZW_GAME_TOMBSTONE_SPAWN
+        activate Tmb
+        alt tombstone_spawn_timer > 0
+            Note right of Tmb: tombstone_spawn_timer--<br/>return early
+        else timer reached 0
+            Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>tidx = rand() mod NUM_TOMBSTONE
+            alt tombstone[tidx].active == false
+                Note right of Tmb: return early
+            else active
+                loop scan zombie[] for first hidden slot i
+                    opt zombie[i].visible != WHITE
+                        Note right of Tmb: x = tombstone[tidx].x<br/>y = lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y
+                        Tmb->>+Zmb: zw_game_zombie_spawn_from_tombstone(i, x, y)
+                        Note right of Zmb: slot i: visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
+                        Zmb-->>-Tmb: 
+                        Note right of Tmb: break loop
+                    end
+                end
+            end
+        end
+        deactivate Tmb
+    end
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Tmb: ZW_GAME_TOMBSTONE_RESET
+    activate Tmb
+    Note right of Tmb: tombstone_spawn_timer = 0<br/>for each slot: x=0, lane=0, active=false
+    deactivate Tmb
+```
+
 <p align="center"><strong><em>Figure 5:</em></strong> Tombstone sequence logic</p>
 
 ## VII. Bang Object Sequence
