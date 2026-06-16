@@ -8,7 +8,7 @@
 ## Gameplay Demo
 
 <div align="center">
-    <video src="https://github.com/caotrongphuoc/zomwar-game/blob/main/resources/scr_game_zomwar.mp4" controls height="200"></video>
+    <video src="[https://github.com/caotrongphuoc/zomwar-game/blob/main/resources/scr_game_zomwar.mp4](https://private-user-images.githubusercontent.com/209569968/608662181-2b41db55-9b9e-45f2-919c-02f1d54f0602.mp4?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODE2MjQxNzksIm5iZiI6MTc4MTYyMzg3OSwicGF0aCI6Ii8yMDk1Njk5NjgvNjA4NjYyMTgxLTJiNDFkYjU1LTliOWUtNDVmMi05MTljLTAyZjFkNTRmMDYwMi5tcDQ_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwNjE2JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDYxNlQxNTMxMTlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lZmZkZDg5NjA2ZGUzMjcyZmJjZjYyMDlmZGM4NDZiMzkwNTUwODVmN2JjMjk2NGM4ODc4MWU3OTk1ZmU2ZDczJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9dmlkZW8lMkZtcDQifQ.gTJ5zAlpRYm2mhgKa2AvihAsR2w2UyZduntpgYThz90)" controls height="200"></video>
 </div>
 
 ## Documentation
