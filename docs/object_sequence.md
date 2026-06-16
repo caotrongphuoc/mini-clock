@@ -72,6 +72,24 @@ Tombstone owns the `tombstone[NUM_TOMBSTONE]` array (2 tombstones per lane: grou
 </table>
 <p align="center"><strong><em>Figure 5:</em></strong> Tombstone sequence logic</p>
 
+## VII. Bang Object Sequence
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_bang_sequence.png" alt="Tombstone game sequence logic" width="900"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 6:</em></strong> Bang sequence logic</p>
+
+## VIII. Border Object Sequence
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/sequence_object/zw_game_border_sequence.png" alt="Border game sequence logic" width="900"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Border sequence logic</p>
+
 ## IX. Per-Tick Signal Order
 
 The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME_TIME_TICK`:
