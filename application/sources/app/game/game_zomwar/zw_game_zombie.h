@@ -34,6 +34,10 @@
 #define ZOMBIE_HITBOX_BOTTOM_OFFSET (9)
 #define ZOMBIE_Y_MIN (2)
 #define ZOMBIE_Y_MAX (42)
+#define ZOMBIE_SPAWN_X_MIN (130)
+#define ZOMBIE_SPAWN_X_MAX (168)
+#define ZOMBIE_ZIGZAG_PERIOD_MIN (5)
+#define ZOMBIE_ZIGZAG_PERIOD_MAX (14)
 
 typedef struct
 {

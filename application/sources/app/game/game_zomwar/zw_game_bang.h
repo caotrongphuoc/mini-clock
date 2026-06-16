@@ -22,6 +22,10 @@
 #define SIZE_BITMAP_BANG_II_X (10)
 #define SIZE_BITMAP_BANG_II_Y (10)
 
+// Spawn offset to center bang sprite over hit point
+#define BANG_SPAWN_OFFSET_X (5)
+#define BANG_SPAWN_OFFSET_Y (2)
+
 typedef struct
 {
 	uint8_t x, y;

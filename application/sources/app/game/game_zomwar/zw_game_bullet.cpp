@@ -48,8 +48,8 @@ void zw_game_bullet_handle(ak_msg_t* msg)
 			if (bullet[i].visible == WHITE)
 				continue;
 			bullet[i].visible = WHITE;
-			bullet[i].x = gunner.x + 22;
-			bullet[i].y = gunner.y - 8;
+			bullet[i].x = gunner.x + BULLET_SPAWN_OFFSET_X;
+			bullet[i].y = gunner.y - BULLET_SPAWN_OFFSET_Y;
 			gunner.action_image = 2;
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;

@@ -29,7 +29,7 @@ void zw_game_border_handle(ak_msg_t* msg)
 	case ZW_GAME_CHECK_GAME_OVER:
 	{
 		APP_DBG_SIG("ZW_GAME_CHECK_GAME_OVER\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)																																																																																																																																																																																																																																																																																																																																																																																																																				
+		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;

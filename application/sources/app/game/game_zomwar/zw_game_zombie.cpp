@@ -6,12 +6,12 @@ uint8_t zw_game_zombie_speed;
 
 void zw_game_zombie_spawn(uint8_t i)
 {
-	zombie[i].x = (rand() % 39) + 130;
+	zombie[i].x = (rand() % (ZOMBIE_SPAWN_X_MAX - ZOMBIE_SPAWN_X_MIN + 1)) + ZOMBIE_SPAWN_X_MIN;
 	zombie[i].y = (rand() % (ZOMBIE_Y_MAX - ZOMBIE_Y_MIN + 1)) + ZOMBIE_Y_MIN;
 	zombie[i].visible = WHITE;
 	zombie[i].action_image = rand() % 3 + 1;
 	zombie[i].dy = 0;
-	zombie[i].zigzag_timer = rand() % 10 + 5;
+	zombie[i].zigzag_timer = rand() % (ZOMBIE_ZIGZAG_PERIOD_MAX - ZOMBIE_ZIGZAG_PERIOD_MIN + 1) + ZOMBIE_ZIGZAG_PERIOD_MIN;
 	zombie[i].rising = false;
 	zombie[i].rise_ticks = 0;
 }
@@ -74,7 +74,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 				else
 				{
 					zombie[i].rising = false;
-					zombie[i].zigzag_timer = rand() % 10 + 5;
+					zombie[i].zigzag_timer = rand() % (ZOMBIE_ZIGZAG_PERIOD_MAX - ZOMBIE_ZIGZAG_PERIOD_MIN + 1) + ZOMBIE_ZIGZAG_PERIOD_MIN;
 				}
 				zombie[i].action_image++;
 				if (zombie[i].action_image > 3)
@@ -96,7 +96,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			else
 			{
 				zombie[i].dy = (int8_t)(rand() % 3) - 1;
-				zombie[i].zigzag_timer = rand() % 10 + 5;
+				zombie[i].zigzag_timer = rand() % (ZOMBIE_ZIGZAG_PERIOD_MAX - ZOMBIE_ZIGZAG_PERIOD_MIN + 1) + ZOMBIE_ZIGZAG_PERIOD_MIN;
 			}
 			int16_t new_y = (int16_t)zombie[i].y + zombie[i].dy;
 			if (new_y < ZOMBIE_Y_MIN)

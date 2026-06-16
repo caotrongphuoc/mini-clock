@@ -23,6 +23,8 @@
 #define SIZE_BITMAP_BULLET_X (5)
 #define SIZE_BITMAP_BULLET_Y (5)
 #define STEP_BULLET_AXIS_X (3)
+#define BULLET_SPAWN_OFFSET_X (22)
+#define BULLET_SPAWN_OFFSET_Y (8)
 
 typedef struct
 {
