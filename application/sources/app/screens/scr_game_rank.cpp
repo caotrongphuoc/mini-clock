@@ -61,17 +61,17 @@ void view_scr_game_rank()
 	view_render.print("1st");
 	view_render.drawBitmap(50, 38, bitmap_tombstone_rank, 30, 22, WHITE);
 	view_render.setTextColor(BLACK);
-	if (gamescore.score_1st >= 0 && gamescore.score_1st < 10)
+	if (gamescore.score_1st < 10)
 	{
 		view_render.setCursor(62, 45);
 		view_render.print(gamescore.score_1st);
 	}
-	else if (gamescore.score_1st >= 10 && gamescore.score_1st < 100)
+	else if (gamescore.score_1st < 100)
 	{
 		view_render.setCursor(59, 45);
 		view_render.print(gamescore.score_1st);
 	}
-	else if (gamescore.score_1st >= 100 && gamescore.score_1st < 1000)
+	else if (gamescore.score_1st < 1000)
 	{
 		view_render.setCursor(56, 45);
 		view_render.print(gamescore.score_1st);
@@ -87,17 +87,17 @@ void view_scr_game_rank()
 	view_render.print("2nd");
 	view_render.drawBitmap(10, 40, bitmap_tombstone_rank, 30, 22, WHITE);
 	view_render.setTextColor(BLACK);
-	if (gamescore.score_2nd >= 0 && gamescore.score_2nd < 10)
+	if (gamescore.score_2nd < 10)
 	{
 		view_render.setCursor(22, 47);
 		view_render.print(gamescore.score_2nd);
 	}
-	else if (gamescore.score_2nd >= 10 && gamescore.score_2nd < 100)
+	else if (gamescore.score_2nd < 100)
 	{
 		view_render.setCursor(19, 47);
 		view_render.print(gamescore.score_2nd);
 	}
-	else if (gamescore.score_2nd >= 100 && gamescore.score_2nd < 1000)
+	else if (gamescore.score_2nd < 1000)
 	{
 		view_render.setCursor(16, 47);
 		view_render.print(gamescore.score_2nd);
@@ -113,17 +113,17 @@ void view_scr_game_rank()
 	view_render.print("3rd");
 	view_render.drawBitmap(90, 42, bitmap_tombstone_rank, 30, 22, WHITE);
 	view_render.setTextColor(BLACK);
-	if (gamescore.score_3rd >= 0 && gamescore.score_3rd < 10)
+	if (gamescore.score_3rd < 10)
 	{
 		view_render.setCursor(102, 49);
 		view_render.print(gamescore.score_3rd);
 	}
-	else if (gamescore.score_3rd >= 10 && gamescore.score_3rd < 100)
+	else if (gamescore.score_3rd < 100)
 	{
 		view_render.setCursor(99, 49);
 		view_render.print(gamescore.score_3rd);
 	}
-	else if (gamescore.score_3rd >= 100 && gamescore.score_3rd < 1000)
+	else if (gamescore.score_3rd < 1000)
 	{
 		view_render.setCursor(96, 49);
 		view_render.print(gamescore.score_3rd);

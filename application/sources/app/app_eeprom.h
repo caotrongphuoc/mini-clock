@@ -44,10 +44,10 @@ typedef struct
 /* score data */
 typedef struct
 {
-	uint32_t score_now; // last round score
-	uint32_t score_1st; // 1st place score
-	uint32_t score_2nd; // 2nd place score
-	uint32_t score_3rd; // 3rd place score
+	uint16_t score_now; // last round score
+	uint16_t score_1st; // 1st place score
+	uint16_t score_2nd; // 2nd place score
+	uint16_t score_3rd; // 3rd place score
 } zw_game_score_t;
 
 #ifdef __cplusplus
