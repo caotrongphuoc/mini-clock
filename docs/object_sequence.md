@@ -135,11 +135,67 @@ sequenceDiagram
 
 Zombie owns the horde state. On `ZW_GAME_ZOMBIE_SETUP` it reads `zw_game_zombie_speed` from `settingsetup.zombie_speed`, hides every slot in `zombie[]`, then spawns the first `NUM_ZOMBIE_INIT` zombies at random `(x, y)` inside the right margin (x in `130..168`, y in `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX`). On every `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_ZOMBIE_RUN` followed by `ZW_GAME_ZOMBIE_DETONATOR`. In `RUN`, each visible zombie either rises one pixel up (when it was spawned from a tombstone via `zw_game_zombie_spawn_from_tombstone()` and `rise_ticks > 0`; when `rise_ticks` reaches zero, `rising` is cleared and `zigzag_timer` is re-rolled), or steps left by `zw_game_zombie_speed` (clamped at `-ZOMBIE_MIN_LEFT_OFFSET`), applies a vertical zigzag (`dy` re-rolled to `-1..+1` every `zigzag_timer` ticks, clamped to `ZOMBIE_Y_MIN..ZOMBIE_Y_MAX` and reset to `0` on clamp), and cycles `action_image` through frames `1→2→3`. After moving, the task tops the alive count back up to `NUM_ZOMBIE_INIT` by re-spawning hidden slots. In `DETONATOR`, for every visible non-rising zombie it walks `bullet[]`, calls `zw_game_zombie_check_hit()`, and on a hit hides the bullet (`visible = BLACK`, `x = 0`), calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_ZOMBIE_WAVE_SPAWN` (posted from the Border task on level-up) increments `zw_game_zombie_speed` up to `ZOMBIE_SPEED_MAX` and respawns up to `ZOMBIE_WAVE_SPAWN` hidden slots. `ZW_GAME_ZOMBIE_RESET` hides every slot.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_zombie_sequence.png" alt="Zombie game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Scr as Screen task
+    participant Bdr as Border task
+    participant Tmb as Tombstone task
+    participant Zmb as Zombie task
+    participant Bz as Buzzer
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Zmb: ZW_GAME_ZOMBIE_SETUP
+    activate Zmb
+    Note right of Zmb: speed = settingsetup.zombie_speed<br/>hide all slots<br/>spawn NUM_ZOMBIE_INIT zombies at random (x, y)
+    deactivate Zmb
+    Note over Scr: arm 100 ms periodic tick
+
+    loop Each ZW_GAME_TIME_TICK
+        Scr-)Zmb: ZW_GAME_ZOMBIE_RUN
+        activate Zmb
+        loop for each visible zombie
+            alt zombie[i].rising
+                Note right of Zmb: y--, rise_ticks--<br/>if ticks==0 → rising=false, re-roll zigzag_timer<br/>cycle action_image 1→2→3
+            else moving left
+                Note right of Zmb: x -= speed (clamp ≥ -ZOMBIE_MIN_LEFT_OFFSET)<br/>y += dy (clamp [Y_MIN, Y_MAX]; dy=0 on clamp)<br/>if zigzag_timer==0 → re-roll dy ∈ {-1, 0, +1}<br/>cycle action_image 1→2→3
+            end
+        end
+        opt alive < NUM_ZOMBIE_INIT
+            Note right of Zmb: re-spawn hidden slots until count restored
+        end
+        deactivate Zmb
+
+        Scr-)Zmb: ZW_GAME_ZOMBIE_DETONATOR
+        activate Zmb
+        loop for each visible non-rising zombie × each visible bullet
+            opt zw_game_zombie_check_hit(b, z)
+                Note right of Zmb: hide bullet (visible=BLACK, x=0)<br/>zw_game_bang_spawn(z.x, z.y)<br/>zw_game_score += 10<br/>hide zombie (visible=BLACK)
+                Zmb->>+Bz: BUZZER_PlaySound(BANG)
+                Bz-->>-Zmb: 
+            end
+        end
+        deactivate Zmb
+    end
+
+    Note over Tmb: during Tombstone's ZW_GAME_TOMBSTONE_SPAWN tick
+    Tmb->>+Zmb: zw_game_zombie_spawn_from_tombstone(i, x, y)
+    Note right of Zmb: zombie[i]: visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
+    Zmb-->>-Tmb: 
+
+    Note over Bdr: during Border's ZW_GAME_LEVEL_UP
+    Bdr-)Zmb: ZW_GAME_ZOMBIE_WAVE_SPAWN
+    activate Zmb
+    Note right of Zmb: speed++ (cap ZOMBIE_SPEED_MAX)<br/>re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots
+    deactivate Zmb
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Zmb: ZW_GAME_ZOMBIE_RESET
+    activate Zmb
+    Note right of Zmb: hide all slots
+    deactivate Zmb
+```
+
 <p align="center"><strong><em>Figure 3:</em></strong> Zombie sequence logic</p>
 
 ## V. Car Object Sequence
