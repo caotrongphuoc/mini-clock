@@ -253,9 +253,9 @@ void scr_game_zomwar_handle(ak_msg_t* msg)
 		task_post_pure_msg(ZW_GAME_CAR_ID, ZW_GAME_CAR_RUN);
 		task_post_pure_msg(ZW_GAME_CAR_ID, ZW_GAME_CAR_HIT);
 		task_post_pure_msg(ZW_GAME_BANG_ID, ZW_GAME_BANG_UPDATE);
-		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_CHECK_GAME_OVER);
-		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_WAVE_CHECK);
-		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_LEVEL_UP);
+		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_CHECK_GAME_OVER);
+		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_CHECK_WAVE);
+		task_post_pure_msg(ZW_GAME_BORDER_ID, ZW_GAME_BORDER_LEVEL_UP);
 	}
 	break;
 

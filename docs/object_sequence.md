@@ -210,7 +210,7 @@ sequenceDiagram
     Note right of Zmb: target slot becomes visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
     Zmb-->>-Tmb: 
 
-    Note over Bdr: during Border's ZW_GAME_LEVEL_UP
+    Note over Bdr: during Border's ZW_GAME_BORDER_LEVEL_UP
     Bdr-)Zmb: ZW_GAME_ZOMBIE_WAVE_SPAWN
     activate Zmb
     Note right of Zmb: speed++ (cap ZOMBIE_SPEED_MAX)<br/>re-spawn up to ZOMBIE_WAVE_SPAWN hidden slots
@@ -293,7 +293,7 @@ sequenceDiagram
         deactivate Car
     end
 
-    Note over Bdr: during Border's ZW_GAME_CHECK_GAME_OVER
+    Note over Bdr: during Border's ZW_GAME_BORDER_CHECK_GAME_OVER
     Bdr->>+Car: zw_game_car_find_nearest(zy)
     Note right of Car: walk car array, return index of<br/>nearest non-running visible car within CAR_HIT_RANGE_Y, else -1
     Car-->>-Bdr: idx
@@ -437,11 +437,11 @@ Border owns the game's progression state — `zw_game_score`, `wave_last_score`,
 
 **Setup.** `ZW_GAME_BORDER_SETUP` calls `zw_game_border_clear()`, zeroing the score, last-wave score, wave level, warning timer, and warning flag.
 
-**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts three Border signals in order: `ZW_GAME_CHECK_GAME_OVER`, `ZW_GAME_WAVE_CHECK`, then `ZW_GAME_LEVEL_UP`.
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts three Border signals in order: `ZW_GAME_BORDER_CHECK_GAME_OVER`, `ZW_GAME_BORDER_CHECK_WAVE`, then `ZW_GAME_BORDER_LEVEL_UP`.
 
-- `ZW_GAME_CHECK_GAME_OVER` — walks `zombie[]` and, for every visible zombie that has reached the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`), asks the Car task via `zw_game_car_find_nearest(zombie[i].y)` whether any rescue car is in range; if none is found for any such zombie, Border posts `ZW_GAME_RESET` to the screen task (`AC_TASK_DISPLAY_ID`) and stops scanning.
-- `ZW_GAME_WAVE_CHECK` — arms a new wave when the player crosses the next score threshold: if no warning is currently active and `zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL` (200), it sets `wave_warning_active = true` and loads `wave_warning_timer = WARNING_BLINK_DURATION` (30 ticks ≈ 3 s). The screen task uses that timer to blink the warning bitmap at `WARNING_BLINK_RATE` and to render `wave_level` (`scr_game_zomwar.cpp`).
-- `ZW_GAME_LEVEL_UP` — runs only while the warning is active: it counts down `wave_warning_timer` by one each tick and, once the timer hits zero, clears the warning, advances `wave_last_score` by `WAVE_SCORE_INTERVAL`, increments `wave_level`, and posts `ZW_GAME_ZOMBIE_WAVE_SPAWN` to the Zombie task so the next wave spawns and the zombie speed steps up.
+- `ZW_GAME_BORDER_CHECK_GAME_OVER` — walks `zombie[]` and, for every visible zombie that has reached the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`), asks the Car task via `zw_game_car_find_nearest(zombie[i].y)` whether any rescue car is in range; if none is found for any such zombie, Border posts `ZW_GAME_RESET` to the screen task (`AC_TASK_DISPLAY_ID`) and stops scanning.
+- `ZW_GAME_BORDER_CHECK_WAVE` — arms a new wave when the player crosses the next score threshold: if no warning is currently active and `zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL` (200), it sets `wave_warning_active = true` and loads `wave_warning_timer = WARNING_BLINK_DURATION` (30 ticks ≈ 3 s). The screen task uses that timer to blink the warning bitmap at `WARNING_BLINK_RATE` and to render `wave_level` (`scr_game_zomwar.cpp`).
+- `ZW_GAME_BORDER_LEVEL_UP` — runs only while the warning is active: it counts down `wave_warning_timer` by one each tick and, once the timer hits zero, clears the warning, advances `wave_last_score` by `WAVE_SCORE_INTERVAL`, increments `wave_level`, and posts `ZW_GAME_ZOMBIE_WAVE_SPAWN` to the Zombie task so the next wave spawns and the zombie speed steps up.
 
 **Reset.** `ZW_GAME_BORDER_RESET` runs the same `zw_game_border_clear()` as setup.
 
@@ -463,7 +463,7 @@ sequenceDiagram
     loop Each ZW_GAME_TIME_TICK
         Note over Zmb,Car: During their own tick handlers,<br/>on bullet/car kill: zw_game_score += 10<br/>(shared global owned by Border)
 
-        Scr-)Bdr: ZW_GAME_CHECK_GAME_OVER
+        Scr-)Bdr: ZW_GAME_BORDER_CHECK_GAME_OVER
         activate Bdr
         loop i = 0 .. NUM_ZOMBIE-1
             alt zombie[i].visible == WHITE && zombie[i].x <= -ZOMBIE_MIN_LEFT_OFFSET
@@ -477,14 +477,14 @@ sequenceDiagram
         end
         deactivate Bdr
 
-        Scr-)Bdr: ZW_GAME_WAVE_CHECK
+        Scr-)Bdr: ZW_GAME_BORDER_CHECK_WAVE
         activate Bdr
         alt !wave_warning_active && zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL
             Note right of Bdr: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
         end
         deactivate Bdr
 
-        Scr-)Bdr: ZW_GAME_LEVEL_UP
+        Scr-)Bdr: ZW_GAME_BORDER_LEVEL_UP
         activate Bdr
         alt wave_warning_active
             alt wave_warning_timer > 0
@@ -519,9 +519,9 @@ The screen task `scr_game_zomwar` posts the following sequence on every `ZW_GAME
 7. `ZW_GAME_CAR_RUN`
 8. `ZW_GAME_CAR_HIT`
 9. `ZW_GAME_BANG_UPDATE`
-10. `ZW_GAME_CHECK_GAME_OVER`
-11. `ZW_GAME_WAVE_CHECK`
-12. `ZW_GAME_LEVEL_UP`
+10. `ZW_GAME_BORDER_CHECK_GAME_OVER`
+11. `ZW_GAME_BORDER_CHECK_WAVE`
+12. `ZW_GAME_BORDER_LEVEL_UP`
 
 On `SCREEN_ENTRY` the screen task posts the matching `*_SETUP` signals to all object tasks and starts the periodic `ZW_GAME_TIME_TICK` timer. On `ZW_GAME_RESET` it removes the timer, posts the `*_RESET` signals, saves `gamescore.score_now = zw_game_score`, transitions to `GAME_OVER`, plays `BUZZER_SOUND_GOODBYE`, and arms a one-shot `ZW_GAME_EXIT_GAME` timer.
 

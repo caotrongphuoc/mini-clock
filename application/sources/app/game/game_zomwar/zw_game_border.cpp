@@ -26,9 +26,9 @@ void zw_game_border_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case ZW_GAME_CHECK_GAME_OVER:
+	case ZW_GAME_BORDER_CHECK_GAME_OVER:
 	{
-		APP_DBG_SIG("ZW_GAME_CHECK_GAME_OVER\n");
+		APP_DBG_SIG("ZW_GAME_BORDER_CHECK_GAME_OVER\n");
 		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
 		{
 			if (zombie[i].visible != WHITE)
@@ -45,9 +45,9 @@ void zw_game_border_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case ZW_GAME_WAVE_CHECK:
+	case ZW_GAME_BORDER_CHECK_WAVE:
 	{
-		APP_DBG_SIG("ZW_GAME_WAVE_CHECK\n");
+		APP_DBG_SIG("ZW_GAME_BORDER_CHECK_WAVE\n");
 		if (!wave_warning_active &&
 		    zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL)
 		{
@@ -57,9 +57,9 @@ void zw_game_border_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case ZW_GAME_LEVEL_UP:
+	case ZW_GAME_BORDER_LEVEL_UP:
 	{
-		APP_DBG_SIG("ZW_GAME_LEVEL_UP\n");
+		APP_DBG_SIG("ZW_GAME_BORDER_LEVEL_UP\n");
 		if (!wave_warning_active)
 			break;
 		if (wave_warning_timer > 0)
