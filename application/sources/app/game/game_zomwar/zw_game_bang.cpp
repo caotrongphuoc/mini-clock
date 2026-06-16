@@ -13,14 +13,14 @@ void zw_game_bang_reset_all()
 
 void zw_game_bang_spawn(int16_t x, uint8_t y)
 {
-	for (uint8_t bk = 0; bk < NUM_BANG; bk++)
+	for (uint8_t i = 0; i < NUM_BANG; i++)
 	{
-		if (bang[bk].visible == WHITE)
+		if (bang[i].visible == WHITE)
 			continue;
-		bang[bk].visible = WHITE;
-		bang[bk].x = (x + BANG_SPAWN_OFFSET_X > 0) ? (uint8_t)(x + BANG_SPAWN_OFFSET_X) : 0;
-		bang[bk].y = (y >= BANG_SPAWN_OFFSET_Y) ? y - BANG_SPAWN_OFFSET_Y : 0;
-		bang[bk].action_image = 1;
+		bang[i].visible = WHITE;
+		bang[i].x = (x + BANG_SPAWN_OFFSET_X > 0) ? (uint8_t)(x + BANG_SPAWN_OFFSET_X) : 0;
+		bang[i].y = (y >= BANG_SPAWN_OFFSET_Y) ? y - BANG_SPAWN_OFFSET_Y : 0;
+		bang[i].action_image = 1;
 		break;
 	}
 }
