@@ -20,11 +20,59 @@ The screen task posts `ZW_GAME_TIME_TICK` every `ZW_GAME_TIME_TICK_INTERVAL` (10
 
 Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it (`AXIS_Y_GUNNER_MIN`..`AXIS_Y_GUNNER_MAX`), then copies it into the rendered `gunner.y`. `ZW_GAME_GUNNER_UPDATE` also clears the recoil frame by resetting `gunner.action_image` from `2` back to `1` (the recoil frame is raised by the Bullet task on `ZW_GAME_BULLET_SHOOT`).
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_gunner_sequence.png" alt="Gunner game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Btn as Button
+    participant Scr as Screen task
+    participant Gun as Gunner task
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Gun: ZW_GAME_GUNNER_SETUP
+    activate Gun
+    Note right of Gun: init pose at (X, Y)<br/>visible = WHITE, action_image = 1
+    deactivate Gun
+    Note over Scr: arm 100 ms periodic tick
+
+    Note over Btn,Scr: Button events fire asynchronously (between ticks)
+    Btn-)Scr: AC_DISPLAY_BUTTON_UP_PRESSED
+    activate Scr
+    Note right of Scr: gunner_dir = UP
+    deactivate Scr
+    Btn-)Scr: AC_DISPLAY_BUTTON_DOWN_PRESSED
+    activate Scr
+    Note right of Scr: gunner_dir = DOWN
+    deactivate Scr
+    Btn-)Scr: AC_DISPLAY_BUTTON_*_RELEASED
+    activate Scr
+    Note right of Scr: if dir matches released key<br/>then dir = NONE
+    deactivate Scr
+
+    loop Each ZW_GAME_TIME_TICK
+        alt gunner_dir == UP
+            Scr-)Gun: ZW_GAME_GUNNER_UP
+            activate Gun
+            Note right of Gun: gunner_y -= STEP<br/>clamp ≥ AXIS_Y_GUNNER_MIN
+            deactivate Gun
+        else gunner_dir == DOWN
+            Scr-)Gun: ZW_GAME_GUNNER_DOWN
+            activate Gun
+            Note right of Gun: gunner_y += STEP<br/>clamp ≤ AXIS_Y_GUNNER_MAX
+            deactivate Gun
+        end
+        Scr-)Gun: ZW_GAME_GUNNER_UPDATE
+        activate Gun
+        Note right of Gun: gunner.y ← gunner_y<br/>clear recoil frame (2 → 1)
+        deactivate Gun
+    end
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Gun: ZW_GAME_GUNNER_RESET
+    activate Gun
+    Note right of Gun: re-park, visible = BLACK
+    deactivate Gun
+```
+
 <p align="center"><strong><em>Figure 1:</em></strong> Gunner sequence logic</p>
 
 ## III. Bullet Object Sequence
