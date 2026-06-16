@@ -79,11 +79,56 @@ sequenceDiagram
 
 Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). `ZW_GAME_BULLET_SHOOT` picks the first free slot in `bullet[]`, spawns it at `(gunner.x + 22, gunner.y - 8)`, sets `gunner.action_image = 2` to show the recoil frame, and plays `BUZZER_SOUND_CLICK`. The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right by `STEP_BULLET_AXIS_X`. When a bullet reaches `MAX_AXIS_X_BULLET`, it is hidden and its x position is cleared.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_bullet_sequence.png" alt="Bullet game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Btn as Button
+    participant Scr as Screen task
+    participant Bul as Bullet task
+    participant Gun as Gunner task
+    participant Bz as Buzzer
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Bul: ZW_GAME_BULLET_SETUP
+    activate Bul
+    Note right of Bul: bullet[*]: visible=BLACK, x=y=0
+    deactivate Bul
+    Note over Scr: arm 100 ms periodic tick
+
+    Note over Btn,Scr: MODE button fires asynchronously
+    Btn-)Scr: AC_DISPLAY_BUTTON_MODE_PRESSED
+    activate Scr
+    opt zw_game_state == GAME_PLAY
+        Scr-)Bul: ZW_GAME_BULLET_SHOOT
+    end
+    deactivate Scr
+    activate Bul
+    Note right of Bul: pick first slot with visible≠WHITE<br/>visible=WHITE, x=gunner.x+22, y=gunner.y-8
+    Bul->>+Gun: write gunner.action_image = 2 (recoil)
+    Gun-->>-Bul: 
+    Bul->>+Bz: BUZZER_PlaySound(CLICK)
+    Bz-->>-Bul: 
+    deactivate Bul
+
+    loop Each ZW_GAME_TIME_TICK
+        Scr-)Bul: ZW_GAME_BULLET_RUN
+        activate Bul
+        loop for each visible bullet
+            Note right of Bul: x += STEP_BULLET_AXIS_X
+            alt x ≥ MAX_AXIS_X_BULLET
+                Note right of Bul: visible=BLACK, x=0
+            end
+        end
+        deactivate Bul
+    end
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Bul: ZW_GAME_BULLET_RESET
+    activate Bul
+    Note right of Bul: bullet[*]: visible=BLACK, x=y=0
+    deactivate Bul
+```
+
 <p align="center"><strong><em>Figure 2:</em></strong> Bullet sequence logic</p>
 
 ## IV. Zombie Object Sequence
