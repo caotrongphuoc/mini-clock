@@ -155,21 +155,21 @@ sequenceDiagram
         Scr-)Zmb: ZW_GAME_ZOMBIE_RUN
         activate Zmb
         loop for each visible zombie
-            alt zombie[i].rising
-                Note right of Zmb: y--, rise_ticks--<br/>if ticks==0 → rising=false, re-roll zigzag_timer<br/>cycle action_image 1→2→3
+            alt rising
+                Note right of Zmb: y--, rise_ticks--<br/>if ticks reach 0 then rising=false and re-roll zigzag_timer<br/>cycle action_image 1→2→3
             else moving left
-                Note right of Zmb: x -= speed (clamp ≥ -ZOMBIE_MIN_LEFT_OFFSET)<br/>y += dy (clamp [Y_MIN, Y_MAX]; dy=0 on clamp)<br/>if zigzag_timer==0 → re-roll dy ∈ {-1, 0, +1}<br/>cycle action_image 1→2→3
+                Note right of Zmb: x -= speed (clamp at -ZOMBIE_MIN_LEFT_OFFSET)<br/>y += dy, clamp to Y_MIN..Y_MAX, dy=0 on clamp<br/>if zigzag_timer hits 0, re-roll dy in -1..+1<br/>cycle action_image 1→2→3
             end
         end
-        opt alive < NUM_ZOMBIE_INIT
+        opt alive less than NUM_ZOMBIE_INIT
             Note right of Zmb: re-spawn hidden slots until count restored
         end
         deactivate Zmb
 
         Scr-)Zmb: ZW_GAME_ZOMBIE_DETONATOR
         activate Zmb
-        loop for each visible non-rising zombie × each visible bullet
-            opt zw_game_zombie_check_hit(b, z)
+        loop for each visible non-rising zombie z, for each visible bullet b
+            opt hit detected
                 Note right of Zmb: hide bullet (visible=BLACK, x=0)<br/>zw_game_bang_spawn(z.x, z.y)<br/>zw_game_score += 10<br/>hide zombie (visible=BLACK)
                 Zmb->>+Bz: BUZZER_PlaySound(BANG)
                 Bz-->>-Zmb: 
@@ -180,7 +180,7 @@ sequenceDiagram
 
     Note over Tmb: during Tombstone's ZW_GAME_TOMBSTONE_SPAWN tick
     Tmb->>+Zmb: zw_game_zombie_spawn_from_tombstone(i, x, y)
-    Note right of Zmb: zombie[i]: visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
+    Note right of Zmb: target slot becomes visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
     Zmb-->>-Tmb: 
 
     Note over Bdr: during Border's ZW_GAME_LEVEL_UP
