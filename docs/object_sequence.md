@@ -85,7 +85,6 @@ sequenceDiagram
     actor Btn as Button
     participant Scr as Screen task
     participant Bul as Bullet task
-    participant Gun as Gunner task
     participant Bz as Buzzer
 
     Note over Scr: SCREEN_ENTRY
@@ -103,9 +102,7 @@ sequenceDiagram
     end
     deactivate Scr
     activate Bul
-    Note right of Bul: pick first slot with visible≠WHITE<br/>visible=WHITE, x=gunner.x+22, y=gunner.y-8
-    Bul->>+Gun: write gunner.action_image = 2 (recoil)
-    Gun-->>-Bul: 
+    Note right of Bul: pick first slot with visible≠WHITE<br/>visible=WHITE, x=gunner.x+BULLET_SPAWN_OFFSET_X, y=gunner.y-BULLET_SPAWN_OFFSET_Y<br/>gunner.action_image = 2 (recoil; shared global owned by Gunner)
     Bul->>+Bz: BUZZER_PlaySound(CLICK)
     Bz-->>-Bul: 
     deactivate Bul
@@ -147,7 +144,7 @@ sequenceDiagram
     Note over Scr: SCREEN_ENTRY
     Scr-)Zmb: ZW_GAME_ZOMBIE_SETUP
     activate Zmb
-    Note right of Zmb: speed = settingsetup.zombie_speed<br/>hide all slots<br/>spawn NUM_ZOMBIE_INIT zombies at random (x, y)
+    Note right of Zmb: speed = settingsetup.zombie_speed<br/>hide all slots<br/>spawn NUM_ZOMBIE_INIT zombies at random (x in ZOMBIE_SPAWN_X_MIN..MAX, y in ZOMBIE_Y_MIN..MAX)
     deactivate Zmb
     Note over Scr: arm 100 ms periodic tick
 
@@ -286,7 +283,7 @@ sequenceDiagram
     Note over Scr: SCREEN_ENTRY
     Scr-)Tmb: ZW_GAME_TOMBSTONE_SETUP
     activate Tmb
-    Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>for each lane l (0..NUM_LANE-1):<br/>  slot l (group 1): x=rand(65..84), lane=l, active=bit l of tombstone_lane_1<br/>  slot l+NUM_LANE (group 2): x=rand(90..109), lane=l, active=bit l of tombstone_lane_2
+    Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>for each lane l (0..NUM_LANE-1):<br/>  slot l (group 1): x=rand(TOMBSTONE_LANE_1_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_1<br/>  slot l+NUM_LANE (group 2): x=rand(TOMBSTONE_LANE_2_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_2
     deactivate Tmb
     Note over Scr: arm 100 ms periodic tick
 
@@ -300,8 +297,8 @@ sequenceDiagram
             alt tombstone[tidx].active == false
                 Note right of Tmb: return early
             else active
-                loop scan zombie[] for first hidden slot i
-                    opt zombie[i].visible != WHITE
+                loop i = 0 .. NUM_ZOMBIE-1 (until spawned)
+                    alt zombie[i].visible != WHITE (hidden slot found)
                         Note right of Tmb: x = tombstone[tidx].x<br/>y = lane_y[tombstone[tidx].lane] + SIZE_BITMAP_TOMBSTONE_Y
                         Tmb->>+Zmb: zw_game_zombie_spawn_from_tombstone(i, x, y)
                         Note right of Zmb: slot i: visible=WHITE, rising=true<br/>rise_ticks=ZOMBIE_RISE_TICKS, action_image=1
@@ -343,15 +340,17 @@ sequenceDiagram
     Note over Scr: arm 100 ms periodic tick
 
     loop Each ZW_GAME_TIME_TICK
-        Note over Zmb,Car: During their own tick handlers, on hit:<br/>call zw_game_bang_spawn(x, y)
+        opt during Zombie's ZW_GAME_ZOMBIE_DETONATOR, on bullet hit
+            Zmb->>+Bng: zw_game_bang_spawn(x, y)
+            Note right of Bng: pick first slot with visible != WHITE<br/>visible=WHITE, x=max(x+BANG_SPAWN_OFFSET_X, 0), y=max(y-BANG_SPAWN_OFFSET_Y, 0)<br/>action_image=1
+            Bng-->>-Zmb: 
+        end
 
-        Zmb->>+Bng: zw_game_bang_spawn(x, y)
-        Note right of Bng: pick first slot with visible != WHITE<br/>visible=WHITE, x=max(x+5, 0), y=max(y-2, 0)<br/>action_image=1
-        Bng-->>-Zmb: 
-
-        Car->>+Bng: zw_game_bang_spawn(x, y)
-        Note right of Bng: same as above (first free slot)
-        Bng-->>-Car: 
+        opt during Car's ZW_GAME_CAR_RUN / ZW_GAME_CAR_HIT, on hit
+            Car->>+Bng: zw_game_bang_spawn(x, y)
+            Note right of Bng: same as above (first free slot)
+            Bng-->>-Car: 
+        end
 
         Scr-)Bng: ZW_GAME_BANG_UPDATE
         activate Bng
@@ -383,68 +382,62 @@ Border owns the game's progression state — `zw_game_score`, `wave_last_score`,
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Zombie as Zombie task
+    participant Scr as Screen task
+    participant Bdr as Border task
+    participant Zmb as Zombie task
     participant Car as Car task
-    participant Screen as Screen task
-    participant Border as Border task
 
-    Note over Screen: SCREEN_ENTRY
-    Screen->>Border: post ZW_GAME_BORDER_SETUP
-    activate Border
-    Note right of Border: zw_game_border_clear():<br/>zw_game_score = 0<br/>wave_last_score = 0<br/>wave_warning_timer = 0<br/>wave_warning_active = false<br/>wave_level = 0
-    deactivate Border
-
-    Note over Screen: arm 100 ms periodic timer<br/>→ ZW_GAME_TIME_TICK
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Bdr: ZW_GAME_BORDER_SETUP
+    activate Bdr
+    Note right of Bdr: zw_game_border_clear():<br/>zw_game_score = 0<br/>wave_last_score = 0<br/>wave_warning_timer = 0<br/>wave_warning_active = false<br/>wave_level = 0
+    deactivate Bdr
+    Note over Scr: arm 100 ms periodic tick
 
     loop Each ZW_GAME_TIME_TICK
-        Note over Zombie,Car: During their own tick handlers,<br/>on bullet/car kill: zw_game_score += 10<br/>(shared global owned by Border)
+        Note over Zmb,Car: During their own tick handlers,<br/>on bullet/car kill: zw_game_score += 10<br/>(shared global owned by Border)
 
-        Screen->>Border: post ZW_GAME_CHECK_GAME_OVER
-        activate Border
+        Scr-)Bdr: ZW_GAME_CHECK_GAME_OVER
+        activate Bdr
         loop i = 0 .. NUM_ZOMBIE-1
             alt zombie[i].visible == WHITE && zombie[i].x <= -ZOMBIE_MIN_LEFT_OFFSET
-                Border->>+Car: call zw_game_car_find_nearest(zombie[i].y)
-                Car-->>-Border: idx
+                Bdr->>+Car: zw_game_car_find_nearest(zombie[i].y)
+                Car-->>-Bdr: idx
                 alt idx < 0
-                    Border->>Screen: post ZW_GAME_RESET (AC_TASK_DISPLAY_ID)
-                    Note over Border: break for-loop
+                    Bdr-)Scr: ZW_GAME_RESET (AC_TASK_DISPLAY_ID)
+                    Note over Bdr: break for-loop
                 end
             end
         end
-        deactivate Border
+        deactivate Bdr
 
-        Screen->>Border: post ZW_GAME_WAVE_CHECK
-        activate Border
+        Scr-)Bdr: ZW_GAME_WAVE_CHECK
+        activate Bdr
         alt !wave_warning_active && zw_game_score >= wave_last_score + WAVE_SCORE_INTERVAL
-            Note right of Border: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
+            Note right of Bdr: wave_warning_active = true<br/>wave_warning_timer = WARNING_BLINK_DURATION
         end
-        deactivate Border
+        deactivate Bdr
 
-        Screen->>Border: post ZW_GAME_LEVEL_UP
-        activate Border
+        Scr-)Bdr: ZW_GAME_LEVEL_UP
+        activate Bdr
         alt wave_warning_active
             alt wave_warning_timer > 0
-                Note right of Border: wave_warning_timer--
+                Note right of Bdr: wave_warning_timer--
             else wave_warning_timer == 0
-                Note right of Border: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++
-                Border->>Zombie: post ZW_GAME_ZOMBIE_WAVE_SPAWN
+                Note right of Bdr: wave_warning_active = false<br/>wave_last_score += WAVE_SCORE_INTERVAL<br/>wave_level++
+                Bdr-)Zmb: ZW_GAME_ZOMBIE_WAVE_SPAWN
             end
         end
-        deactivate Border
+        deactivate Bdr
     end
 
-    Note over Screen: on ZW_GAME_RESET handling
-    Screen->>Border: post ZW_GAME_BORDER_RESET
-    activate Border
-    Note right of Border: zw_game_border_clear()
-    deactivate Border
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Bdr: ZW_GAME_BORDER_RESET
+    activate Bdr
+    Note right of Bdr: zw_game_border_clear()
+    deactivate Bdr
 ```
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_border_sequence.png" alt="Border game sequence logic" width="900"/></td>
-  </tr>
-</table>
 <p align="center"><strong><em>Figure 7:</em></strong> Border sequence logic</p>
 
 ## IX. Per-Tick Signal Order
