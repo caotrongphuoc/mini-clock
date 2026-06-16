@@ -202,11 +202,73 @@ sequenceDiagram
 
 Car owns the lawnmower-style rescue cars (one slot per lane). On `ZW_GAME_CAR_SETUP` it parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_CAR_RUN` then `ZW_GAME_CAR_HIT`. In `RUN`, the task walks `zombie[]`: a visible zombie that reaches the left edge (`x <= -ZOMBIE_MIN_LEFT_OFFSET`) wakes the nearest non-running car within `CAR_HIT_RANGE_Y` via `zw_game_car_find_nearest()` — that car starts running, `zw_game_bang_spawn()` plays, `zw_game_score += 10`, `BUZZER_SOUND_BANG` is played, and the zombie is hidden; a zombie still on screen whose nearest car overlaps it (`zw_game_car_check_hit`) wakes that car too. After the activation pass, every visible running car slides right by `CAR_SPEED`, cycles `action_image` through `1→2→3`, and despawns (`visible = false`, `running = false`) once `x > LCD_WIDTH`. In `HIT`, every visible running car walks `zombie[]` and for each overlap calls `zw_game_bang_spawn()`, adds `10` to `zw_game_score`, plays `BUZZER_SOUND_BANG`, and hides the zombie. `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_car.sequence.png" alt="Car game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Scr as Screen task
+    participant Bdr as Border task
+    participant Car as Car task
+    participant Bz as Buzzer
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Car: ZW_GAME_CAR_SETUP
+    activate Car
+    Note right of Car: for each lane i: re-park at (AXIS_X_CAR, lane_y[i])<br/>running=false, action_image=1<br/>visible = bit i of settingsetup.num_car
+    deactivate Car
+    Note over Scr: arm 100 ms periodic tick
+
+    loop Each ZW_GAME_TIME_TICK
+        Scr-)Car: ZW_GAME_CAR_RUN
+        activate Car
+        Note right of Car: Phase 1 — activation pass
+        loop for each visible zombie z
+            alt z reached left edge (z.x <= -ZOMBIE_MIN_LEFT_OFFSET)
+                Note right of Car: m = zw_game_car_find_nearest(z.y)
+                opt m >= 0
+                    Note right of Car: car[m].running = true<br/>zw_game_bang_spawn(z.x, z.y)<br/>zw_game_score += 10<br/>hide z (visible=BLACK)
+                    Car->>+Bz: BUZZER_PlaySound(BANG)
+                    Bz-->>-Car: 
+                end
+            else z still on screen
+                Note right of Car: m = zw_game_car_find_nearest(z.y)
+                opt car found and overlaps z
+                    Note right of Car: car[m].running = true<br/>kill deferred to CAR_HIT
+                end
+            end
+        end
+        Note right of Car: Phase 2 — advance running cars
+        loop for each visible running car c
+            Note right of Car: c.x += CAR_SPEED<br/>cycle action_image 1→2→3
+            opt c reaches right edge (c.x > LCD_WIDTH)
+                Note right of Car: visible=false, running=false
+            end
+        end
+        deactivate Car
+
+        Scr-)Car: ZW_GAME_CAR_HIT
+        activate Car
+        loop for each visible running car c, for each visible zombie z
+            opt hit detected
+                Note right of Car: zw_game_bang_spawn(z.x, z.y)<br/>zw_game_score += 10<br/>hide z (visible=BLACK)
+                Car->>+Bz: BUZZER_PlaySound(BANG)
+                Bz-->>-Car: 
+            end
+        end
+        deactivate Car
+    end
+
+    Note over Bdr: during Border's ZW_GAME_CHECK_GAME_OVER
+    Bdr->>+Car: zw_game_car_find_nearest(zy)
+    Note right of Car: walk car array, return index of<br/>nearest non-running visible car within CAR_HIT_RANGE_Y, else -1
+    Car-->>-Bdr: idx
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Car: ZW_GAME_CAR_RESET
+    activate Car
+    Note right of Car: for each lane: re-park, visible=false, running=false
+    deactivate Car
+```
+
 <p align="center"><strong><em>Figure 4:</em></strong> Car sequence logic</p>
 
 
