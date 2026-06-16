@@ -327,11 +327,53 @@ sequenceDiagram
 
 Bang owns the `bang[NUM_BANG]` array of short-lived explosion sprites that play whenever a zombie is killed. It exposes no spawn signal: instead, the Zombie task (on a bullet hit, `zw_game_zombie.cpp`) and the Car task (on car activation at the screen edge, and on a running car overlapping a zombie, `zw_game_car.cpp`) call `zw_game_bang_spawn(x, y)` directly, which walks `bang[]`, picks the first slot whose `visible != WHITE`, and writes `visible = WHITE`, `x = max(x + 5, 0)`, `y = max(y - 2, 0)`, `action_image = 1` — the small `(+5, -2)` offset centers the explosion bitmap over the zombie hit point. On `ZW_GAME_BANG_SETUP` the task calls `zw_game_bang_reset_all()`, clearing every slot to `visible = BLACK`, `action_image = 1`. Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_BANG_UPDATE`: for every visible slot, if `action_image >= 3` the slot is retired (`action_image = 1`, `visible = BLACK`); otherwise `action_image` is incremented, so each explosion plays frames `1 → 2 → 3` over three ticks (~300 ms at the 100 ms tick interval) before its slot becomes free for the next hit. `ZW_GAME_BANG_RESET` runs the same `zw_game_bang_reset_all()` as setup.
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_bang_sequence.png" alt="Bang game sequence logic" width="900"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Scr as Screen task
+    participant Zmb as Zombie task
+    participant Car as Car task
+    participant Bng as Bang task
+
+    Note over Scr: SCREEN_ENTRY
+    Scr-)Bng: ZW_GAME_BANG_SETUP
+    activate Bng
+    Note right of Bng: zw_game_bang_reset_all()<br/>for each slot: visible=BLACK, action_image=1
+    deactivate Bng
+    Note over Scr: arm 100 ms periodic tick
+
+    loop Each ZW_GAME_TIME_TICK
+        Note over Zmb,Car: During their own tick handlers, on hit:<br/>call zw_game_bang_spawn(x, y)
+
+        Zmb->>+Bng: zw_game_bang_spawn(x, y)
+        Note right of Bng: pick first slot with visible != WHITE<br/>visible=WHITE, x=max(x+5, 0), y=max(y-2, 0)<br/>action_image=1
+        Bng-->>-Zmb: 
+
+        Car->>+Bng: zw_game_bang_spawn(x, y)
+        Note right of Bng: same as above (first free slot)
+        Bng-->>-Car: 
+
+        Scr-)Bng: ZW_GAME_BANG_UPDATE
+        activate Bng
+        loop for each slot i
+            opt bang[i].visible == WHITE
+                alt bang[i].action_image >= 3
+                    Note right of Bng: action_image=1, visible=BLACK<br/>(retire slot, free for next hit)
+                else action_image < 3
+                    Note right of Bng: action_image++
+                end
+            end
+        end
+        deactivate Bng
+    end
+
+    Note over Scr: on ZW_GAME_RESET
+    Scr-)Bng: ZW_GAME_BANG_RESET
+    activate Bng
+    Note right of Bng: zw_game_bang_reset_all()<br/>for each slot: visible=BLACK, action_image=1
+    deactivate Bng
+```
+
 <p align="center"><strong><em>Figure 6:</em></strong> Bang sequence logic</p>
 
 ## VIII. Border Object Sequence
