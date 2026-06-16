@@ -7,9 +7,9 @@
 
 ## Gameplay Demo
 
-<div align="center">
+<!-- <div align="center">
   <video src="https://github.com/user-attachments/assets/2b41db55-9b9e-45f2-919c-02f1d54f0602" controls width="480"></video>
-</div>
+</div> -->
 
 ## Documentation
 
