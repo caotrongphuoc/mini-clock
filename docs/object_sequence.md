@@ -18,7 +18,18 @@ The screen task posts `ZW_GAME_TIME_TICK` every `ZW_GAME_TIME_TICK_INTERVAL` (10
 
 ## II. Gunner Object Sequence
 
-Gunner owns the player position. The screen task initializes the Gunner object when gameplay starts, then the periodic game tick translates the latched direction (`gunner_dir`) into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` and always posts `ZW_GAME_GUNNER_UPDATE`. Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly. Movement changes the internal `gunner_y` value, clamps it (`AXIS_Y_GUNNER_MIN`..`AXIS_Y_GUNNER_MAX`), then copies it into the rendered `gunner.y`. `ZW_GAME_GUNNER_UPDATE` also clears the recoil frame by resetting `gunner.action_image` from `2` back to `1` (the recoil frame is raised by the Bullet task on `ZW_GAME_BULLET_SHOOT`).
+Gunner owns the player position (`gunner` and the internal `gunner_y`).
+
+**Setup.** `ZW_GAME_GUNNER_SETUP` parks the gunner at `(AXIS_X_GUNNER, AXIS_Y_GUNNER)` with `visible = WHITE`, `action_image = 1`.
+
+**Input.** Button callbacks only update `gunner_dir` inside the screen task; they do not post to the Gunner task directly.
+
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen translates the latched `gunner_dir` into `ZW_GAME_GUNNER_UP` / `ZW_GAME_GUNNER_DOWN` (when non-zero) and always posts `ZW_GAME_GUNNER_UPDATE`.
+
+- `UP` / `DOWN` — moves `gunner_y` by `STEP_GUNNER_AXIS_Y`, clamped to `AXIS_Y_GUNNER_MIN..AXIS_Y_GUNNER_MAX`.
+- `UPDATE` — copies `gunner_y` into the rendered `gunner.y` and clears the recoil frame by resetting `gunner.action_image` from `2` back to `1` (the recoil frame is raised by the Bullet task on `ZW_GAME_BULLET_SHOOT`).
+
+**Reset.** `ZW_GAME_GUNNER_RESET` re-parks the gunner and sets `visible = BLACK`.
 
 ```mermaid
 sequenceDiagram
@@ -77,7 +88,15 @@ sequenceDiagram
 
 ## III. Bullet Object Sequence
 
-Bullet receives shoot input from the MODE button (only while `zw_game_state == GAME_PLAY`). `ZW_GAME_BULLET_SHOOT` picks the first free slot in `bullet[]`, spawns it at `(gunner.x + 22, gunner.y - 8)`, sets `gunner.action_image = 2` to show the recoil frame, and plays `BUZZER_SOUND_CLICK`. The screen task posts `ZW_GAME_BULLET_RUN` on every game tick so visible bullets keep moving to the right by `STEP_BULLET_AXIS_X`. When a bullet reaches `MAX_AXIS_X_BULLET`, it is hidden and its x position is cleared.
+Bullet owns the `bullet[NUM_BULLET]` array and handles shooting from the MODE button (only while `zw_game_state == GAME_PLAY`).
+
+**Setup.** `ZW_GAME_BULLET_SETUP` clears every slot (`visible = BLACK`, `x = y = 0`).
+
+**Input.** On `AC_DISPLAY_BUTTON_MODE_PRESSED` the screen task posts `ZW_GAME_BULLET_SHOOT` (only while playing). The handler picks the first free slot in `bullet[]`, spawns it at `(gunner.x + 22, gunner.y - 8)`, sets `gunner.action_image = 2` to show the recoil frame, and plays `BUZZER_SOUND_CLICK`.
+
+**Per-tick.** Each `ZW_GAME_TIME_TICK` the screen task posts `ZW_GAME_BULLET_RUN`: every visible bullet steps right by `STEP_BULLET_AXIS_X`. When `x >= MAX_AXIS_X_BULLET` the bullet is hidden and its `x` is cleared.
+
+**Reset.** `ZW_GAME_BULLET_RESET` clears every slot (same as setup).
 
 ```mermaid
 sequenceDiagram
