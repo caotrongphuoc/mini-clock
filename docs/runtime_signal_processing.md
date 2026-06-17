@@ -264,11 +264,90 @@ sequenceDiagram
 
 #### 3. Game Reset
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_reset_sequence.png" alt="Game reset sequence logic" width="1000"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Bdr as Border task
+    participant Q as AK queue
+    participant Tmr as Timer
+    participant Scr as Screen task
+    participant Gun as Gunner task
+    participant Bul as Bullet task
+    participant Zmb as Zombie task
+    participant Car as Car task
+    participant Tmb as Tombstone task
+    participant Bng as Bang task
+    participant Bz as Buzzer
+
+    Note over Bdr: trigger from BORDER_CHECK_GAME_OVER<br/>zombie past left edge with no rescue car nearby
+    Bdr-)Q: ZW_GAME_RESET to AC_TASK_DISPLAY_ID
+    Q-)Scr: dispatch
+    activate Scr
+    opt zw_game_state != GAME_PLAY
+        Note right of Scr: break (already over)
+    end
+    Scr->>Tmr: timer_remove_attr(ZW_GAME_TIME_TICK)
+    Note right of Scr: periodic tick stops
+
+    Note over Scr,Q: Fan out 7 RESET signals (async)
+    Scr-)Q: GUNNER_RESET
+    Scr-)Q: BULLET_RESET
+    Scr-)Q: ZOMBIE_RESET
+    Scr-)Q: CAR_RESET
+    Scr-)Q: TOMBSTONE_RESET
+    Scr-)Q: BANG_RESET
+    Scr-)Q: BORDER_RESET
+
+    Note right of Scr: gamescore.score_now = zw_game_score (latch for game-over screen)<br/>zw_game_state = GAME_OVER
+    Scr->>+Bz: BUZZER_PlaySound(GOODBYE)
+    Bz-->>-Scr: 
+    Scr->>Tmr: timer_set(ZW_GAME_EXIT_GAME, 3000 ms, ONE_SHOT)
+    deactivate Scr
+
+    Note over Q: AK dispatches each RESET in FIFO order (RTC)
+    Q-)Gun: GUNNER_RESET
+    activate Gun
+    Note right of Gun: re-park, visible=BLACK
+    deactivate Gun
+
+    Q-)Bul: BULLET_RESET
+    activate Bul
+    Note right of Bul: clear bullet array
+    deactivate Bul
+
+    Q-)Zmb: ZOMBIE_RESET
+    activate Zmb
+    Note right of Zmb: hide all zombies
+    deactivate Zmb
+
+    Q-)Car: CAR_RESET
+    activate Car
+    Note right of Car: re-park lanes, visible=false, running=false
+    deactivate Car
+
+    Q-)Tmb: TOMBSTONE_RESET
+    activate Tmb
+    Note right of Tmb: clear timer and slots
+    deactivate Tmb
+
+    Q-)Bng: BANG_RESET
+    activate Bng
+    Note right of Bng: clear bang array
+    deactivate Bng
+
+    Q-)Bdr: BORDER_RESET
+    activate Bdr
+    Note right of Bdr: zw_game_border_clear()<br/>zero score, wave_level, warning latch
+    deactivate Bdr
+
+    Note over Tmr: 3 s later
+    Tmr-)Q: ZW_GAME_EXIT_GAME to AC_TASK_DISPLAY_ID
+    Q-)Scr: dispatch
+    activate Scr
+    Note right of Scr: zw_game_state = GAME_OFF<br/>SCREEN_TRAN to scr_game_over_handle
+    deactivate Scr
+```
+
 <p align="center"><strong><em>Figure 3:</em></strong> Game reset sequence logic</p>
 
 ## II. Code References
