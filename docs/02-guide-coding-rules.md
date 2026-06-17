@@ -381,7 +381,45 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 
 3. Format file hiện tại bằng phím tắt: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows / Linux).
 
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_before_format_3.png" alt="before format" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_after_format_3.png" alt="after format" width="500"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong><em>Before format</em></strong></td>
+    <td align="center"><strong><em>After format using <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd></em></strong></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 8:</em></strong> Compairison betwwen before formatting and after formatting</p>
+
 Bật `formatOnSave` để editor tự format mỗi khi save, đảm bảo không commit code lệch format.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_open_setting.png" alt="Open setting" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 9:</em></strong> Open setting</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_on_save.png" alt="Active Format On Save" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 10:</em></strong> Active Format On Save</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_before_format_4.png" alt="before format" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_after_format_4.png" alt="after format" width="500"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong><em>Before format</em></strong></td>
+    <td align="center"><strong><em>After format using <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd></em></strong></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 11:</em></strong> Compairison betwwen before formatting and after formatting</p>
 
 ---
 
