@@ -230,7 +230,7 @@ sequenceDiagram
 
 ## V. Car Object Sequence
 
-Car owns the lawnmower-style rescue cars (`car[NUM_LANE]`, one slot per lane).
+Car owns the lawnmower-style rescue cars (`car[NUMBER]`, one slot per lane).
 
 **Setup.** `ZW_GAME_CAR_SETUP` parks each car at `(AXIS_X_CAR, lane_y[i])`, sets `visible` from the i-th bit of `settingsetup.num_car`, and clears `running`.
 
@@ -336,7 +336,7 @@ sequenceDiagram
     Note over Scr: SCREEN_ENTRY
     Scr-)Tmb: ZW_GAME_TOMBSTONE_SETUP
     activate Tmb
-    Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>for each lane l (0..NUM_LANE-1):<br/>  slot l (group 1): x=rand(TOMBSTONE_LANE_1_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_1<br/>  slot l+NUM_LANE (group 2): x=rand(TOMBSTONE_LANE_2_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_2
+    Note right of Tmb: tombstone_spawn_timer = TOMBSTONE_SPAWN_INTERVAL<br/>for each lane l (0..NUMBER-1):<br/>  slot l (group 1): x=rand(TOMBSTONE_LANE_1_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_1<br/>  slot l+NUMBER (group 2): x=rand(TOMBSTONE_LANE_2_X_MIN..MAX), lane=l, active=bit l of tombstone_lane_2
     deactivate Tmb
     Note over Scr: arm 100 ms periodic tick
 
