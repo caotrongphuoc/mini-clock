@@ -178,11 +178,11 @@ void view_scr_game_zomwar()
 	else if (zw_game_state == GAME_OVER)
 	{
 		view_render.clear();
-		view_render.drawBitmap(0, 0, bitmap_tomb_rip, 128, 64, WHITE);
+		view_render.drawBitmap(0, 0, bitmap_tomb_rip, LCD_WIDTH, LCD_HEIGHT, WHITE);
 		view_render.drawBitmap(-2, 4, bitmap_branch_left, 50, 17, WHITE);
 		view_render.drawBitmap(85, 8, bitmap_branch_right, 50, 17, WHITE);
 		view_render.drawBitmap(0, 0, bitmap_grass, 64, 64, WHITE);
-		view_render.drawBitmap(64, 0, bitmap_grass, 64, 64, WHITE);
+		view_render.drawBitmap(LCD_WIDTH / 2, 0, bitmap_grass, 64, 64, WHITE);
 	}
 }
 
