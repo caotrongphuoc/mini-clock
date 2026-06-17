@@ -297,12 +297,6 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
     -exec clang-format -i {} +
 ```
 
-Dry-run (in diff, không ghi vào file) — chạy trước khi commit để kiểm tra:
-
-```bash
-clang-format --dry-run --Werror path/to/file.cpp
-```
-
 ### VSCode integration
 
 1. Cài extension **C/C++** (Microsoft) — extension này đi kèm `clang-format` và tự động đọc `.clang-format` trong repo.
