@@ -1,6 +1,6 @@
 <h1 align="center">Coding rules and style guide</h1>
 
-Tài liệu này tổng hợp các quy ước đặt tên và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất.
+Tài liệu này tổng hợp các quy ước đặt tên, commit push lên github và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất.
 
 ---
 
