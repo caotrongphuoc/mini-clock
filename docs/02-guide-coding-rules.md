@@ -418,33 +418,10 @@ Lưu ý:
 
 ## VII. Tài liệu tham khảo
 
-Các nguồn dưới đây cung cấp nền tảng lý thuyết và bản đặc tả chính thức cho những quy ước đã trình bày trong tài liệu này.
-
-### Quy ước đặt tên (case style)
-
-- [Naming convention (programming) — Wikipedia](https://en.wikipedia.org/wiki/Naming_convention_(programming)) — tổng quan về các quy ước đặt tên trong lập trình.
-- [Snake case — Wikipedia](https://en.wikipedia.org/wiki/Snake_case) — định nghĩa và lịch sử `lower_snake_case`, `UPPER_SNAKE_CASE` (`SCREAMING_SNAKE_CASE`).
-- [Letter case — Use within programming languages — Wikipedia](https://en.wikipedia.org/wiki/Letter_case#Use_within_programming_languages) — so sánh `camelCase`, `PascalCase`, `snake_case`, `kebab-case`.
-- [Google C++ Style Guide — Naming](https://google.github.io/styleguide/cppguide.html#Naming) — tham khảo cách Google đặt tên file, biến, hàm, macro trong C++.
-
-### Code style và clang-format
-
-- [Clang-Format documentation](https://clang.llvm.org/docs/ClangFormat.html) — tài liệu chính thức của công cụ.
-- [Clang-Format style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) — danh sách đầy đủ mọi setting có thể khai báo trong `.clang-format`.
-- [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html) — base style được kế thừa qua `BasedOnStyle: LLVM`.
-- [Indentation style — Allman — Wikipedia](https://en.wikipedia.org/wiki/Indentation_style#Allman_style) — mô tả quy ước đặt dấu `{` ở dòng riêng đang áp dụng.
-
-### Git và commit message
-
-- [Pro Git book](https://git-scm.com/book) — sách tham khảo chính thức về Git, miễn phí trực tuyến.
-- [A note about git commit messages — Tim Pope](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) — bài viết kinh điển về phong cách viết commit message.
-- [Conventional Commits](https://www.conventionalcommits.org/) — convention tag-based commit phổ biến trong cộng đồng open source (chỉ để tham khảo, project này dùng format `[ACTION]`).
-
-### Markdown và tài liệu
-
-- [GitHub — Basic writing and formatting syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) — cú pháp Markdown được GitHub render.
-- [CommonMark Spec](https://spec.commonmark.org/) — bản đặc tả Markdown chuẩn.
-- [Mermaid documentation](https://mermaid.js.org/intro/) — cú pháp diagram dùng trong các tài liệu `design-sequence-*`.
+- [Letter case — Use within programming languages — Wikipedia](https://en.wikipedia.org/wiki/Letter_case#Use_within_programming_languages) — định nghĩa `lower_snake_case`, `UPPER_SNAKE_CASE`, `kebab-case` dùng trong Section I và VI.
+- [Clang-Format style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) — danh sách đầy đủ setting có thể khai báo trong `.clang-format` (Section II).
+- [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html) — base style kế thừa qua `BasedOnStyle: LLVM` (Section II).
+- [Pro Git book](https://git-scm.com/book) — tham khảo chính thức về Git và workflow commit (Section V).
 
 ---
 
