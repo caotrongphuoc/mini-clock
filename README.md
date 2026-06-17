@@ -7,9 +7,9 @@
 
 ## Gameplay Demo
 
-<!-- <div align="center">
-  <video src="https://github.com/user-attachments/assets/2b41db55-9b9e-45f2-919c-02f1d54f0602" controls width="480"></video>
-</div> -->
+<div align="center">
+  <video src="https://github.com/caotrongphuoc/zomwar-game/releases/download/demo_gameplay/zw_game_zomwar.MOV" controls width="480"></video>
+</div>
 
 ## Documentation
 
