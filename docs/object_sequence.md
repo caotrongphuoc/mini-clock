@@ -32,6 +32,7 @@ Gunner owns the player position (`gunner` and the internal `gunner_y`).
 **Reset.** `ZW_GAME_GUNNER_RESET` re-parks the gunner and sets `visible = BLACK`.
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     actor Btn as Button
@@ -99,6 +100,7 @@ Bullet owns the `bullet[NUM_BULLET]` array and handles shooting from the MODE bu
 **Reset.** `ZW_GAME_BULLET_RESET` clears every slot (same as setup).
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     actor Btn as Button
@@ -163,6 +165,7 @@ Zombie owns the horde state — the `zombie[NUM_ZOMBIE]` array and `zw_game_zomb
 **Reset.** `ZW_GAME_ZOMBIE_RESET` hides every slot.
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task
@@ -239,6 +242,7 @@ Car owns the lawnmower-style rescue cars (`car[NUM_LANE]`, one slot per lane).
 **Reset.** `ZW_GAME_CAR_RESET` re-parks every lane and clears both `visible` and `running`.
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task
@@ -322,6 +326,7 @@ Tombstone owns the `tombstone[NUM_TOMBSTONE]` array — 2 tombstones per lane (g
 **Reset.** `ZW_GAME_TOMBSTONE_RESET` clears the timer and zeros every slot (`x = 0`, `lane = 0`, `active = false`).
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task
@@ -381,6 +386,7 @@ Bang owns the `bang[NUM_BANG]` array of short-lived explosion sprites that play 
 **Reset.** `ZW_GAME_BANG_RESET` runs the same `zw_game_bang_reset_all()` as setup.
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task
@@ -446,6 +452,7 @@ Border owns the game's progression state — `zw_game_score`, `wave_last_score`,
 **Reset.** `ZW_GAME_BORDER_RESET` runs the same `zw_game_border_clear()` as setup.
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task

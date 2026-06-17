@@ -42,6 +42,7 @@ Main runtime flow:
 #### 1. Game Start
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Scr as Screen task
@@ -120,6 +121,7 @@ sequenceDiagram
 #### 2. Game Playing
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     actor Btn as Button
@@ -265,6 +267,7 @@ sequenceDiagram
 #### 3. Game Reset
 
 ```mermaid
+%%{init: {'theme':'default', 'themeVariables':{'fontSize':'15px'}, 'sequence':{'actorMargin':80, 'messageFontSize':14, 'noteFontSize':13, 'boxMargin':10, 'useMaxWidth':false}}}%%
 sequenceDiagram
     autonumber
     participant Bdr as Border task
