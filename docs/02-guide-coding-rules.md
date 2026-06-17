@@ -1,6 +1,6 @@
 <h1 align="center">Coding rules and style guide</h1>
 
-Tài liệu này định nghĩa các quy ước đặt tên, code style, commit message và quy ước đặt tên tài liệu đang áp dụng trong project, kèm hướng dẫn cài đặt và sử dụng `clang-format`. Mục tiêu là đảm bảo code do nhiều người đóng góp vẫn nhất quán về hình thức và dễ tracking qua các công cụ search, review, version control.
+Tài liệu này định nghĩa các quy ước đặt tên, code style, commit message và quy ước đặt tên tài liệu đang áp dụng trong project, kèm hướng dẫn cài đặt và sử dụng `clang-format`. Mục tiêu là mong muốn code do các bạn đóng góp vẫn nhất quán về hình thức và dễ tracking qua các công cụ search, review, version control. Đây là những gì mình đúc kết được sau khi hoàn thành game, các bạn thấy hay thì có thể tham khảo nhé.
 
 ---
 
@@ -32,7 +32,7 @@ Các quy ước dưới đây được rút ra trực tiếp từ source code hi
 >
 > | Kiểu | Mô tả | Ví dụ trong project | Áp dụng cho |
 > |---|---|---|---|
-> | `lower_snake_case` | Chữ thường, các từ ngăn cách bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`, `gunner_y` | Biến, hàm, typedef, tên file source, tên folder |
+> | `lower_snake_case` | Chữ thường, các từ ngăn cách bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`| Biến, hàm, typedef, tên file source, tên folder |
 > | `UPPER_SNAKE_CASE` | Chữ hoa, các từ ngăn cách bằng dấu gạch dưới `_` | `BULLET_NUMBER`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
 > | `kebab-case` | Chữ thường, các từ ngăn cách bằng dấu gạch ngang `-` | `02-guide-coding-rules.md` | Tên file tài liệu trong `docs/` |
 
@@ -43,8 +43,8 @@ Các quy ước dưới đây được rút ra trực tiếp từ source code hi
 ```
 application/sources/app/
   game/
-    game_<ten_game>/      # mỗi game một folder riêng, ví dụ game_zomwar
-  screens/                # mỗi nhóm screen một folder
+    game_<ten_game>/      # một folder riêng chứa toàn bộ source code của các đối tượng, ví dụ  đặt tên như game_zomwar
+  screens/                # một folder riêng chứa toàn bộ source code của các màn hình hiển thị trong game
   ...
 ```
 
@@ -54,8 +54,6 @@ File source và header luôn mang prefix module để xác định nhanh module 
 
 | Prefix | Ý nghĩa | Ví dụ |
 |---|---|---|
-| `app_*` | Glue code tầng application | `app_bsp.cpp`, `app_eeprom.h` |
-| `task_*` | Entry point task của AK framework | `task_display.cpp`, `task_life.h` |
 | `scr_*` | Handler của một screen | `scr_game_zomwar.cpp`, `scr_game_over.h` |
 | `zw_game_*` | Object thuộc game Zomwar | `zw_game_bang.cpp`, `zw_game_border.h` |
 
@@ -118,8 +116,6 @@ Ví dụ áp dụng đúng:
 #define BORDER_SIZE_BITMAP_WARNING_Y  (14)
 ```
 
-Hằng "số lượng" thống nhất dùng hậu tố `_NUMBER` (`ZOMBIE_NUMBER`, `BULLET_NUMBER`...) thay vì `_NUM` để đồng bộ với code hiện có.
-
 **Ngoại lệ — system / project-level macro:** macro thuộc về toàn bộ game (không gắn với một object cụ thể) dùng project prefix `ZW_GAME_*`:
 
 ```cpp
@@ -135,8 +131,6 @@ Signal là **hợp đồng công khai** giữa các task. Luôn dùng full prefi
 
 | Prefix | Áp dụng cho | Ví dụ |
 |---|---|---|
-| `AK_*` | Core AK framework | `AK_USER_DEFINE_SIG` |
-| `AC_<SUBSYSTEM>_*` | Subsystem chung của AK | `AC_DISPLAY_BUTTON_UP_PRESSED` |
 | `<GAME>_<OBJECT>_<ACTION>` | Signal theo từng game | `ZW_GAME_BORDER_CHECK_GAME_OVER` |
 
 Khai báo signal set của mỗi task trong `app.h` thành một enum block riêng, anchor vào `ZW_GAME_DEFINE_SIG` (hoặc `AK_USER_DEFINE_SIG` cho nhóm framework):
@@ -198,15 +192,9 @@ void zw_game_zombie_spawn_from_tombstone(uint8_t i, int16_t x, uint8_t y);
 int8_t zw_game_car_find_nearest(uint8_t zy);
 ```
 
-Helper nội bộ của module khai báo `static` trong `.cpp` và vẫn giữ prefix:
-
-```cpp
-static void zw_game_car_reset_slot(uint8_t i);
-```
-
 ### 9. Biến
 
-`lower_snake_case`. Không Hungarian notation, không bắt đầu bằng dấu gạch dưới.
+`lower_snake_case`. Không bắt đầu bằng dấu gạch dưới.
 
 - **Biến global chia sẻ giữa các module:** khai báo `extern` trong header, định nghĩa đúng một lần trong `.cpp` của module sở hữu.
   ```cpp
@@ -221,7 +209,7 @@ static void zw_game_car_reset_slot(uint8_t i);
   static uint8_t zw_game_state;
   static uint8_t gunner_dir = GUNNER_DIR_NONE;
   ```
-- **Biến local:** ngắn gọn, mô tả đúng vai trò. Biến đếm vòng lặp có thể dùng `i`, `j`, `l` khi scope rõ ràng.
+- **Biến local:** ngắn gọn, mô tả đúng vai trò. Biến đếm vòng lặp có thể dùng `i`, `j`, `k` khi scope rõ ràng.
 
 State của object thuộc task nào thì gắn tên object đó (`gunner.y`, `bang[i].visible`, `wave_warning_timer`); không nhét state cross-cutting vào `.cpp` module khác.
 
