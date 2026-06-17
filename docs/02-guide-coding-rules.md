@@ -352,7 +352,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
     <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_download_extension.png" alt="Downloading extension" width="1000"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 3:</em></strong> Downloading extension</p>
+<p align="center"><strong><em>Figure 5:</em></strong> Downloading extension</p>
 
 2. Mở workspace settings (`.vscode/settings.json`), thêm:
 
@@ -367,17 +367,17 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 
   <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_open_workspace_setting_json.png" alt="Opening workspace setting" width="1000"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_open_workspace_setting_json.png" alt="Opening workspace setting" width="1000"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 4:</em></strong> Opening workspace setting</p> 
+<p align="center"><strong><em>Figure 6:</em></strong> Opening workspace setting</p> 
 
  <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_config.png" alt="Config JSON" width="1000"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_config.png" alt="Config JSON" width="1000"/></td>
   </tr>
 </table>
-<p align="center"><strong><em>Figure 5:</em></strong> Config JSON</p> 
+<p align="center"><strong><em>Figure 7:</em></strong> Config JSON</p> 
 
 3. Format file hiện tại bằng phím tắt: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows / Linux).
 
