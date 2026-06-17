@@ -6,8 +6,6 @@ This document collects the naming conventions and formatting rules used across t
 
 ---
 
-# Tiếng Việt
-
 ## Mục lục
 
 - [I. Quy ước đặt tên](#i-quy-ước-đặt-tên)
