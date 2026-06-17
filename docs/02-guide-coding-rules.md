@@ -502,8 +502,8 @@ Các category đang sử dụng:
 
 | Category | Mục đích | Nội dung điển hình |
 |---|---|---|
-| `guide` | Hướng dẫn quy trình, setup, workflow cho contributor | Getting started, coding rules, build & flash, debugging |
-| `design` | Mô tả kiến trúc và hành vi runtime của hệ thống | Sequence diagram, dataflow, task ownership, signal map |
+| `guide` | Hướng dẫn quy trình, setup, workflow cho contributor | Getting started, coding rules |
+| `design` | Mô tả kiến trúc và hành vi runtime của hệ thống | Sequence diagram |
 
 Ví dụ các file đang có trong repo:
 
