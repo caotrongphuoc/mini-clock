@@ -319,6 +319,30 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
     -exec clang-format -i {} +
 ```
 
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_before_format_2_1.png" alt="before format 1" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_before_format_2_2.png" alt="before format 2" width="500"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong><em>Before format 1</em></strong></td>
+    <td align="center"><strong><em>Before format 2</em></strong></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 3:</em></strong> Before formatting</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_after_format_2_1.png" alt="after format 1" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_after_format_2_2.png" alt="after format 2" width="500"/></td>
+  </tr>
+  <tr>
+    <td align="center"><strong><em>After format 1</em></strong></td>
+    <td align="center"><strong><em>After format 2</em></strong></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 4:</em></strong> After formatting</p>
+
 ### VSCode integration
 
 1. Cài extension **C/C++** (Microsoft) — extension này đi kèm `clang-format` và tự động đọc `.clang-format` trong repo.
