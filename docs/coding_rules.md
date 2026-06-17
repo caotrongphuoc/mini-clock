@@ -2,8 +2,6 @@
 
 Tài liệu này tổng hợp các quy ước đặt tên và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất.
 
-This document collects the naming conventions and formatting rules used across this project, plus the steps to install and run `clang-format` so every contributor produces consistent code.
-
 ---
 
 ## Mục lục
