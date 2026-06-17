@@ -32,28 +32,28 @@ static void view_scr_game_setting_car()
 
 	uint8_t sel = car_pos_location_choose;
 
-	for (uint8_t i = 0; i <= CAR_POS_NUM_CARS; i++)
+	for (uint8_t i = 0; i <= SETTING_CAR_NUMBER; i++)
 	{
-		uint8_t frame_y = CAR_POS_FRAMES_AXIS_Y_1 + CAR_POS_FRAMES_STEP * i;
+		uint8_t frame_y = SETTING_CAR_FRAMES_AXIS_Y_1 + SETTING_CAR_FRAMES_STEP * i;
 		bool selected = (i == sel);
 		uint8_t fg = selected ? BLACK : WHITE;
 
 		if (selected)
 		{
-			view_render.fillRoundRect(CAR_POS_FRAMES_AXIS_X, frame_y,
-			                          CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
-			                          CAR_POS_FRAMES_SIZE_R, WHITE);
+			view_render.fillRoundRect(SETTING_CAR_FRAMES_AXIS_X, frame_y,
+			                          SETTING_CAR_FRAMES_SIZE_W, SETTING_CAR_FRAMES_SIZE_H,
+			                          SETTING_CAR_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
-			view_render.drawRoundRect(CAR_POS_FRAMES_AXIS_X, frame_y,
-			                          CAR_POS_FRAMES_SIZE_W, CAR_POS_FRAMES_SIZE_H,
-			                          CAR_POS_FRAMES_SIZE_R, WHITE);
+			view_render.drawRoundRect(SETTING_CAR_FRAMES_AXIS_X, frame_y,
+			                          SETTING_CAR_FRAMES_SIZE_W, SETTING_CAR_FRAMES_SIZE_H,
+			                          SETTING_CAR_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
 
-		if (i < CAR_POS_NUM_CARS)
+		if (i < SETTING_CAR_NUMBER)
 		{
 			bool on = (settingdata.num_car >> i) & 1;
 			view_render.setCursor(2, frame_y + 1);
@@ -94,7 +94,7 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		if (car_pos_location_choose < CAR_POS_NUM_CARS)
+		if (car_pos_location_choose < SETTING_CAR_NUMBER)
 		{
 			settingdata.num_car ^= (1 << car_pos_location_choose);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
@@ -113,7 +113,7 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 		if (car_pos_location_choose == 0)
 		{
-			car_pos_location_choose = CAR_POS_ITEM_EXIT;
+			car_pos_location_choose = SETTING_CAR_ITEM_EXIT;
 		}
 		else
 		{
@@ -126,7 +126,7 @@ void scr_game_setting_car_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (car_pos_location_choose == CAR_POS_ITEM_EXIT)
+		if (car_pos_location_choose == SETTING_CAR_ITEM_EXIT)
 		{
 			car_pos_location_choose = 0;
 		}

@@ -42,28 +42,28 @@ static void view_scr_game_setting_tombstone()
 
 	uint8_t sel = tb_count_location_choose;
 
-	for (uint8_t i = 0; i <= TB_COUNT_NUM_LANE; i++)
+	for (uint8_t i = 0; i <= SETTING_TOMBSTONE_NUMBER; i++)
 	{
-		uint8_t frame_y = TB_COUNT_FRAMES_AXIS_Y_1 + TB_COUNT_FRAMES_STEP * i;
+		uint8_t frame_y = SETTING_TOMBSTONE_FRAMES_AXIS_Y_1 + SETTING_TOMBSTONE_FRAMES_STEP * i;
 		bool selected = (i == sel);
 		uint8_t fg = selected ? BLACK : WHITE;
 
 		if (selected)
 		{
-			view_render.fillRoundRect(TB_COUNT_FRAMES_AXIS_X, frame_y,
-			                          TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
-			                          TB_COUNT_FRAMES_SIZE_R, WHITE);
+			view_render.fillRoundRect(SETTING_TOMBSTONE_FRAMES_AXIS_X, frame_y,
+			                          SETTING_TOMBSTONE_FRAMES_SIZE_W, SETTING_TOMBSTONE_FRAMES_SIZE_H,
+			                          SETTING_TOMBSTONE_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
-			view_render.drawRoundRect(TB_COUNT_FRAMES_AXIS_X, frame_y,
-			                          TB_COUNT_FRAMES_SIZE_W, TB_COUNT_FRAMES_SIZE_H,
-			                          TB_COUNT_FRAMES_SIZE_R, WHITE);
+			view_render.drawRoundRect(SETTING_TOMBSTONE_FRAMES_AXIS_X, frame_y,
+			                          SETTING_TOMBSTONE_FRAMES_SIZE_W, SETTING_TOMBSTONE_FRAMES_SIZE_H,
+			                          SETTING_TOMBSTONE_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
 
-		if (i < TB_COUNT_NUM_LANE)
+		if (i < SETTING_TOMBSTONE_NUMBER)
 		{
 			view_render.setCursor(2, frame_y + 1);
 			view_render.print("Lane ");
@@ -103,7 +103,7 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		if (tb_count_location_choose < TB_COUNT_NUM_LANE)
+		if (tb_count_location_choose < SETTING_TOMBSTONE_NUMBER)
 		{
 			uint8_t idx = tb_count_location_choose;
 			/* Cycle tombstone count: 0 -> 1 -> 2 -> 0 */
@@ -134,7 +134,7 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 		if (tb_count_location_choose == 0)
 		{
-			tb_count_location_choose = TB_COUNT_ITEM_EXIT;
+			tb_count_location_choose = SETTING_TOMBSTONE_ITEM_EXIT;
 		}
 		else
 		{
@@ -147,7 +147,7 @@ void scr_game_setting_tombstone_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (tb_count_location_choose == TB_COUNT_ITEM_EXIT)
+		if (tb_count_location_choose == SETTING_TOMBSTONE_ITEM_EXIT)
 		{
 			tb_count_location_choose = 0;
 		}

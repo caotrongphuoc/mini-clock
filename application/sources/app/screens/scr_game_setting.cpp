@@ -34,23 +34,23 @@ void view_scr_game_setting()
 
 	for (uint8_t f = 0; f < 5; f++)
 	{
-		uint8_t frame_y = ZW_GAME_SETTING_FRAMES_AXIS_Y_1 + ZW_GAME_SETTING_FRAMES_STEP * f;
+		uint8_t frame_y = SETTING_FRAMES_AXIS_Y_1 + SETTING_FRAMES_STEP * f;
 		bool selected = (f == sel);
 		uint8_t fg = selected ? BLACK : WHITE;
 
 		if (selected)
 		{
 			view_render.fillRoundRect(
-			    ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-			    ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-			    ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    SETTING_FRAMES_AXIS_X, frame_y,
+			    SETTING_FRAMES_SIZE_W, SETTING_FRAMES_SIZE_H,
+			    SETTING_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
 			view_render.drawRoundRect(
-			    ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-			    ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-			    ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    SETTING_FRAMES_AXIS_X, frame_y,
+			    SETTING_FRAMES_SIZE_W, SETTING_FRAMES_SIZE_H,
+			    SETTING_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);

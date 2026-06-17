@@ -23,14 +23,14 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
-#define TB_COUNT_NUM_LANE (5)
-#define TB_COUNT_ITEM_EXIT (TB_COUNT_NUM_LANE)
-#define TB_COUNT_FRAMES_AXIS_X (0)
-#define TB_COUNT_FRAMES_AXIS_Y_1 (2)
-#define TB_COUNT_FRAMES_STEP (10)
-#define TB_COUNT_FRAMES_SIZE_W (123)
-#define TB_COUNT_FRAMES_SIZE_H (9)
-#define TB_COUNT_FRAMES_SIZE_R (2)
+#define SETTING_TOMBSTONE_NUMBER (5)
+#define SETTING_TOMBSTONE_ITEM_EXIT (SETTING_TOMBSTONE_NUMBER)
+#define SETTING_TOMBSTONE_FRAMES_AXIS_X (0)
+#define SETTING_TOMBSTONE_FRAMES_AXIS_Y_1 (2)
+#define SETTING_TOMBSTONE_FRAMES_STEP (10)
+#define SETTING_TOMBSTONE_FRAMES_SIZE_W (123)
+#define SETTING_TOMBSTONE_FRAMES_SIZE_H (9)
+#define SETTING_TOMBSTONE_FRAMES_SIZE_R (2)
 
 extern view_dynamic_t dyn_view_game_setting_tombstone;
 extern view_screen_t scr_game_setting_tombstone;
