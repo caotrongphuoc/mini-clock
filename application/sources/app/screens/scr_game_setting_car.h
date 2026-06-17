@@ -23,11 +23,18 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
+// Number of car slots (one per lane)
 #define SETTING_CAR_NUMBER (5)
+
+// Exit item index (placed after the last car slot)
 #define SETTING_CAR_ITEM_EXIT (SETTING_CAR_NUMBER)
-#define SETTING_CAR_FRAMES_AXIS_X (0)
+
+// Frame layout (origin of first frame and vertical step between frames)
+#define SETTING_CAR_FRAMES_AXIS_X   (0)
 #define SETTING_CAR_FRAMES_AXIS_Y_1 (2)
-#define SETTING_CAR_FRAMES_STEP (10)
+#define SETTING_CAR_FRAMES_STEP     (10)
+
+// Frame size (width, height, corner radius)
 #define SETTING_CAR_FRAMES_SIZE_W (123)
 #define SETTING_CAR_FRAMES_SIZE_H (9)
 #define SETTING_CAR_FRAMES_SIZE_R (2)

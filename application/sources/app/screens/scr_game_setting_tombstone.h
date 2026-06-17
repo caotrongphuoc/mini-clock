@@ -23,11 +23,18 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
+// Number of tombstone slots (one per lane)
 #define SETTING_TOMBSTONE_NUMBER (5)
+
+// Exit item index (placed after the last tombstone slot)
 #define SETTING_TOMBSTONE_ITEM_EXIT (SETTING_TOMBSTONE_NUMBER)
-#define SETTING_TOMBSTONE_FRAMES_AXIS_X (0)
+
+// Frame layout (origin of first frame and vertical step between frames)
+#define SETTING_TOMBSTONE_FRAMES_AXIS_X   (0)
 #define SETTING_TOMBSTONE_FRAMES_AXIS_Y_1 (2)
-#define SETTING_TOMBSTONE_FRAMES_STEP (10)
+#define SETTING_TOMBSTONE_FRAMES_STEP     (10)
+
+// Frame size (width, height, corner radius)
 #define SETTING_TOMBSTONE_FRAMES_SIZE_W (123)
 #define SETTING_TOMBSTONE_FRAMES_SIZE_H (9)
 #define SETTING_TOMBSTONE_FRAMES_SIZE_R (2)

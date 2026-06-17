@@ -23,15 +23,22 @@
 #include "screens.h"
 #include "screens_bitmap.h"
 
-#define SETTING_ITEM_CARS (0)
+// Menu item indices (selection order, top to bottom)
+#define SETTING_ITEM_CARS       (0)
 #define SETTING_ITEM_TOMBSTONES (1)
-#define SETTING_ITEM_SPEED (2)
-#define SETTING_ITEM_SOUND (3)
-#define SETTING_ITEM_EXIT (4)
+#define SETTING_ITEM_SPEED      (2)
+#define SETTING_ITEM_SOUND      (3)
+#define SETTING_ITEM_EXIT       (4)
+
+// Total number of menu items
 #define SETTING_ITEM_NUMBER (5)
-#define SETTING_FRAMES_AXIS_X (0)
+
+// Frame layout (origin of first frame and vertical step between frames)
+#define SETTING_FRAMES_AXIS_X   (0)
 #define SETTING_FRAMES_AXIS_Y_1 (2)
-#define SETTING_FRAMES_STEP (12)
+#define SETTING_FRAMES_STEP     (12)
+
+// Frame size (width, height, corner radius)
 #define SETTING_FRAMES_SIZE_W (123)
 #define SETTING_FRAMES_SIZE_H (11)
 #define SETTING_FRAMES_SIZE_R (3)
