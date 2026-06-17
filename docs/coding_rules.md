@@ -81,14 +81,14 @@ Dùng `__<TÊN_FILE>_H__`, viết hoa hết, khớp tên file:
 
 Pattern: `<OBJECT>_<PROPERTY>` hoặc `<OBJECT>_<ACTION>` — object luôn đứng trước, không bao giờ đứng sau. Đọc tên macro là đoán được nó thuộc module nào, grep theo object là ra toàn bộ hằng số của nó.
 
-| Loại hằng | Đặt đúng | Tránh |
-|---|---|---|
-| Số lượng | `ZOMBIE_NUMBER`, `BULLET_NUMBER`, `BANG_NUMBER` | ~~`NUM_ZOMBIE`~~, ~~`NUM_BULLET`~~ |
-| Tọa độ | `GUNNER_AXIS_X`, `CAR_AXIS_X` | ~~`AXIS_X_GUNNER`~~, ~~`AXIS_X_CAR`~~ |
-| Bước di chuyển | `GUNNER_STEP_AXIS_Y`, `BULLET_STEP_AXIS_X` | ~~`STEP_GUNNER_AXIS_Y`~~ |
-| Kích thước bitmap | `GUNNER_SIZE_BITMAP_X`, `BANG_SIZE_BITMAP_I_X` | ~~`SIZE_BITMAP_GUNNER_X`~~ |
-| Thời gian / chu kỳ | `BORDER_WAVE_SCORE_INTERVAL`, `TOMBSTONE_SPAWN_INTERVAL` | ~~`WAVE_SCORE_INTERVAL`~~ |
-| Hành vi / giới hạn | `ZOMBIE_RISE_TICKS`, `ZOMBIE_SPEED_MAX`, `CAR_HIT_RANGE_Y` | ~~`RISE_TICKS_ZOMBIE`~~, ~~`MAX_SPEED_ZOMBIE`~~ |
+| Loại hằng | Đặt đúng |
+|---|---|
+| Số lượng | `ZOMBIE_NUMBER`, `BULLET_NUMBER`, `BANG_NUMBER` | 
+| Tọa độ | `GUNNER_AXIS_X`, `CAR_AXIS_X` |
+| Bước di chuyển | `GUNNER_STEP_AXIS_Y`, `BULLET_STEP_AXIS_X` |
+| Kích thước bitmap | `GUNNER_SIZE_BITMAP_X`, `BANG_SIZE_BITMAP_I_X` |
+| Thời gian / chu kỳ | `BORDER_WAVE_SCORE_INTERVAL`, `TOMBSTONE_SPAWN_INTERVAL` |
+| Hành vi / giới hạn | `ZOMBIE_RISE_TICKS`, `ZOMBIE_SPEED_MAX`, `CAR_HIT_RANGE_Y` |
 
 Ví dụ áp dụng đúng:
 
