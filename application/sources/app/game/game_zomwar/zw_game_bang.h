@@ -13,14 +13,16 @@
 
 #include "scr_game_zomwar.h"
 
-// Number of BangS
+// Number of Bangs
 #define BANG_NUMBER (20)
 
-// Size of Bang (I AND II)
+// Size of Bang frames (I, II, III)
 #define BANG_SIZE_BITMAP_I_X (15)
 #define BANG_SIZE_BITMAP_I_Y (15)
 #define BANG_SIZE_BITMAP_II_X (10)
 #define BANG_SIZE_BITMAP_II_Y (10)
+#define BANG_SIZE_BITMAP_III_X (16)
+#define BANG_SIZE_BITMAP_III_Y (15)
 
 // Spawn offset to center bang sprite over hit point
 #define BANG_SPAWN_OFFSET_X (5)

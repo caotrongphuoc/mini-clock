@@ -140,15 +140,25 @@ void zw_game_bang_display()
 		if (bang[i].visible != WHITE)
 			continue;
 		const unsigned char* frame = bitmap_bang_I;
+		uint8_t w = BANG_SIZE_BITMAP_I_X;
+		uint8_t h = BANG_SIZE_BITMAP_I_Y;
 		if (bang[i].action_image == 2)
+		{
 			frame = bitmap_bang_II;
+			w = BANG_SIZE_BITMAP_II_X;
+			h = BANG_SIZE_BITMAP_II_Y;
+		}
 		else if (bang[i].action_image == 3)
+		{
 			frame = bitmap_bang_III;
+			w = BANG_SIZE_BITMAP_III_X;
+			h = BANG_SIZE_BITMAP_III_Y;
+		}
 		view_render.drawBitmap(bang[i].x,
 		                       bang[i].y,
 		                       frame,
-		                       BANG_SIZE_BITMAP_I_X,
-		                       BANG_SIZE_BITMAP_I_Y,
+		                       w,
+		                       h,
 		                       WHITE);
 	}
 }
