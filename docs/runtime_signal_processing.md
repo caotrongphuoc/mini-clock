@@ -83,13 +83,13 @@ Main runtime flow:
 | Task | Responsibility | Owns Data | Receives Signals |
 |---|---|---|---|
 | `AC_TASK_DISPLAY_ID` | Screen manager, render scheduling, button routing, central game-tick dispatch | Current screen state, `zw_game_state`, `gunner_dir`, `gamescore` | All `AC_DISPLAY_*` button signals, `ZW_GAME_TIME_TICK`, `ZW_GAME_RESET`, `ZW_GAME_EXIT_GAME` |
-| `ZW_GAME_GUNNER_ID` | Player control | Gunner position and display state | `SETUP`, `UPDATE`, `UP`, `DOWN`, `RESET` |
-| `ZW_GAME_BULLET_ID` | Bullet movement and shooting | All bullet slots | `SETUP`, `RUN`, `SHOOT`, `RESET` |
-| `ZW_GAME_ZOMBIE_ID` | Zombie movement, collision, score, menu demo | Zombie slots, `zw_game_zombie_speed` | `SETUP`, `RUN`, `DETONATOR`, `RESET`, `SETUP_MENU`, `RUN_MENU` |
-| `ZW_GAME_CAR_ID` | Lawnmower rescue logic | Per-lane car slots | `SETUP`, `RUN`, `RESET` |
-| `ZW_GAME_TOMBSTONE_ID` | Tombstone spawn timing | Tombstone slots, spawn timer | `SETUP`, `SPAWN`, `RESET` |
-| `ZW_GAME_BANG_ID` | Explosion animation | Bang slots | `SETUP`, `UPDATE`, `RESET` |
-| `ZW_GAME_BORDER_ID` | Wave / level-up / game-over detection | `border`, `zw_game_score`, wave state | `SETUP`, `LEVEL_UP`, `CHECK_GAME_OVER`, `RESET` |
+| `ZW_GAME_GUNNER_ID` | Player control | `gunner`, internal `gunner_y` | `GUNNER_SETUP`, `GUNNER_UPDATE`, `GUNNER_UP`, `GUNNER_DOWN`, `GUNNER_RESET` |
+| `ZW_GAME_BULLET_ID` | Bullet movement and shooting | `bullet[]` | `BULLET_SETUP`, `BULLET_RUN`, `BULLET_SHOOT`, `BULLET_RESET` |
+| `ZW_GAME_ZOMBIE_ID` | Zombie movement, collision, wave spawn, menu demo | `zombie[]`, `zw_game_zombie_speed` | `ZOMBIE_SETUP`, `ZOMBIE_RUN`, `ZOMBIE_DETONATOR`, `ZOMBIE_WAVE_SPAWN`, `ZOMBIE_RESET`, `ZOMBIE_SETUP_MENU`, `ZOMBIE_RUN_MENU` |
+| `ZW_GAME_CAR_ID` | Lawnmower rescue logic | `car[]` | `CAR_SETUP`, `CAR_RUN`, `CAR_HIT`, `CAR_RESET` |
+| `ZW_GAME_TOMBSTONE_ID` | Tombstone spawn timing | `tombstone[]`, `tombstone_spawn_timer` | `TOMBSTONE_SETUP`, `TOMBSTONE_SPAWN`, `TOMBSTONE_RESET` |
+| `ZW_GAME_BANG_ID` | Explosion animation | `bang[]` | `BANG_SETUP`, `BANG_UPDATE`, `BANG_RESET` |
+| `ZW_GAME_BORDER_ID` | Wave / level-up / game-over detection | `zw_game_score`, `wave_last_score`, `wave_level`, `wave_warning_active`, `wave_warning_timer` | `BORDER_SETUP`, `BORDER_CHECK_GAME_OVER`, `BORDER_CHECK_WAVE`, `BORDER_LEVEL_UP`, `BORDER_RESET` |
 
 ## IV. Button Event Processing
 
@@ -115,10 +115,12 @@ Important runtime characteristics:
 
 - Signals are queued in AK before they are handled.
 - A sender posts a message; it does not directly execute the destination task handler.
-- Handlers are isolated by task ownership.
+- Handlers run to completion (RTC): a task processes one signal fully before pulling the next.
 - Game logic is decoupled through signals.
 - Timing depends on scheduler execution order.
 - A signal may wait in the AK message pool before its handler executes.
 - `ZW_GAME_TIME_TICK` can appear between button pressed and released logs because the timer keeps running.
-- The Bang and the Car tasks may also be triggered indirectly: Zombie and Car write to `bang[]` directly when a collision is detected, without posting a separate spawn signal.
-- The game-over flow is split between two screens: `scr_game_zomwar` latches `gamescore.score_now` and arms a one-shot `ZW_GAME_EXIT_GAME` timer; `scr_game_over` runs the ranking and writes the score to EEPROM only after the user presses Retry / Rank / Home.
+- Bang has no spawn signal: Zombie's `DETONATOR` and Car's `RUN`/`HIT` call `zw_game_bang_spawn()` directly to write into `bang[]`. The Bang task only owns the per-tick animation (`BANG_UPDATE`).
+- Border crosses task boundaries in two places: it posts `ZOMBIE_WAVE_SPAWN` to Zombie on `BORDER_LEVEL_UP` (async), and calls `zw_game_car_find_nearest()` synchronously into the Car module on `BORDER_CHECK_GAME_OVER` (sync helper, reads `car[]`).
+- Tombstone writes into `zombie[]` via a synchronous helper `zw_game_zombie_spawn_from_tombstone()` during its own `TOMBSTONE_SPAWN` tick — it does not post a signal to the Zombie task.
+- The game-over flow is split between two screens: `scr_game_zomwar` latches `gamescore.score_now`, plays `BUZZER_SOUND_GOODBYE`, and arms a one-shot `ZW_GAME_EXIT_GAME` timer; `scr_game_over` runs the ranking and writes the score to EEPROM only after the user presses Retry / Rank / Home.
