@@ -260,7 +260,7 @@ SortIncludes: false
 
 ## III. Cài đặt clang-format
 
-Hướng dẫn cho Linux (Ubuntu / Debian). Yêu cầu phiên bản **≥ 14** để hỗ trợ đầy đủ các setting trong `.clang-format`.
+Hướng dẫn cho Linux (Ubuntu / Debian).
 
 Cài đặt:
 
