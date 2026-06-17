@@ -41,11 +41,80 @@ Main runtime flow:
 
 #### 1. Game Start
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_start_sequence.png" alt="Game start sequence logic" width="1000"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Scr as Screen task
+    participant EE as EEPROM
+    participant Q as AK queue
+    participant Gun as Gunner task
+    participant Bul as Bullet task
+    participant Zmb as Zombie task
+    participant Car as Car task
+    participant Tmb as Tombstone task
+    participant Bng as Bang task
+    participant Bdr as Border task
+    participant Tmr as Timer
+
+    Note over Scr: SCREEN_ENTRY dispatched to scr_game_zomwar
+    activate Scr
+    Scr->>+EE: zw_game_setting_read(&settingsetup)
+    EE-->>-Scr: settings loaded
+
+    Note over Scr,Q: Post 7 SETUP signals (async, RTC defers handlers)
+    Scr-)Q: GUNNER_SETUP -> ZW_GAME_GUNNER_ID
+    Scr-)Q: BULLET_SETUP -> ZW_GAME_BULLET_ID
+    Scr-)Q: ZOMBIE_SETUP -> ZW_GAME_ZOMBIE_ID
+    Scr-)Q: CAR_SETUP -> ZW_GAME_CAR_ID
+    Scr-)Q: TOMBSTONE_SETUP -> ZW_GAME_TOMBSTONE_ID
+    Scr-)Q: BANG_SETUP -> ZW_GAME_BANG_ID
+    Scr-)Q: BORDER_SETUP -> ZW_GAME_BORDER_ID
+
+    Note right of Scr: zw_game_state = GAME_PLAY<br/>gunner_dir = GUNNER_DIR_NONE
+    Scr->>Tmr: timer_remove_attr(AC_DISPLAY_SHOW_IDLE)
+    Scr->>Tmr: timer_set(ZW_GAME_TIME_TICK, 100 ms, PERIODIC)
+    deactivate Scr
+
+    Note over Q: AK scheduler dispatches each queued signal to its task (RTC)
+    Q-)Gun: GUNNER_SETUP
+    activate Gun
+    Note right of Gun: init pose (X, Y), visible=WHITE, action_image=1
+    deactivate Gun
+
+    Q-)Bul: BULLET_SETUP
+    activate Bul
+    Note right of Bul: clear bullet array (visible=BLACK)
+    deactivate Bul
+
+    Q-)Zmb: ZOMBIE_SETUP
+    activate Zmb
+    Note right of Zmb: speed = settingsetup.zombie_speed<br/>spawn NUM_ZOMBIE_INIT zombies at random
+    deactivate Zmb
+
+    Q-)Car: CAR_SETUP
+    activate Car
+    Note right of Car: park each lane, visible = bit mask of settingsetup.num_car
+    deactivate Car
+
+    Q-)Tmb: TOMBSTONE_SETUP
+    activate Tmb
+    Note right of Tmb: arm spawn_timer<br/>active flags from settingsetup.tombstone_lane_1 and _2
+    deactivate Tmb
+
+    Q-)Bng: BANG_SETUP
+    activate Bng
+    Note right of Bng: clear bang array (visible=BLACK)
+    deactivate Bng
+
+    Q-)Bdr: BORDER_SETUP
+    activate Bdr
+    Note right of Bdr: zero score, wave_level, wave_last_score<br/>clear warning latch
+    deactivate Bdr
+
+    Note over Tmr: 100 ms later
+    Tmr-)Scr: ZW_GAME_TIME_TICK (periodic, until ZW_GAME_RESET)
+```
+
 <p align="center"><strong><em>Figure 1:</em></strong> Game start sequence logic</p>
 
 #### 2. Game Playing
