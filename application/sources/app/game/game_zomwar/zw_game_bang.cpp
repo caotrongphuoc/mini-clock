@@ -2,7 +2,7 @@
 
 zw_game_bang_t bang[BANG_NUMBER];
 
-void zw_game_bang_reset_all()
+static void zw_game_bang_reset_all()
 {
 	for (uint8_t i = 0; i < BANG_NUMBER; i++)
 	{
