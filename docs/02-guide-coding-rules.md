@@ -265,7 +265,7 @@ sudo apt install clang-format
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_setup.png" alt="Setting up clang-format" width="1000"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_setup.png" alt="Setting up clang-format" width="1000"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> Setting up clang-format</p>
@@ -283,7 +283,7 @@ Ubuntu clang-format version 18.1.x
 ```
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_check_version.png" alt="Check version clang-format" width="1000"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_check_version.png" alt="Check version clang-format" width="1000"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Check version clang-format</p>
@@ -301,8 +301,8 @@ clang-format -i application/sources/app/game/game_zomwar/zw_game_bullet.cpp
 ```
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_before_format_1.png" alt="before format" width="500"/></td>
-    <td align="center"><img src="resources/images/guide-coding-rules/clang_format_after_format_1.png" alt="after format" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_before_format_1.png" alt="before format" width="500"/></td>
+    <td align="center"><img src="../resources/images/guide-coding-rules/clang_format_after_format_1.png" alt="after format" width="500"/></td>
   </tr>
   <tr>
     <td align="center"><strong><em>Before format</em></strong></td>
