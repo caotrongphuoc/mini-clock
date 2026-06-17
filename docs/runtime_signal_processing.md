@@ -46,7 +46,7 @@ sequenceDiagram
     autonumber
     participant Scr as Screen task
     participant EE as EEPROM
-    participant Q as AK queue
+    participant Q as AKOS Event-Driven (message pool and Scheduler)
     participant Gun as Gunner task
     participant Bul as Bullet task
     participant Zmb as Zombie task
@@ -62,13 +62,13 @@ sequenceDiagram
     EE-->>-Scr: settings loaded
 
     Note over Scr,Q: Post 7 SETUP signals (async, RTC defers handlers)
-    Scr-)Q: GUNNER_SETUP -> ZW_GAME_GUNNER_ID
-    Scr-)Q: BULLET_SETUP -> ZW_GAME_BULLET_ID
-    Scr-)Q: ZOMBIE_SETUP -> ZW_GAME_ZOMBIE_ID
-    Scr-)Q: CAR_SETUP -> ZW_GAME_CAR_ID
-    Scr-)Q: TOMBSTONE_SETUP -> ZW_GAME_TOMBSTONE_ID
-    Scr-)Q: BANG_SETUP -> ZW_GAME_BANG_ID
-    Scr-)Q: BORDER_SETUP -> ZW_GAME_BORDER_ID
+    Scr-)Q: ZW_GAME_GUNNER_SETUP to ZW_GAME_GUNNER_ID
+    Scr-)Q: ZW_GAME_BULLET_SETUP to ZW_GAME_BULLET_ID
+    Scr-)Q: ZW_GAME_ZOMBIE_SETUP to ZW_GAME_ZOMBIE_ID
+    Scr-)Q: ZW_GAME_CAR_SETUP to ZW_GAME_CAR_ID
+    Scr-)Q: ZW_GAME_TOMBSTONE_SETUP to ZW_GAME_TOMBSTONE_ID
+    Scr-)Q: ZW_GAME_BANG_SETUP to ZW_GAME_BANG_ID
+    Scr-)Q: ZW_GAME_BORDER_SETUP to ZW_GAME_BORDER_ID
 
     Note right of Scr: zw_game_state = GAME_PLAY<br/>gunner_dir = GUNNER_DIR_NONE
     Scr->>Tmr: timer_remove_attr(AC_DISPLAY_SHOW_IDLE)
@@ -76,37 +76,37 @@ sequenceDiagram
     deactivate Scr
 
     Note over Q: AK scheduler dispatches each queued signal to its task (RTC)
-    Q-)Gun: GUNNER_SETUP
+    Q-)Gun: ZW_GAME_GUNNER_SETUP
     activate Gun
     Note right of Gun: init pose (X, Y), visible=WHITE, action_image=1
     deactivate Gun
 
-    Q-)Bul: BULLET_SETUP
+    Q-)Bul: ZW_GAME_BULLET_SETUP
     activate Bul
     Note right of Bul: clear bullet array (visible=BLACK)
     deactivate Bul
 
-    Q-)Zmb: ZOMBIE_SETUP
+    Q-)Zmb: ZW_GAME_ZOMBIE_SETUP
     activate Zmb
     Note right of Zmb: speed = settingsetup.zombie_speed<br/>spawn NUM_ZOMBIE_INIT zombies at random
     deactivate Zmb
 
-    Q-)Car: CAR_SETUP
+    Q-)Car: ZW_GAME_CAR_SETUP
     activate Car
     Note right of Car: park each lane, visible = bit mask of settingsetup.num_car
     deactivate Car
 
-    Q-)Tmb: TOMBSTONE_SETUP
+    Q-)Tmb: ZW_GAME_TOMBSTONE_SETUP
     activate Tmb
     Note right of Tmb: arm spawn_timer<br/>active flags from settingsetup.tombstone_lane_1 and _2
     deactivate Tmb
 
-    Q-)Bng: BANG_SETUP
+    Q-)Bng: ZW_GAME_BANG_SETUP
     activate Bng
     Note right of Bng: clear bang array (visible=BLACK)
     deactivate Bng
 
-    Q-)Bdr: BORDER_SETUP
+    Q-)Bdr: ZW_GAME_BORDER_SETUP
     activate Bdr
     Note right of Bdr: zero score, wave_level, wave_last_score<br/>clear warning latch
     deactivate Bdr
@@ -124,7 +124,7 @@ sequenceDiagram
     autonumber
     actor Btn as Button
     participant Tmr as Timer
-    participant Q as AK queue
+    participant Q as AKOS Event-Driven (message pool and Scheduler)
     participant Scr as Screen task
     participant Gun as Gunner task
     participant Bul as Bullet task
@@ -135,26 +135,26 @@ sequenceDiagram
     participant Bdr as Border task
 
     Note over Btn,Scr: Button events fire asynchronously between ticks
-    Btn-)Q: BUTTON_UP_PRESSED to AC_TASK_DISPLAY_ID
+    Btn-)Q: AC_DISPLAY_BUTTON_UP_PRESSED to AC_TASK_DISPLAY_ID
     Q-)Scr: dispatch
     activate Scr
-    Note right of Scr: gunner_dir = UP
+    Note right of Scr: gunner_dir = GUNNER_DIR_UP
     deactivate Scr
 
-    Btn-)Q: BUTTON_UP_RELEASED
+    Btn-)Q: AC_DISPLAY_BUTTON_UP_RELEASED
     Q-)Scr: dispatch
     activate Scr
-    Note right of Scr: if dir == UP, dir = NONE
+    Note right of Scr: if dir == GUNNER_DIR_UP, dir = GUNNER_DIR_NONE
     deactivate Scr
 
-    Btn-)Q: BUTTON_MODE_PRESSED
+    Btn-)Q: AC_DISPLAY_BUTTON_MODE_PRESSED
     Q-)Scr: dispatch
     activate Scr
     opt zw_game_state == GAME_PLAY
-        Scr-)Q: BULLET_SHOOT to ZW_GAME_BULLET_ID
+        Scr-)Q: ZW_GAME_BULLET_SHOOT to ZW_GAME_BULLET_ID
     end
     deactivate Scr
-    Q-)Bul: BULLET_SHOOT (dispatched after Screen RTC)
+    Q-)Bul: ZW_GAME_BULLET_SHOOT (dispatched after Screen RTC)
     activate Bul
     Note right of Bul: spawn bullet, set gunner.action_image=2, play CLICK
     deactivate Bul
@@ -167,95 +167,95 @@ sequenceDiagram
         Note right of Scr: break (ignore tick)
     end
 
-    alt gunner_dir == UP
-        Scr-)Q: GUNNER_UP
-    else gunner_dir == DOWN
-        Scr-)Q: GUNNER_DOWN
-    else gunner_dir == NONE
+    alt gunner_dir == GUNNER_DIR_UP
+        Scr-)Q: ZW_GAME_GUNNER_UP
+    else gunner_dir == GUNNER_DIR_DOWN
+        Scr-)Q: ZW_GAME_GUNNER_DOWN
+    else gunner_dir == GUNNER_DIR_NONE
         Note right of Scr: skip movement post
     end
-    Scr-)Q: GUNNER_UPDATE
-    Scr-)Q: BULLET_RUN
-    Scr-)Q: ZOMBIE_RUN
-    Scr-)Q: ZOMBIE_DETONATOR
-    Scr-)Q: TOMBSTONE_SPAWN
-    Scr-)Q: CAR_RUN
-    Scr-)Q: CAR_HIT
-    Scr-)Q: BANG_UPDATE
-    Scr-)Q: BORDER_CHECK_GAME_OVER
-    Scr-)Q: BORDER_CHECK_WAVE
-    Scr-)Q: BORDER_LEVEL_UP
+    Scr-)Q: ZW_GAME_GUNNER_UPDATE
+    Scr-)Q: ZW_GAME_BULLET_RUN
+    Scr-)Q: ZW_GAME_ZOMBIE_RUN
+    Scr-)Q: ZW_GAME_ZOMBIE_DETONATOR
+    Scr-)Q: ZW_GAME_TOMBSTONE_SPAWN
+    Scr-)Q: ZW_GAME_CAR_RUN
+    Scr-)Q: ZW_GAME_CAR_HIT
+    Scr-)Q: ZW_GAME_BANG_UPDATE
+    Scr-)Q: ZW_GAME_BORDER_CHECK_GAME_OVER
+    Scr-)Q: ZW_GAME_BORDER_CHECK_WAVE
+    Scr-)Q: ZW_GAME_BORDER_LEVEL_UP
     deactivate Scr
 
     Note over Q: AK scheduler dispatches each queued signal (RTC, FIFO)
 
-    Q-)Gun: GUNNER_UP or GUNNER_DOWN
+    Q-)Gun: ZW_GAME_GUNNER_UP or ZW_GAME_GUNNER_DOWN
     activate Gun
     Note right of Gun: gunner_y += or -= STEP, clamp
     deactivate Gun
 
-    Q-)Gun: GUNNER_UPDATE
+    Q-)Gun: ZW_GAME_GUNNER_UPDATE
     activate Gun
     Note right of Gun: gunner.y from gunner_y, clear recoil
     deactivate Gun
 
-    Q-)Bul: BULLET_RUN
+    Q-)Bul: ZW_GAME_BULLET_RUN
     activate Bul
     Note right of Bul: advance bullets, despawn at right edge
     deactivate Bul
 
-    Q-)Zmb: ZOMBIE_RUN
+    Q-)Zmb: ZW_GAME_ZOMBIE_RUN
     activate Zmb
     Note right of Zmb: rise or step-left with zigzag, animate, top-up alive count
     deactivate Zmb
 
-    Q-)Zmb: ZOMBIE_DETONATOR
+    Q-)Zmb: ZW_GAME_ZOMBIE_DETONATOR
     activate Zmb
     Note right of Zmb: bullet vs zombie hit, write bang and score, BUZZER, hide
     deactivate Zmb
 
-    Q-)Tmb: TOMBSTONE_SPAWN
+    Q-)Tmb: ZW_GAME_TOMBSTONE_SPAWN
     activate Tmb
     Note right of Tmb: countdown spawn_timer, on expire spawn rising zombie via sync helper
     deactivate Tmb
 
-    Q-)Car: CAR_RUN
+    Q-)Car: ZW_GAME_CAR_RUN
     activate Car
     Note right of Car: activation pass plus advance running cars
     deactivate Car
 
-    Q-)Car: CAR_HIT
+    Q-)Car: ZW_GAME_CAR_HIT
     activate Car
     Note right of Car: running car vs zombie, write bang and score, BUZZER, hide
     deactivate Car
 
-    Q-)Bng: BANG_UPDATE
+    Q-)Bng: ZW_GAME_BANG_UPDATE
     activate Bng
     Note right of Bng: animate visible slots 1->2->3, retire at 3
     deactivate Bng
 
-    Q-)Bdr: BORDER_CHECK_GAME_OVER
+    Q-)Bdr: ZW_GAME_BORDER_CHECK_GAME_OVER
     activate Bdr
     loop scan visible zombies past left edge
         Bdr->>+Car: zw_game_car_find_nearest(z.y)
         Car-->>-Bdr: idx
         opt idx less than 0
-            Bdr-)Q: ZW_GAME_RESET to Screen
+            Bdr-)Q: ZW_GAME_RESET to AC_TASK_DISPLAY_ID
             Note right of Bdr: break loop
         end
     end
     deactivate Bdr
 
-    Q-)Bdr: BORDER_CHECK_WAVE
+    Q-)Bdr: ZW_GAME_BORDER_CHECK_WAVE
     activate Bdr
     Note right of Bdr: arm wave warning if score crossed threshold
     deactivate Bdr
 
-    Q-)Bdr: BORDER_LEVEL_UP
+    Q-)Bdr: ZW_GAME_BORDER_LEVEL_UP
     activate Bdr
     opt warning active and timer reached 0
         Note right of Bdr: advance wave_last_score, wave_level++
-        Bdr-)Q: ZOMBIE_WAVE_SPAWN to Zombie
+        Bdr-)Q: ZW_GAME_ZOMBIE_WAVE_SPAWN to ZW_GAME_ZOMBIE_ID
     end
     deactivate Bdr
 ```
@@ -268,7 +268,7 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     participant Bdr as Border task
-    participant Q as AK queue
+    participant Q as AKOS Event-Driven (message pool and Scheduler)
     participant Tmr as Timer
     participant Scr as Screen task
     participant Gun as Gunner task
@@ -279,7 +279,7 @@ sequenceDiagram
     participant Bng as Bang task
     participant Bz as Buzzer
 
-    Note over Bdr: trigger from BORDER_CHECK_GAME_OVER<br/>zombie past left edge with no rescue car nearby
+    Note over Bdr: trigger from ZW_GAME_BORDER_CHECK_GAME_OVER<br/>zombie past left edge with no rescue car nearby
     Bdr-)Q: ZW_GAME_RESET to AC_TASK_DISPLAY_ID
     Q-)Scr: dispatch
     activate Scr
@@ -290,52 +290,52 @@ sequenceDiagram
     Note right of Scr: periodic tick stops
 
     Note over Scr,Q: Fan out 7 RESET signals (async)
-    Scr-)Q: GUNNER_RESET
-    Scr-)Q: BULLET_RESET
-    Scr-)Q: ZOMBIE_RESET
-    Scr-)Q: CAR_RESET
-    Scr-)Q: TOMBSTONE_RESET
-    Scr-)Q: BANG_RESET
-    Scr-)Q: BORDER_RESET
+    Scr-)Q: ZW_GAME_GUNNER_RESET to ZW_GAME_GUNNER_ID
+    Scr-)Q: ZW_GAME_BULLET_RESET to ZW_GAME_BULLET_ID
+    Scr-)Q: ZW_GAME_ZOMBIE_RESET to ZW_GAME_ZOMBIE_ID
+    Scr-)Q: ZW_GAME_CAR_RESET to ZW_GAME_CAR_ID
+    Scr-)Q: ZW_GAME_TOMBSTONE_RESET to ZW_GAME_TOMBSTONE_ID
+    Scr-)Q: ZW_GAME_BANG_RESET to ZW_GAME_BANG_ID
+    Scr-)Q: ZW_GAME_BORDER_RESET to ZW_GAME_BORDER_ID
 
     Note right of Scr: gamescore.score_now = zw_game_score (latch for game-over screen)<br/>zw_game_state = GAME_OVER
-    Scr->>+Bz: BUZZER_PlaySound(GOODBYE)
+    Scr->>+Bz: BUZZER_PlaySound(BUZZER_SOUND_GOODBYE)
     Bz-->>-Scr: 
     Scr->>Tmr: timer_set(ZW_GAME_EXIT_GAME, 3000 ms, ONE_SHOT)
     deactivate Scr
 
     Note over Q: AK dispatches each RESET in FIFO order (RTC)
-    Q-)Gun: GUNNER_RESET
+    Q-)Gun: ZW_GAME_GUNNER_RESET
     activate Gun
     Note right of Gun: re-park, visible=BLACK
     deactivate Gun
 
-    Q-)Bul: BULLET_RESET
+    Q-)Bul: ZW_GAME_BULLET_RESET
     activate Bul
     Note right of Bul: clear bullet array
     deactivate Bul
 
-    Q-)Zmb: ZOMBIE_RESET
+    Q-)Zmb: ZW_GAME_ZOMBIE_RESET
     activate Zmb
     Note right of Zmb: hide all zombies
     deactivate Zmb
 
-    Q-)Car: CAR_RESET
+    Q-)Car: ZW_GAME_CAR_RESET
     activate Car
     Note right of Car: re-park lanes, visible=false, running=false
     deactivate Car
 
-    Q-)Tmb: TOMBSTONE_RESET
+    Q-)Tmb: ZW_GAME_TOMBSTONE_RESET
     activate Tmb
     Note right of Tmb: clear timer and slots
     deactivate Tmb
 
-    Q-)Bng: BANG_RESET
+    Q-)Bng: ZW_GAME_BANG_RESET
     activate Bng
     Note right of Bng: clear bang array
     deactivate Bng
 
-    Q-)Bdr: BORDER_RESET
+    Q-)Bdr: ZW_GAME_BORDER_RESET
     activate Bdr
     Note right of Bdr: zw_game_border_clear()<br/>zero score, wave_level, warning latch
     deactivate Bdr
@@ -367,13 +367,13 @@ sequenceDiagram
 | Task | Responsibility | Owns Data | Receives Signals |
 |---|---|---|---|
 | `AC_TASK_DISPLAY_ID` | Screen manager, render scheduling, button routing, central game-tick dispatch | Current screen state, `zw_game_state`, `gunner_dir`, `gamescore` | All `AC_DISPLAY_*` button signals, `ZW_GAME_TIME_TICK`, `ZW_GAME_RESET`, `ZW_GAME_EXIT_GAME` |
-| `ZW_GAME_GUNNER_ID` | Player control | `gunner`, internal `gunner_y` | `GUNNER_SETUP`, `GUNNER_UPDATE`, `GUNNER_UP`, `GUNNER_DOWN`, `GUNNER_RESET` |
-| `ZW_GAME_BULLET_ID` | Bullet movement and shooting | `bullet[]` | `BULLET_SETUP`, `BULLET_RUN`, `BULLET_SHOOT`, `BULLET_RESET` |
-| `ZW_GAME_ZOMBIE_ID` | Zombie movement, collision, wave spawn, menu demo | `zombie[]`, `zw_game_zombie_speed` | `ZOMBIE_SETUP`, `ZOMBIE_RUN`, `ZOMBIE_DETONATOR`, `ZOMBIE_WAVE_SPAWN`, `ZOMBIE_RESET`, `ZOMBIE_SETUP_MENU`, `ZOMBIE_RUN_MENU` |
-| `ZW_GAME_CAR_ID` | Lawnmower rescue logic | `car[]` | `CAR_SETUP`, `CAR_RUN`, `CAR_HIT`, `CAR_RESET` |
-| `ZW_GAME_TOMBSTONE_ID` | Tombstone spawn timing | `tombstone[]`, `tombstone_spawn_timer` | `TOMBSTONE_SETUP`, `TOMBSTONE_SPAWN`, `TOMBSTONE_RESET` |
-| `ZW_GAME_BANG_ID` | Explosion animation | `bang[]` | `BANG_SETUP`, `BANG_UPDATE`, `BANG_RESET` |
-| `ZW_GAME_BORDER_ID` | Wave / level-up / game-over detection | `zw_game_score`, `wave_last_score`, `wave_level`, `wave_warning_active`, `wave_warning_timer` | `BORDER_SETUP`, `BORDER_CHECK_GAME_OVER`, `BORDER_CHECK_WAVE`, `BORDER_LEVEL_UP`, `BORDER_RESET` |
+| `ZW_GAME_GUNNER_ID` | Player control | `gunner`, internal `gunner_y` | `ZW_GAME_GUNNER_SETUP`, `ZW_GAME_GUNNER_UPDATE`, `ZW_GAME_GUNNER_UP`, `ZW_GAME_GUNNER_DOWN`, `ZW_GAME_GUNNER_RESET` |
+| `ZW_GAME_BULLET_ID` | Bullet movement and shooting | `bullet[]` | `ZW_GAME_BULLET_SETUP`, `ZW_GAME_BULLET_RUN`, `ZW_GAME_BULLET_SHOOT`, `ZW_GAME_BULLET_RESET` |
+| `ZW_GAME_ZOMBIE_ID` | Zombie movement, collision, wave spawn, menu demo | `zombie[]`, `zw_game_zombie_speed` | `ZW_GAME_ZOMBIE_SETUP`, `ZW_GAME_ZOMBIE_RUN`, `ZW_GAME_ZOMBIE_DETONATOR`, `ZW_GAME_ZOMBIE_WAVE_SPAWN`, `ZW_GAME_ZOMBIE_RESET`, `ZW_GAME_ZOMBIE_SETUP_MENU`, `ZW_GAME_ZOMBIE_RUN_MENU` |
+| `ZW_GAME_CAR_ID` | Lawnmower rescue logic | `car[]` | `ZW_GAME_CAR_SETUP`, `ZW_GAME_CAR_RUN`, `ZW_GAME_CAR_HIT`, `ZW_GAME_CAR_RESET` |
+| `ZW_GAME_TOMBSTONE_ID` | Tombstone spawn timing | `tombstone[]`, `tombstone_spawn_timer` | `ZW_GAME_TOMBSTONE_SETUP`, `ZW_GAME_TOMBSTONE_SPAWN`, `ZW_GAME_TOMBSTONE_RESET` |
+| `ZW_GAME_BANG_ID` | Explosion animation | `bang[]` | `ZW_GAME_BANG_SETUP`, `ZW_GAME_BANG_UPDATE`, `ZW_GAME_BANG_RESET` |
+| `ZW_GAME_BORDER_ID` | Wave / level-up / game-over detection | `zw_game_score`, `wave_last_score`, `wave_level`, `wave_warning_active`, `wave_warning_timer` | `ZW_GAME_BORDER_SETUP`, `ZW_GAME_BORDER_CHECK_GAME_OVER`, `ZW_GAME_BORDER_CHECK_WAVE`, `ZW_GAME_BORDER_LEVEL_UP`, `ZW_GAME_BORDER_RESET` |
 
 ## IV. Button Event Processing
 
@@ -404,7 +404,7 @@ Important runtime characteristics:
 - Timing depends on scheduler execution order.
 - A signal may wait in the AK message pool before its handler executes.
 - `ZW_GAME_TIME_TICK` can appear between button pressed and released logs because the timer keeps running.
-- Bang has no spawn signal: Zombie's `DETONATOR` and Car's `RUN`/`HIT` call `zw_game_bang_spawn()` directly to write into `bang[]`. The Bang task only owns the per-tick animation (`BANG_UPDATE`).
-- Border crosses task boundaries in two places: it posts `ZOMBIE_WAVE_SPAWN` to Zombie on `BORDER_LEVEL_UP` (async), and calls `zw_game_car_find_nearest()` synchronously into the Car module on `BORDER_CHECK_GAME_OVER` (sync helper, reads `car[]`).
-- Tombstone writes into `zombie[]` via a synchronous helper `zw_game_zombie_spawn_from_tombstone()` during its own `TOMBSTONE_SPAWN` tick — it does not post a signal to the Zombie task.
+- Bang has no spawn signal: Zombie's `ZW_GAME_ZOMBIE_DETONATOR` and Car's `ZW_GAME_CAR_RUN`/`ZW_GAME_CAR_HIT` call `zw_game_bang_spawn()` directly to write into `bang[]`. The Bang task only owns the per-tick animation (`ZW_GAME_BANG_UPDATE`).
+- Border crosses task boundaries in two places: it posts `ZW_GAME_ZOMBIE_WAVE_SPAWN` to Zombie on `ZW_GAME_BORDER_LEVEL_UP` (async), and calls `zw_game_car_find_nearest()` synchronously into the Car module on `ZW_GAME_BORDER_CHECK_GAME_OVER` (sync helper, reads `car[]`).
+- Tombstone writes into `zombie[]` via a synchronous helper `zw_game_zombie_spawn_from_tombstone()` during its own `ZW_GAME_TOMBSTONE_SPAWN` tick — it does not post a signal to the Zombie task.
 - The game-over flow is split between two screens: `scr_game_zomwar` latches `gamescore.score_now`, plays `BUZZER_SOUND_GOODBYE`, and arms a one-shot `ZW_GAME_EXIT_GAME` timer; `scr_game_over` runs the ranking and writes the score to EEPROM only after the user presses Retry / Rank / Home.
