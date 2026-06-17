@@ -30,13 +30,13 @@ Click the **Fork** button in the top-right corner to create a copy of the projec
 You can also click the **Star** button next to **Fork** to support the author.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/repo-ak.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/repo-ak.png" />
 </p>
 
 ### 3. Create the fork
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-fork.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-fork.png" />
 </p>
 
 > **Note:**
@@ -46,7 +46,7 @@ You can also click the **Star** button next to **Fork** to support the author.
 Once the fork is created, GitHub redirects you to the new repository — this is the "skeleton" you will use to develop and complete your game:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/repo-after-create-fork.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/repo-after-create-fork.png" />
 </p>
 
 ---
@@ -68,7 +68,7 @@ To build the source code and flash firmware onto the kit, you need to set up the
 From your `Home` directory, create a folder named **Workspace** — this will hold all of your source code and programming tools.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-workspace.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-workspace.png" />
 </p>
 
 Inside `Workspace`, create two subdirectories:
@@ -79,7 +79,7 @@ Inside `Workspace`, create two subdirectories:
 | `Tools`   | Holds the programming tools (see details in [Section II](#ii-quick-start-guide-environment-setup)) |
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-sources-and-tools.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-sources-and-tools.png" />
 </p>
 
 ---
@@ -95,7 +95,7 @@ git clone https://github.com/<your-username>/<your-cloned-repo-name>.git
 ```
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/open-terminal-in-sources.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/open-terminal-in-sources.png" />
 </p>
 
 ---
@@ -107,13 +107,13 @@ Open **VSCode** on Linux, then open the freshly cloned repository to start codin
 First, set your game's name in the `Makefile.mk` file located in the `application/` directory:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/name-your-game.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/name-your-game.png" />
 </p>
 
 All game logic lives in the `application/sources/app` directory.
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/application.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/application.png" />
 </p>
 
 #### Example: Displaying the Peashooter screen in the Plants vs. Zombies game
@@ -121,49 +121,49 @@ All game logic lives in the `application/sources/app` directory.
 **Step 3.1 —** Create a header file `scr_peashooter.h` in the `screens/` directory to declare the functions that draw the Peashooter screen:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-header-peashooter.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-header-peashooter.png" />
 </p>
 
 **Step 3.2 —** Create `scr_peashooter.cpp` to handle the bitmap data and render the Peashooter on the display:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-scr-peashooter.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-scr-peashooter.png" />
 </p>
 
 **Step 3.3 —** Create a header file `screens_bitmap.h` in the `screens/` directory to declare shared bitmap data:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-header-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-header-bitmap.png" />
 </p>
 
 **Step 3.4 —** Create `screens_bitmap.cpp` containing the Peashooter's bitmap data:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/create-scr-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/create-scr-bitmap.png" />
 </p>
 
 **Step 3.5 —** Include the Peashooter header file in `task_display.h`:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/inlcude-header-to-task-display.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/inlcude-header-to-task-display.png" />
 </p>
 
 **Step 3.6 —** Update the `AC_DISPLAY_BUTTON_MODE_RELEASED` case:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/update-case.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/update-case.png" />
 </p>
 
 **Step 3.7 —** Add the two files `scr_peashooter.cpp` and `screens_bitmap.cpp` to `Makefile.mk` inside the `screens/` directory so they get compiled:
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/add-2-peashooter-and-bitmap.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/add-2-peashooter-and-bitmap.png" />
 </p>
 
 **Step 3.8 —** Build and flash the firmware onto the kit (see detailed instructions in [Section II](#ii-quick-start-guide-environment-setup)):
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/result.jpg" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/result.jpg" />
 </p>
 
 ---
@@ -181,17 +181,17 @@ git push origin main
 **Result after running the commands:**
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/push-code-to-github.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/push-code-to-github.png" />
 </p>
 
 **Repository updated on GitHub:**
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/github-after-update-1.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/github-after-update-1.png" />
 </p>
 
 <p align="center">
-  <img width="1338" height="640" alt="repo-ak" src="../resources/images/getting_started/github-after-update-2.png" />
+  <img width="1338" height="640" alt="repo-ak" src="../resources/images/guide_getting_started/github-after-update-2.png" />
 </p>
 
 From here, anyone can visit your GitHub link to follow your progress and try out the game you've built.
