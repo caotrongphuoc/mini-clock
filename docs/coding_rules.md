@@ -28,6 +28,13 @@ Tài liệu này tổng hợp các quy ước đặt tên và format đang áp d
 
 Các quy ước dưới đây không phải đặt ra ngẫu nhiên — chúng được rút ra từ chính code hiện có. Code mới nên tiếp tục theo đúng convention để tooling, search và reviewer làm việc trơn tru.
 
+> **Trước khi đọc tiếp — các kiểu viết tên (case style):**
+>
+> | Kiểu | Cách viết | Ví dụ trong project | Dùng cho |
+> |---|---|---|---|
+> | `lower_snake_case` | Chữ **thường** hết, các từ nối bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`, `gunner_y` | Biến, hàm, typedef, tên file, tên folder |
+> | `UPPER_SNAKE_CASE` | Chữ **hoa** hết, các từ nối bằng dấu gạch dưới `_` | `NUM_BULLET`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
+
 ### 1. Folder
 
 Viết thường, dùng dấu gạch dưới. Gom theo tính năng, không theo đuôi file.
