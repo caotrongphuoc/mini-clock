@@ -1,6 +1,6 @@
 <h1 align="center">Coding rules and style guide</h1>
 
-Tài liệu này tổng hợp các quy ước đặt tên, commit push lên github và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất. Đây là những bài học mình rút ra được trong quá trình làm game và viết docs, anh em có thể tham khảo và apply thử nếu thấy hữu ích nhé.
+Tài liệu này định nghĩa các quy ước đặt tên, code style, commit message và quy ước đặt tên tài liệu đang áp dụng trong project, kèm hướng dẫn cài đặt và sử dụng `clang-format`. Mục tiêu là đảm bảo code do nhiều người đóng góp vẫn nhất quán về hình thức và dễ tracking qua các công cụ search, review, version control.
 
 ---
 
@@ -20,51 +20,52 @@ Tài liệu này tổng hợp các quy ước đặt tên, commit push lên gith
 - [III. Cài đặt clang-format](#iii-cài-đặt-clang-format)
 - [IV. Chạy clang-format](#iv-chạy-clang-format)
 - [V. Quy ước commit message](#v-quy-ước-commit-message)
-- [VI. Tuỳ chọn: pre-commit hook](#vi-tuỳ-chọn-pre-commit-hook)
+- [VI. Quy ước đặt tên file tài liệu](#vi-quy-ước-đặt-tên-file-tài-liệu)
 
 ---
 
 ## I. Quy ước đặt tên
 
-Các quy ước dưới đây không phải đặt ra ngẫu nhiên — chúng được rút ra từ chính code hiện có. Code mới nên tiếp tục theo đúng convention để tooling, search và reviewer làm việc trơn tru.
+Các quy ước dưới đây được rút ra trực tiếp từ source code hiện có. Code mới phải tuân thủ đúng convention để tooling, search và reviewer làm việc nhất quán.
 
-> **Trước khi đọc tiếp — các kiểu viết tên (case style):**
+> **Quy ước viết tên (case style) dùng trong tài liệu này:**
 >
-> | Kiểu | Cách viết | Ví dụ trong project | Dùng cho |
+> | Kiểu | Mô tả | Ví dụ trong project | Áp dụng cho |
 > |---|---|---|---|
-> | `lower_snake_case` | Chữ **thường** hết, các từ nối bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`, `gunner_y` | Biến, hàm, typedef, tên file, tên folder |
-> | `UPPER_SNAKE_CASE` | Chữ **hoa** hết, các từ nối bằng dấu gạch dưới `_` | `NUM_BULLET`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
+> | `lower_snake_case` | Chữ thường, các từ ngăn cách bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`, `gunner_y` | Biến, hàm, typedef, tên file source, tên folder |
+> | `UPPER_SNAKE_CASE` | Chữ hoa, các từ ngăn cách bằng dấu gạch dưới `_` | `BULLET_NUMBER`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
+> | `kebab-case` | Chữ thường, các từ ngăn cách bằng dấu gạch ngang `-` | `02-guide-coding-rules.md` | Tên file tài liệu trong `docs/` |
 
 ### 1. Folder
 
-Viết thường, dùng dấu gạch dưới. Gom theo tính năng, không theo đuôi file.
+`lower_snake_case`. Tổ chức theo tính năng (feature-based), không theo loại file.
 
 ```
 application/sources/app/
   game/
-    game_ten_game_cua_ban/        # mỗi game một folder, ví dụ như game_zomwar (lưu ý viết thưởng)
-  screens/              # mỗi nhóm screen một folder
+    game_<ten_game>/      # mỗi game một folder riêng, ví dụ game_zomwar
+  screens/                # mỗi nhóm screen một folder
   ...
 ```
 
 ### 2. File source và header
 
-File luôn có **prefix module** để vừa nhìn là biết code nằm ở mảng nào:
+File source và header luôn mang prefix module để xác định nhanh module ngay khi nhìn tên file:
 
 | Prefix | Ý nghĩa | Ví dụ |
 |---|---|---|
-| `app_*` | Glue tầng application | `app_bsp.cpp`, `app_eeprom.h` |
-| `task_*` | Entry point task AK framework | `task_display.cpp`, `task_life.h` |
+| `app_*` | Glue code tầng application | `app_bsp.cpp`, `app_eeprom.h` |
+| `task_*` | Entry point task của AK framework | `task_display.cpp`, `task_life.h` |
 | `scr_*` | Handler của một screen | `scr_game_zomwar.cpp`, `scr_game_over.h` |
-| `zw_game_*` | Một object của game Zomwar | `zw_game_bang.cpp`, `zw_game_border.h` |
+| `zw_game_*` | Object thuộc game Zomwar | `zw_game_bang.cpp`, `zw_game_border.h` |
 
-Khi code game, chọn prefix ngắn riêng (ví dụ `zw_game_*` cho game bắn zombie) rồi áp dụng đồng đều cho mọi file trong folder.
+Mỗi game định nghĩa prefix ngắn riêng (ví dụ `zw_game_*` cho Zomwar) và áp dụng đồng nhất cho toàn bộ file trong folder game đó.
 
-Đuôi file: `.h` cho header, `.cpp` cho implementation (project biên dịch C++).
+Quy ước đuôi file: `.h` cho header, `.cpp` cho implementation (project biên dịch C++).
 
 ### 3. Header guard
 
-Dùng `__<TÊN_FILE>_H__`, viết hoa hết, khớp tên file:
+Sử dụng pattern `__<TÊN_FILE>_H__`, viết hoa toàn bộ, khớp chính xác với tên file:
 
 ```cpp
 #ifndef __ZW_GAME_BANG_H__
@@ -75,15 +76,15 @@ Dùng `__<TÊN_FILE>_H__`, viết hoa hết, khớp tên file:
 
 ### 4. Macro và hằng số biên dịch
 
-`UPPER_SNAKE_CASE`. Luôn bọc số trong dấu ngoặc để khỏi sai khi macro được expand.
+`UPPER_SNAKE_CASE`. Luôn bọc giá trị số trong dấu ngoặc đơn để tránh lỗi khi macro được expand.
 
-**Quy tắc bắt buộc: macro thuộc về object nào thì PHẢI có tên object đó làm prefix.**
+**Quy tắc bắt buộc: macro thuộc về object nào thì PHẢI mang tên object đó làm prefix.**
 
-Pattern: `<OBJECT>_<PROPERTY>` hoặc `<OBJECT>_<ACTION>` — object luôn đứng trước, không bao giờ đứng sau. Đọc tên macro là đoán được nó thuộc module nào, grep theo object là ra toàn bộ hằng số của nó.
+Pattern: `<OBJECT>_<PROPERTY>` hoặc `<OBJECT>_<ACTION>` — object luôn đứng trước. Đọc tên macro là biết ngay nó thuộc module nào, grep theo object là ra toàn bộ hằng số của module đó.
 
 | Loại hằng | Đặt đúng |
 |---|---|
-| Số lượng | `ZOMBIE_NUMBER`, `BULLET_NUMBER`, `BANG_NUMBER` | 
+| Số lượng | `ZOMBIE_NUMBER`, `BULLET_NUMBER`, `BANG_NUMBER` |
 | Tọa độ | `GUNNER_AXIS_X`, `CAR_AXIS_X` |
 | Bước di chuyển | `GUNNER_STEP_AXIS_Y`, `BULLET_STEP_AXIS_X` |
 | Kích thước bitmap | `GUNNER_SIZE_BITMAP_X`, `BANG_SIZE_BITMAP_I_X` |
@@ -117,26 +118,26 @@ Ví dụ áp dụng đúng:
 #define BORDER_SIZE_BITMAP_WARNING_Y  (14)
 ```
 
-Tên số nhiều ở mục "số lượng" có thể dùng `NUMBER` hay `NUM` đều được — chọn một và dùng nhất quán trong cùng module.
+Hằng "số lượng" thống nhất dùng hậu tố `_NUMBER` (`ZOMBIE_NUMBER`, `BULLET_NUMBER`...) thay vì `_NUM` để đồng bộ với code hiện có.
 
-**Ngoại lệ — system / project-level macro**: macro thuộc về toàn bộ game (không phải của object cụ thể) thì dùng project prefix `ZW_GAME_*`:
+**Ngoại lệ — system / project-level macro:** macro thuộc về toàn bộ game (không gắn với một object cụ thể) dùng project prefix `ZW_GAME_*`:
 
 ```cpp
 #define ZW_GAME_TIME_TICK_INTERVAL (100)
 #define ZW_GAME_TIME_EXIT_INTERVAL (3000)
 ```
 
-Gom hằng số liên quan vào header tương ứng (`zw_game_bullet.h` chứa hằng bullet, `zw_game_gunner.h` chứa hằng gunner...). Tránh rải magic number rải rác trong `.cpp`.
+Gom hằng số liên quan vào đúng header module (`zw_game_bullet.h` chứa hằng bullet, `zw_game_gunner.h` chứa hằng gunner...). Tuyệt đối không để magic number rải rác trong `.cpp`.
 
 ### 5. Signal (giá trị enum)
 
-Signal là **hợp đồng công khai** giữa các task. Luôn dùng full prefix — không bao giờ viết tắt, kể cả trong comment hay sequence diagram.
+Signal là **hợp đồng công khai** giữa các task. Luôn dùng full prefix — không viết tắt, kể cả trong comment, doc, hay sequence diagram.
 
-| Prefix | Dùng cho | Ví dụ |
+| Prefix | Áp dụng cho | Ví dụ |
 |---|---|---|
 | `AK_*` | Core AK framework | `AK_USER_DEFINE_SIG` |
-| `AC_<SUBSYSTEM>_*` | Các subsystem AK chung | `AC_DISPLAY_BUTTON_UP_PRESSED` |
-| `<GAME>_<OBJECT>_<ACTION>` | Signal theo game | `ZW_GAME_BORDER_CHECK_GAME_OVER` |
+| `AC_<SUBSYSTEM>_*` | Subsystem chung của AK | `AC_DISPLAY_BUTTON_UP_PRESSED` |
+| `<GAME>_<OBJECT>_<ACTION>` | Signal theo từng game | `ZW_GAME_BORDER_CHECK_GAME_OVER` |
 
 Khai báo signal set của mỗi task trong `app.h` thành một enum block riêng, anchor vào `ZW_GAME_DEFINE_SIG` (hoặc `AK_USER_DEFINE_SIG` cho nhóm framework):
 
@@ -156,7 +157,7 @@ enum {
 
 ### 6. Task ID
 
-`<PREFIX>_<TÊN>_ID`, viết hoa hết, đăng ký trong `task_list.h`:
+`<PREFIX>_<TÊN>_ID`, viết hoa toàn bộ, đăng ký trong `task_list.h`:
 
 ```cpp
 AC_TASK_DISPLAY_ID
@@ -164,7 +165,7 @@ ZW_GAME_GUNNER_ID
 ZW_GAME_BORDER_ID
 ```
 
-Handler tương ứng trong `task_list.cpp` giữ nguyên tên trừ hậu tố `_ID` rồi thêm `_handle`:
+Handler tương ứng trong `task_list.cpp` giữ nguyên tên, thay hậu tố `_ID` bằng `_handle`:
 
 ```cpp
 {ZW_GAME_BORDER_ID, TASK_PRI_LEVEL_4, zw_game_border_handle},
@@ -172,7 +173,7 @@ Handler tương ứng trong `task_list.cpp` giữ nguyên tên trừ hậu tố 
 
 ### 7. Kiểu dữ liệu và typedef
 
-`lower_snake_case` cộng hậu tố `_t`. Bản thân struct vô danh; typedef là tên public:
+`lower_snake_case` kèm hậu tố `_t`. Struct để vô danh; typedef là tên public:
 
 ```cpp
 typedef struct
@@ -184,11 +185,11 @@ typedef struct
 } zw_game_gunner_t;
 ```
 
-Kiểu do framework cung cấp cũng theo pattern này (`ak_msg_t`, `view_screen_t`).
+Kiểu do framework cung cấp cũng tuân thủ pattern này (`ak_msg_t`, `view_screen_t`).
 
 ### 8. Hàm
 
-`lower_snake_case` kèm prefix **tên module**, để `grep` prefix là ra hết entry point của module đó:
+`lower_snake_case` kèm prefix tên module để `grep` prefix là ra toàn bộ entry point của module đó:
 
 ```cpp
 void zw_game_border_handle(ak_msg_t* msg);
@@ -197,7 +198,7 @@ void zw_game_zombie_spawn_from_tombstone(uint8_t i, int16_t x, uint8_t y);
 int8_t zw_game_car_find_nearest(uint8_t zy);
 ```
 
-Helper private của module để `static` trong `.cpp` và giữ nguyên prefix:
+Helper nội bộ của module khai báo `static` trong `.cpp` và vẫn giữ prefix:
 
 ```cpp
 static void zw_game_car_reset_slot(uint8_t i);
@@ -207,28 +208,28 @@ static void zw_game_car_reset_slot(uint8_t i);
 
 `lower_snake_case`. Không Hungarian notation, không bắt đầu bằng dấu gạch dưới.
 
-- **Biến global chia sẻ giữa các module**: khai báo `extern` trong header, định nghĩa đúng một lần trong `.cpp` của module sở hữu.
+- **Biến global chia sẻ giữa các module:** khai báo `extern` trong header, định nghĩa đúng một lần trong `.cpp` của module sở hữu.
   ```cpp
   // zw_game_border.h
   extern uint16_t zw_game_score;
   extern uint8_t  wave_level;
   extern bool     wave_warning_active;
   ```
-- **Biến private của module**: khai báo `static` trong `.cpp`.
+- **Biến nội bộ của module:** khai báo `static` trong `.cpp`.
   ```cpp
   // scr_game_zomwar.cpp
   static uint8_t zw_game_state;
   static uint8_t gunner_dir = GUNNER_DIR_NONE;
   ```
-- **Biến local**: ngắn và mô tả được ý. Biến đếm vòng lặp có thể dùng `i`, `j`, `l` khi scope rõ ràng.
+- **Biến local:** ngắn gọn, mô tả đúng vai trò. Biến đếm vòng lặp có thể dùng `i`, `j`, `l` khi scope rõ ràng.
 
-State của object thuộc task nào thì gắn tên object đó (`gunner.y`, `bang[i].visible`, `wave_warning_timer`) — không nhét state cross-cutting vào `.cpp` module khác.
+State của object thuộc task nào thì gắn tên object đó (`gunner.y`, `bang[i].visible`, `wave_warning_timer`); không nhét state cross-cutting vào `.cpp` module khác.
 
 ---
 
 ## II. Code style (clang-format)
 
-Repo đã có sẵn `.clang-format` ở thư mục gốc. Mọi contributor phải chạy `clang-format` trước khi commit — config check-in trong repo, không phải tùy chỉnh per-developer:
+Repo đã có sẵn `.clang-format` ở thư mục gốc. Mọi contributor bắt buộc chạy `clang-format` trước khi commit — config được check-in trong repo và không tuỳ chỉnh per-developer:
 
 ```yaml
 Language: Cpp
@@ -248,28 +249,28 @@ IndentCaseLabels: false
 SortIncludes: false
 ```
 
-Ý nghĩa từng setting khác mặc định:
+Ý nghĩa các setting khác mặc định:
 
 | Setting | Tác dụng |
 |---|---|
-| `UseTab: ForIndentation`, `IndentWidth: 4`, `TabWidth: 4` | Tab chỉ dùng để indent, không dùng để align. Một tab = 4 cột. |
-| `ColumnLimit: 0` | Không tự động xuống dòng. Tác giả tự quyết định break dòng ở đâu. |
-| `BreakBeforeBraces: Allman` | Dấu `{` luôn ở dòng riêng — kể cả `if`, `for`, function body. |
-| `AllowShort*OnASingleLine: false` | Mỗi statement một dòng, dù `if` ngắn hay function rỗng. |
+| `UseTab: ForIndentation`, `IndentWidth: 4`, `TabWidth: 4` | Tab chỉ dùng để indent, không dùng để align. Một tab tương đương 4 cột. |
+| `ColumnLimit: 0` | Không tự động xuống dòng. Tác giả tự quyết định vị trí break line. |
+| `BreakBeforeBraces: Allman` | Dấu `{` luôn ở dòng riêng — áp dụng cho `if`, `for`, function body. |
+| `AllowShort*OnASingleLine: false` | Mỗi statement một dòng, kể cả `if` ngắn hay function rỗng. |
 | `PointerAlignment: Left` | Viết `int* p`, không phải `int *p`. |
 | `SpaceBeforeParens: ControlStatements` | `if (x)`, `for (...)` có space; `func(x)` không có. |
 | `IndentCaseLabels: false` | `case` cùng cấp indent với `switch`. |
-| `SortIncludes: false` | Thứ tự include là có ý nghĩa (BSP → framework → project), không được sort. |
+| `SortIncludes: false` | Thứ tự include có ý nghĩa (BSP → framework → project), không được sort tự động. |
 
-Nếu phải "đánh nhau" với formatter, giải pháp là cấu trúc lại code, không phải tắt rule.
+Nếu phát hiện conflict giữa formatter và code, giải pháp đúng là tái cấu trúc code, không phải disable rule.
 
 ---
 
 ## III. Cài đặt clang-format
 
-Hướng dẫn cho Linux (Ubuntu / Debian). Cần phiên bản **≥ 14** để support đầy đủ các setting.
+Hướng dẫn cho Linux (Ubuntu / Debian). Yêu cầu phiên bản **≥ 14** để hỗ trợ đầy đủ các setting trong `.clang-format`.
 
-Cài bản trong apt repo của distro:
+Cài đặt từ repo apt mặc định của distro:
 
 ```bash
 sudo apt update
@@ -294,13 +295,13 @@ Ubuntu clang-format version 18.1.x
 
 ### Command line
 
-Format 1 file in-place:
+Format một file in-place:
 
 ```bash
 clang-format -i application/sources/app/game/game_zomwar/zw_game_bullet.cpp
 ```
 
-Format toàn bộ C / C++ source và header trong `application/sources/app`:
+Format toàn bộ source và header trong `application/sources/app`:
 
 ```bash
 find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
@@ -308,7 +309,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
     -exec clang-format -i {} +
 ```
 
-Dry-run (chỉ in diff, không ghi) — chạy trước khi commit để check:
+Dry-run (in diff, không ghi vào file) — chạy trước khi commit để kiểm tra:
 
 ```bash
 clang-format --dry-run --Werror path/to/file.cpp
@@ -316,7 +317,7 @@ clang-format --dry-run --Werror path/to/file.cpp
 
 ### VSCode integration
 
-1. Cài extension **C/C++** (Microsoft) — extension này tự kèm `clang-format` và tôn trọng `.clang-format` trong repo.
+1. Cài extension **C/C++** (Microsoft) — extension này đi kèm `clang-format` và tự động đọc `.clang-format` trong repo.
 2. Mở workspace settings (`.vscode/settings.json`), thêm:
 
    ```json
@@ -328,15 +329,15 @@ clang-format --dry-run --Werror path/to/file.cpp
    }
    ```
 
-3. Format file hiện tại theo phím tắt: <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd> (Windows / Linux) hoặc <kbd>Shift</kbd>+<kbd>Option</kbd>+<kbd>F</kbd> (macOS).
+3. Format file hiện tại bằng phím tắt: <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd> (Windows / Linux) hoặc <kbd>Shift</kbd>+<kbd>Option</kbd>+<kbd>F</kbd> (macOS).
 
-Bật `formatOnSave` thì mỗi lần save editor sẽ format ngay, không bao giờ commit code lệch format.
+Bật `formatOnSave` để editor tự format mỗi khi save, đảm bảo không commit code lệch format.
 
 ---
 
 ## V. Quy ước commit message
 
-Mọi commit phải theo format `[ACTION] mô tả ngắn` để lịch sử git dễ đọc và filter.
+Mọi commit phải tuân thủ format `[ACTION] mô tả ngắn` để lịch sử git dễ đọc và filter.
 
 ### Workflow
 
@@ -346,25 +347,25 @@ git commit -m "[ACTION] mô tả ngắn"           # tag bắt buộc, mô tả 
 git push                                      # đẩy lên remote
 ```
 
-Nếu chỉ muốn stage một số file cụ thể, thay `git add .` bằng `git add <path>` để tránh lỡ tay commit file rác.
+Khi chỉ cần stage một số file cụ thể, thay `git add .` bằng `git add <path>` để tránh commit nhầm file rác.
 
 ### Action tag
 
 | Tag | Khi nào dùng |
 |---|---|
-| `[ADD]` | Thêm file, feature, asset, doc mới |
+| `[ADD]` | Thêm file, feature, asset, hoặc tài liệu mới |
 | `[UPDATE]` | Cập nhật code có sẵn — refactor, đổi tên, tinh chỉnh logic, nâng version |
 | `[FIX]` | Sửa bug đã có hoặc lỗi build / lỗi format |
 | `[REMOVE]` | Xoá file, feature, hoặc code chết |
-| `[DOC]` | Chỉ đụng tới tài liệu (`docs/`, `README.md`, comment block lớn) |
+| `[DOC]` | Chỉ chạm tài liệu (`docs/`, `README.md`, comment block lớn) |
 | `[MERGE]` | Merge branch (thường do tool tự sinh, không sửa tay) |
 
 ### Style mô tả
 
-- Tag viết hoa hết trong `[]`, theo sau đúng một dấu cách rồi mới đến mô tả.
-- Mô tả viết thường, dạng mệnh lệnh (`add`, `fix`, `rename`, `move`...), không dấu chấm cuối câu.
-- Giữ trong ~70 ký tự — nếu dài hơn thì cắt ngắn, hoặc tách body commit ở dòng dưới.
-- Khi đụng tới module / signal / file cụ thể, gọi tên trực tiếp giúp grep lịch sử dễ hơn.
+- Tag viết hoa toàn bộ trong `[]`, theo sau đúng một dấu cách rồi mới đến mô tả.
+- Mô tả viết thường, dạng mệnh lệnh (`add`, `fix`, `rename`, `move`...), không có dấu chấm cuối câu.
+- Giữ độ dài trong khoảng 70 ký tự — nếu dài hơn thì rút gọn hoặc đưa chi tiết xuống body commit.
+- Khi thao tác trên module / signal / file cụ thể, gọi tên trực tiếp để dễ grep lịch sử.
 
 ### Ví dụ tốt
 
@@ -384,10 +385,46 @@ Nếu chỉ muốn stage một số file cụ thể, thay `git add .` bằng `gi
 ```text
 update                          # thiếu tag
 [update] fix something          # tag phải viết hoa
-[ADD] Added new file.           # đừng dùng động từ thì quá khứ + chấm câu
+[ADD] Added new file.           # không dùng thì quá khứ và chấm câu
 [FIX] fix bug                   # quá mơ hồ, không biết bug gì
-[ADD] zw_game_border.cpp + zw_game_zombie.cpp + scr_game_zomwar.cpp ... # quá dài, nên gộp chủ đề
+[ADD] zw_game_border.cpp + zw_game_zombie.cpp + scr_game_zomwar.cpp ... # quá dài, nên gộp theo chủ đề
 ```
+
+---
+
+## VI. Quy ước đặt tên file tài liệu
+
+Tài liệu trong `docs/` tuân thủ format `<NN>-<category>-<topic>.md`:
+
+| Thành phần | Quy ước | Ví dụ |
+|---|---|---|
+| `NN` | Số thứ tự 2 chữ số, đánh từ `01`. Phản ánh thứ tự đọc — guide đứng trước, design đứng sau. | `01`, `02`, `03` |
+| `category` | Phân loại tài liệu. Chỉ dùng các giá trị đã định nghĩa, không tự thêm category mới. | `guide`, `design` |
+| `topic` | Chủ đề chính, viết `kebab-case` (chữ thường, các từ ngăn cách bằng `-`). | `getting-started`, `coding-rules`, `sequence-object` |
+
+Các category đang sử dụng:
+
+| Category | Mục đích | Nội dung điển hình |
+|---|---|---|
+| `guide` | Hướng dẫn quy trình, setup, workflow cho contributor | Getting started, coding rules, build & flash, debugging |
+| `design` | Mô tả kiến trúc và hành vi runtime của hệ thống | Sequence diagram, dataflow, task ownership, signal map |
+
+Ví dụ file đang có trong repo:
+
+```
+docs/
+├── 01-guide-getting-started.md
+├── 02-guide-coding-rules.md
+├── 03-design-sequence-object.md
+└── 04-design-sequence-runtime.md
+```
+
+Lưu ý:
+
+- File tài liệu (`.md`) dùng `kebab-case` (dấu gạch ngang). File source và folder dùng `snake_case` (dấu gạch dưới). Đây là sự khác biệt có chủ đích: `kebab-case` là convention chuẩn cho slug Markdown và URL.
+- Ảnh đi kèm tài liệu lưu trong `resources/images/<topic_dir>/`, trong đó `<topic_dir>` viết theo quy ước folder (snake_case). Ví dụ: `resources/images/getting_started/`.
+- Khi thêm tài liệu mới, tiếp tục số thứ tự nối tiếp số lớn nhất hiện có và gom theo nhóm category để giữ thứ tự đọc tự nhiên.
+- Đổi tên file tài liệu phải dùng `git mv` để lịch sử rename được track đúng.
 
 ---
 
