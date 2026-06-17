@@ -1,6 +1,6 @@
 <h1 align="center">Coding rules and style guide</h1>
 
-Tài liệu này tổng hợp các quy ước đặt tên, commit push lên github và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất. Đây là những quy ước mình rút ra được trong quá trình làm game, các bạn có thể tham khảo và apply thử.
+Tài liệu này tổng hợp các quy ước đặt tên, commit push lên github và format đang áp dụng trong project, kèm hướng dẫn cài và chạy `clang-format` để mọi người viết code thống nhất. Đây là những bài học mình rút ra được trong quá trình làm game và viết docs, anh em có thể tham khảo và apply thử nếu thấy hữu ích nhé.
 
 ---
 
