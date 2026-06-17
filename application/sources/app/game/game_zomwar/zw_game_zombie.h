@@ -19,14 +19,14 @@
 #include "zw_game_bullet.h"
 #include "zw_game_gunner.h"
 
-#define NUM_ZOMBIE (20)
-#define NUM_ZOMBIE_INIT (6)
+#define ZOMBIE_NUMBER (20)
+#define ZOMBIE_INIT_NUMBER (6)
 #define ZOMBIE_WAVE_SPAWN (10)
 #define ZOMBIE_SPEED_MAX (6)
 #define ZOMBIE_RISE_TICKS (10)
-#define MENU_ZOMBIE_SPEED (3)
-#define SIZE_BITMAP_ZOMBIE_X (25)
-#define SIZE_BITMAP_ZOMBIE_Y (10)
+#define ZOMBIE_MENU_SPEED (3)
+#define ZOMBIE_SIZE_BITMAP_X (25)
+#define ZOMBIE_SIZE_BITMAP_Y (10)
 #define ZOMBIE_MIN_LEFT_OFFSET (6)
 #define ZOMBIE_HITBOX_LEFT_OFFSET (12)
 #define ZOMBIE_HITBOX_RIGHT_OFFSET (22)
@@ -51,7 +51,7 @@ typedef struct
 	uint8_t rise_ticks;
 } zw_game_zombie_t;
 
-extern zw_game_zombie_t zombie[NUM_ZOMBIE];
+extern zw_game_zombie_t zombie[ZOMBIE_NUMBER];
 extern uint8_t zw_game_zombie_speed;
 
 extern void zw_game_zombie_spawn(uint8_t i);

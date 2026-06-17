@@ -1,10 +1,10 @@
 #include "zw_game_bang.h"
 
-zw_game_bang_t bang[NUM_BANG];
+zw_game_bang_t bang[BANG_NUMBER];
 
 void zw_game_bang_reset_all()
 {
-	for (uint8_t i = 0; i < NUM_BANG; i++)
+	for (uint8_t i = 0; i < BANG_NUMBER; i++)
 	{
 		bang[i].visible = BLACK;
 		bang[i].action_image = 1;
@@ -13,7 +13,7 @@ void zw_game_bang_reset_all()
 
 void zw_game_bang_spawn(int16_t x, uint8_t y)
 {
-	for (uint8_t i = 0; i < NUM_BANG; i++)
+	for (uint8_t i = 0; i < BANG_NUMBER; i++)
 	{
 		if (bang[i].visible == WHITE)
 			continue;
@@ -39,7 +39,7 @@ void zw_game_bang_handle(ak_msg_t* msg)
 	case ZW_GAME_BANG_UPDATE:
 	{
 		APP_DBG_SIG("ZW_GAME_BANG_UPDATE\n");
-		for (uint8_t i = 0; i < NUM_BANG; i++)
+		for (uint8_t i = 0; i < BANG_NUMBER; i++)
 		{
 			if (bang[i].visible == WHITE)
 			{

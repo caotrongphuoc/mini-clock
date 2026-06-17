@@ -1,14 +1,14 @@
 #include "zw_game_car.h"
 #include "app_eeprom.h"
 
-zw_game_car_t car[NUM_LANE];
-const uint8_t lane_y[NUM_LANE] = LANE_Y;
+zw_game_car_t car[CAR_LANE_NUMBER];
+const uint8_t lane_y[CAR_LANE_NUMBER] = CAR_LANE_Y;
 
 int8_t zw_game_car_find_nearest(uint8_t zy)
 {
 	int8_t best = -1;
 	uint8_t best_dist = CAR_HIT_RANGE_Y + 1;
-	for (uint8_t i = 0; i < NUM_LANE; i++)
+	for (uint8_t i = 0; i < CAR_LANE_NUMBER; i++)
 	{
 		if (!car[i].visible || car[i].running)
 			continue;
@@ -26,7 +26,7 @@ int8_t zw_game_car_find_nearest(uint8_t zy)
 
 static void zw_game_car_reset_slot(uint8_t i)
 {
-	car[i].x = AXIS_X_CAR;
+	car[i].x = CAR_AXIS_X;
 	car[i].y = lane_y[i];
 	car[i].lane = i;
 	car[i].running = false;
@@ -42,7 +42,7 @@ bool zw_game_car_check_hit(uint8_t c, uint8_t z)
 		return false;
 
 	int16_t car_left = car[c].x;
-	int16_t car_right = car_left + SIZE_BITMAP_CAR_X;
+	int16_t car_right = car_left + CAR_SIZE_BITMAP_X;
 
 	int16_t zombie_left = zombie[z].x + ZOMBIE_HITBOX_LEFT_OFFSET;
 	int16_t zombie_right = zombie[z].x + ZOMBIE_HITBOX_RIGHT_OFFSET;
@@ -57,7 +57,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_SETUP:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_SETUP\n");
-		for (uint8_t i = 0; i < NUM_LANE; i++)
+		for (uint8_t i = 0; i < CAR_LANE_NUMBER; i++)
 		{
 			zw_game_car_reset_slot(i);
 			car[i].visible = (settingsetup.num_car >> i) & 1;
@@ -68,7 +68,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_RUN:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_RUN\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
@@ -93,7 +93,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 			}
 		}
 
-		for (uint8_t i = 0; i < NUM_LANE; i++)
+		for (uint8_t i = 0; i < CAR_LANE_NUMBER; i++)
 		{
 			if (!car[i].visible || !car[i].running)
 				continue;
@@ -113,11 +113,11 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_HIT:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_HIT\n");
-		for (uint8_t i = 0; i < NUM_LANE; i++)
+		for (uint8_t i = 0; i < CAR_LANE_NUMBER; i++)
 		{
 			if (!car[i].visible || !car[i].running)
 				continue;
-			for (uint8_t j = 0; j < NUM_ZOMBIE; j++)
+			for (uint8_t j = 0; j < ZOMBIE_NUMBER; j++)
 			{
 				if (zombie[j].visible != WHITE)
 					continue;
@@ -135,7 +135,7 @@ void zw_game_car_handle(ak_msg_t* msg)
 	case ZW_GAME_CAR_RESET:
 	{
 		APP_DBG_SIG("ZW_GAME_CAR_RESET\n");
-		for (uint8_t i = 0; i < NUM_LANE; i++)
+		for (uint8_t i = 0; i < CAR_LANE_NUMBER; i++)
 		{
 			zw_game_car_reset_slot(i);
 			car[i].visible = false;

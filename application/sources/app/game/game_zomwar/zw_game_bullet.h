@@ -18,11 +18,11 @@
 
 #include "zw_game_gunner.h"
 
-#define NUM_BULLET (15)
-#define MAX_AXIS_X_BULLET (128)
-#define SIZE_BITMAP_BULLET_X (5)
-#define SIZE_BITMAP_BULLET_Y (5)
-#define STEP_BULLET_AXIS_X (3)
+#define BULLET_NUMBER (15)
+#define BULLET_MAX_AXIS_X (128)
+#define BULLET_SIZE_BITMAP_X (5)
+#define BULLET_SIZE_BITMAP_Y (5)
+#define BULLET_STEP_AXIS_X (3)
 #define BULLET_SPAWN_OFFSET_X (22)
 #define BULLET_SPAWN_OFFSET_Y (8)
 
@@ -32,6 +32,6 @@ typedef struct
 	uint8_t x, y;
 } zw_game_bullet_t;
 
-extern zw_game_bullet_t bullet[NUM_BULLET];
+extern zw_game_bullet_t bullet[BULLET_NUMBER];
 
 #endif //__ZW_GAME_BULLET_H__

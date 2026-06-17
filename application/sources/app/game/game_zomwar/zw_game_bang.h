@@ -14,13 +14,13 @@
 #include "scr_game_zomwar.h"
 
 // Number of BangS
-#define NUM_BANG (20)
+#define BANG_NUMBER (20)
 
 // Size of Bang (I AND II)
-#define SIZE_BITMAP_BANG_I_X (15)
-#define SIZE_BITMAP_BANG_I_Y (15)
-#define SIZE_BITMAP_BANG_II_X (10)
-#define SIZE_BITMAP_BANG_II_Y (10)
+#define BANG_SIZE_BITMAP_I_X (15)
+#define BANG_SIZE_BITMAP_I_Y (15)
+#define BANG_SIZE_BITMAP_II_X (10)
+#define BANG_SIZE_BITMAP_II_Y (10)
 
 // Spawn offset to center bang sprite over hit point
 #define BANG_SPAWN_OFFSET_X (5)
@@ -33,7 +33,7 @@ typedef struct
 	bool visible;
 } zw_game_bang_t;
 
-extern zw_game_bang_t bang[NUM_BANG];
+extern zw_game_bang_t bang[BANG_NUMBER];
 
 extern void zw_game_bang_spawn(int16_t x, uint8_t y);
 

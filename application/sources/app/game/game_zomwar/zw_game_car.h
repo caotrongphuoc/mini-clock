@@ -17,13 +17,13 @@
 
 #include "zw_game_zombie.h"
 
-#define AXIS_X_CAR (0)
-#define NUM_LANE (5)
+#define CAR_AXIS_X (0)
+#define CAR_LANE_NUMBER (5)
 #define CAR_SPEED (4)
-#define SIZE_BITMAP_CAR_X (12)
-#define SIZE_BITMAP_CAR_Y (10)
+#define CAR_SIZE_BITMAP_X (12)
+#define CAR_SIZE_BITMAP_Y (10)
 #define CAR_HIT_RANGE_Y (8)
-#define LANE_Y            \
+#define CAR_LANE_Y            \
 	{                     \
 		2, 12, 22, 32, 42 \
 	}
@@ -37,8 +37,8 @@ typedef struct
 	uint8_t action_image;
 } zw_game_car_t;
 
-extern zw_game_car_t car[NUM_LANE];
-extern const uint8_t lane_y[NUM_LANE];
+extern zw_game_car_t car[CAR_LANE_NUMBER];
+extern const uint8_t lane_y[CAR_LANE_NUMBER];
 
 extern bool zw_game_car_check_hit(uint8_t c, uint8_t z);
 extern int8_t zw_game_car_find_nearest(uint8_t zy);

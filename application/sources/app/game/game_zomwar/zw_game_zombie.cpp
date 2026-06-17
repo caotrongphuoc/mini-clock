@@ -1,7 +1,7 @@
 #include "zw_game_zombie.h"
 #include "app_eeprom.h"
 
-zw_game_zombie_t zombie[NUM_ZOMBIE];
+zw_game_zombie_t zombie[ZOMBIE_NUMBER];
 uint8_t zw_game_zombie_speed;
 
 void zw_game_zombie_spawn(uint8_t i)
@@ -30,9 +30,9 @@ void zw_game_zombie_spawn_from_tombstone(uint8_t i, int16_t x, uint8_t y)
 
 bool zw_game_zombie_check_hit(uint8_t b, uint8_t z)
 {
-	return ((int16_t)bullet[b].x + SIZE_BITMAP_BULLET_X > zombie[z].x + ZOMBIE_HITBOX_LEFT_OFFSET) &&
+	return ((int16_t)bullet[b].x + BULLET_SIZE_BITMAP_X > zombie[z].x + ZOMBIE_HITBOX_LEFT_OFFSET) &&
 	       ((int16_t)bullet[b].x < zombie[z].x + ZOMBIE_HITBOX_RIGHT_OFFSET) &&
-	       ((int16_t)bullet[b].y + SIZE_BITMAP_BULLET_Y > zombie[z].y + ZOMBIE_HITBOX_TOP_OFFSET) &&
+	       ((int16_t)bullet[b].y + BULLET_SIZE_BITMAP_Y > zombie[z].y + ZOMBIE_HITBOX_TOP_OFFSET) &&
 	       ((int16_t)bullet[b].y < zombie[z].y + ZOMBIE_HITBOX_BOTTOM_OFFSET);
 }
 
@@ -44,11 +44,11 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP\n");
 		zw_game_zombie_speed = settingsetup.zombie_speed;
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
-		for (uint8_t i = 0; i < NUM_ZOMBIE_INIT; i++)
+		for (uint8_t i = 0; i < ZOMBIE_INIT_NUMBER; i++)
 		{
 			zw_game_zombie_spawn(i);
 		}
@@ -59,7 +59,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN\n");
 		uint8_t alive = 0;
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
@@ -114,7 +114,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			if (zombie[i].action_image > 3)
 				zombie[i].action_image = 1;
 		}
-		for (uint8_t i = 0; i < NUM_ZOMBIE && alive < NUM_ZOMBIE_INIT; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER && alive < ZOMBIE_INIT_NUMBER; i++)
 		{
 			if (zombie[i].visible == WHITE)
 				continue; // slot in use
@@ -127,13 +127,13 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_DETONATOR:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_DETONATOR\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			if (zombie[i].visible != WHITE)
 				continue;
 			if (zombie[i].rising)
 				continue;
-			for (uint8_t j = 0; j < NUM_BULLET; j++)
+			for (uint8_t j = 0; j < BULLET_NUMBER; j++)
 			{
 				if (bullet[j].visible != WHITE)
 					continue;
@@ -159,7 +159,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			zw_game_zombie_speed++;
 		}
 		uint8_t spawned = 0;
-		for (uint8_t i = 0; i < NUM_ZOMBIE && spawned < ZOMBIE_WAVE_SPAWN; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER && spawned < ZOMBIE_WAVE_SPAWN; i++)
 		{
 			if (zombie[i].visible == WHITE)
 				continue;
@@ -172,7 +172,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_RESET:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_RESET\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
@@ -182,12 +182,12 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_SETUP_MENU:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_SETUP_MENU\n");
-		for (uint8_t i = 0; i < NUM_ZOMBIE; i++)
+		for (uint8_t i = 0; i < ZOMBIE_NUMBER; i++)
 		{
 			zombie[i].visible = BLACK;
 		}
 		zombie[0].x = LCD_WIDTH + 3;
-		zombie[0].y = AXIS_Y_GUNNER - 10;
+		zombie[0].y = GUNNER_AXIS_Y - 10;
 		zombie[0].rising = false;
 		zombie[0].visible = WHITE;
 		zombie[0].action_image = 1;
@@ -197,17 +197,17 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 	case ZW_GAME_ZOMBIE_RUN_MENU:
 	{
 		APP_DBG_SIG("ZW_GAME_ZOMBIE_RUN_MENU\n");
-		zombie[0].x -= MENU_ZOMBIE_SPEED;
+		zombie[0].x -= ZOMBIE_MENU_SPEED;
 		zombie[0].visible = WHITE;
 		zombie[0].action_image++;
 		if (zombie[0].action_image > 3)
 			zombie[0].action_image = 1;
-		if (zombie[0].x < -SIZE_BITMAP_ZOMBIE_X)
+		if (zombie[0].x < -ZOMBIE_SIZE_BITMAP_X)
 		{
 			zombie[0].x = LCD_WIDTH + 3;
-			zombie[0].y = AXIS_Y_GUNNER - 10;
+			zombie[0].y = GUNNER_AXIS_Y - 10;
 		}
-		for (uint8_t j = 0; j < NUM_BULLET; j++)
+		for (uint8_t j = 0; j < BULLET_NUMBER; j++)
 		{
 			if (bullet[j].visible != WHITE)
 				continue;
@@ -218,7 +218,7 @@ void zw_game_zombie_handle(ak_msg_t* msg)
 			zw_game_bang_spawn(zombie[0].x, zombie[0].y);
 			BUZZER_PlaySound(BUZZER_SOUND_BANG);
 			zombie[0].x = LCD_WIDTH + 3;
-			zombie[0].y = AXIS_Y_GUNNER - 10;
+			zombie[0].y = GUNNER_AXIS_Y - 10;
 			break;
 		}
 	}
