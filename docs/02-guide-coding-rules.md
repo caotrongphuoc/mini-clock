@@ -28,13 +28,12 @@ Tài liệu này định nghĩa các quy ước đặt tên, code style, commit 
 
 Các quy ước dưới đây được rút ra trực tiếp từ source code hiện có. Code mới phải tuân thủ đúng convention để tooling, search và reviewer làm việc nhất quán.
 
-> **Quy ước viết tên (case style) dùng trong tài liệu này:**
->
-> | Kiểu | Mô tả | Ví dụ trong project | Áp dụng cho |
-> |---|---|---|---|
-> | `lower_snake_case` | Chữ thường, các từ ngăn cách bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`| Biến, hàm, typedef, tên file source, tên folder |
-> | `UPPER_SNAKE_CASE` | Chữ hoa, các từ ngăn cách bằng dấu gạch dưới `_` | `BULLET_NUMBER`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
-> | `kebab-case` | Chữ thường, các từ ngăn cách bằng dấu gạch ngang `-` | `02-guide-coding-rules.md` | Tên file tài liệu trong `docs/` |
+**Quy ước viết tên (case style) dùng trong tài liệu này:**
+| Kiểu | Mô tả | Ví dụ trong project | Áp dụng cho |
+|---|---|---|---|
+| `lower_snake_case` | Chữ thường, các từ ngăn cách bằng dấu gạch dưới `_` | `wave_warning_active`, `zw_game_score`| Biến, hàm, typedef, tên file source, tên folder |
+| `UPPER_SNAKE_CASE` | Chữ hoa, các từ ngăn cách bằng dấu gạch dưới `_` | `BULLET_NUMBER`, `ZW_GAME_BORDER_SETUP`, `AC_TASK_DISPLAY_ID` | Hằng số `#define`, signal enum, task ID, macro |
+| `kebab-case` | Chữ thường, các từ ngăn cách bằng dấu gạch ngang `-` | `02-guide-coding-rules.md` | Tên file tài liệu trong `docs/` |
 
 ### 1. Folder
 
