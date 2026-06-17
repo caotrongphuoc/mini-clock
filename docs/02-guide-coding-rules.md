@@ -217,7 +217,7 @@ State của object thuộc task nào thì gắn tên object đó (`gunner.y`, `b
 
 ## II. Code style (clang-format)
 
-Repo đã có sẵn `.clang-format` ở thư mục gốc. Mọi contributor bắt buộc chạy `clang-format` trước khi commit — config được check-in trong repo và không tuỳ chỉnh per-developer:
+Repo đã có sẵn `.clang-format` ở thư mục gốc, bạn có thể tham khảo:
 
 ```yaml
 Language: Cpp
@@ -250,20 +250,25 @@ SortIncludes: false
 | `IndentCaseLabels: false` | `case` cùng cấp indent với `switch`. |
 | `SortIncludes: false` | Thứ tự include có ý nghĩa (BSP → framework → project), không được sort tự động. |
 
-Nếu phát hiện conflict giữa formatter và code, giải pháp đúng là tái cấu trúc code, không phải disable rule.
-
 ---
 
 ## III. Cài đặt clang-format
 
 Hướng dẫn cho Linux (Ubuntu / Debian). Yêu cầu phiên bản **≥ 14** để hỗ trợ đầy đủ các setting trong `.clang-format`.
 
-Cài đặt từ repo apt mặc định của distro:
+Cài đặt:
 
 ```bash
 sudo apt update
 sudo apt install clang-format
 ```
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>
 
 Kiểm tra cài đặt:
 
@@ -277,6 +282,13 @@ Kết quả mong đợi (số version có thể khác):
 Ubuntu clang-format version 18.1.x
 ```
 
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>
+
 ---
 
 ## IV. Chạy clang-format
@@ -288,6 +300,21 @@ Format một file in-place:
 ```bash
 clang-format -i application/sources/app/game/game_zomwar/zw_game_bullet.cpp
 ```
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>
+
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>
 
 Format toàn bộ source và header trong `application/sources/app`:
 
