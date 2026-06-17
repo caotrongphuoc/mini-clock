@@ -418,10 +418,10 @@ Lưu ý:
 
 ## VII. Tài liệu tham khảo
 
-- [Letter case — Use within programming languages — Wikipedia](https://en.wikipedia.org/wiki/Letter_case#Use_within_programming_languages) — định nghĩa `lower_snake_case`, `UPPER_SNAKE_CASE`, `kebab-case` dùng trong Section I và VI.
-- [Clang-Format style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html) — danh sách đầy đủ setting có thể khai báo trong `.clang-format` (Section II).
-- [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html) — base style kế thừa qua `BasedOnStyle: LLVM` (Section II).
-- [Pro Git book](https://git-scm.com/book) — tham khảo chính thức về Git và workflow commit (Section V).
+- [Naming convention — Multi-word identifiers (Wikipedia)](https://en.wikipedia.org/wiki/Naming_convention_(programming)#Multiple-word_identifiers) — bảng định nghĩa `snake_case`, `SCREAMING_SNAKE_CASE`, `kebab-case` dùng trong Section I và VI.
+- [Clang-Format — Configurable Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html#configurable-format-style-options) — mô tả từng key trong file `.clang-format` ở Section II.
+- [LLVM Coding Standards — Source Code Formatting](https://llvm.org/docs/CodingStandards.html#source-code-formatting) — base style kế thừa qua `BasedOnStyle: LLVM` ở Section II.
+- [Pro Git — Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository) — workflow `git add` / `git commit` / `git push` ở Section V.
 
 ---
 
