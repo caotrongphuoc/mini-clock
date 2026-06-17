@@ -75,16 +75,58 @@ Dùng `__<TÊN_FILE>_H__`, viết hoa hết, khớp tên file:
 
 ### 4. Macro và hằng số biên dịch
 
-`UPPER_SNAKE_CASE`. Luôn bọc số trong dấu ngoặc để khỏi sai khi macro được expand:
+`UPPER_SNAKE_CASE`. Luôn bọc số trong dấu ngoặc để khỏi sai khi macro được expand.
+
+**Quy tắc bắt buộc: macro thuộc về object nào thì PHẢI có tên object đó làm prefix.**
+
+Pattern: `<OBJECT>_<PROPERTY>` hoặc `<OBJECT>_<ACTION>` — object luôn đứng trước, không bao giờ đứng sau. Đọc tên macro là đoán được nó thuộc module nào, grep theo object là ra toàn bộ hằng số của nó.
+
+| Loại hằng | Đặt đúng | Tránh |
+|---|---|---|
+| Số lượng | `ZOMBIE_NUMBER`, `BULLET_NUMBER`, `BANG_NUMBER` | ~~`NUM_ZOMBIE`~~, ~~`NUM_BULLET`~~ |
+| Tọa độ | `GUNNER_AXIS_X`, `CAR_AXIS_X` | ~~`AXIS_X_GUNNER`~~, ~~`AXIS_X_CAR`~~ |
+| Bước di chuyển | `GUNNER_STEP_AXIS_Y`, `BULLET_STEP_AXIS_X` | ~~`STEP_GUNNER_AXIS_Y`~~ |
+| Kích thước bitmap | `GUNNER_SIZE_BITMAP_X`, `BANG_SIZE_BITMAP_I_X` | ~~`SIZE_BITMAP_GUNNER_X`~~ |
+| Thời gian / chu kỳ | `BORDER_WAVE_SCORE_INTERVAL`, `TOMBSTONE_SPAWN_INTERVAL` | ~~`WAVE_SCORE_INTERVAL`~~ |
+| Hành vi / giới hạn | `ZOMBIE_RISE_TICKS`, `ZOMBIE_SPEED_MAX`, `CAR_HIT_RANGE_Y` | ~~`RISE_TICKS_ZOMBIE`~~, ~~`MAX_SPEED_ZOMBIE`~~ |
+
+Ví dụ áp dụng đúng:
 
 ```cpp
-#define NUM_BULLET                 (15)
-#define AXIS_X_GUNNER              (14)
-#define WAVE_SCORE_INTERVAL        (200)
-#define ZW_GAME_TIME_TICK_INTERVAL (100)
+// zw_game_bullet.h
+#define BULLET_NUMBER              (15)
+#define BULLET_MAX_AXIS_X          (128)
+#define BULLET_STEP_AXIS_X         (3)
+#define BULLET_SIZE_BITMAP_X       (5)
+#define BULLET_SIZE_BITMAP_Y       (5)
+
+// zw_game_gunner.h
+#define GUNNER_STEP_AXIS_Y         (10)
+#define GUNNER_AXIS_X              (14)
+#define GUNNER_AXIS_Y              (52)
+#define GUNNER_AXIS_Y_MIN          (12)
+#define GUNNER_AXIS_Y_MAX          (52)
+#define GUNNER_SIZE_BITMAP_X       (25)
+#define GUNNER_SIZE_BITMAP_Y       (10)
+
+// zw_game_border.h
+#define BORDER_WAVE_SCORE_INTERVAL    (200)
+#define BORDER_WARNING_BLINK_DURATION (30)
+#define BORDER_WARNING_BLINK_RATE     (3)
+#define BORDER_SIZE_BITMAP_WARNING_X  (16)
+#define BORDER_SIZE_BITMAP_WARNING_Y  (14)
 ```
 
-Gom hằng số liên quan vào header tương ứng (`zw_game_bullet.h` chứa hằng của bullet, v.v.). Tránh rải magic number rải rác trong `.cpp`.
+Tên số nhiều ở mục "số lượng" có thể dùng `NUMBER` hay `NUM` đều được — chọn một và dùng nhất quán trong cùng module.
+
+**Ngoại lệ — system / project-level macro**: macro thuộc về toàn bộ game (không phải của object cụ thể) thì dùng project prefix `ZW_GAME_*`:
+
+```cpp
+#define ZW_GAME_TIME_TICK_INTERVAL (100)
+#define ZW_GAME_TIME_EXIT_INTERVAL (3000)
+```
+
+Gom hằng số liên quan vào header tương ứng (`zw_game_bullet.h` chứa hằng bullet, `zw_game_gunner.h` chứa hằng gunner...). Tránh rải magic number rải rác trong `.cpp`.
 
 ### 5. Signal (giá trị enum)
 
