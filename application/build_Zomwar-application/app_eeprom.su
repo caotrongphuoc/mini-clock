@@ -1,4 +1,0 @@
-sources/app/app_eeprom.cpp:53:6:bool zw_game_setting_read(zw_game_setting_t*)	24	static
-sources/app/app_eeprom.cpp:68:6:bool zw_game_setting_write(zw_game_setting_t*)	24	static
-sources/app/app_eeprom.cpp:87:6:bool zw_game_score_read(zw_game_score_t*)	24	static
-sources/app/app_eeprom.cpp:102:6:bool zw_game_score_write(zw_game_score_t*)	24	static

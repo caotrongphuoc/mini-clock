@@ -1,2 +1,0 @@
-sources/app/screens/scr_game_setting_tombstone.cpp:91:6:void scr_game_setting_tombstone_handle(ak_msg_t*)	16	static
-sources/app/screens/scr_game_setting_tombstone.cpp:39:13:void view_scr_game_setting_tombstone()	56	static

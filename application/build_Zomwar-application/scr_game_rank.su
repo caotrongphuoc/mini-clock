@@ -1,2 +1,0 @@
-sources/app/screens/scr_game_rank.cpp:40:6:void view_scr_game_rank()	48	static
-sources/app/screens/scr_game_rank.cpp:142:6:void scr_game_rank_handle(ak_msg_t*)	24	static
