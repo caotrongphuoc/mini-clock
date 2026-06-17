@@ -161,7 +161,7 @@ ZW_GAME_GUNNER_ID
 ZW_GAME_BORDER_ID
 ```
 
-Handler tương ứng trong `task_list.cpp` giữ nguyên tên, thay hậu tố `_ID` bằng `_handle`:
+Handler tương ứng trong `task_list.cpp` giữ nguyên tên, thay hậu tố `_ID` bằng `_handle` và viết thường:
 
 ```cpp
 {ZW_GAME_BORDER_ID, TASK_PRI_LEVEL_4, zw_game_border_handle},
