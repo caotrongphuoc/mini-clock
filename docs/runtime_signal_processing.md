@@ -119,11 +119,147 @@ sequenceDiagram
 
 #### 2. Game Playing
 
-<table align="center">
-  <tr>
-    <td align="center"><img src="../resources/images/sequence_object/zw_game_play_sequence.png" alt="Gameplay sequence logic" width="1000"/></td>
-  </tr>
-</table>
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Btn as Button
+    participant Tmr as Timer
+    participant Q as AK queue
+    participant Scr as Screen task
+    participant Gun as Gunner task
+    participant Bul as Bullet task
+    participant Zmb as Zombie task
+    participant Tmb as Tombstone task
+    participant Car as Car task
+    participant Bng as Bang task
+    participant Bdr as Border task
+
+    Note over Btn,Scr: Button events fire asynchronously between ticks
+    Btn-)Q: BUTTON_UP_PRESSED to AC_TASK_DISPLAY_ID
+    Q-)Scr: dispatch
+    activate Scr
+    Note right of Scr: gunner_dir = UP
+    deactivate Scr
+
+    Btn-)Q: BUTTON_UP_RELEASED
+    Q-)Scr: dispatch
+    activate Scr
+    Note right of Scr: if dir == UP, dir = NONE
+    deactivate Scr
+
+    Btn-)Q: BUTTON_MODE_PRESSED
+    Q-)Scr: dispatch
+    activate Scr
+    opt zw_game_state == GAME_PLAY
+        Scr-)Q: BULLET_SHOOT to ZW_GAME_BULLET_ID
+    end
+    deactivate Scr
+    Q-)Bul: BULLET_SHOOT (dispatched after Screen RTC)
+    activate Bul
+    Note right of Bul: spawn bullet, set gunner.action_image=2, play CLICK
+    deactivate Bul
+
+    Note over Tmr,Scr: Periodic tick (100 ms)
+    Tmr-)Q: ZW_GAME_TIME_TICK to AC_TASK_DISPLAY_ID
+    Q-)Scr: dispatch
+    activate Scr
+    opt zw_game_state != GAME_PLAY
+        Note right of Scr: break (ignore tick)
+    end
+
+    alt gunner_dir == UP
+        Scr-)Q: GUNNER_UP
+    else gunner_dir == DOWN
+        Scr-)Q: GUNNER_DOWN
+    else gunner_dir == NONE
+        Note right of Scr: skip movement post
+    end
+    Scr-)Q: GUNNER_UPDATE
+    Scr-)Q: BULLET_RUN
+    Scr-)Q: ZOMBIE_RUN
+    Scr-)Q: ZOMBIE_DETONATOR
+    Scr-)Q: TOMBSTONE_SPAWN
+    Scr-)Q: CAR_RUN
+    Scr-)Q: CAR_HIT
+    Scr-)Q: BANG_UPDATE
+    Scr-)Q: BORDER_CHECK_GAME_OVER
+    Scr-)Q: BORDER_CHECK_WAVE
+    Scr-)Q: BORDER_LEVEL_UP
+    deactivate Scr
+
+    Note over Q: AK scheduler dispatches each queued signal (RTC, FIFO)
+
+    Q-)Gun: GUNNER_UP or GUNNER_DOWN
+    activate Gun
+    Note right of Gun: gunner_y += or -= STEP, clamp
+    deactivate Gun
+
+    Q-)Gun: GUNNER_UPDATE
+    activate Gun
+    Note right of Gun: gunner.y from gunner_y, clear recoil
+    deactivate Gun
+
+    Q-)Bul: BULLET_RUN
+    activate Bul
+    Note right of Bul: advance bullets, despawn at right edge
+    deactivate Bul
+
+    Q-)Zmb: ZOMBIE_RUN
+    activate Zmb
+    Note right of Zmb: rise or step-left with zigzag, animate, top-up alive count
+    deactivate Zmb
+
+    Q-)Zmb: ZOMBIE_DETONATOR
+    activate Zmb
+    Note right of Zmb: bullet vs zombie hit, write bang and score, BUZZER, hide
+    deactivate Zmb
+
+    Q-)Tmb: TOMBSTONE_SPAWN
+    activate Tmb
+    Note right of Tmb: countdown spawn_timer, on expire spawn rising zombie via sync helper
+    deactivate Tmb
+
+    Q-)Car: CAR_RUN
+    activate Car
+    Note right of Car: activation pass plus advance running cars
+    deactivate Car
+
+    Q-)Car: CAR_HIT
+    activate Car
+    Note right of Car: running car vs zombie, write bang and score, BUZZER, hide
+    deactivate Car
+
+    Q-)Bng: BANG_UPDATE
+    activate Bng
+    Note right of Bng: animate visible slots 1->2->3, retire at 3
+    deactivate Bng
+
+    Q-)Bdr: BORDER_CHECK_GAME_OVER
+    activate Bdr
+    loop scan visible zombies past left edge
+        Bdr->>+Car: zw_game_car_find_nearest(z.y)
+        Car-->>-Bdr: idx
+        opt idx less than 0
+            Bdr-)Q: ZW_GAME_RESET to Screen
+            Note right of Bdr: break loop
+        end
+    end
+    deactivate Bdr
+
+    Q-)Bdr: BORDER_CHECK_WAVE
+    activate Bdr
+    Note right of Bdr: arm wave warning if score crossed threshold
+    deactivate Bdr
+
+    Q-)Bdr: BORDER_LEVEL_UP
+    activate Bdr
+    opt warning active and timer reached 0
+        Note right of Bdr: advance wave_last_score, wave_level++
+        Bdr-)Q: ZOMBIE_WAVE_SPAWN to Zombie
+    end
+    deactivate Bdr
+```
+
 <p align="center"><strong><em>Figure 2:</em></strong> Gameplay sequence logic</p>
 
 #### 3. Game Reset
