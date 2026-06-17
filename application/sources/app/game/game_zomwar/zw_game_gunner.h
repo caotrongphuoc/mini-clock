@@ -15,11 +15,18 @@
 
 #include "scr_game_zomwar.h"
 
-#define GUNNER_STEP_AXIS_Y (10)
+// Size of Gunner bitmap
 #define GUNNER_SIZE_BITMAP_X (25)
 #define GUNNER_SIZE_BITMAP_Y (10)
+
+// Initial position
 #define GUNNER_AXIS_X (14)
 #define GUNNER_AXIS_Y (52)
+
+// Vertical movement step per UP / DOWN signal
+#define GUNNER_STEP_AXIS_Y (10)
+
+// Vertical position bounds
 #define GUNNER_AXIS_Y_MIN (12)
 #define GUNNER_AXIS_Y_MAX (52)
 

@@ -17,16 +17,24 @@
 
 #include "zw_game_zombie.h"
 
-#define CAR_AXIS_X (0)
+// Number of Lanes (one rescue car slot per lane)
 #define CAR_LANE_NUMBER (5)
-#define CAR_SPEED (4)
+
+// Parked X position (left edge, before activation)
+#define CAR_AXIS_X (0)
+
+// Y position of each lane (used for parking and rendering)
+#define CAR_LANE_Y {2, 12, 22, 32, 42 }
+
+// Size of Car bitmap
 #define CAR_SIZE_BITMAP_X (12)
 #define CAR_SIZE_BITMAP_Y (10)
+
+// Horizontal speed once the car is running
+#define CAR_SPEED (4)
+
+// Vertical hit / activation range (max |zombie.y - car.y|)
 #define CAR_HIT_RANGE_Y (8)
-#define CAR_LANE_Y            \
-	{                     \
-		2, 12, 22, 32, 42 \
-	}
 
 typedef struct
 {

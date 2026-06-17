@@ -33,6 +33,7 @@
 #include "zw_game_bang.h"
 #include "zw_game_border.h"
 
+// Game state values for zw_game_state
 #define GAME_OFF (0)
 #define GAME_PLAY (1)
 #define GAME_OVER (2)

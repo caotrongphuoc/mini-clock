@@ -18,11 +18,20 @@
 
 #include "zw_game_gunner.h"
 
+// Number of Bullets
 #define BULLET_NUMBER (15)
-#define BULLET_MAX_AXIS_X (128)
+
+// Size of Bullet bitmap
 #define BULLET_SIZE_BITMAP_X (5)
 #define BULLET_SIZE_BITMAP_Y (5)
+
+// Right edge (despawn when reaching this x)
+#define BULLET_MAX_AXIS_X (128)
+
+// Horizontal movement step per RUN signal
 #define BULLET_STEP_AXIS_X (3)
+
+// Spawn offset relative to gunner position
 #define BULLET_SPAWN_OFFSET_X (22)
 #define BULLET_SPAWN_OFFSET_Y (8)
 
