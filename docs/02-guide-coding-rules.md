@@ -285,7 +285,7 @@ clang-format --version
 Kết quả mong đợi (số version có thể khác):
 
 ```
-Ubuntu clang-format version 18.1.x
+Ubuntu clang-format version 14.x.x
 ```
 
 <table align="center">
