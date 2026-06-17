@@ -4,7 +4,7 @@
 /* Variable Declaration - Game setting */
 /*****************************************************************************/
 
-static uint8_t setting_location_chosse;
+static uint8_t setting_location_choose;
 
 /*****************************************************************************/
 /* View - Game setting */
@@ -13,44 +13,44 @@ static uint8_t setting_location_chosse;
 static void view_scr_game_setting();
 
 view_dynamic_t dyn_view_item_game_setting = {
-	{
-		.item_type = ITEM_TYPE_DYNAMIC,
-	},
-	view_scr_game_setting};
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_game_setting};
 
 view_screen_t scr_game_setting = {
-	&dyn_view_item_game_setting,
-	ITEM_NULL,
-	ITEM_NULL,
+    &dyn_view_item_game_setting,
+    ITEM_NULL,
+    ITEM_NULL,
 
-	.focus_item = 0,
+    .focus_item = 0,
 };
 
 void view_scr_game_setting()
 {
 	view_render.setTextSize(1);
 
-	uint8_t sel = setting_location_chosse;
+	uint8_t sel = setting_location_choose;
 
 	for (uint8_t f = 0; f < 5; f++)
 	{
-		uint8_t frame_y = ZW_GAME_SETTING_FRAMES_AXIS_Y_1 + ZW_GAME_SETTING_FRAMES_STEP * f;
+		uint8_t frame_y = SETTING_FRAMES_AXIS_Y_1 + SETTING_FRAMES_STEP * f;
 		bool selected = (f == sel);
 		uint8_t fg = selected ? BLACK : WHITE;
 
 		if (selected)
 		{
 			view_render.fillRoundRect(
-				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-				ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    SETTING_FRAMES_AXIS_X, frame_y,
+			    SETTING_FRAMES_SIZE_W, SETTING_FRAMES_SIZE_H,
+			    SETTING_FRAMES_SIZE_R, WHITE);
 		}
 		else
 		{
 			view_render.drawRoundRect(
-				ZW_GAME_SETTING_FRAMES_AXIS_X, frame_y,
-				ZW_GAME_SETTING_FRAMES_SIZE_W, ZW_GAME_SETTING_FRAMES_SIZE_H,
-				ZW_GAME_SETTING_FRAMES_SIZE_R, WHITE);
+			    SETTING_FRAMES_AXIS_X, frame_y,
+			    SETTING_FRAMES_SIZE_W, SETTING_FRAMES_SIZE_H,
+			    SETTING_FRAMES_SIZE_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
@@ -120,7 +120,7 @@ void view_scr_game_setting()
 /* Handle - Game setting */
 /*****************************************************************************/
 
-void scr_game_setting_handle(ak_msg_t *msg)
+void scr_game_setting_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{
@@ -128,7 +128,7 @@ void scr_game_setting_handle(ak_msg_t *msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		view_render.clear();
-		setting_location_chosse = SETTING_ITEM_CARS;
+		setting_location_choose = SETTING_ITEM_CARS;
 		zw_game_setting_read(&settingdata);
 	}
 	break;
@@ -136,7 +136,7 @@ void scr_game_setting_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
-		switch (setting_location_chosse)
+		switch (setting_location_choose)
 		{
 		case SETTING_ITEM_CARS:
 		{
@@ -188,13 +188,13 @@ void scr_game_setting_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_CARS)
+		if (setting_location_choose == SETTING_ITEM_CARS)
 		{
-			setting_location_chosse = SETTING_ITEM_EXIT;
+			setting_location_choose = SETTING_ITEM_EXIT;
 		}
 		else
 		{
-			setting_location_chosse--;
+			setting_location_choose--;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -203,13 +203,13 @@ void scr_game_setting_handle(ak_msg_t *msg)
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
-		if (setting_location_chosse == SETTING_ITEM_EXIT)
+		if (setting_location_choose == SETTING_ITEM_EXIT)
 		{
-			setting_location_chosse = SETTING_ITEM_CARS;
+			setting_location_choose = SETTING_ITEM_CARS;
 		}
 		else
 		{
-			setting_location_chosse++;
+			setting_location_choose++;
 		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

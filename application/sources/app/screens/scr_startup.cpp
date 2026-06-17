@@ -44,7 +44,7 @@ void scr_startup_handle(ak_msg_t *msg) {
 		view_render.initialize();
 		view_render_display_on();
 
-		/* nap du lieu ben vung tu EEPROM va ap dung trang thai am thanh */
+		/* load persistent data from EEPROM and apply sound state */
 		zw_game_setting_read(&settingdata);
 		zw_game_score_read(&gamescore);
 		BUZZER_Silent(settingdata.silent ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
@@ -55,12 +55,12 @@ void scr_startup_handle(ak_msg_t *msg) {
 	case AC_DISPLAY_BUTTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO);
-		SCREEN_TRAN(scr_qrcode_handle, &scr_qrcode);
+		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 	} break;
 
 	case AC_DISPLAY_SHOW_LOGO: {
 		APP_DBG_SIG("AC_DISPLAY_SHOW_LOGO\n");
-		SCREEN_TRAN(scr_qrcode_handle, &scr_qrcode);
+		SCREEN_TRAN(scr_game_menu_handle, &scr_game_menu);
 	} break;
 
 	case AC_DISPLAY_SHOW_IDLE: {

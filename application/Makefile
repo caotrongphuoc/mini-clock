@@ -63,7 +63,7 @@ IF_NETWORK_NRF24_OPTION = -UIF_NETWORK_NRF24_EN
 
 # Task compile option.
 TASK_ZIGBEE_OPTION = -UTASK_ZIGBEE_EN
-TASK_MBMASTER_OPTION = -DTASK_MBMASTER_EN
+TASK_MBMASTER_OPTION = -UTASK_MBMASTER_EN
 
 # Include sources file
 include sources/ak/Makefile.mk
@@ -174,10 +174,10 @@ HARDWARE_OPTION += \
 
 # Console log compile option
 CONSOLE_OPTION +=			\
-		-DLOGIN_PRINT_EN	\
-		-DSYS_PRINT_EN		\
-		-DAPP_PRINT_EN		\
-		-DSYS_DBG_EN		\
+		-ULOGIN_PRINT_EN	\
+		-USYS_PRINT_EN		\
+		-UAPP_PRINT_EN		\
+		-USYS_DBG_EN		\
 		-UAPP_DBG_EN		\
 		-UAPP_DBG_SIG_EN	\
 

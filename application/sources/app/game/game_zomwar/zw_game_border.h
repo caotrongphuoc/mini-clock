@@ -19,26 +19,14 @@
 #include "zw_game_zombie.h"
 #include "zw_game_car.h"
 
-// Position of Border
-#define AXIS_X_BORDER (0)
-#define AXIS_Y_BORDER_ON (2)
-#define AXIS_Y_BORDER_UNDER (52)
-
 // Wave settings
-#define WAVE_SCORE_INTERVAL (200)
-#define WARNING_BLINK_DURATION (30)
-#define WARNING_BLINK_RATE (3)
+#define BORDER_WAVE_SCORE_INTERVAL (200)
+#define BORDER_WARNING_BLINK_DURATION (30)
+#define BORDER_WARNING_BLINK_RATE (3)
 
 // Size of Warning
-#define SIZE_BITMAP_WARNING_X (16)
-#define SIZE_BITMAP_WARNING_Y (14)
-
-typedef struct
-{
-    uint32_t x, y;
-} zw_game_border_t;
-
-extern zw_game_border_t border;
+#define BORDER_SIZE_BITMAP_WARNING_X (16)
+#define BORDER_SIZE_BITMAP_WARNING_Y (14)
 
 extern uint16_t zw_game_score;
 extern uint16_t wave_last_score;

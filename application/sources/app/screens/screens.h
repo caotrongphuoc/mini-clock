@@ -20,7 +20,6 @@
 #include <math.h>
 #include <vector>
 
-#include "qrcode.h"
 #include "screens_bitmap.h"
 #include "scr_game_zomwar.h"
 
@@ -29,20 +28,10 @@ extern view_dynamic_t dyn_view_idle;
 extern view_screen_t scr_idle;
 extern void scr_idle_handle(ak_msg_t* msg);
 
-// scr_qrcode
-extern view_dynamic_t dyn_view_qrcode;
-extern view_screen_t scr_qrcode;
-extern void scr_qrcode_handle(ak_msg_t* msg);
-
 // scr_startup
 extern view_dynamic_t dyn_view_startup;
 extern view_screen_t scr_startup;
 extern void scr_startup_handle(ak_msg_t* msg);
-
-// scr_welcome
-extern view_dynamic_t dyn_view_welcome;
-extern view_screen_t scr_welcome;
-extern void scr_welcome_handle(ak_msg_t* msg);
 
 // scr_game_zomwar
 extern view_dynamic_t dyn_view_zomwar;

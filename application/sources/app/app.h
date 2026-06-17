@@ -80,21 +80,6 @@ enum {
 };
 
 /*****************************************************************************/
-/*  RF24 task define
- */
-/*****************************************************************************/
-/* private define */
-/* define timer */
-/* define signal */
-enum {
-	AC_RF24_IF_INIT_NETWORK = AK_USER_DEFINE_SIG,
-	AC_RF24_IF_PURE_MSG_OUT,
-	AC_RF24_IF_COMMON_MSG_OUT,
-	AC_RF24_IF_PURE_MSG_IN,
-	AC_RF24_IF_COMMON_MSG_IN,
-};
-
-/*****************************************************************************/
 /* IF task define
  */
 /*****************************************************************************/
@@ -168,20 +153,6 @@ enum {
 };
 
 /*****************************************************************************/
-/*  ZIGBEE task define
- */
-/*****************************************************************************/
-/* define timer */
-/* define signal */
-enum {
-	AC_ZIGBEE_INIT = AK_USER_DEFINE_SIG,
-	AC_ZIGBEE_FORCE_START_COODINATOR,
-	AC_ZIGBEE_START_COODINATOR,
-	AC_ZIGBEE_PERMIT_JOINING_REQ,
-	AC_ZIGBEE_ZCL_CMD_HANDLER
-};
-
-/*****************************************************************************/
 /*  Zomwar game "SCREEN" task define
  */
 /*****************************************************************************/
@@ -206,7 +177,6 @@ enum {
 	ZW_GAME_GUNNER_UPDATE,
 	ZW_GAME_GUNNER_UP,
 	ZW_GAME_GUNNER_DOWN,
-	ZW_GAME_GUNNER_STOP,
 	ZW_GAME_GUNNER_RESET,
 };
 
@@ -284,9 +254,9 @@ enum {
 /* define signal */
 enum {
 	ZW_GAME_BORDER_SETUP = ZW_GAME_DEFINE_SIG,
-	ZW_GAME_CHECK_GAME_OVER,
-	ZW_GAME_WAVE_CHECK,
-	ZW_GAME_LEVEL_UP,
+	ZW_GAME_BORDER_CHECK_GAME_OVER,
+	ZW_GAME_BORDER_CHECK_WAVE,
+	ZW_GAME_BORDER_LEVEL_UP,
 	ZW_GAME_BORDER_RESET,
 };
 

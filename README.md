@@ -8,7 +8,7 @@
 ## Gameplay Demo
 
 <div align="center">
-        <video src="resources/images/screens/scr_game_zomwar.mp4" alt="scr_game_zomwar" height=200/>
+  <video src="https://github.com/user-attachments/assets/8d17013e-af9b-4586-9bb3-aee9d002cdb2" controls width="480"></video>
 </div>
 
 ## Documentation
@@ -16,9 +16,10 @@
 | File | Description |
 |---|---|
 | [README.md](README.md) | Main project overview, hardware information, gameplay rules, and object descriptions. |
-| [docs/getting_started.md](docs/getting_started.md) | Game programming getting started guide. |
-| [docs/object_sequence.md](docs/object_sequence.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
-| [docs/runtime_signal_processing.md](docs/runtime_signal_processing.md) | Runtime signal-processing flow for button input, AK task messages, timers, game-loop ticks, object updates, and Mermaid sequence diagrams. |
+| [docs/01-guide-getting-started.md](docs/01-guide-getting-started.md) | Game programming getting started guide. |
+| [docs/02-guide-coding-rules.md](docs/02-guide-coding-rules.md) | Some rules for coding game. |
+| [docs/03-design-sequence-object.md](docs/03-design-sequence-object.md) | Runtime sequence diagrams for gameplay objects: Gunner, Bullet, Zombie, Car, Bang, Tombstone, and Border. |
+| [docs/04-design-sequence-runtime.md](docs/04-design-sequence-runtime.md) | Runtime signal-processing flow for button input, AK task messages, timers, game-loop ticks, object updates, and Mermaid sequence diagrams. |
 
 ## Introduction
 
@@ -118,7 +119,7 @@ The game opens on the **Main Menu**, which offers the following options:
 | <img src="resources/images/bitmap/bitmap_bang.gif" width="100"/> | **Bang** | A short impact animation drawn wherever a Zombie is destroyed (by a Bullet or by a Car). Purely visual — it has no gameplay effect on its own. |
 | <img src="resources/images/bitmap/bitmap_border.png" height="100"/> | **Border** | The safe zone along the left edge that must be protected. The match ends the moment a Zombie crosses the Border in a lane that has no Car left. |
 
-> **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/object_sequence.md).
+> **Note:** For detailed object runtime sequences, see [Game Object Sequences](docs/03-design-sequence-object.md).
 
 ### III. How to Play:
 
@@ -157,11 +158,11 @@ The game opens on the **Main Menu**, which offers the following options:
 
 ### IV. Basic Game Sequence Logic
 
-> **Note:** For a more detailed sequence flow, see [Runtime Signal Processing](docs/runtime_signal_processing.md).
+> **Note:** For a more detailed sequence flow, see [Runtime Signal Processing](docs/04-design-sequence-runtime.md).
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/sequence_object/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
+    <td align="center"><img src="resources/images/design-sequence/zw_game_zomwar_sequence.png" alt="basic zomwar game sequence logic" width="1000"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 7:</em></strong> Game sequence logic</p>

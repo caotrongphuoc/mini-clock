@@ -18,19 +18,29 @@
 
 #include "zw_game_gunner.h"
 
+// Number of Bullets
+#define BULLET_NUMBER (15)
 
-#define NUM_BULLET (15)
-#define MAX_AXIS_X_BULLET (128)
-#define SIZE_BITMAP_BULLET_X (5)
-#define SIZE_BITMAP_BULLET_Y (5)
-#define STEP_BULLET_AXIS_X (3)
+// Size of Bullet bitmap
+#define BULLET_SIZE_BITMAP_X (5)
+#define BULLET_SIZE_BITMAP_Y (5)
+
+// Right edge (despawn when reaching this x)
+#define BULLET_MAX_AXIS_X (128)
+
+// Horizontal movement step per RUN signal
+#define BULLET_STEP_AXIS_X (3)
+
+// Spawn offset relative to gunner position
+#define BULLET_SPAWN_OFFSET_X (22)
+#define BULLET_SPAWN_OFFSET_Y (8)
 
 typedef struct
 {
-    bool visible;
-    uint16_t x, y;
+	bool visible;
+	uint8_t x, y;
 } zw_game_bullet_t;
 
-extern zw_game_bullet_t bullet[NUM_BULLET];
+extern zw_game_bullet_t bullet[BULLET_NUMBER];
 
 #endif //__ZW_GAME_BULLET_H__
