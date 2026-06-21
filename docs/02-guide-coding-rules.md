@@ -1,6 +1,6 @@
 <h1 align="center">Coding rules and style guide</h1>
 
-This document defines the naming conventions, code style, commit message format, and document naming conventions used in the project, along with instructions for installing and using `clang-format`. The goal is to keep code from all contributors visually consistent and easy to track through search tools, code review, and version control. These are takeaways from finishing the Zomwar game; feel free to refer to and adopt whatever fits your work.
+This document defines the naming conventions, code style, commit message format, and document naming conventions used in the project, along with instructions for installing and using `clang-format`. The goal is to make sure code contributed by team members stays consistent in form and easy to track through search tools, code review, and version control. These are the takeaways from finishing the Zomwar game — feel free to refer to them and apply whatever fits.
 
 ---
 
@@ -27,7 +27,7 @@ This document defines the naming conventions, code style, commit message format,
 
 ## I. Naming conventions
 
-The conventions below are taken directly from the existing source code. New code must follow them so that tooling, search, and reviewers all work consistently.
+The conventions below are drawn directly from the existing source code. New code must follow these conventions so that tooling, search, and reviewers all work consistently.
 
 **Case styles used in this document:**
 
@@ -39,7 +39,7 @@ The conventions below are taken directly from the existing source code. New code
 
 ### 1. Folder
 
-Folders use `lower_snake_case`. Organize by feature (feature-based), not by file type.
+Use `lower_snake_case` for folder names. Organize by feature (feature-based), not by file type.
 
 ```
 application/sources/app/
@@ -52,7 +52,7 @@ application/sources/app/
 
 ### 2. Source and header files
 
-Source and header files always carry a module prefix so you can identify the module at a glance:
+Source and header files always carry a module prefix so you can identify the module right from the file name:
 
 | Prefix | Meaning | Example |
 |---|---|---|
@@ -65,7 +65,7 @@ File extensions: `.h` for headers, `.cpp` for implementation (the project is bui
 
 ### 3. Header guard
 
-Use the pattern `__<FILE_NAME>_H__`, entirely uppercase, matching the file name exactly:
+Use the pattern `__<FILE_NAME>_H__`, fully uppercased, matching the file name exactly:
 
 ```cpp
 #ifndef __ZW_GAME_BANG_H__
@@ -76,11 +76,11 @@ Use the pattern `__<FILE_NAME>_H__`, entirely uppercase, matching the file name 
 
 ### 4. Macros and compile-time constants
 
-Use `UPPER_SNAKE_CASE`. Always wrap numeric values in parentheses to avoid expansion bugs.
+Use `UPPER_SNAKE_CASE` for names. Always wrap numeric values in parentheses to avoid errors when the macro gets expanded.
 
-**Mandatory rule: a macro belonging to an object MUST carry that object's name as a prefix.**
+**Mandatory rule: a macro that belongs to an object MUST carry that object's name as a prefix.**
 
-Pattern: `<OBJECT>_<PROPERTY>` or `<OBJECT>_<ACTION>` — the object always comes first. Reading the macro name immediately tells you which module it belongs to, and grepping by object name returns every constant of that module.
+Pattern: `<OBJECT>_<PROPERTY>` or `<OBJECT>_<ACTION>` — the object always comes first. Reading the macro name tells you immediately which module it belongs to, and grepping by object name returns every constant of that module.
 
 | Constant type | Correct form |
 |---|---|
@@ -125,11 +125,11 @@ Examples done right:
 #define ZW_GAME_TIME_EXIT_INTERVAL (3000)
 ```
 
-Group related constants into the right module header (`zw_game_bullet.h` holds bullet constants, `zw_game_gunner.h` holds gunner constants, and so on). Never leave magic numbers scattered across `.cpp` files.
+Group related constants in the right module header (`zw_game_bullet.h` holds bullet constants, `zw_game_gunner.h` holds gunner constants, and so on). Never leave magic numbers scattered across `.cpp` files.
 
 ### 5. Signal (enum values)
 
-Signals are the **public contract** between tasks. Always use the full prefix — no abbreviations, not in comments, not in documentation, not in sequence diagrams.
+Signals are the **public contract** between tasks. Always use the full prefix — no abbreviations, not in comments, documentation, or sequence diagrams.
 
 | Pattern | Applied to | Example |
 |---|---|---|
@@ -153,7 +153,7 @@ enum {
 
 ### 6. Task ID
 
-Use the pattern `<PREFIX>_<NAME>_ID`, entirely uppercase, registered in `task_list.h`:
+Use the pattern `<PREFIX>_<NAME>_ID`, fully uppercased, registered in `task_list.h`:
 
 ```cpp
 AC_TASK_DISPLAY_ID
@@ -161,7 +161,7 @@ ZW_GAME_GUNNER_ID
 ZW_GAME_BORDER_ID
 ```
 
-The corresponding handler in `task_list.cpp` keeps the same name, swapping the `_ID` suffix for `_handle` and lowercasing it:
+The corresponding handler in `task_list.cpp` keeps the same name, replacing the `_ID` suffix with `_handle` and lowercased:
 
 ```cpp
 {ZW_GAME_BORDER_ID, TASK_PRI_LEVEL_4, zw_game_border_handle},
@@ -169,7 +169,7 @@ The corresponding handler in `task_list.cpp` keeps the same name, swapping the `
 
 ### 7. Data types and typedef
 
-Use `lower_snake_case` with the `_t` suffix. Leave the struct anonymous; the typedef is the public name:
+Use `lower_snake_case` with the `_t` suffix. The struct stays anonymous; the typedef is the public name:
 
 ```cpp
 typedef struct
@@ -181,11 +181,11 @@ typedef struct
 } zw_game_gunner_t;
 ```
 
-Framework-provided types follow the same pattern (`ak_msg_t`, `view_screen_t`).
+Types provided by the framework follow the same pattern (`ak_msg_t`, `view_screen_t`).
 
 ### 8. Functions
 
-Use `lower_snake_case` with the module name as prefix, so grepping the prefix returns every entry point of that module:
+Use `lower_snake_case` with the module name as prefix, so that grepping the prefix returns every entry point of that module:
 
 ```cpp
 void   zw_game_border_handle(ak_msg_t* msg);
@@ -198,7 +198,7 @@ int8_t zw_game_car_find_nearest(uint8_t zy);
 
 Use `lower_snake_case`. Do not start names with an underscore.
 
-- **Global variables shared between modules:** declare `extern` in the header, define exactly once in the owning module's `.cpp`.
+- **Globals shared between modules:** declare `extern` in the header, define exactly once in the `.cpp` of the owning module.
 
   ```cpp
   // zw_game_border.h
@@ -215,7 +215,7 @@ Use `lower_snake_case`. Do not start names with an underscore.
   static uint8_t gunner_dir = GUNNER_DIR_NONE;
   ```
 
-- **Local variables:** short and descriptive of the role. Loop counters can use `i`, `j`, `k` when the scope is clear.
+- **Local variables:** short, describe the role accurately. Loop counters can use `i`, `j`, `k` when the scope is clear.
 
 State belonging to a task's object should carry that object's name (`gunner.y`, `bang[i].visible`, `wave_warning_timer`); do not stash cross-cutting state inside another module's `.cpp`.
 
@@ -223,7 +223,7 @@ State belonging to a task's object should carry that object's name (`gunner.y`, 
 
 ## II. Code style (clang-format)
 
-The repo already ships a `.clang-format` file at the root, shown here for reference:
+The repo already includes a `.clang-format` file at the root, shown here for reference:
 
 ```yaml
 Language: Cpp
@@ -248,11 +248,11 @@ What the non-default settings do:
 | Setting | Effect |
 |---|---|
 | `UseTab: ForIndentation`, `IndentWidth: 4`, `TabWidth: 4` | Tabs are used only for indentation, not alignment. One tab equals 4 columns. |
-| `ColumnLimit: 0` | No automatic line wrapping. The author decides where to break lines. |
+| `ColumnLimit: 0` | No automatic line wrapping. The author decides where to break a line. |
 | `BreakBeforeBraces: Allman` | The `{` always sits on its own line — applies to `if`, `for`, and function bodies. |
-| `AllowShort*OnASingleLine: false` | One statement per line, including short `if` statements and empty functions. |
+| `AllowShort*OnASingleLine: false` | One statement per line, even for short `if` statements or empty functions. |
 | `PointerAlignment: Left` | Write `int* p`, not `int *p`. |
-| `SpaceBeforeParens: ControlStatements` | `if (x)`, `for (...)` get a space; `func(x)` does not. |
+| `SpaceBeforeParens: ControlStatements` | `if (x)`, `for (...)` have a space; `func(x)` does not. |
 | `IndentCaseLabels: false` | `case` labels sit at the same indent level as `switch`. |
 | `SortIncludes: false` | Include order is meaningful (BSP → framework → project) and must not be sorted automatically. |
 
@@ -282,7 +282,7 @@ Verify the install:
 clang-format --version
 ```
 
-Expected output (the version number may differ):
+Expected output (version number may differ):
 
 ```
 Ubuntu clang-format version 14.x.x
@@ -353,7 +353,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 
 ### 2. VSCode integration
 
-**Step 1.** Install the **C/C++** extension (Microsoft) — it bundles `clang-format` and automatically picks up the `.clang-format` file in the repo.
+**Step 1.** Install the **C/C++** extension (Microsoft) — it ships with `clang-format` and automatically picks up the `.clang-format` file in the repo.
 
 <table align="center">
   <tr>
@@ -362,7 +362,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 </table>
 <p align="center"><strong><em>Figure 6:</em></strong> Installing the C/C++ extension</p>
 
-**Step 2.** Open the workspace settings (`.vscode/settings.json`) and add the following:
+**Step 2.** Open the workspace settings (`.vscode/settings.json`) and add the following config:
 
 ```json
 {
@@ -387,7 +387,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 </table>
 <p align="center"><strong><em>Figure 8:</em></strong> The JSON configuration contents</p>
 
-**Step 3.** Format the current file with the shortcut <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows / Linux).
+**Step 3.** Format the current file using the shortcut <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> (Windows / Linux).
 
 <table align="center">
   <tr>
@@ -401,7 +401,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 </table>
 <p align="center"><strong><em>Figure 9:</em></strong> Comparison before and after formatting with the shortcut</p>
 
-**Step 4.** Turn on `formatOnSave` so the editor formats on every save, which prevents committing code with stale formatting.
+**Step 4.** Turn on `formatOnSave` so the editor formats the file on every save, making sure no code with stale formatting gets committed.
 
 <table align="center">
   <tr>
@@ -433,7 +433,7 @@ find application/sources/app -type f \( -name "*.cpp" -o -name "*.h" \) \
 
 ## V. Commit message convention
 
-Every commit must follow the format `[ACTION] short description` so git history stays readable and filterable.
+Every commit must follow the format `[ACTION] short description` so the git history stays easy to read and easy to filter.
 
 ### 1. Workflow
 
@@ -451,17 +451,17 @@ When you only need to stage specific files, replace `git add .` with `git add <p
 |---|---|
 | `[ADD]` | Adding a new file, feature, asset, or document |
 | `[UPDATE]` | Updating existing code — refactor, rename, tweak logic, bump version |
-| `[FIX]` | Fixing an existing bug, a build error, or a formatting error |
+| `[FIX]` | Fixing an existing bug, build error, or formatting error |
 | `[REMOVE]` | Removing a file, feature, or dead code |
 | `[DOC]` | Documentation-only changes (`docs/`, `README.md`, large comment blocks) |
-| `[MERGE]` | Branch merges (usually tool-generated, not hand-edited) |
+| `[MERGE]` | Branch merges (usually tool-generated, do not hand-edit) |
 
 ### 3. Description style
 
-- The tag is fully uppercase inside `[]`, followed by exactly one space, then the description.
-- The description is lowercase, in the imperative mood (`add`, `fix`, `rename`, `move`...), with no trailing period.
-- Keep the length around 70 characters — if it's longer, shorten it or move the details into the commit body.
-- When you touch a specific module / signal / file, name it directly so the history is easy to grep.
+- Tag fully uppercased inside `[]`, followed by exactly one space, then the description.
+- Description in lowercase, imperative mood (`add`, `fix`, `rename`, `move`...), no trailing period.
+- Keep the length around 70 characters — if longer, shorten it or move the details into the commit body.
+- When the change touches a specific module / signal / file, name it directly so the history is easy to grep.
 
 ### 4. Good examples
 
@@ -481,9 +481,9 @@ When you only need to stage specific files, replace `git add .` with `git add <p
 ```text
 update                          # missing tag
 [update] fix something          # tag must be uppercase
-[ADD] Added new file.           # no past tense, no trailing period
-[FIX] fix bug                   # too vague, no idea which bug
-[ADD] zw_game_border.cpp + zw_game_zombie.cpp + scr_game_zomwar.cpp ... # too long, group by topic instead
+[ADD] Added new file.           # no past tense and no trailing period
+[FIX] fix bug                   # too vague, which bug?
+[ADD] zw_game_border.cpp + zw_game_zombie.cpp + scr_game_zomwar.cpp ... # too long, group by topic
 ```
 
 ---
@@ -495,17 +495,17 @@ Files in `docs/` follow the format `<NN>-<category>-<topic>.md`:
 | Component | Convention | Example |
 |---|---|---|
 | `NN` | A 2-digit sequence number, starting from `01`. Reflects reading order — guides come first, design docs come after. | `01`, `02`, `03` |
-| `category` | Document category. Only use predefined values; do not invent new categories. | `guide`, `design` |
-| `topic` | The main topic, written in `kebab-case` (lowercase, words separated by `-`). | `getting-started`, `coding-rules`, `sequence-object` |
+| `category` | Document category. Only use predefined values; do not add new categories. | `guide`, `design` |
+| `topic` | Main topic, written in `kebab-case` (lowercase, words separated by `-`). | `getting-started`, `coding-rules`, `sequence-object` |
 
 Categories currently in use:
 
 | Category | Purpose | Typical content |
 |---|---|---|
 | `guide` | Workflow, setup, and process guides for contributors | Getting started, coding rules |
-| `design` | Architecture and runtime behavior of the system | Sequence diagrams |
+| `design` | Describes architecture and runtime behavior of the system | Sequence diagrams |
 
-Files currently in the repo, as an example:
+Example of files currently in the repo:
 
 ```
 docs/
@@ -519,16 +519,16 @@ A few important notes:
 
 - Documentation files (`.md`) use `kebab-case` (hyphens). Source files and folders use `snake_case` (underscores). The difference is intentional: `kebab-case` is the standard convention for Markdown slugs and URLs.
 - Images that go with a document live under `resources/images/<topic_dir>/`, where `<topic_dir>` follows the folder convention (snake_case). For example: `resources/images/getting_started/`.
-- When adding a new document, continue the sequence number from the current maximum and keep the same category together so the reading order stays natural.
-- Renaming a document file must be done with `git mv` so the rename history is tracked properly.
+- When adding a new document, continue the sequence number from the current maximum and keep the same category together to preserve a natural reading order.
+- Renaming a documentation file must be done with `git mv` so that the rename history is tracked properly.
 
 ---
 
 ## VII. References
 
-- [Naming convention — Multi-word identifiers (Wikipedia)](https://en.wikipedia.org/wiki/Naming_convention_(programming)#Multiple-word_identifiers) — the definitions of `snake_case`, `SCREAMING_SNAKE_CASE`, and `kebab-case` used in Sections I and VI.
+- [Naming convention — Multi-word identifiers (Wikipedia)](https://en.wikipedia.org/wiki/Naming_convention_(programming)#Multiple-word_identifiers) — definitions of `snake_case`, `SCREAMING_SNAKE_CASE`, and `kebab-case` used in Sections I and VI.
 - [Clang-Format — Configurable Format Style Options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html#configurable-format-style-options) — describes every key in the `.clang-format` file from Section II.
-- [LLVM Coding Standards — Source Code Formatting](https://llvm.org/docs/CodingStandards.html#source-code-formatting) — the base style inherited via `BasedOnStyle: LLVM` in Section II.
+- [LLVM Coding Standards — Source Code Formatting](https://llvm.org/docs/CodingStandards.html#source-code-formatting) — base style inherited via `BasedOnStyle: LLVM` in Section II.
 - [Pro Git — Recording Changes to the Repository](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository) — the `git add` / `git commit` / `git push` workflow used in Section V.
 
 ---
@@ -539,7 +539,7 @@ A few important notes:
 
 ```
 Thanks for stopping by this repository.
-If you have questions, suggestions, or feedback about the project
+If you have any questions, suggestions, or feedback about this project
 or about firmware development in general, feel free to reach out to me directly.
 ```
 
