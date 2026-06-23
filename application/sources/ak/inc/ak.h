@@ -40,7 +40,6 @@ extern "C"
  *****************************************************************************/
 #define AK_SYS_DEFINE_SIG				(0)
 #define AK_USER_DEFINE_SIG				(10)
-#define ZW_GAME_DEFINE_SIG				(100)
 
 /*****************************************************************************
  * DEFINITION: tasking

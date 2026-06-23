@@ -182,14 +182,9 @@ static void BUZZER_PlayTones(const Tone_TypeDef * tones) {
 
 void BUZZER_PlaySound(buzzer_sound_t sound) {
 	const Tone_TypeDef* tones = buzzer_get_music(sound);
-	if (tones == NULL) return;
-
-	/* Preempt any in-progress sequence so rapid SFX (BANG, CLICK) are
-	 * not dropped while a previous tone is still playing. */
-	BUZZER_TIM->CR1 &= ~TIM_CR1_CEN;
-	_tones_playing = false;
-
-	BUZZER_PlayTones(tones);
+	if (tones != NULL) {
+		BUZZER_PlayTones(tones);
+	}
 }
 
 void BUZZER_Silent(bool isSilent) {

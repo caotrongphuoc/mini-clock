@@ -39,8 +39,10 @@
 #include "task_shell.h"
 #include "task_life.h"
 #include "task_if.h"
+#include "task_rf24_if.h"
 #include "task_uart_if.h"
 #include "task_display.h"
+#include "task_zigbee.h"
 
 /* sys include */
 #include "sys_boot.h"
@@ -282,6 +284,12 @@ int main_app() {
  * when all ak message queue empty, task_polling_xxx() will be called.
  */
 /*****************************************************************************/
+void task_polling_zigbee() {
+#if defined(TASK_ZIGBEE_EN)
+	zigbee_network.update();
+#endif
+}
+
 void task_polling_console() {
 	volatile uint8_t c = 0;
 
@@ -357,6 +365,7 @@ void app_init_state_machine() {
 void app_task_init() {
 	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
 
+	task_post_pure_msg(AC_TASK_RF24_IF_ID, AC_RF24_IF_INIT_NETWORK);
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
 }
 

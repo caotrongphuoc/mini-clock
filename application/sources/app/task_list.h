@@ -22,18 +22,14 @@ enum {
 	AC_TASK_SHELL_ID,
 	AC_TASK_LIFE_ID,
 	AC_TASK_IF_ID,
+	AC_TASK_RF24_IF_ID,
 	AC_TASK_UART_IF_ID,
 	AC_TASK_DBG_ID,
 	AC_TASK_DISPLAY_ID,
 
-	/* ZOMWAR GAME TASKS */
-	ZW_GAME_GUNNER_ID,
-	ZW_GAME_BULLET_ID,
-	ZW_GAME_CAR_ID,
-	ZW_GAME_BANG_ID,
-	ZW_GAME_ZOMBIE_ID,
-	ZW_GAME_TOMBSTONE_ID,
-	ZW_GAME_BORDER_ID,
+#if defined(TASK_ZIGBEE_EN)
+	AC_TASK_ZIGBEE_ID,
+#endif
 
 	/* NRF24 NETWORKS */
 #if defined (IF_NETWORK_NRF24_EN)
@@ -60,6 +56,7 @@ enum {
 /*****************************************************************************/
 enum {
 	/* APP TASKS */
+	AC_TASK_POLLING_ZIGBEE_ID,
 	AC_TASK_POLLING_CONSOLE_ID,
 
 	/* EOT polling task ID */
@@ -76,20 +73,11 @@ extern void task_fw(ak_msg_t*);
 extern void task_shell(ak_msg_t*);
 extern void task_life(ak_msg_t*);
 extern void task_if(ak_msg_t*);
+extern void task_rf24_if(ak_msg_t*);
 extern void task_uart_if(ak_msg_t*);
 extern void task_dbg(ak_msg_t*);
 extern void task_display(ak_msg_t*);
-
-/* ZOMWAR GAME TASK */
-extern void scr_game_zomwar_handle(ak_msg_t*);
-extern void scr_game_menu_handle(ak_msg_t*);
-extern void zw_game_gunner_handle(ak_msg_t*);
-extern void zw_game_bullet_handle(ak_msg_t*);
-extern void zw_game_zombie_handle(ak_msg_t*);
-extern void zw_game_car_handle(ak_msg_t*);
-extern void zw_game_tombstone_handle(ak_msg_t*);
-extern void zw_game_bang_handle(ak_msg_t*);
-extern void zw_game_border_handle(ak_msg_t*);
+extern void task_zigbee(ak_msg_t*);
 
 /* RF24 NETWORK TASK */
 extern void task_rf24_phy(ak_msg_t*);
@@ -108,6 +96,7 @@ extern void task_rf24_demo(ak_msg_t*);
 /*  DECLARE: Task polling
  */
 /*****************************************************************************/
+extern void task_polling_zigbee();
 extern void task_polling_console();
 
 #endif //__TASK_LIST_H__

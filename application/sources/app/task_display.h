@@ -4,8 +4,8 @@
 #include "screen_manager.h"
 #include "screens.h"
 
-#define LCD_WIDTH			(128)
-#define LCD_HEIGHT			(64)
+#define LCD_WIDTH			(124)
+#define LCD_HEIGHT			(60)
 
 #define NUMFLAKES			(10)
 #define XPOS				(0)

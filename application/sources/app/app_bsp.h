@@ -1,8 +1,6 @@
 #ifndef __APP_BSP_H__
 #define __APP_BSP_H__
 
-#include "button.h"
-
 #define BUTTON_MODE_ID					(1)
 #define BUTTON_UP_ID					(2)
 #define BUTTON_DOWN_ID					(3)
