@@ -52,6 +52,8 @@ ak_flash /dev/ttyUSB0 ak-base-kit-stm32l151-application.bin 0x08003000
 
 ## Reference
 
+## Liscence
+Time and dated on 9am 2 july 2026
 | Topic | Link |
 | ------ | ------ |
 | Tutorials | <https://epcb.vn/blogs/ak-embedded-software> |
