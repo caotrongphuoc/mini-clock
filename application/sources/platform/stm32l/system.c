@@ -73,6 +73,8 @@ void timer7_irq();
 void uart1_irq();
 void uart2_irq();
 void buzzer_irq( void );
+void rtc_wakeup_irq( void );
+void rtc_alarm_irq( void );
 
 #if defined (TASK_MBMASTER_EN)
 void vMBPTimerISR( void );
@@ -126,7 +128,7 @@ void (* const isr_vector[])() = {
 		default_handler,						//	Window Watchdog
 		default_handler,						//	PVD through EXTI Line detect
 		default_handler,						//	Tamper and Time Stamp
-		default_handler,						//	RTC Wakeup
+		rtc_wakeup_irq,							//	RTC Wakeup
 		default_handler,						//	FLASH
 		default_handler,						//	RCC
 		default_handler,						//	EXTI Line 0
@@ -181,7 +183,7 @@ void (* const isr_vector[])() = {
 
 		default_handler,						//	USART3
 		default_handler,						//	EXTI Line 15..10
-		default_handler,						//	RTC Alarm through EXTI Line
+		rtc_alarm_irq,							//	RTC Alarm through EXTI Line
 		default_handler,						//	USB FS Wakeup from suspend
 		default_handler,						//	TIM6
 		timer7_irq,								//	TIM7

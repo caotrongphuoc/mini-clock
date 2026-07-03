@@ -20,6 +20,11 @@ const task_t app_task_table[] = {
 	{AC_TASK_DBG_ID				,	TASK_PRI_LEVEL_4	,	task_dbg			},
 	{AC_TASK_DISPLAY_ID			,	TASK_PRI_LEVEL_4	,	task_display		},
 
+	/*************************************************************************/
+	/* MINI CLOCK TASKS */
+	/*************************************************************************/
+	{MC_CLOCK_RTC_ID			,	TASK_PRI_LEVEL_5	,	task_mc_rtc			},
+
 	#if defined(TASK_ZIGBEE_EN)
 	{AC_TASK_ZIGBEE_ID			,	TASK_PRI_LEVEL_4	,	task_zigbee			},
 	#endif
