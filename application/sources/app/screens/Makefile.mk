@@ -1,8 +1,3 @@
-CFLAGS		+= -I./sources/app/screens/scr_clock
-CPPFLAGS	+= -I./sources/app/screens/scr_clock
-
-include sources/app/screens/scr_clock/Makefile.mk
-
 CFLAGS		+= -I./sources/app/screens
 CPPFLAGS	+= -I./sources/app/screens
 
@@ -14,3 +9,5 @@ SOURCES_CPP += sources/app/screens/scr_idle.cpp
 SOURCES_CPP += sources/app/screens/scr_qrcode.cpp
 SOURCES_CPP += sources/app/screens/scr_startup.cpp
 SOURCES_CPP += sources/app/screens/scr_welcome.cpp
+SOURCES_CPP += sources/app/screens/scr_clock_main.cpp
+SOURCES_CPP += sources/app/screens/scr_clock_menu.cpp
