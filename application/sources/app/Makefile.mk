@@ -20,10 +20,6 @@ SOURCES_CPP += sources/app/task_fw.cpp
 SOURCES_CPP += sources/app/task_list.cpp
 SOURCES_CPP += sources/app/task_display.cpp
 
-ifeq ($(TASK_ZIGBEE_OPTION),-DTASK_ZIGBEE_EN)
-SOURCES_CPP += sources/app/task_zigbee.cpp
-endif
-
 SOURCES_CPP += sources/app/task_if.cpp
 SOURCES_CPP += sources/app/task_uart_if.cpp
 SOURCES_CPP += sources/app/task_dbg.cpp

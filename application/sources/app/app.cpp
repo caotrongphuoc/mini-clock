@@ -42,7 +42,6 @@
 #include "task_if.h"
 #include "task_uart_if.h"
 #include "task_display.h"
-#include "task_zigbee.h"
 
 /* sys include */
 #include "sys_boot.h"
@@ -171,22 +170,7 @@ int main_app() {
 	flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
 	flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
 
-#if defined (TASK_ZIGBEE_EN)
-	Serial2.begin();
-	Serial2.setTimeout(100);
-#endif
-
 	EXIT_CRITICAL();
-
-#if defined (TASK_ZIGBEE_EN)
-	APP_PRINT("start_coordinator(0)\n");
-	if (zigbee_network.start_coordinator(0) == 0) {
-		APP_PRINT("OK\n");
-	}
-	else {
-		APP_PRINT("NG\n");
-	}
-#endif
 
 	/* start timer for application */
 	app_init_state_machine();
@@ -212,12 +196,6 @@ int main_app() {
  * when all ak message queue empty, task_polling_xxx() will be called.
  */
 /*****************************************************************************/
-void task_polling_zigbee() {
-#if defined(TASK_ZIGBEE_EN)
-	zigbee_network.update();
-#endif
-}
-
 void task_polling_console() {
 	volatile uint8_t c = 0;
 
