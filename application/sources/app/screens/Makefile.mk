@@ -1,3 +1,8 @@
+CFLAGS		+= -I./sources/app/screens/scr_clock
+CPPFLAGS	+= -I./sources/app/screens/scr_clock
+
+include sources/app/screens/scr_clock/Makefile.mk
+
 CFLAGS		+= -I./sources/app/screens
 CPPFLAGS	+= -I./sources/app/screens
 
