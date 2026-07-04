@@ -3,4 +3,21 @@
 
 #include "screens.h"
 
-#endif /* __SCR_CLOCK_MENU_H__ */
+#define SCR_CLOCK_MENU_ITEM_NUMBER (6)
+#define SCR_CLOCK_MENU_COL_NUMBER (3)
+#define SCR_CLOCK_MENU_CELL_W (42)
+#define SCR_CLOCK_MENU_CELL_H (31)
+#define SCR_CLOCK_MENU_ICON_Y_OFFSET (5)
+#define SCR_CLOCK_MENU_LABEL_Y_OFFSET (21)
+
+typedef enum
+{
+	SCR_CLOCK_MENU_CLOCK,
+	SCR_CLOCK_MENU_ALARM,
+	SCR_CLOCK_MENU_STOPWATCH,
+	SCR_CLOCK_MENU_TIMER,
+	SCR_CLOCK_MENU_SETTING,
+	SCR_CLOCK_MENU_EXIT,
+} scr_clock_menu_item_t;
+
+#endif //__SCR_CLOCK_MENU_H__
