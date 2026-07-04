@@ -1,4 +1,5 @@
 include sources/app/screens/Makefile.mk
+include sources/app/mini_clock/Makefile.mk
 
 CFLAGS		+= -I./sources/app
 CPPFLAGS	+= -I./sources/app
@@ -28,6 +29,3 @@ SOURCES_CPP += sources/app/task_if.cpp
 SOURCES_CPP += sources/app/task_rf24_if.cpp
 SOURCES_CPP += sources/app/task_uart_if.cpp
 SOURCES_CPP += sources/app/task_dbg.cpp
-
-# Mini Clock tasks
-SOURCES_CPP += sources/app/task_mc_rtc.cpp
