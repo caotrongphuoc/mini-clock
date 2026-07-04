@@ -7,10 +7,24 @@ extern "C"
 #endif
 
 #include <stdint.h>
+#include "Wire.h"
 
-#define RTC_WEEKDAY_MON			(1)
-#define RTC_WEEKDAY_SUN			(7)
-#define RTC_ALARM_ANY_WEEKDAY	(0)
+#define RTC_WEEKDAY_MON (1)
+#define RTC_WEEKDAY_SUN (7)
+#define RTC_ALARM_ANY_WEEKDAY (0)
+
+#define RTC_PCF85063_I2C_ADDR (0x51)
+#define RTC_PCF85063_REG_CTRL_1 (0x00)
+#define RTC_PCF85063_REG_CTRL_2 (0x01)
+#define RTC_PCF85063_REG_SECONDS (0x04)
+#define RTC_PCF85063_REG_MINUTES (0x05)
+#define RTC_PCF85063_REG_HOURS (0x06)
+#define RTC_PCF85063_REG_DAYS (0x07)
+#define RTC_PCF85063_REG_WEEKDAYS (0x08)
+#define RTC_PCF85063_REG_MONTHS (0x09)
+#define RTC_PCF85063_REG_YEARS (0x0A)
+
+#define RTC_PCF85063_SECONDS_OS (0x80)
 
 	typedef struct
 	{
@@ -21,10 +35,10 @@ extern "C"
 
 	typedef struct
 	{
-		uint8_t  date;
-		uint8_t  month;
+		uint8_t date;
+		uint8_t month;
 		uint16_t year;
-		uint8_t  weekday;
+		uint8_t weekday;
 	} rtc_date_t;
 
 	void rtc_init(void);
