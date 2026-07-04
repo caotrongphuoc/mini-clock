@@ -29,10 +29,6 @@
 
 #include "sys_cfg.h"
 
-#if defined (TASK_MBMASTER_EN)
-#include "mbport.h"
-#endif
-
 //#pragma GCC optimize ("O3")
 
 /*****************************************************************************/
@@ -75,11 +71,6 @@ void uart2_irq();
 void buzzer_irq( void );
 void rtc_wakeup_irq( void );
 void rtc_alarm_irq( void );
-
-#if defined (TASK_MBMASTER_EN)
-void vMBPTimerISR( void );
-void vMBPUSART2ISR( void );
-#endif
 
 /* cortex-M processor fault exceptions */
 void nmi_handler()          __attribute__ ((weak));
@@ -157,11 +148,7 @@ void (* const isr_vector[])() = {
 		
 		buzzer_irq,								//	TIM3
 		
-		#if defined (TASK_MBMASTER_EN)
-		vMBPTimerISR,							//	TIM4
-		#else
-		default_handler,						//	TIM4
-		#endif
+			default_handler,						//	TIM4
 
 		default_handler,						//	I2C1 Event
 		default_handler,						//	I2C1 Error
@@ -171,14 +158,10 @@ void (* const isr_vector[])() = {
 		default_handler,						//	SPI2
 		uart1_irq,								//	USART1
 
-		#if defined (TASK_MBMASTER_EN) && defined (TASK_ZIGBEE_EN)
-		default_handler,						//	USART2
-		#elif defined (TASK_MBMASTER_EN)
-		vMBPUSART2ISR,							//	USART2
-		#elif defined (TASK_ZIGBEE_EN)
-		uart2_irq,								//	USART2
-		#else
-		default_handler,						//	USART2
+			#if defined (TASK_ZIGBEE_EN)
+			uart2_irq,								//	USART2
+			#else
+			default_handler,						//	USART2
 		#endif
 
 		default_handler,						//	USART3

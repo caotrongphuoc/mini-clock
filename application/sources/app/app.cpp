@@ -63,14 +63,6 @@
 
 /* ----------------------- Platform includes --------------------------------*/
 
-/* ----------------------- Modbus includes ----------------------------------*/
-#if defined (TASK_MBMASTER_EN)
-#include "mbport.h"
-#include "mbm.h"
-#include "mbtypes.h"
-#include "common/mbportlayer.h"
-#endif
-
 #include "buzzer.h"
 
 /* ----------------------- Json includes ------------------------------------*/
@@ -179,72 +171,6 @@ int main_app() {
 	app_fatal_log.restart_times ++;
 	flash_erase_sector(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR);
 	flash_write(APP_FLASH_AK_DBG_FATAL_LOG_SECTOR, reinterpret_cast<uint8_t*>(&app_fatal_log), sizeof(fatal_log_t));
-
-#if defined (TASK_MBMASTER_EN)
-	/* modbus rtu init*/
-	uint8_t flag_init = eMBMSerialInitExt(&xMBMMaster, MB_RTU, MBM_SERIAL_PORT, MBM_SERIAL_BAUDRATE, MB_PAR_NONE, 1);
-	APP_PRINT ("Init mbMaster >> ");
-	switch (flag_init)
-	{
-	case MB_ENOERR:
-		APP_PRINT ("No error\n");
-		break;
-	case MB_ENOREG:
-		APP_PRINT ("Illegal register address\n");
-		break;
-	case MB_EINVAL:
-		APP_PRINT ("Illegal argument\n");
-		break;
-	case MB_EPORTERR:
-		APP_PRINT ("Porting layer error\n");
-		break;
-	case MB_ENORES:
-		APP_PRINT ("Insufficient resources\n");
-		break;
-	case MB_EIO:
-		APP_PRINT ("I/O error\n");
-		break;
-	case MB_EILLSTATE:
-		APP_PRINT ("Protocol stack in illegal state\n");
-		break;
-	case MB_EAGAIN:
-		APP_PRINT ("Retry I/O operation\n");
-		break;
-	case MB_ETIMEDOUT:
-		APP_PRINT ("Timeout error occurred\n");
-		break;
-	case MB_EX_ILLEGAL_FUNCTION:
-		APP_PRINT ("Illegal function exception\n");
-		break;
-	case MB_EX_ILLEGAL_DATA_ADDRESS:
-		APP_PRINT ("Illegal data address\n");
-		break;
-	case MB_EX_ILLEGAL_DATA_VALUE:
-		APP_PRINT ("Illegal data value\n");
-		break;
-	case MB_EX_SLAVE_DEVICE_FAILURE:
-		APP_PRINT ("Slave device failure\n");
-		break;
-	case MB_EX_ACKNOWLEDGE:
-		APP_PRINT ("Slave acknowledge\n");
-		break;
-	case MB_EX_SLAVE_BUSY:
-		APP_PRINT ("Slave device busy\n");
-		break;
-	case MB_EX_MEMORY_PARITY_ERROR:
-		APP_PRINT ("Memory parity error\n");
-		break;
-	case MB_EX_GATEWAY_PATH_UNAVAILABLE:
-		APP_PRINT ("Gateway path unavailable\n");
-		break;
-	case MB_EX_GATEWAY_TARGET_FAILED:
-		APP_PRINT ("Gateway target device failed to respond\n");
-		break;
-		
-	default:
-		break;
-	}
-#endif
 
 #if defined (TASK_ZIGBEE_EN)
 	Serial2.begin();
