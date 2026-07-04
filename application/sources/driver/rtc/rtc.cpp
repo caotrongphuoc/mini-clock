@@ -7,34 +7,29 @@
 #include "stm32l1xx_exti.h"
 #include "misc.h"
 
+/* ak.h must precede message.h — ak.h pulls in fsm.h/task.h which reference
+ * ak_msg_t, defined in message.h; including message.h first re-enters it
+ * before its own typedef is visible. */
+#include "ak.h"
 #include "message.h"
 #include "task_list.h"
 #include "app.h"
 
-/* Magic in RTC backup register 0 to detect an already-initialized calendar
- * across warm resets (backup domain keeps VDD when MCU resets). */
 #define RTC_BKP_MAGIC			(0xC1CCC10CUL)
-
-/* Rough LSE ready spin count (~1s wall at 32MHz core). */
 #define RTC_LSE_STARTUP_TIMEOUT	(2000000UL)
 
 static void rtc_config_exti_and_nvic(void);
 static ErrorStatus rtc_calendar_init(void);
 static void rtc_seed_default_time(void);
 
-/*****************************************************************************/
-/* Public API                                                                */
-/*****************************************************************************/
 void rtc_init(void) {
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
 	PWR_RTCAccessCmd(ENABLE);
 
 	if (RTC_ReadBackupRegister(RTC_BKP_DR0) != RTC_BKP_MAGIC) {
-		/* Cold start: bring up LSE + RTC from scratch. */
 		RCC_LSEConfig(RCC_LSE_ON);
 		uint32_t timeout = RTC_LSE_STARTUP_TIMEOUT;
 		while (RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET && --timeout) {
-			/* spin */
 		}
 
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
@@ -47,12 +42,10 @@ void rtc_init(void) {
 		}
 	}
 	else {
-		/* Warm start: RTC already running, just resync shadow registers. */
 		RTC_WaitForSynchro();
 	}
 
-	/* 1 Hz wakeup tick: CK_SPRE feeds a 16-bit down-counter reloaded to 0
-	 * → interrupt every 1s. */
+	/* 32768 / (128 * 256) = 1 Hz → wakeup counter = 0 → tick every 1s. */
 	RTC_WakeUpCmd(DISABLE);
 	RTC_WakeUpClockConfig(RTC_WakeUpClock_CK_SPRE_16bits);
 	RTC_SetWakeUpCounter(0);
@@ -111,7 +104,6 @@ void rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday) {
 	a.RTC_AlarmTime.RTC_Seconds = time->sec;
 
 	if (weekday == RTC_ALARM_ANY_WEEKDAY) {
-		/* Mask date/weekday → match H:M:S every day. */
 		a.RTC_AlarmMask           = RTC_AlarmMask_DateWeekDay;
 		a.RTC_AlarmDateWeekDaySel = RTC_AlarmDateWeekDaySel_WeekDay;
 		a.RTC_AlarmDateWeekDay    = RTC_WEEKDAY_MON;
@@ -143,7 +135,6 @@ void rtc_set_wakeup(uint32_t seconds) {
 	}
 	RTC_WakeUpCmd(DISABLE);
 	RTC_WakeUpClockConfig(RTC_WakeUpClock_CK_SPRE_16bits);
-	/* Counter fires every (reload + 1) CK_SPRE cycles (= seconds). */
 	RTC_SetWakeUpCounter(seconds - 1);
 	RTC_ClearITPendingBit(RTC_IT_WUT);
 	EXTI_ClearITPendingBit(EXTI_Line20);
@@ -158,9 +149,6 @@ void rtc_stop_wakeup(void) {
 	EXTI_ClearITPendingBit(EXTI_Line20);
 }
 
-/*****************************************************************************/
-/* ISR entry points (called from platform/stm32l/system.c vector table)      */
-/*****************************************************************************/
 void rtc_wakeup_irq(void) {
 	if (RTC_GetITStatus(RTC_IT_WUT) != RESET) {
 		RTC_ClearITPendingBit(RTC_IT_WUT);
@@ -177,21 +165,17 @@ void rtc_alarm_irq(void) {
 	EXTI_ClearITPendingBit(EXTI_Line17);
 }
 
-/*****************************************************************************/
-/* Local helpers                                                             */
-/*****************************************************************************/
 static ErrorStatus rtc_calendar_init(void) {
 	RTC_InitTypeDef init;
 	init.RTC_HourFormat   = RTC_HourFormat_24;
-	init.RTC_AsynchPrediv = 0x7F;	/* 127 */
-	init.RTC_SynchPrediv  = 0xFF;	/* 255 → 32768/(128*256) = 1 Hz */
+	init.RTC_AsynchPrediv = 0x7F;
+	init.RTC_SynchPrediv  = 0xFF;
 	return RTC_Init(&init);
 }
 
 static void rtc_seed_default_time(void) {
-	/* Kick off at 2026-01-01 (Thursday) 00:00:00. */
 	RTC_DateTypeDef d0;
-	d0.RTC_WeekDay = 4;			/* Thursday */
+	d0.RTC_WeekDay = 4;
 	d0.RTC_Date    = 1;
 	d0.RTC_Month   = 1;
 	d0.RTC_Year    = 26;

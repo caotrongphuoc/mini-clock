@@ -27,6 +27,7 @@
 #include "led.h"
 #include "button.h"
 #include "flash.h"
+#include "rtc.h"
 
 /* app include */
 #include "app.h"
@@ -163,6 +164,8 @@ int main_app() {
 	/* siren init */
 	BUZZER_Init();
 	BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+
+	rtc_init();
 
 	/* get boot share data */
 	flash_read(APP_FLASH_INTTERNAL_SHARE_DATA_SECTOR_1, reinterpret_cast<uint8_t*>(&boot_app_share_data), sizeof(boot_app_share_data_t));
