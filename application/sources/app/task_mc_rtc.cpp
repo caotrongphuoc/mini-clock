@@ -15,6 +15,7 @@ void task_mc_rtc(ak_msg_t* msg) {
 		rtc_time_t t;
 		rtc_get_time(&t);
 		APP_DBG("[RTC] %02u:%02u:%02u\n", t.hour, t.min, t.sec);
+		task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);
 	} break;
 
 	case MC_CLOCK_RTC_ALARM_FIRED: {

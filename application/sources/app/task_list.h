@@ -29,6 +29,7 @@ enum {
 
 	/* MINI CLOCK TASKS */
 	MC_CLOCK_RTC_ID,
+	MC_CLOCK_CLOCK_ID,
 
 #if defined(TASK_ZIGBEE_EN)
 	AC_TASK_ZIGBEE_ID,
@@ -84,6 +85,7 @@ extern void task_zigbee(ak_msg_t*);
 
 /* MINI CLOCK TASKS */
 extern void task_mc_rtc(ak_msg_t*);
+extern void mc_clock_clock_handle(ak_msg_t*);
 
 /* RF24 NETWORK TASK */
 extern void task_rf24_phy(ak_msg_t*);

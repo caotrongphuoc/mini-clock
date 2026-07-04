@@ -1,0 +1,54 @@
+#include "mc_clock_clock.h"
+
+#include "app.h"
+#include "message.h"
+#include "task_list.h"
+
+typedef struct {
+	rtc_time_t time;
+	rtc_date_t date;
+	uint8_t is_24h_format;
+} mc_clock_clock_state_t;
+
+static mc_clock_clock_state_t s_clock_state;
+
+static void mc_clock_clock_sync_from_rtc() {
+	rtc_get_time(&s_clock_state.time);
+	rtc_get_date(&s_clock_state.date);
+}
+
+void mc_clock_clock_get_time(rtc_time_t* time) {
+	*time = s_clock_state.time;
+}
+
+void mc_clock_clock_get_date(rtc_date_t* date) {
+	*date = s_clock_state.date;
+}
+
+uint8_t mc_clock_clock_is_24h_format() {
+	return s_clock_state.is_24h_format;
+}
+
+void mc_clock_clock_handle(ak_msg_t* msg) {
+	switch (msg->sig) {
+	case MC_CLOCK_CLOCK_ENTER: {
+		s_clock_state.is_24h_format = 1;
+		mc_clock_clock_sync_from_rtc();
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+	} break;
+
+	case MC_CLOCK_CLOCK_TICK: {
+		mc_clock_clock_sync_from_rtc();
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+	} break;
+
+	case MC_CLOCK_CLOCK_FORMAT_TOGGLE: {
+		s_clock_state.is_24h_format = !s_clock_state.is_24h_format;
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+	} break;
+
+	case MC_CLOCK_CLOCK_LEAVE:
+	default:
+		break;
+	}
+}
