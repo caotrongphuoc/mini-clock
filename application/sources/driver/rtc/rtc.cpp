@@ -1,5 +1,20 @@
 #include "rtc.h"
 
+#include "Wire.h"
+
+#define RTC_PCF85063_I2C_ADDR (0x51)
+#define RTC_PCF85063_REG_CTRL_1 (0x00)
+#define RTC_PCF85063_REG_CTRL_2 (0x01)
+#define RTC_PCF85063_REG_SECONDS (0x04)
+#define RTC_PCF85063_REG_MINUTES (0x05)
+#define RTC_PCF85063_REG_HOURS (0x06)
+#define RTC_PCF85063_REG_DAYS (0x07)
+#define RTC_PCF85063_REG_WEEKDAYS (0x08)
+#define RTC_PCF85063_REG_MONTHS (0x09)
+#define RTC_PCF85063_REG_YEARS (0x0A)
+
+#define RTC_PCF85063_SECONDS_OS (0x80)
+
 static uint8_t rtc_bcd_to_bin(uint8_t value);
 static uint8_t rtc_bin_to_bcd(uint8_t value);
 static uint8_t rtc_weekday_to_pcf85063(uint8_t weekday);

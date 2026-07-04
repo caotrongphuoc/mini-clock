@@ -45,8 +45,6 @@
 #include "flash.h"
 #include "buzzer.h"
 
-#include "qrcode.h"
-
 /*****************************************************************************/
 /*  local declare
  */
