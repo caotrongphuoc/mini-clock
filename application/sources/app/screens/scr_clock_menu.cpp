@@ -2,37 +2,13 @@
 
 static uint8_t s_scr_clock_menu_focus = SCR_CLOCK_MENU_CLOCK;
 
-static const uint8_t s_scr_clock_menu_bitmap_clock[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t s_scr_clock_menu_bitmap_alarm[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t s_scr_clock_menu_bitmap_stopwatch[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t s_scr_clock_menu_bitmap_timer[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t s_scr_clock_menu_bitmap_setting[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t s_scr_clock_menu_bitmap_exit[SCR_CLOCK_MENU_ICON_BYTES] = {
-    0,
-};
-
-static const uint8_t* const s_scr_clock_menu_bitmaps[SCR_CLOCK_MENU_ITEM_NUMBER] = {
-    s_scr_clock_menu_bitmap_clock,
-    s_scr_clock_menu_bitmap_alarm,
-    s_scr_clock_menu_bitmap_stopwatch,
-    s_scr_clock_menu_bitmap_timer,
-    s_scr_clock_menu_bitmap_setting,
-    s_scr_clock_menu_bitmap_exit,
+static const unsigned char* const s_scr_clock_menu_bitmaps[SCR_CLOCK_MENU_ITEM_NUMBER] = {
+    bitmap_clock_menu_clock,
+    bitmap_clock_menu_alarm,
+    bitmap_clock_menu_stopwatch,
+    bitmap_clock_menu_timer,
+    bitmap_clock_menu_setting,
+    bitmap_clock_menu_exit,
 };
 
 static void view_scr_clock_menu();
