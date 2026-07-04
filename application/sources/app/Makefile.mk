@@ -25,7 +25,6 @@ SOURCES_CPP += sources/app/task_zigbee.cpp
 endif
 
 SOURCES_CPP += sources/app/task_if.cpp
-SOURCES_CPP += sources/app/task_rf24_if.cpp
 SOURCES_CPP += sources/app/task_uart_if.cpp
 SOURCES_CPP += sources/app/task_dbg.cpp
 SOURCES_CPP += sources/app/task_mc_rtc.cpp
