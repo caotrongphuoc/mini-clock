@@ -119,6 +119,7 @@ void scr_clock_main_handle(ak_msg_t* msg) {
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED: {
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 	} break;
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
