@@ -3,9 +3,14 @@
 
 #include "screens.h"
 #include "mc_clock_clock.h"
+#include "scr_clock_main.h"
 
 #define SCR_CLOCK_TIME_SETTING_YEAR_MIN (2000)
 #define SCR_CLOCK_TIME_SETTING_YEAR_MAX (2099)
+#define SCR_CLOCK_TIME_SETTING_TIME_CHAR_W (12)
+#define SCR_CLOCK_TIME_SETTING_TIME_CHAR_H (16)
+#define SCR_CLOCK_TIME_SETTING_INFO_CHAR_W (6)
+#define SCR_CLOCK_TIME_SETTING_INFO_CHAR_H (8)
 
 typedef enum
 {

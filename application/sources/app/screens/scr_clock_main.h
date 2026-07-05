@@ -14,4 +14,6 @@
 #define SCR_CLOCK_MAIN_TIME_TEXT_SIZE (2)
 #define SCR_CLOCK_MAIN_INFO_TEXT_SIZE (1)
 
+const char* scr_clock_main_weekday_text(uint8_t weekday);
+
 #endif //__SCR_CLOCK_MAIN_H__
