@@ -129,12 +129,14 @@ void scr_clock_main_handle(ak_msg_t* msg)
 
 	case SCREEN_EXIT:
 	{
+		APP_DBG_SIG("SCREEN_EXIT\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 	}
 	break;
 
 	case MC_CLOCK_TIME_TICK:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIME_TICK\n");
 		task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_UPDATE);
 	}
 	break;

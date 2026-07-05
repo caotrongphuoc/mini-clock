@@ -36,6 +36,7 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_CLOCK_UPDATE:
 	{
+		APP_DBG_SIG("MC_CLOCK_CLOCK_UPDATE\n");
 		rtc_get_time(&clock_state.time);
 		rtc_get_date(&clock_state.date);
 	}
@@ -43,6 +44,7 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_CLOCK_FORMAT_TOGGLE:
 	{
+		APP_DBG_SIG("MC_CLOCK_CLOCK_FORMAT_TOGGLE\n");
 		clock_state.format_24h = !clock_state.format_24h;
 	}
 	break;

@@ -21,6 +21,7 @@ void task_mc_rtc(ak_msg_t* msg)
 	{
 		rtc_time_t time;
 
+		APP_DBG_SIG("MC_CLOCK_RTC_TICK_1S\n");
 		rtc_get_time(&time);
 		APP_DBG("[RTC] %02u:%02u:%02u\n", time.hour, time.min, time.sec);
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
@@ -29,12 +30,14 @@ void task_mc_rtc(ak_msg_t* msg)
 
 	case MC_CLOCK_RTC_ALARM_FIRED:
 	{
+		APP_DBG_SIG("MC_CLOCK_RTC_ALARM_FIRED\n");
 		APP_DBG("[RTC] ALARM_A fired\n");
 	}
 	break;
 
 	case MC_CLOCK_RTC_SET_TIME_REQ:
 	{
+		APP_DBG_SIG("MC_CLOCK_RTC_SET_TIME_REQ\n");
 		mc_clock_rtc_set_time_req_t* req =
 		    (mc_clock_rtc_set_time_req_t*)get_data_common_msg(msg);
 
@@ -52,6 +55,7 @@ void task_mc_rtc(ak_msg_t* msg)
 
 	case MC_CLOCK_RTC_SET_ALARM_REQ:
 	{
+		APP_DBG_SIG("MC_CLOCK_RTC_SET_ALARM_REQ\n");
 		mc_clock_rtc_set_alarm_req_t* req =
 		    (mc_clock_rtc_set_alarm_req_t*)get_data_common_msg(msg);
 
@@ -61,12 +65,14 @@ void task_mc_rtc(ak_msg_t* msg)
 
 	case MC_CLOCK_RTC_CLEAR_ALARM_REQ:
 	{
+		APP_DBG_SIG("MC_CLOCK_RTC_CLEAR_ALARM_REQ\n");
 		rtc_clear_alarm_a();
 	}
 	break;
 
 	case MC_CLOCK_RTC_SET_WAKEUP_REQ:
 	{
+		APP_DBG_SIG("MC_CLOCK_RTC_SET_WAKEUP_REQ\n");
 		mc_clock_rtc_set_wakeup_req_t* req =
 		    (mc_clock_rtc_set_wakeup_req_t*)get_data_common_msg(msg);
 
