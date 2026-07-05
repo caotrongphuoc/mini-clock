@@ -318,9 +318,9 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		mc_clock_clock_state_t clock_state;
+		mc_clock_time_state_t clock_state;
 
-		mc_clock_clock_get_state(&clock_state);
+		mc_clock_time_get_state(&clock_state);
 		setting_time = clock_state.time;
 		setting_date = clock_state.date;
 		setting_location_choose = SCR_CLOCK_TIME_SETTING_YEAR;
@@ -341,7 +341,7 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		{
 			rtc_set_date(&setting_date);
 			rtc_set_time(&setting_time);
-			task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_UPDATE);
+			task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
 			SCREEN_BACK();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		}

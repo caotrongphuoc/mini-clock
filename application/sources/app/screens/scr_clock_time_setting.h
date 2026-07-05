@@ -2,7 +2,7 @@
 #define __SCR_CLOCK_TIME_SETTING_H__
 
 #include "screens.h"
-#include "mc_clock_clock.h"
+#include "mc_clock_time.h"
 #include "scr_clock_main.h"
 
 #define SCR_CLOCK_TIME_SETTING_YEAR_MIN (2000)

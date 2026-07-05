@@ -3,7 +3,7 @@
 
 #include "screens.h"
 
-#include "mc_clock_clock.h"
+#include "mc_clock_time.h"
 
 #define SCR_CLOCK_MAIN_TIME_X (10)
 #define SCR_CLOCK_MAIN_TIME_Y (16)

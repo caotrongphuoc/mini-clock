@@ -183,9 +183,9 @@ enum {
 /* define signal */
 enum {
 	MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
-	MC_CLOCK_CLOCK_SETUP,
-	MC_CLOCK_CLOCK_UPDATE,
-	MC_CLOCK_CLOCK_FORMAT_TOGGLE,
+	MC_CLOCK_TIME_SETUP,
+	MC_CLOCK_TIME_UPDATE,
+	MC_CLOCK_TIME_FORMAT_TOGGLE,
 };
 
 /*****************************************************************************/
