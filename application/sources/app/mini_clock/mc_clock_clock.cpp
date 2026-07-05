@@ -20,7 +20,7 @@ void mc_clock_clock_get_date(rtc_date_t* date)
 
 uint8_t mc_clock_clock_is_24h_format()
 {
-	return s_clock_state.is_24h_format;
+	return s_clock_state.format_24h;
 }
 
 void mc_clock_clock_handle(ak_msg_t* msg)
@@ -29,7 +29,7 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 	{
 	case MC_CLOCK_CLOCK_ENTER:
 	{
-		s_clock_state.is_24h_format = 1;
+		s_clock_state.format_24h = 1;
 		mc_clock_clock_sync_from_rtc();
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
@@ -44,7 +44,7 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_CLOCK_FORMAT_TOGGLE:
 	{
-		s_clock_state.is_24h_format = !s_clock_state.is_24h_format;
+		s_clock_state.format_24h = !s_clock_state.format_24h;
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
 	break;
