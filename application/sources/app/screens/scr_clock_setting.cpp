@@ -76,8 +76,12 @@ void view_scr_clock_setting()
 		}
 		else if (i == SCR_CLOCK_SETTING_SOUND)
 		{
-			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_sound_off ? "[OFF]" : "[ON]");
+			view_render.drawBitmap(110,
+			                       frame_y + 2,
+			                       setting_sound_off ? bitmap_clock_setting_speaker_off : bitmap_clock_setting_speaker_on,
+			                       8,
+			                       7,
+			                       fg);
 		}
 	}
 

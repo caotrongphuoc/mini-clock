@@ -14,4 +14,7 @@ extern const unsigned char PROGMEM bitmap_clock_menu_timer[];
 extern const unsigned char PROGMEM bitmap_clock_menu_setting[];
 extern const unsigned char PROGMEM bitmap_clock_menu_exit[];
 
+extern const unsigned char PROGMEM bitmap_clock_setting_speaker_on[];
+extern const unsigned char PROGMEM bitmap_clock_setting_speaker_off[];
+
 #endif //__SCREENS_BITMAP_H__
