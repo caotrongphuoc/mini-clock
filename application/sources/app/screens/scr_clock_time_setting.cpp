@@ -84,17 +84,11 @@ void scr_clock_time_setting_change_value(int8_t step)
 		                                                       SCR_CLOCK_TIME_SETTING_YEAR_MAX,
 		                                                       step);
 		scr_clock_time_setting_fix_date();
-		setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-		                                                       setting_date.month,
-		                                                       setting_date.date);
 		break;
 
 	case SCR_CLOCK_TIME_SETTING_MONTH:
 		setting_date.month = scr_clock_time_setting_wrap_value(setting_date.month, 1, 12, step);
 		scr_clock_time_setting_fix_date();
-		setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-		                                                       setting_date.month,
-		                                                       setting_date.date);
 		break;
 
 	case SCR_CLOCK_TIME_SETTING_DATE:
@@ -103,9 +97,6 @@ void scr_clock_time_setting_change_value(int8_t step)
 		                                                      scr_clock_time_setting_days_in_month(setting_date.year,
 		                                                                                           setting_date.month),
 		                                                      step);
-		setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-		                                                       setting_date.month,
-		                                                       setting_date.date);
 		break;
 
 	case SCR_CLOCK_TIME_SETTING_WEEKDAY:
