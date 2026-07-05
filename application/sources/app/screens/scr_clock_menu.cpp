@@ -91,7 +91,7 @@ static void scr_clock_menu_select()
 		break;
 
 	case SCR_CLOCK_MENU_SETTING:
-		APP_DBG("[MENU] setting selected\n");
+		SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
 		break;
 
 	case SCR_CLOCK_MENU_EXIT:
