@@ -110,28 +110,29 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		{
 		case SCR_CLOCK_SETTING_TIME:
 			SCREEN_TRAN(scr_clock_time_setting_handle, &scr_clock_time_setting);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_COLOR:
 			setting_color_invert = !setting_color_invert;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_LAYOUT:
 			setting_layout_mode = !setting_layout_mode;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_SOUND:
 			setting_sound_off = !setting_sound_off;
 			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
-			if (!setting_sound_off)
-			{
-				BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			}
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_EXIT:
 		default:
 			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
+			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 		}
 	}
@@ -148,6 +149,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		{
 			setting_location_choose--;
 		}
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
@@ -159,6 +161,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		{
 			setting_location_choose = 0;
 		}
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 

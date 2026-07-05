@@ -343,10 +343,12 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 			rtc_set_time(&setting_time);
 			task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);
 			SCREEN_BACK();
+			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		}
 		else
 		{
 			setting_location_choose++;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
@@ -357,6 +359,7 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
 		scr_clock_time_setting_change_value(1);
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
@@ -365,6 +368,7 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
 		scr_clock_time_setting_change_value(-1);
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
