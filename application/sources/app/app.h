@@ -178,11 +178,11 @@ enum {
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_CLOCK_TICK_INTERVAL (1000)
+#define MC_CLOCK_TIME_TICK_INTERVAL (1000)
 
 /* define signal */
 enum {
-	MC_CLOCK_CLOCK_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
 	MC_CLOCK_CLOCK_ENTER,
 	MC_CLOCK_CLOCK_LEAVE,
 	MC_CLOCK_CLOCK_FORMAT_TOGGLE,

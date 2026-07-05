@@ -122,19 +122,19 @@ void scr_clock_main_handle(ak_msg_t* msg)
 		mc_clock_clock_set_24h_format(1);
 		mc_clock_clock_sync();
 		timer_set(AC_TASK_DISPLAY_ID,
-		          MC_CLOCK_CLOCK_TICK,
-		          MC_CLOCK_CLOCK_TICK_INTERVAL,
+		          MC_CLOCK_TIME_TICK,
+		          MC_CLOCK_TIME_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 	}
 	break;
 
 	case SCREEN_EXIT:
 	{
-		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_CLOCK_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 	}
 	break;
 
-	case MC_CLOCK_CLOCK_TICK:
+	case MC_CLOCK_TIME_TICK:
 	{
 		mc_clock_clock_sync();
 	}
@@ -143,7 +143,7 @@ void scr_clock_main_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_CLOCK_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 	}
 	break;

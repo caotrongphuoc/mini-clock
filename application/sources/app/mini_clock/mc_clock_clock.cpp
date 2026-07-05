@@ -46,7 +46,7 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_CLOCK_TICK:
+	case MC_CLOCK_TIME_TICK:
 	{
 		mc_clock_clock_sync();
 	}
