@@ -11,6 +11,7 @@ static void scr_clock_setting_draw_value();
 static void scr_clock_setting_write_2_digit(char* buffer, uint8_t value);
 static void scr_clock_setting_write_4_digit(char* buffer, uint16_t value);
 static uint8_t scr_clock_setting_days_in_month(uint16_t year, uint8_t month);
+static uint8_t scr_clock_setting_weekday(uint16_t year, uint8_t month, uint8_t date);
 static void scr_clock_setting_clamp_date();
 static void scr_clock_setting_increase_field();
 static void scr_clock_setting_decrease_field();
@@ -54,7 +55,7 @@ static void scr_clock_setting_load_state()
 static void scr_clock_setting_draw_field_name()
 {
 	static const char* const field_name[] = {
-	    "YEAR", "MONTH", "DATE", "WEEKDAY", "HOUR", "MIN", "SEC", "SAVE"};
+	    "YEAR", "MONTH", "DATE", "HOUR", "MIN", "SEC", "SAVE"};
 
 	view_render.setCursor(0, 0);
 	view_render.print("SET ");
@@ -65,7 +66,6 @@ static void scr_clock_setting_draw_value()
 {
 	char date_text[11];
 	char time_text[9];
-	char weekday_text[2];
 
 	scr_clock_setting_write_4_digit(&date_text[0], s_scr_clock_setting_date.year);
 	date_text[4] = '-';
@@ -81,17 +81,11 @@ static void scr_clock_setting_draw_value()
 	scr_clock_setting_write_2_digit(&time_text[6], s_scr_clock_setting_time.sec);
 	time_text[8] = '\0';
 
-	weekday_text[0] = s_scr_clock_setting_date.weekday + '0';
-	weekday_text[1] = '\0';
-
 	view_render.setTextSize(1);
 	view_render.setCursor(16, 18);
 	view_render.print(date_text);
 	view_render.setCursor(16, 32);
 	view_render.print(time_text);
-	view_render.setCursor(16, 46);
-	view_render.print("WEEKDAY ");
-	view_render.print(weekday_text);
 
 	if (s_scr_clock_setting_field == SCR_CLOCK_SETTING_SAVE)
 	{
@@ -135,6 +129,29 @@ static uint8_t scr_clock_setting_days_in_month(uint16_t year, uint8_t month)
 	return days[month - 1];
 }
 
+static uint8_t scr_clock_setting_weekday(uint16_t year, uint8_t month, uint8_t date)
+{
+	if (month < 3)
+	{
+		month += 12;
+		year--;
+	}
+
+	uint16_t weekday = (date + ((13 * (month + 1)) / 5) + year + (year / 4) - (year / 100) + (year / 400)) % 7;
+
+	if (weekday == 0)
+	{
+		return RTC_WEEKDAY_SUN - 1;
+	}
+
+	if (weekday == 1)
+	{
+		return RTC_WEEKDAY_SUN;
+	}
+
+	return weekday - 1;
+}
+
 static void scr_clock_setting_clamp_date()
 {
 	uint8_t max_date = scr_clock_setting_days_in_month(s_scr_clock_setting_date.year,
@@ -174,14 +191,6 @@ static void scr_clock_setting_increase_field()
 		                                                                    s_scr_clock_setting_date.month))
 		{
 			s_scr_clock_setting_date.date = 1;
-		}
-		break;
-
-	case SCR_CLOCK_SETTING_WEEKDAY:
-		s_scr_clock_setting_date.weekday++;
-		if (s_scr_clock_setting_date.weekday > RTC_WEEKDAY_SUN)
-		{
-			s_scr_clock_setting_date.weekday = RTC_WEEKDAY_MON;
 		}
 		break;
 
@@ -243,17 +252,6 @@ static void scr_clock_setting_decrease_field()
 		}
 		break;
 
-	case SCR_CLOCK_SETTING_WEEKDAY:
-		if (s_scr_clock_setting_date.weekday <= RTC_WEEKDAY_MON)
-		{
-			s_scr_clock_setting_date.weekday = RTC_WEEKDAY_SUN;
-		}
-		else
-		{
-			s_scr_clock_setting_date.weekday--;
-		}
-		break;
-
 	case SCR_CLOCK_SETTING_HOUR:
 		s_scr_clock_setting_time.hour = (s_scr_clock_setting_time.hour == 0) ? 23 : s_scr_clock_setting_time.hour - 1;
 		break;
@@ -286,6 +284,9 @@ static void scr_clock_setting_next_field()
 
 static void scr_clock_setting_save()
 {
+	s_scr_clock_setting_date.weekday = scr_clock_setting_weekday(s_scr_clock_setting_date.year,
+	                                                             s_scr_clock_setting_date.month,
+	                                                             s_scr_clock_setting_date.date);
 	rtc_set_date(&s_scr_clock_setting_date);
 	rtc_set_time(&s_scr_clock_setting_time);
 	task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);
