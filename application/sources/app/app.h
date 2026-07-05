@@ -185,7 +185,6 @@ enum {
 	MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
 	MC_CLOCK_TIME_SETUP,
 	MC_CLOCK_TIME_UPDATE,
-	MC_CLOCK_TIME_FORMAT_TOGGLE,
 };
 
 /*****************************************************************************/

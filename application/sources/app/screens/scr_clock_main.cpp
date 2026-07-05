@@ -31,20 +31,9 @@ void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
 	buffer[3] = (value % 10) + '0';
 }
 
-void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t format_24h)
+void scr_clock_main_format_time(char* buffer, rtc_time_t* time)
 {
-	uint8_t hour = time->hour;
-
-	if (!format_24h)
-	{
-		hour %= 12;
-		if (hour == 0)
-		{
-			hour = 12;
-		}
-	}
-
-	scr_clock_main_write_2_digit(&buffer[0], hour);
+	scr_clock_main_write_2_digit(&buffer[0], time->hour);
 	buffer[2] = ':';
 	scr_clock_main_write_2_digit(&buffer[3], time->min);
 	buffer[5] = ':';
@@ -89,7 +78,7 @@ void view_scr_clock_main()
 	char date_text[11];
 
 	mc_clock_time_get_state(&clock_state);
-	scr_clock_main_format_time(time_text, &clock_state.time, clock_state.format_24h);
+	scr_clock_main_format_time(time_text, &clock_state.time);
 	scr_clock_main_format_date(date_text, &clock_state.date);
 
 	view_render.clear();

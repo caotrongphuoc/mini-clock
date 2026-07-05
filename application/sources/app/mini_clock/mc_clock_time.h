@@ -12,7 +12,6 @@ typedef struct
 {
 	rtc_time_t time;
 	rtc_date_t date;
-	uint8_t format_24h;
 } mc_clock_time_state_t;
 
 extern mc_clock_time_state_t clock_state;
