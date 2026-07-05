@@ -341,7 +341,7 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		{
 			rtc_set_date(&setting_date);
 			rtc_set_time(&setting_time);
-			mc_clock_clock_sync();
+			task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_UPDATE);
 			SCREEN_BACK();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		}
