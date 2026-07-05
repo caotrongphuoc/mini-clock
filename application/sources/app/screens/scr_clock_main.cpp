@@ -1,6 +1,6 @@
 #include "scr_clock_main.h"
 
-static void view_scr_clock_main();
+void view_scr_clock_main();
 
 view_dynamic_t dyn_view_scr_clock_main = {
     {
@@ -16,9 +16,9 @@ view_screen_t scr_clock_main = {
     .focus_item = 0,
 };
 
-static const char* scr_clock_main_weekday_text(uint8_t weekday)
+const char* scr_clock_main_weekday_text(uint8_t weekday)
 {
-	static const char* weekday_text[] = {
+	const char* weekday_text[] = {
 	    "---", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
 
 	if (weekday > RTC_WEEKDAY_SUN)
@@ -29,13 +29,13 @@ static const char* scr_clock_main_weekday_text(uint8_t weekday)
 	return weekday_text[weekday];
 }
 
-static void scr_clock_main_write_2_digit(char* buffer, uint8_t value)
+void scr_clock_main_write_2_digit(char* buffer, uint8_t value)
 {
 	buffer[0] = (value / 10) + '0';
 	buffer[1] = (value % 10) + '0';
 }
 
-static void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
+void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
 {
 	buffer[0] = ((value / 1000) % 10) + '0';
 	buffer[1] = ((value / 100) % 10) + '0';
@@ -43,7 +43,7 @@ static void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
 	buffer[3] = (value % 10) + '0';
 }
 
-static void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t format_24h)
+void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t format_24h)
 {
 	uint8_t hour = time->hour;
 
@@ -64,7 +64,7 @@ static void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t f
 	buffer[8] = '\0';
 }
 
-static void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
+void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 {
 	scr_clock_main_write_4_digit(&buffer[0], date->year);
 	buffer[4] = '-';
@@ -74,7 +74,7 @@ static void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 	buffer[10] = '\0';
 }
 
-static void view_scr_clock_main()
+void view_scr_clock_main()
 {
 	mc_clock_clock_state_t clock_state;
 	char time_text[9];

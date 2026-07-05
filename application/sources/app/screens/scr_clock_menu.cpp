@@ -1,8 +1,8 @@
 #include "scr_clock_menu.h"
 
-static uint8_t s_scr_clock_menu_focus = SCR_CLOCK_MENU_CLOCK;
+uint8_t scr_clock_menu_focus = SCR_CLOCK_MENU_CLOCK;
 
-static const unsigned char* const s_scr_clock_menu_bitmaps[SCR_CLOCK_MENU_ITEM_NUMBER] = {
+const unsigned char* const scr_clock_menu_bitmaps[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_clock,
     bitmap_clock_menu_alarm,
     bitmap_clock_menu_stopwatch,
@@ -11,11 +11,11 @@ static const unsigned char* const s_scr_clock_menu_bitmaps[SCR_CLOCK_MENU_ITEM_N
     bitmap_clock_menu_exit,
 };
 
-static void view_scr_clock_menu();
-static void scr_clock_menu_draw_item(uint8_t index);
-static void scr_clock_menu_focus_next();
-static void scr_clock_menu_focus_prev();
-static void scr_clock_menu_select();
+void view_scr_clock_menu();
+void scr_clock_menu_draw_item(uint8_t index);
+void scr_clock_menu_focus_next();
+void scr_clock_menu_focus_prev();
+void scr_clock_menu_select();
 
 view_dynamic_t dyn_view_scr_clock_menu = {
     {
@@ -31,7 +31,7 @@ view_screen_t scr_clock_menu = {
     .focus_item = 0,
 };
 
-static void view_scr_clock_menu()
+void view_scr_clock_menu()
 {
 	view_render.clear();
 
@@ -41,14 +41,14 @@ static void view_scr_clock_menu()
 	}
 }
 
-static void scr_clock_menu_draw_item(uint8_t index)
+void scr_clock_menu_draw_item(uint8_t index)
 {
 	uint8_t col = index % SCR_CLOCK_MENU_COL_NUMBER;
 	uint8_t row = index / SCR_CLOCK_MENU_COL_NUMBER;
 	int16_t x = col * SCR_CLOCK_MENU_CELL_W;
 	int16_t y = row * SCR_CLOCK_MENU_CELL_H;
-	uint16_t bg_color = (index == s_scr_clock_menu_focus) ? WHITE : BLACK;
-	uint16_t icon_color = (index == s_scr_clock_menu_focus) ? BLACK : WHITE;
+	uint16_t bg_color = (index == scr_clock_menu_focus) ? WHITE : BLACK;
+	uint16_t icon_color = (index == scr_clock_menu_focus) ? BLACK : WHITE;
 	int16_t icon_x = x + ((SCR_CLOCK_MENU_CELL_W - SCR_CLOCK_MENU_ICON_W) / 2);
 	int16_t icon_y = y + ((SCR_CLOCK_MENU_CELL_H - SCR_CLOCK_MENU_ICON_H) / 2);
 
@@ -58,33 +58,33 @@ static void scr_clock_menu_draw_item(uint8_t index)
 	}
 
 	view_render.fillRect(x, y, SCR_CLOCK_MENU_CELL_W, SCR_CLOCK_MENU_CELL_H, bg_color);
-	view_render.drawBitmap(icon_x, icon_y, s_scr_clock_menu_bitmaps[index], SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, icon_color);
+	view_render.drawBitmap(icon_x, icon_y, scr_clock_menu_bitmaps[index], SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, icon_color);
 }
 
-static void scr_clock_menu_focus_next()
+void scr_clock_menu_focus_next()
 {
-	s_scr_clock_menu_focus++;
-	if (s_scr_clock_menu_focus >= SCR_CLOCK_MENU_ITEM_NUMBER)
+	scr_clock_menu_focus++;
+	if (scr_clock_menu_focus >= SCR_CLOCK_MENU_ITEM_NUMBER)
 	{
-		s_scr_clock_menu_focus = 0;
+		scr_clock_menu_focus = 0;
 	}
 }
 
-static void scr_clock_menu_focus_prev()
+void scr_clock_menu_focus_prev()
 {
-	if (s_scr_clock_menu_focus == 0)
+	if (scr_clock_menu_focus == 0)
 	{
-		s_scr_clock_menu_focus = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+		scr_clock_menu_focus = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
 	}
 	else
 	{
-		s_scr_clock_menu_focus--;
+		scr_clock_menu_focus--;
 	}
 }
 
-static void scr_clock_menu_select()
+void scr_clock_menu_select()
 {
-	switch (s_scr_clock_menu_focus)
+	switch (scr_clock_menu_focus)
 	{
 	case SCR_CLOCK_MENU_CLOCK:
 		SCREEN_BACK();
@@ -102,7 +102,7 @@ static void scr_clock_menu_select()
 	case SCR_CLOCK_MENU_STOPWATCH:
 	case SCR_CLOCK_MENU_TIMER:
 	default:
-		APP_DBG("[MENU] item %u is not ready\n", s_scr_clock_menu_focus);
+		APP_DBG("[MENU] item %u is not ready\n", scr_clock_menu_focus);
 		break;
 	}
 }
@@ -114,7 +114,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		s_scr_clock_menu_focus = SCR_CLOCK_MENU_CLOCK;
+		scr_clock_menu_focus = SCR_CLOCK_MENU_CLOCK;
 	}
 	break;
 
