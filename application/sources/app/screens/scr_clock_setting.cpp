@@ -12,6 +12,7 @@ static const char* const setting_item_name[SCR_CLOCK_SETTING_FIELD_NUMBER] = {
     "YEAR",
     "MONTH",
     "DATE",
+    "WEEKDAY",
     "HOUR",
     "MIN",
     "SEC",
@@ -94,11 +95,17 @@ void scr_clock_setting_change_value(int8_t step)
 		                                                  SCR_CLOCK_SETTING_YEAR_MAX,
 		                                                  step);
 		scr_clock_setting_fix_date();
+		setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
+		                                                  setting_date.month,
+		                                                  setting_date.date);
 		break;
 
 	case SCR_CLOCK_SETTING_MONTH:
 		setting_date.month = scr_clock_setting_wrap_value(setting_date.month, 1, 12, step);
 		scr_clock_setting_fix_date();
+		setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
+		                                                  setting_date.month,
+		                                                  setting_date.date);
 		break;
 
 	case SCR_CLOCK_SETTING_DATE:
@@ -107,6 +114,16 @@ void scr_clock_setting_change_value(int8_t step)
 		                                                 scr_clock_setting_days_in_month(setting_date.year,
 		                                                                                 setting_date.month),
 		                                                 step);
+		setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
+		                                                  setting_date.month,
+		                                                  setting_date.date);
+		break;
+
+	case SCR_CLOCK_SETTING_WEEKDAY:
+		setting_date.weekday = scr_clock_setting_wrap_value(setting_date.weekday,
+		                                                    RTC_WEEKDAY_MON,
+		                                                    RTC_WEEKDAY_SUN,
+		                                                    step);
 		break;
 
 	case SCR_CLOCK_SETTING_HOUR:
@@ -165,6 +182,7 @@ void view_scr_clock_setting()
 {
 	char date_text[11];
 	char time_text[9];
+	char weekday_text[2];
 
 	scr_clock_setting_write_4_digit(&date_text[0], setting_date.year);
 	date_text[4] = '-';
@@ -180,6 +198,9 @@ void view_scr_clock_setting()
 	scr_clock_setting_write_2_digit(&time_text[6], setting_time.sec);
 	time_text[8] = '\0';
 
+	weekday_text[0] = setting_date.weekday + '0';
+	weekday_text[1] = '\0';
+
 	view_render.clear();
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
@@ -193,6 +214,10 @@ void view_scr_clock_setting()
 
 	view_render.setCursor(16, 32);
 	view_render.print(time_text);
+
+	view_render.setCursor(16, 46);
+	view_render.print("WEEKDAY ");
+	view_render.print(weekday_text);
 
 	if (setting_location_choose == SCR_CLOCK_SETTING_SAVE)
 	{
@@ -222,6 +247,12 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		setting_date = clock_state.date;
 		setting_location_choose = SCR_CLOCK_SETTING_YEAR;
 		scr_clock_setting_fix_date();
+		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
+		{
+			setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
+			                                                 setting_date.month,
+			                                                 setting_date.date);
+		}
 	}
 	break;
 
@@ -230,9 +261,6 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		if (setting_location_choose == SCR_CLOCK_SETTING_SAVE)
 		{
-			setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
-			                                                 setting_date.month,
-			                                                 setting_date.date);
 			rtc_set_date(&setting_date);
 			rtc_set_time(&setting_time);
 			task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);

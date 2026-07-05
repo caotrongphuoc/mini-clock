@@ -81,7 +81,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		switch (current_location)
 		{
 		case SCR_CLOCK_MENU_CLOCK:
-			SCREEN_BACK();
+			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
 			break;
 
 		case SCR_CLOCK_MENU_SETTING:
@@ -89,7 +89,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_MENU_EXIT:
-			SCREEN_BACK();
+			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
 			break;
 
 		case SCR_CLOCK_MENU_ALARM:
