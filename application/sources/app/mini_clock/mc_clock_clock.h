@@ -17,8 +17,6 @@ typedef struct
 
 void mc_clock_clock_handle(ak_msg_t* msg);
 
-void mc_clock_clock_get_time(rtc_time_t* time);
-void mc_clock_clock_get_date(rtc_date_t* date);
-uint8_t mc_clock_clock_is_24h_format();
+void mc_clock_clock_get_state(mc_clock_clock_state_t* state);
 
 #endif //__MC_CLOCK_CLOCK_H__

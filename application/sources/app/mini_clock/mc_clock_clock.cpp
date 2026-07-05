@@ -2,25 +2,9 @@
 
 static mc_clock_clock_state_t s_clock_state;
 
-static void mc_clock_clock_sync_from_rtc()
+void mc_clock_clock_get_state(mc_clock_clock_state_t* state)
 {
-	rtc_get_time(&s_clock_state.time);
-	rtc_get_date(&s_clock_state.date);
-}
-
-void mc_clock_clock_get_time(rtc_time_t* time)
-{
-	*time = s_clock_state.time;
-}
-
-void mc_clock_clock_get_date(rtc_date_t* date)
-{
-	*date = s_clock_state.date;
-}
-
-uint8_t mc_clock_clock_is_24h_format()
-{
-	return s_clock_state.format_24h;
+	*state = s_clock_state;
 }
 
 void mc_clock_clock_handle(ak_msg_t* msg)
@@ -30,14 +14,16 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 	case MC_CLOCK_CLOCK_ENTER:
 	{
 		s_clock_state.format_24h = 1;
-		mc_clock_clock_sync_from_rtc();
+		rtc_get_time(&s_clock_state.time);
+		rtc_get_date(&s_clock_state.date);
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
 	break;
 
 	case MC_CLOCK_CLOCK_TICK:
 	{
-		mc_clock_clock_sync_from_rtc();
+		rtc_get_time(&s_clock_state.time);
+		rtc_get_date(&s_clock_state.date);
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
 	break;

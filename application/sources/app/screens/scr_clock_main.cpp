@@ -43,11 +43,11 @@ static void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
 	buffer[3] = (value % 10) + '0';
 }
 
-static void scr_clock_main_format_time(char* buffer, rtc_time_t* time)
+static void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t format_24h)
 {
 	uint8_t hour = time->hour;
 
-	if (!mc_clock_clock_is_24h_format())
+	if (!format_24h)
 	{
 		hour %= 12;
 		if (hour == 0)
@@ -76,22 +76,20 @@ static void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 
 static void view_scr_clock_main()
 {
-	rtc_time_t time;
-	rtc_date_t date;
+	mc_clock_clock_state_t clock_state;
 	char time_text[9];
 	char date_text[11];
 
-	mc_clock_clock_get_time(&time);
-	mc_clock_clock_get_date(&date);
-	scr_clock_main_format_time(time_text, &time);
-	scr_clock_main_format_date(date_text, &date);
+	mc_clock_clock_get_state(&clock_state);
+	scr_clock_main_format_time(time_text, &clock_state.time, clock_state.format_24h);
+	scr_clock_main_format_date(date_text, &clock_state.date);
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
 	view_render.setTextSize(SCR_CLOCK_MAIN_INFO_TEXT_SIZE);
 	view_render.setCursor(SCR_CLOCK_MAIN_WEEKDAY_X, SCR_CLOCK_MAIN_WEEKDAY_Y);
-	view_render.print(scr_clock_main_weekday_text(date.weekday));
+	view_render.print(scr_clock_main_weekday_text(clock_state.date.weekday));
 
 	view_render.setTextSize(SCR_CLOCK_MAIN_TIME_TEXT_SIZE);
 	view_render.setCursor(SCR_CLOCK_MAIN_TIME_X, SCR_CLOCK_MAIN_TIME_Y);
