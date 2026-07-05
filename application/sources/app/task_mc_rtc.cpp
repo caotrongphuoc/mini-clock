@@ -23,7 +23,7 @@ void task_mc_rtc(ak_msg_t* msg)
 
 		rtc_get_time(&time);
 		APP_DBG("[RTC] %02u:%02u:%02u\n", time.hour, time.min, time.sec);
-		task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, MC_CLOCK_CLOCK_TICK);
 	}
 	break;
 

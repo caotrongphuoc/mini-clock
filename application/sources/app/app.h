@@ -177,6 +177,9 @@ enum {
 /* MC CLOCK CLOCK task define
  */
 /*****************************************************************************/
+/* define timer */
+#define MC_CLOCK_CLOCK_TICK_INTERVAL (1000)
+
 /* define signal */
 enum {
 	MC_CLOCK_CLOCK_TICK = AK_USER_DEFINE_SIG,

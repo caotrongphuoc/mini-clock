@@ -15,6 +15,22 @@ void mc_clock_clock_get_state(mc_clock_clock_state_t* state)
 	*state = clock_state;
 }
 
+void mc_clock_clock_sync()
+{
+	rtc_get_time(&clock_state.time);
+	rtc_get_date(&clock_state.date);
+}
+
+void mc_clock_clock_set_24h_format(uint8_t format_24h)
+{
+	clock_state.format_24h = format_24h;
+}
+
+void mc_clock_clock_toggle_format()
+{
+	clock_state.format_24h = !clock_state.format_24h;
+}
+
 /*****************************************************************************/
 /* Handle - Clock object */
 /*****************************************************************************/
@@ -25,25 +41,20 @@ void mc_clock_clock_handle(ak_msg_t* msg)
 	{
 	case MC_CLOCK_CLOCK_ENTER:
 	{
-		clock_state.format_24h = 1;
-		rtc_get_time(&clock_state.time);
-		rtc_get_date(&clock_state.date);
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		mc_clock_clock_set_24h_format(1);
+		mc_clock_clock_sync();
 	}
 	break;
 
 	case MC_CLOCK_CLOCK_TICK:
 	{
-		rtc_get_time(&clock_state.time);
-		rtc_get_date(&clock_state.date);
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		mc_clock_clock_sync();
 	}
 	break;
 
 	case MC_CLOCK_CLOCK_FORMAT_TOGGLE:
 	{
-		clock_state.format_24h = !clock_state.format_24h;
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		mc_clock_clock_toggle_format();
 	}
 	break;
 

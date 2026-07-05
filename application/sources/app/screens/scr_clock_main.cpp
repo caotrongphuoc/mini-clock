@@ -119,13 +119,24 @@ void scr_clock_main_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_ENTER);
+		mc_clock_clock_set_24h_format(1);
+		mc_clock_clock_sync();
+		timer_set(AC_TASK_DISPLAY_ID,
+		          MC_CLOCK_CLOCK_TICK,
+		          MC_CLOCK_CLOCK_TICK_INTERVAL,
+		          TIMER_PERIODIC);
 	}
 	break;
 
 	case SCREEN_EXIT:
 	{
-		task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_LEAVE);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_CLOCK_TICK);
+	}
+	break;
+
+	case MC_CLOCK_CLOCK_TICK:
+	{
+		mc_clock_clock_sync();
 	}
 	break;
 
