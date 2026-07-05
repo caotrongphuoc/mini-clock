@@ -163,7 +163,7 @@ enum {
 /*****************************************************************************/
 /* define signal */
 enum {
-	MC_CLOCK_RTC_TICK_1S = AK_USER_DEFINE_SIG,
+	MC_CLOCK_RTC_TICK_1S = MC_CLOCK_DEFINE_SIG,
 	MC_CLOCK_RTC_ALARM_FIRED,
 	MC_CLOCK_RTC_WAKEUP,
 	MC_CLOCK_RTC_SET_TIME_REQ,
@@ -182,7 +182,7 @@ enum {
 
 /* define signal */
 enum {
-	MC_CLOCK_CLOCK_TICK = AK_USER_DEFINE_SIG,
+	MC_CLOCK_CLOCK_TICK = MC_CLOCK_DEFINE_SIG,
 	MC_CLOCK_CLOCK_ENTER,
 	MC_CLOCK_CLOCK_LEAVE,
 	MC_CLOCK_CLOCK_FORMAT_TOGGLE,
