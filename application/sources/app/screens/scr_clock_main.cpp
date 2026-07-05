@@ -1,20 +1,8 @@
 #include "scr_clock_main.h"
 
-void view_scr_clock_main();
-
-view_dynamic_t dyn_view_scr_clock_main = {
-    {
-        .item_type = ITEM_TYPE_DYNAMIC,
-    },
-    view_scr_clock_main};
-
-view_screen_t scr_clock_main = {
-    &dyn_view_scr_clock_main,
-    ITEM_NULL,
-    ITEM_NULL,
-
-    .focus_item = 0,
-};
+/*****************************************************************************/
+/* View helper - Clock main */
+/*****************************************************************************/
 
 const char* scr_clock_main_weekday_text(uint8_t weekday)
 {
@@ -74,6 +62,26 @@ void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 	buffer[10] = '\0';
 }
 
+/*****************************************************************************/
+/* View - Clock main */
+/*****************************************************************************/
+
+static void view_scr_clock_main();
+
+view_dynamic_t dyn_view_scr_clock_main = {
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_clock_main};
+
+view_screen_t scr_clock_main = {
+    &dyn_view_scr_clock_main,
+    ITEM_NULL,
+    ITEM_NULL,
+
+    .focus_item = 0,
+};
+
 void view_scr_clock_main()
 {
 	mc_clock_clock_state_t clock_state;
@@ -99,6 +107,10 @@ void view_scr_clock_main()
 	view_render.setCursor(SCR_CLOCK_MAIN_DATE_X, SCR_CLOCK_MAIN_DATE_Y);
 	view_render.print(date_text);
 }
+
+/*****************************************************************************/
+/* Handle - Clock main */
+/*****************************************************************************/
 
 void scr_clock_main_handle(ak_msg_t* msg)
 {

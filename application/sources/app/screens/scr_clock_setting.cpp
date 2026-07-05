@@ -4,11 +4,11 @@
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/
 
-rtc_time_t scr_clock_setting_time;
-rtc_date_t scr_clock_setting_date;
-uint8_t scr_clock_setting_field = SCR_CLOCK_SETTING_YEAR;
+static rtc_time_t setting_time;
+static rtc_date_t setting_date;
+static uint8_t setting_location_choose = SCR_CLOCK_SETTING_YEAR;
 
-const char* const scr_clock_setting_field_name[SCR_CLOCK_SETTING_FIELD_NUMBER] = {
+static const char* const setting_item_name[SCR_CLOCK_SETTING_FIELD_NUMBER] = {
     "YEAR",
     "MONTH",
     "DATE",
@@ -19,7 +19,7 @@ const char* const scr_clock_setting_field_name[SCR_CLOCK_SETTING_FIELD_NUMBER] =
 };
 
 /*****************************************************************************/
-/* Value helpers - Clock setting */
+/* Value helper - Clock setting */
 /*****************************************************************************/
 
 uint16_t scr_clock_setting_wrap_value(uint16_t value, uint16_t min, uint16_t max, int8_t step)
@@ -52,12 +52,12 @@ uint8_t scr_clock_setting_days_in_month(uint16_t year, uint8_t month)
 
 void scr_clock_setting_fix_date()
 {
-	uint8_t max_date = scr_clock_setting_days_in_month(scr_clock_setting_date.year,
-	                                                   scr_clock_setting_date.month);
+	uint8_t max_date = scr_clock_setting_days_in_month(setting_date.year,
+	                                                   setting_date.month);
 
-	if (scr_clock_setting_date.date > max_date)
+	if (setting_date.date > max_date)
 	{
-		scr_clock_setting_date.date = max_date;
+		setting_date.date = max_date;
 	}
 }
 
@@ -86,39 +86,39 @@ uint8_t scr_clock_setting_weekday(uint16_t year, uint8_t month, uint8_t date)
 
 void scr_clock_setting_change_value(int8_t step)
 {
-	switch (scr_clock_setting_field)
+	switch (setting_location_choose)
 	{
 	case SCR_CLOCK_SETTING_YEAR:
-		scr_clock_setting_date.year = scr_clock_setting_wrap_value(scr_clock_setting_date.year,
-		                                                            SCR_CLOCK_SETTING_YEAR_MIN,
-		                                                            SCR_CLOCK_SETTING_YEAR_MAX,
-		                                                            step);
+		setting_date.year = scr_clock_setting_wrap_value(setting_date.year,
+		                                                  SCR_CLOCK_SETTING_YEAR_MIN,
+		                                                  SCR_CLOCK_SETTING_YEAR_MAX,
+		                                                  step);
 		scr_clock_setting_fix_date();
 		break;
 
 	case SCR_CLOCK_SETTING_MONTH:
-		scr_clock_setting_date.month = scr_clock_setting_wrap_value(scr_clock_setting_date.month, 1, 12, step);
+		setting_date.month = scr_clock_setting_wrap_value(setting_date.month, 1, 12, step);
 		scr_clock_setting_fix_date();
 		break;
 
 	case SCR_CLOCK_SETTING_DATE:
-		scr_clock_setting_date.date = scr_clock_setting_wrap_value(scr_clock_setting_date.date,
-		                                                           1,
-		                                                           scr_clock_setting_days_in_month(scr_clock_setting_date.year,
-		                                                                                           scr_clock_setting_date.month),
-		                                                           step);
+		setting_date.date = scr_clock_setting_wrap_value(setting_date.date,
+		                                                 1,
+		                                                 scr_clock_setting_days_in_month(setting_date.year,
+		                                                                                 setting_date.month),
+		                                                 step);
 		break;
 
 	case SCR_CLOCK_SETTING_HOUR:
-		scr_clock_setting_time.hour = scr_clock_setting_wrap_value(scr_clock_setting_time.hour, 0, 23, step);
+		setting_time.hour = scr_clock_setting_wrap_value(setting_time.hour, 0, 23, step);
 		break;
 
 	case SCR_CLOCK_SETTING_MIN:
-		scr_clock_setting_time.min = scr_clock_setting_wrap_value(scr_clock_setting_time.min, 0, 59, step);
+		setting_time.min = scr_clock_setting_wrap_value(setting_time.min, 0, 59, step);
 		break;
 
 	case SCR_CLOCK_SETTING_SEC:
-		scr_clock_setting_time.sec = scr_clock_setting_wrap_value(scr_clock_setting_time.sec, 0, 59, step);
+		setting_time.sec = scr_clock_setting_wrap_value(setting_time.sec, 0, 59, step);
 		break;
 
 	case SCR_CLOCK_SETTING_SAVE:
@@ -130,6 +130,22 @@ void scr_clock_setting_change_value(int8_t step)
 /*****************************************************************************/
 /* View - Clock setting */
 /*****************************************************************************/
+
+static void view_scr_clock_setting();
+
+view_dynamic_t dyn_view_scr_clock_setting = {
+    {
+        .item_type = ITEM_TYPE_DYNAMIC,
+    },
+    view_scr_clock_setting};
+
+view_screen_t scr_clock_setting = {
+    &dyn_view_scr_clock_setting,
+    ITEM_NULL,
+    ITEM_NULL,
+
+    .focus_item = 0,
+};
 
 void scr_clock_setting_write_2_digit(char* buffer, uint8_t value)
 {
@@ -150,18 +166,18 @@ void view_scr_clock_setting()
 	char date_text[11];
 	char time_text[9];
 
-	scr_clock_setting_write_4_digit(&date_text[0], scr_clock_setting_date.year);
+	scr_clock_setting_write_4_digit(&date_text[0], setting_date.year);
 	date_text[4] = '-';
-	scr_clock_setting_write_2_digit(&date_text[5], scr_clock_setting_date.month);
+	scr_clock_setting_write_2_digit(&date_text[5], setting_date.month);
 	date_text[7] = '-';
-	scr_clock_setting_write_2_digit(&date_text[8], scr_clock_setting_date.date);
+	scr_clock_setting_write_2_digit(&date_text[8], setting_date.date);
 	date_text[10] = '\0';
 
-	scr_clock_setting_write_2_digit(&time_text[0], scr_clock_setting_time.hour);
+	scr_clock_setting_write_2_digit(&time_text[0], setting_time.hour);
 	time_text[2] = ':';
-	scr_clock_setting_write_2_digit(&time_text[3], scr_clock_setting_time.min);
+	scr_clock_setting_write_2_digit(&time_text[3], setting_time.min);
 	time_text[5] = ':';
-	scr_clock_setting_write_2_digit(&time_text[6], scr_clock_setting_time.sec);
+	scr_clock_setting_write_2_digit(&time_text[6], setting_time.sec);
 	time_text[8] = '\0';
 
 	view_render.clear();
@@ -170,7 +186,7 @@ void view_scr_clock_setting()
 
 	view_render.setCursor(0, 0);
 	view_render.print("SET ");
-	view_render.print(scr_clock_setting_field_name[scr_clock_setting_field]);
+	view_render.print(setting_item_name[setting_location_choose]);
 
 	view_render.setCursor(16, 18);
 	view_render.print(date_text);
@@ -178,7 +194,7 @@ void view_scr_clock_setting()
 	view_render.setCursor(16, 32);
 	view_render.print(time_text);
 
-	if (scr_clock_setting_field == SCR_CLOCK_SETTING_SAVE)
+	if (setting_location_choose == SCR_CLOCK_SETTING_SAVE)
 	{
 		view_render.fillRect(84, 50, 36, 10, WHITE);
 		view_render.setTextColor(BLACK);
@@ -187,20 +203,6 @@ void view_scr_clock_setting()
 		view_render.setTextColor(WHITE);
 	}
 }
-
-view_dynamic_t dyn_view_scr_clock_setting = {
-    {
-        .item_type = ITEM_TYPE_DYNAMIC,
-    },
-    view_scr_clock_setting};
-
-view_screen_t scr_clock_setting = {
-    &dyn_view_scr_clock_setting,
-    ITEM_NULL,
-    ITEM_NULL,
-
-    .focus_item = 0,
-};
 
 /*****************************************************************************/
 /* Handle - Clock setting */
@@ -216,9 +218,9 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		mc_clock_clock_state_t clock_state;
 
 		mc_clock_clock_get_state(&clock_state);
-		scr_clock_setting_time = clock_state.time;
-		scr_clock_setting_date = clock_state.date;
-		scr_clock_setting_field = SCR_CLOCK_SETTING_YEAR;
+		setting_time = clock_state.time;
+		setting_date = clock_state.date;
+		setting_location_choose = SCR_CLOCK_SETTING_YEAR;
 		scr_clock_setting_fix_date();
 	}
 	break;
@@ -226,19 +228,19 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
-		if (scr_clock_setting_field == SCR_CLOCK_SETTING_SAVE)
+		if (setting_location_choose == SCR_CLOCK_SETTING_SAVE)
 		{
-			scr_clock_setting_date.weekday = scr_clock_setting_weekday(scr_clock_setting_date.year,
-			                                                           scr_clock_setting_date.month,
-			                                                           scr_clock_setting_date.date);
-			rtc_set_date(&scr_clock_setting_date);
-			rtc_set_time(&scr_clock_setting_time);
+			setting_date.weekday = scr_clock_setting_weekday(setting_date.year,
+			                                                 setting_date.month,
+			                                                 setting_date.date);
+			rtc_set_date(&setting_date);
+			rtc_set_time(&setting_time);
 			task_post_pure_msg(MC_CLOCK_CLOCK_ID, MC_CLOCK_CLOCK_TICK);
 			SCREEN_BACK();
 		}
 		else
 		{
-			scr_clock_setting_field++;
+			setting_location_choose++;
 		}
 		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
