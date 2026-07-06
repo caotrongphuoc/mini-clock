@@ -15,12 +15,12 @@ SOC_FLASH_BYTES = 131072 # 128KB
 SOC_SRAM_BYTES = 16384	 # 16KB
 FLASH_BASE_ADDR_VAL = 0x08000000
 
-# Name of build target ex: ak-base-kit-stm32l151-application.bin
-NAME_MODULE = ak-base-kit-stm32l151-application
+# Name of build target ex: mini-clock-application.bin
+NAME_MODULE = mini-clock-application
 PROJECT = $(NAME_MODULE)
 
-GCC_PATH			= /home/phuoc/Workspace/Tools/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10
-PROGRAMER_PATH		= /home/phuoc/Workspace/Tools/STM32CubeProgrammer/bin
+GCC_PATH			= /home/ctp/Workspace/Tools/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10
+PROGRAMER_PATH		= /home/ctp/Workspace/Tools/STM32CubeProgrammer/bin
 OPENOCD_CFG_PATH	= /usr/local/share/openocd/scripts/board/stm32ldiscovery.cfg
 
 # App start address, that need sync with declare in linker file and interrupt vector table.
