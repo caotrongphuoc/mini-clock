@@ -7,6 +7,7 @@
 /*****************************************************************************/
 
 static void view_scr_clock_stopwatch();
+static void scr_clock_stopwatch_format_time(char* buffer, uint32_t elapsed_ms);
 
 view_dynamic_t dyn_view_scr_clock_stopwatch = {
     {
@@ -25,15 +26,11 @@ void view_scr_clock_stopwatch()
 {
 	mc_clock_stopwatch_state_t stopwatch_state;
 	char time_str[12];
+	char lap_str[12];
 
 	mc_clock_stopwatch_get_state(&stopwatch_state);
 
-	uint32_t total_seconds = stopwatch_state.elapsed_ms / 1000;
-	uint32_t minutes = total_seconds / 60;
-	uint32_t seconds = total_seconds % 60;
-	uint32_t ms = (stopwatch_state.elapsed_ms % 1000) / 10;
-
-	sprintf(time_str, "%02lu:%02lu:%02lu", minutes, seconds, ms);
+	scr_clock_stopwatch_format_time(time_str, stopwatch_state.elapsed_ms);
 
 	view_render.clear();
 	view_render.drawRoundRect(0, 0, 128, 64, 5, WHITE);
@@ -43,15 +40,33 @@ void view_scr_clock_stopwatch()
 	view_render.setTextSize(2);
 	view_render.print("STOPWATCH");
 
-	view_render.setCursor(20, 25);
 	view_render.setTextSize(1);
-	view_render.print("State: ");
-	view_render.setCursor(70, 25);
-	view_render.print(stopwatch_state.running ? "RUNNING" : "STOPPED");
+	view_render.setCursor(96, 4);
+	view_render.print(stopwatch_state.running ? "RUN" : "STOP");
 
-	view_render.setCursor(12, 42);
+	view_render.setCursor(12, 22);
 	view_render.setTextSize(2);
 	view_render.print(time_str);
+
+	view_render.setTextSize(1);
+	for (uint8_t i = 0; i < stopwatch_state.lap_count; i++)
+	{
+		scr_clock_stopwatch_format_time(lap_str, stopwatch_state.lap_ms[i]);
+		view_render.setCursor(4, 42 + (i * 7));
+		view_render.print(i + 1);
+		view_render.print(".");
+		view_render.print(lap_str);
+	}
+}
+
+void scr_clock_stopwatch_format_time(char* buffer, uint32_t elapsed_ms)
+{
+	uint32_t total_seconds = elapsed_ms / 1000;
+	uint32_t minutes = total_seconds / 60;
+	uint32_t seconds = total_seconds % 60;
+	uint32_t ms = (elapsed_ms % 1000) / 10;
+
+	sprintf(buffer, "%02lu:%02lu:%02lu", minutes, seconds, ms);
 }
 
 /*****************************************************************************/
@@ -100,6 +115,22 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_RESET);
 		BUZZER_PlaySound(BUZZER_SOUND_USB_DISCONNECTED);
+	}
+	break;
+
+	case AC_DISPLAY_BUTON_UP_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		task_post_pure_msg(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_LAP);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
+	break;
+
+	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		task_post_pure_msg(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_CLEAR_LAP);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 

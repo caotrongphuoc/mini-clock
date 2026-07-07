@@ -7,10 +7,14 @@
 #include "message.h"
 #include "task_list.h"
 
+#define MC_CLOCK_STOPWATCH_LAP_MAX (3)
+
 typedef struct
 {
 	uint8_t running;
 	uint32_t elapsed_ms;
+	uint8_t lap_count;
+	uint32_t lap_ms[MC_CLOCK_STOPWATCH_LAP_MAX];
 } mc_clock_stopwatch_state_t;
 
 extern mc_clock_stopwatch_state_t mc_clock_stopwatch_state;

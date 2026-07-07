@@ -204,6 +204,8 @@ enum {
 	MC_CLOCK_STOPWATCH_START_PAUSE,
 	MC_CLOCK_STOPWATCH_RESET,
 	MC_CLOCK_STOPWATCH_UPDATE,
+	MC_CLOCK_STOPWATCH_LAP,
+	MC_CLOCK_STOPWATCH_CLEAR_LAP,
 };
 
 /*****************************************************************************/
