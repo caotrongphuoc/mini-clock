@@ -180,6 +180,50 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
+	case MC_CLOCK_ALARM_TOGGLE:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_TOGGLE\n");
+		if (mc_clock_alarm_state.editing == 0 &&
+		    mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
+		{
+			mc_clock_alarm_item_t* alarm = &mc_clock_alarm_state.alarm[mc_clock_alarm_state.current_item];
+			alarm->enabled = !alarm->enabled;
+			mc_clock_alarm_apply_rtc();
+		}
+	}
+	break;
+
+	case MC_CLOCK_ALARM_DELETE:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_DELETE\n");
+		if (mc_clock_alarm_state.editing == 0 &&
+		    mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
+		{
+			for (uint8_t i = mc_clock_alarm_state.current_item; i + 1 < mc_clock_alarm_state.total_alarm; i++)
+			{
+				mc_clock_alarm_state.alarm[i] = mc_clock_alarm_state.alarm[i + 1];
+			}
+
+			if (mc_clock_alarm_state.total_alarm > 0)
+			{
+				mc_clock_alarm_state.total_alarm--;
+			}
+
+			if (mc_clock_alarm_state.current_item > mc_clock_alarm_state.total_alarm + 1)
+			{
+				mc_clock_alarm_state.current_item = mc_clock_alarm_state.total_alarm + 1;
+			}
+
+			if (mc_clock_alarm_state.scroll_offset > mc_clock_alarm_state.current_item)
+			{
+				mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
+			}
+
+			mc_clock_alarm_apply_rtc();
+		}
+	}
+	break;
+
 	case MC_CLOCK_ALARM_FIRED:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");

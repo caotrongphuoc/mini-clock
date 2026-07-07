@@ -169,7 +169,21 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_NEXT_FIELD);
+		mc_clock_alarm_get_state(&alarm_state);
+		if (alarm_state.ringing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+			break;
+		}
+
+		if (alarm_state.editing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_NEXT_FIELD);
+		}
+		else
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_TOGGLE);
+		}
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
@@ -205,12 +219,25 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
-	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_%s_PRESSED\n",
-		            msg->sig == AC_DISPLAY_BUTON_LONG_UP_PRESSED ? "UP" : "DOWN");
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED\n");
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+	}
+	break;
+
+	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED\n");
+		mc_clock_alarm_get_state(&alarm_state);
+		if (alarm_state.ringing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+			break;
+		}
+
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DELETE);
+		BUZZER_PlaySound(BUZZER_SOUND_USB_DISCONNECTED);
 	}
 	break;
 
