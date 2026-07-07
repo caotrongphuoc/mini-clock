@@ -1,6 +1,7 @@
 #include "mc_clock_alarm.h"
 
 #include "app_dbg.h"
+#include "buzzer.h"
 #include "task_mc_rtc.h"
 
 /*****************************************************************************/
@@ -14,6 +15,7 @@ mc_clock_alarm_state_t mc_clock_alarm_state = {
     .editing = 0,
     .editing_alarm = 0,
     .editing_field = 0,
+    .ringing = 0,
     .alarm = {
         {7, 30, 1},
         {8, 0, 1},
@@ -175,6 +177,22 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		{
 			mc_clock_alarm_state.editing_field = !mc_clock_alarm_state.editing_field;
 		}
+	}
+	break;
+
+	case MC_CLOCK_ALARM_FIRED:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");
+		mc_clock_alarm_state.ringing = 1;
+		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
+	}
+	break;
+
+	case MC_CLOCK_ALARM_DISMISS:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_DISMISS\n");
+		mc_clock_alarm_state.ringing = 0;
+		BUZZER_Disable();
 	}
 	break;
 

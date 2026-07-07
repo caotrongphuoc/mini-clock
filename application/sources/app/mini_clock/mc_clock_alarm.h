@@ -24,6 +24,7 @@ typedef struct
 	uint8_t editing;
 	uint8_t editing_alarm;
 	uint8_t editing_field;
+	uint8_t ringing;
 	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
 } mc_clock_alarm_state_t;
 

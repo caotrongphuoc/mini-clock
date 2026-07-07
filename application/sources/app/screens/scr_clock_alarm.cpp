@@ -30,6 +30,21 @@ void view_scr_clock_alarm()
 
 	view_render.clear();
 
+	if (alarm_state.ringing)
+	{
+		view_render.fillRect(0, 0, 128, 64, WHITE);
+		view_render.setTextColor(BLACK);
+
+		view_render.setCursor(22, 8);
+		view_render.setTextSize(2);
+		view_render.print("ALARM");
+
+		view_render.setCursor(24, 32);
+		view_render.setTextSize(1);
+		view_render.print("MODE to stop");
+		return;
+	}
+
 	if (alarm_state.editing)
 	{
 		mc_clock_alarm_item_t* alarm = &alarm_state.alarm[alarm_state.editing_alarm];
@@ -132,6 +147,12 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		mc_clock_alarm_get_state(&alarm_state);
+		if (alarm_state.ringing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+			break;
+		}
+
 		if (alarm_state.editing == 0 &&
 		    alarm_state.current_item == alarm_state.total_alarm + 1)
 		{
@@ -156,6 +177,13 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		mc_clock_alarm_get_state(&alarm_state);
+		if (alarm_state.ringing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+			break;
+		}
+
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_PREV);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -164,6 +192,13 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		mc_clock_alarm_get_state(&alarm_state);
+		if (alarm_state.ringing)
+		{
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+			break;
+		}
+
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_NEXT);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

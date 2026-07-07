@@ -32,6 +32,7 @@ void task_mc_rtc(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_ALARM_FIRED\n");
 		APP_DBG("[RTC] ALARM_A fired\n");
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_FIRED);
 	}
 	break;
 
