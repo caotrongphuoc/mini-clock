@@ -109,7 +109,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		switch (setting_location_choose)
 		{
 		case SCR_CLOCK_SETTING_TIME:
-			SCREEN_TRAN(mc_sample_time_handle, &mc_sample_time);
+			SCREEN_TRAN(scr_clock_time_setting_handle, &scr_clock_time_setting);
 			break;
 
 		case SCR_CLOCK_SETTING_COLOR:
