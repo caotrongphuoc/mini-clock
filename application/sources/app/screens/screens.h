@@ -16,6 +16,7 @@
 #include "buzzer.h"
 #include <math.h>
 #include <vector>
+#include "mc_sample_time.h"
 
 // scr_idle
 extern view_dynamic_t dyn_view_idle;
@@ -62,6 +63,10 @@ extern void scr_clock_setting_handle(ak_msg_t* msg);
 extern view_dynamic_t dyn_view_mc_time_change;
 extern view_screen_t mc_time_change;
 extern void mc_time_change_handle(ak_msg_t* msg);
+
+extern view_dynamic_t dyn_view_sample;
+extern view_screen_t mc_sample_time;
+extern void mc_sample_time_handle(ak_msg_t *msg); 
 
 
 #endif //__SCREENS_H__

@@ -4,6 +4,7 @@
 #include "screens.h"
 #include "mc_clock_time.h"
 #include "scr_clock_main.h"
+#include "mc_sample_time.h"
 
 #define SCR_CLOCK_TIME_SETTING_YEAR_MIN (2000)
 #define SCR_CLOCK_TIME_SETTING_YEAR_MAX (2099)

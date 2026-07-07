@@ -5,16 +5,10 @@
 #include "task_mc_rtc.h"
 #include "mc_clock_time.h"
 #include "app_dbg.h"
+#include "scr_clock_main.h"
 
 #define scr_width 128
 #define scr_height 64
 #define total_time_zone 10
-
-extern uint8_t current_time_zone;   // Make it a variable, not #define
-
-extern uint8_t global_hour;
-extern uint8_t global_minute;
-extern uint8_t global_day;
-extern uint8_t global_month;
 
 #endif //__MC_TIME_CHANGE_H__

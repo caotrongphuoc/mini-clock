@@ -3,6 +3,7 @@
 
 #include "screens.h"
 #include "../mini_clock/mc_time_change.h"
+#include "mc_sample_time.h"
 
 #define SCR_CLOCK_SETTING_ITEM_NUMBER (5)
 #define SCR_CLOCK_SETTING_FRAME_X (2)
