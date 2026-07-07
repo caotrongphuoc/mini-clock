@@ -97,7 +97,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
             break;
 
         case SCR_CLOCK_MENU_EXIT:
-            SCREEN_TRAN(scr_idle_handle, &scr_idle);
+            SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
             break;
 
         default:

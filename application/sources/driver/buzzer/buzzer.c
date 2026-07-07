@@ -176,7 +176,7 @@ static void BUZZER_PlayTones(const Tone_TypeDef * tones) {
 	if (_buzzer_silent != BUZZER_SILENT_ON) {
 		_tones = tones;
 		_tones_playing = true;
-		BUZZER_Enable(_tones->frequency,_tones->duration);
+		// BUZZER_Enable(_tones->frequency,_tones->duration);
 	}
 }
 

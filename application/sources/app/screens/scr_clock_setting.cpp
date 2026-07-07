@@ -109,8 +109,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		switch (setting_location_choose)
 		{
 		case SCR_CLOCK_SETTING_TIME:
-			SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			SCREEN_TRAN(mc_time_change_handle, &mc_time_change);
 			break;
 
 		case SCR_CLOCK_SETTING_COLOR:
@@ -131,7 +130,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 
 		case SCR_CLOCK_SETTING_EXIT:
 		default:
-			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
+			SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 		}

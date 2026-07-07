@@ -23,7 +23,7 @@ const task_t app_task_table[] = {
 	/* MINI CLOCK TASKS */
 	/*************************************************************************/
 	{MC_CLOCK_RTC_ID			,	TASK_PRI_LEVEL_5	,	task_mc_rtc			},
-	{MC_CLOCK_TIME_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_time_handle	},
+	{MC_CLOCK_TIME_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_time_handle},
 
 	/*************************************************************************/
 	/* RF24 NETWORK TASK */

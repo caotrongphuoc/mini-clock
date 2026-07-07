@@ -2,6 +2,7 @@
 #define __SCR_CLOCK_SETTING_H__
 
 #include "screens.h"
+#include "../mini_clock/mc_time_change.h"
 
 #define SCR_CLOCK_SETTING_ITEM_NUMBER (5)
 #define SCR_CLOCK_SETTING_FRAME_X (2)
@@ -12,7 +13,7 @@
 #define SCR_CLOCK_SETTING_FRAME_R (2)
 
 typedef enum
-{
+{	
 	SCR_CLOCK_SETTING_TIME,
 	SCR_CLOCK_SETTING_COLOR,
 	SCR_CLOCK_SETTING_LAYOUT,
