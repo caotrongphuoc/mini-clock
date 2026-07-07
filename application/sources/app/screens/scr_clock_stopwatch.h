@@ -1,0 +1,15 @@
+#ifndef __SCR_CLOCK_STOPWATCH_H__
+#define __SCR_CLOCK_STOPWATCH_H__
+#include "screens.h"
+
+typedef enum
+{
+    SCR_CLOCK_STOPWATCH_DISPLAY,
+    SCR_CLOCK_STOPWATCH_START,
+    SCR_CLOCK_STOPWATCH_PAUSE,
+    SCR_CLOCK_STOPWATCH_RESET,
+    SCR_CLOCK_STOPWATCH_LAP,
+    SCR_CLOCK_STOPWATCH_BACK,
+} scr_clock_stopwatch_item_t;
+
+#endif //__SCR_CLOCK_STOPWATCH_H__
