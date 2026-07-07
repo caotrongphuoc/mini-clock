@@ -16,6 +16,7 @@ typedef struct
 	uint16_t remaining_min;
 	uint8_t remaining_sec;
 	uint8_t running;
+	uint8_t finished;
 } mc_clock_timer_state_t;
 
 extern mc_clock_timer_state_t mc_clock_timer_state;

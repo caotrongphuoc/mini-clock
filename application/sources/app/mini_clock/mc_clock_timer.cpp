@@ -12,6 +12,7 @@ mc_clock_timer_state_t mc_clock_timer_state = {
     .remaining_min = 5,
     .remaining_sec = 0,
     .running = 0,
+    .finished = 0,
 };
 
 /*****************************************************************************/
@@ -40,6 +41,15 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 	case MC_CLOCK_TIMER_START_PAUSE:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIMER_START_PAUSE\n");
+		if (mc_clock_timer_state.finished)
+		{
+			mc_clock_timer_state.finished = 0;
+			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
+			mc_clock_timer_state.remaining_sec = 0;
+			BUZZER_Disable();
+			break;
+		}
+
 		if (mc_clock_timer_state.running == 0 &&
 		    mc_clock_timer_state.remaining_min == 0 &&
 		    mc_clock_timer_state.remaining_sec == 0)
@@ -55,8 +65,10 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_TIMER_RESET\n");
 		mc_clock_timer_state.running = 0;
+		mc_clock_timer_state.finished = 0;
 		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
 		mc_clock_timer_state.remaining_sec = 0;
+		BUZZER_Disable();
 	}
 	break;
 
@@ -65,6 +77,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_INC\n");
 		if (mc_clock_timer_state.running == 0)
 		{
+			mc_clock_timer_state.finished = 0;
 			mc_clock_timer_state.set_minutes += MC_CLOCK_TIMER_STEP_MINUTES;
 			if (mc_clock_timer_state.set_minutes > MC_CLOCK_TIMER_MAX_MINUTES)
 			{
@@ -81,6 +94,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_DEC\n");
 		if (mc_clock_timer_state.running == 0)
 		{
+			mc_clock_timer_state.finished = 0;
 			if (mc_clock_timer_state.set_minutes >= MC_CLOCK_TIMER_STEP_MINUTES)
 			{
 				mc_clock_timer_state.set_minutes -= MC_CLOCK_TIMER_STEP_MINUTES;
@@ -113,7 +127,19 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		}
 
 		mc_clock_timer_state.running = 0;
+		mc_clock_timer_state.finished = 1;
 		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
+	}
+	break;
+
+	case MC_CLOCK_TIMER_DISMISS:
+	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_DISMISS\n");
+		mc_clock_timer_state.running = 0;
+		mc_clock_timer_state.finished = 0;
+		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
+		mc_clock_timer_state.remaining_sec = 0;
+		BUZZER_Disable();
 	}
 	break;
 

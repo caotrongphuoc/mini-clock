@@ -38,6 +38,22 @@ void view_scr_clock_timer()
 	}
 
 	view_render.clear();
+
+	if (timer_state.finished)
+	{
+		view_render.fillRect(0, 0, 128, 64, WHITE);
+		view_render.setTextColor(BLACK);
+
+		view_render.setCursor(18, 8);
+		view_render.setTextSize(2);
+		view_render.print("TIME UP");
+
+		view_render.setCursor(20, 34);
+		view_render.setTextSize(1);
+		view_render.print("MODE to stop");
+		return;
+	}
+
 	view_render.drawRoundRect(0, 0, 128, 64, 6, WHITE);
 	view_render.setTextColor(WHITE);
 
@@ -62,6 +78,8 @@ void view_scr_clock_timer()
 
 void scr_clock_timer_handle(ak_msg_t* msg)
 {
+	mc_clock_timer_state_t timer_state;
+
 	switch (msg->sig)
 	{
 	case SCREEN_ENTRY:
@@ -92,6 +110,13 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		mc_clock_timer_get_state(&timer_state);
+		if (timer_state.finished)
+		{
+			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
+			break;
+		}
+
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_START_PAUSE);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -108,6 +133,13 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		mc_clock_timer_get_state(&timer_state);
+		if (timer_state.finished)
+		{
+			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
+			break;
+		}
+
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_INC);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
@@ -116,6 +148,13 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		mc_clock_timer_get_state(&timer_state);
+		if (timer_state.finished)
+		{
+			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
+			break;
+		}
+
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DEC);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
