@@ -31,5 +31,6 @@ extern mc_clock_alarm_state_t mc_clock_alarm_state;
 
 void mc_clock_alarm_handle(ak_msg_t* msg);
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state);
+void mc_clock_alarm_apply_rtc(void);
 
 #endif //__MC_CLOCK_ALARM_H__

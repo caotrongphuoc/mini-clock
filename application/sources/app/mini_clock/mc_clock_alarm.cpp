@@ -1,6 +1,7 @@
 #include "mc_clock_alarm.h"
 
 #include "app_dbg.h"
+#include "task_mc_rtc.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Clock alarm object */
@@ -29,6 +30,29 @@ void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 	*state = mc_clock_alarm_state;
 }
 
+void mc_clock_alarm_apply_rtc(void)
+{
+	for (uint8_t i = 0; i < mc_clock_alarm_state.total_alarm; i++)
+	{
+		if (mc_clock_alarm_state.alarm[i].enabled)
+		{
+			mc_clock_rtc_set_alarm_req_t req;
+			req.time.hour = mc_clock_alarm_state.alarm[i].hour;
+			req.time.min = mc_clock_alarm_state.alarm[i].minute;
+			req.time.sec = 0;
+			req.weekday = RTC_ALARM_ANY_WEEKDAY;
+
+			task_post_common_msg(MC_CLOCK_RTC_ID,
+			                     MC_CLOCK_RTC_SET_ALARM_REQ,
+			                     (uint8_t*)&req,
+			                     sizeof(req));
+			return;
+		}
+	}
+
+	task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
+}
+
 /*****************************************************************************/
 /* Handle - Clock alarm object */
 /*****************************************************************************/
@@ -53,6 +77,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		if (mc_clock_alarm_state.editing)
 		{
 			mc_clock_alarm_state.editing = 0;
+			mc_clock_alarm_apply_rtc();
 			break;
 		}
 
@@ -66,6 +91,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 				mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
 				mc_clock_alarm_state.total_alarm++;
 				mc_clock_alarm_state.current_item = new_alarm;
+				mc_clock_alarm_apply_rtc();
 			}
 			break;
 		}
