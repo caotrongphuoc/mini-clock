@@ -28,6 +28,9 @@ int edit_year;
 int edit_month;
 int edit_day;
 
+int time_field = 0; // 0: Hour, 1: Minute, 2: Second
+int date_field = 0; // 0: Year, 1: Month, 2: Day
+
 // const char* scr_clock_main_weekday_text(uint8_t weekday)
 // {
 // 	const char* weekday_text[] = {
@@ -74,6 +77,30 @@ int edit_day;
 // 	scr_clock_main_write_2_digit(&buffer[8], date->date);
 // 	buffer[10] = '\0';
 // }
+
+void save_clock()
+{
+    mc_clock_rtc_set_time_req_t req;
+
+    memset(&req, 0, sizeof(req));
+
+    req.apply_time = true;
+    req.apply_date = true;
+
+    req.time.hour = edit_hour;
+    req.time.min  = edit_min;
+    req.time.sec  = edit_sec;
+
+    req.date.year  = edit_year;
+    req.date.month = edit_month;
+    req.date.date  = edit_day;
+
+    task_post_common_msg(
+        MC_CLOCK_RTC_ID,
+        MC_CLOCK_RTC_SET_TIME_REQ,
+        (uint8_t*)&req,
+        sizeof(req));
+}
 
 void draw_menu_item(const char* text, int x, int y, bool selected)
 {
@@ -235,7 +262,6 @@ void mc_sample_time_handle(ak_msg_t* msg)
 			else
 			{
 				mc_clock_time_state_t clock_state;
-
 				mc_clock_time_get_state(&clock_state);
 
 				edit_hour = clock_state.time.hour;
@@ -246,13 +272,45 @@ void mc_sample_time_handle(ak_msg_t* msg)
 				edit_month = clock_state.date.month;
 				edit_day = clock_state.date.date;
 
+				time_field = 0;
+				date_field = 0;
+
 				edit_mode = true;
 			}
 		}
 		else
 		{
-			// SAVE HERE
-			edit_mode = false;
+			switch (item_selected)
+			{
+			case 0: // Time
+				if (time_field < 2)
+					time_field++;
+				else
+				{
+					// TODO: Save time
+					save_clock();
+					time_field = 0;
+					edit_mode = false;
+				}
+				break;
+
+			case 1: // Date
+				if (date_field < 2)
+					date_field++;
+				else
+				{
+					// TODO: Save date
+					save_clock();
+					date_field = 0;
+					edit_mode = false;
+				}
+				break;
+
+			case 2: // Country
+				// Country has only one field
+				edit_mode = false;
+				break;
+			}
 		}
 	}
 	break;
@@ -266,22 +324,47 @@ void mc_sample_time_handle(ak_msg_t* msg)
 		}
 		else
 		{
-			// Editing value
 			switch (item_selected)
 			{
-			case 0:
-				edit_hour++;
+			case 0: // Time
+				switch (time_field)
+				{
+				case 0: // Hour
+					edit_hour = (edit_hour + 1) % 24;
+					break;
 
-				if (edit_hour > 23)
-					edit_hour = 0;
+				case 1: // Minute
+					edit_min = (edit_min + 1) % 60;
+					break;
+
+				case 2: // Second
+					edit_sec = (edit_sec + 1) % 60;
+					break;
+				}
 				break;
 
-			case 1:
-				// increase date here
+			case 1: // Date
+				switch (date_field)
+				{
+				case 0: // Year
+					edit_year++;
+					break;
+
+				case 1: // Month
+					edit_month++;
+					if (edit_month > 12)
+						edit_month = 1;
+					break;
+
+				case 2: // Day
+					edit_day++;
+					if (edit_day > 31)
+						edit_day = 1;
+					break;
+				}
 				break;
 
-			case 2:
-				// next country
+			case 2: // Country
 				country_index++;
 				if (country_index > 1)
 					country_index = 0;
@@ -303,15 +386,48 @@ void mc_sample_time_handle(ak_msg_t* msg)
 			// Editing value
 			switch (item_selected)
 			{
-			case 0:
-				edit_hour--;
+			case 0: // Time
+				switch (time_field)
+				{
+				case 0:
+					edit_hour--;
+					if (edit_hour < 0)
+						edit_hour = 23;
+					break;
 
-				if (edit_hour < 0)
-					edit_hour = 23;
+				case 1:
+					edit_min--;
+					if (edit_min < 0)
+						edit_min = 59;
+					break;
+
+				case 2:
+					edit_sec--;
+					if (edit_sec < 0)
+						edit_sec = 59;
+					break;
+				}
 				break;
 
-			case 1:
-				// decrease date here
+			case 1: // Date
+				switch (date_field)
+				{
+				case 0:
+					edit_year--;
+					break;
+
+				case 1:
+					edit_month--;
+					if (edit_month < 1)
+						edit_month = 12;
+					break;
+
+				case 2:
+					edit_day--;
+					if (edit_day < 1)
+						edit_day = 31;
+					break;
+				}
 				break;
 
 			case 2:

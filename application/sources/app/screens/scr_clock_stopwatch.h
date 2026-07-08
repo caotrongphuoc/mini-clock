@@ -1,6 +1,12 @@
 #ifndef __SCR_CLOCK_STOPWATCH_H__
 #define __SCR_CLOCK_STOPWATCH_H__
+
 #include "screens.h"
+#include "ak.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "message.h"
+#include <stdio.h>
 
 typedef enum
 {
@@ -12,4 +18,9 @@ typedef enum
     SCR_CLOCK_STOPWATCH_BACK,
 } scr_clock_stopwatch_item_t;
 
-#endif //__SCR_CLOCK_STOPWATCH_H__
+
+/* Called every 10ms */
+void stopwatch_background_update(void);
+
+
+#endif // __SCR_CLOCK_STOPWATCH_H__
