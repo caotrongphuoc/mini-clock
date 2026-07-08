@@ -1,9 +1,5 @@
 #include "mc_clock_alarm.h"
 
-#include "app_dbg.h"
-#include "buzzer.h"
-#include "task_mc_rtc.h"
-
 /*****************************************************************************/
 /* Variable Declaration - Clock alarm object */
 /*****************************************************************************/

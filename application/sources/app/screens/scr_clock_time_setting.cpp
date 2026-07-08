@@ -42,8 +42,7 @@ uint8_t scr_clock_time_setting_days_in_month(uint16_t year, uint8_t month)
 
 void scr_clock_time_setting_fix_date()
 {
-	uint8_t max_date = scr_clock_time_setting_days_in_month(setting_date.year,
-	                                                        setting_date.month);
+	uint8_t max_date = scr_clock_time_setting_days_in_month(setting_date.year,setting_date.month);
 
 	if (setting_date.date > max_date)
 	{
@@ -327,9 +326,7 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		scr_clock_time_setting_fix_date();
 		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
 		{
-			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-			                                                      setting_date.month,
-			                                                      setting_date.date);
+			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,setting_date.month,setting_date.date);
 		}
 	}
 	break;

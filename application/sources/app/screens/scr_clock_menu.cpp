@@ -44,8 +44,7 @@ void scr_clock_menu_draw_item(uint8_t index)
     uint16_t fg = (index == current_location) ? BLACK : WHITE;
 
     view_render.fillRect(x, y, SCR_CLOCK_MENU_CELL_W, SCR_CLOCK_MENU_CELL_H, bg);
-    view_render.drawBitmap(icon_x, icon_y, menu_bitmap[index], 
-                          SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, fg);
+    view_render.drawBitmap(icon_x, icon_y, menu_bitmap[index], SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, fg);
 }
 
 void view_scr_clock_menu()

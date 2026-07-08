@@ -31,53 +31,6 @@ int edit_day;
 int time_field = 0; // 0: Hour, 1: Minute, 2: Second
 int date_field = 0; // 0: Year, 1: Month, 2: Day
 
-// const char* scr_clock_main_weekday_text(uint8_t weekday)
-// {
-// 	const char* weekday_text[] = {
-// 	    "---", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
-
-// 	if (weekday > RTC_WEEKDAY_SUN)
-// 	{
-// 		return weekday_text[0];
-// 	}
-
-// 	return weekday_text[weekday];
-// }
-
-// void scr_clock_main_write_2_digit(char* buffer, uint8_t value)
-// {
-// 	buffer[0] = (value / 10) + '0';
-// 	buffer[1] = (value % 10) + '0';
-// }
-
-// void scr_clock_main_write_4_digit(char* buffer, uint16_t value)
-// {
-// 	buffer[0] = ((value / 1000) % 10) + '0';
-// 	buffer[1] = ((value / 100) % 10) + '0';
-// 	buffer[2] = ((value / 10) % 10) + '0';
-// 	buffer[3] = (value % 10) + '0';
-// }
-
-// void scr_clock_main_format_time(char* buffer, rtc_time_t* time)
-// {
-// 	scr_clock_main_write_2_digit(&buffer[0], time->hour);
-// 	buffer[2] = ':';
-// 	scr_clock_main_write_2_digit(&buffer[3], time->min);
-// 	buffer[5] = ':';
-// 	scr_clock_main_write_2_digit(&buffer[6], time->sec);
-// 	buffer[8] = '\0';
-// }
-
-// void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
-// {
-// 	scr_clock_main_write_4_digit(&buffer[0], date->year);
-// 	buffer[4] = '-';
-// 	scr_clock_main_write_2_digit(&buffer[5], date->month);
-// 	buffer[7] = '-';
-// 	scr_clock_main_write_2_digit(&buffer[8], date->date);
-// 	buffer[10] = '\0';
-// }
-
 void save_clock()
 {
     mc_clock_rtc_set_time_req_t req;

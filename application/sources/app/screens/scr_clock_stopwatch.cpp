@@ -3,15 +3,12 @@
 #include "app_dbg.h"
 #include <stdio.h>
 
-
 static uint8_t current_state = 0;
 static uint8_t current_item = SCR_CLOCK_STOPWATCH_DISPLAY;
 
 static uint32_t stopwatch_seconds = 0;
 
-
 static void view_scr_clock_stopwatch();
-
 
 view_dynamic_t dyn_view_scr_clock_stopwatch =
 {
@@ -84,8 +81,6 @@ void view_scr_clock_stopwatch()
     view_render.print(buf);
 }
 
-
-
 void scr_clock_stopwatch_handle(ak_msg_t* msg)
 {
 
@@ -106,8 +101,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
     }
     break;
 
-
-
     /*
      * THIS MUST COME FROM RTC
      */
@@ -127,8 +120,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
     }
     break;
 
-
-
     case AC_DISPLAY_BUTON_MODE_PRESSED:
     {
 
@@ -146,9 +137,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
     }
     break;
-
-
-
     case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
     {
 
@@ -162,8 +150,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
     }
     break;
-
-
 
     case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
     case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:

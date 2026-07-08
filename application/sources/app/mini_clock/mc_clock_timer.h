@@ -2,10 +2,11 @@
 #define __MC_CLOCK_TIMER_H__
 
 #include "ak.h"
-
 #include "app.h"
 #include "message.h"
 #include "task_list.h"
+#include "app_dbg.h"
+#include "buzzer.h"
 
 #define MC_CLOCK_TIMER_MAX_MINUTES (1000)
 #define MC_CLOCK_TIMER_STEP_MINUTES (5)

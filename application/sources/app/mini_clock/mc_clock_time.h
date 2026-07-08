@@ -7,6 +7,7 @@
 #include "app.h"
 #include "message.h"
 #include "task_list.h"
+#include "app_dbg.h"
 
 typedef struct
 {

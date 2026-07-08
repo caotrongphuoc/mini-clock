@@ -6,6 +6,7 @@
 #include "app.h"
 #include "message.h"
 #include "task_list.h"
+#include "app_dbg.h"
 
 #define MC_CLOCK_STOPWATCH_LAP_MAX (3)
 

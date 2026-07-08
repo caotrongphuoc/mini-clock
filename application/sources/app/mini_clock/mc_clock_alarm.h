@@ -6,6 +6,9 @@
 #include "app.h"
 #include "message.h"
 #include "task_list.h"
+#include "app_dbg.h"
+#include "buzzer.h"
+#include "task_mc_rtc.h"
 
 #define MC_CLOCK_ALARM_MAX (5)
 
