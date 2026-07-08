@@ -4,8 +4,6 @@
 #include "screens.h"
 #include <stdio.h>
 
-#define SCR_CLOCK_TIMER_MAX_MINUTES     (1000)
-
 typedef enum
 {
     SCR_CLOCK_TIMER_SET,

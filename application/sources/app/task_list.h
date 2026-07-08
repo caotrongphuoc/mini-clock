@@ -29,6 +29,9 @@ enum {
 	/* MINI CLOCK TASKS */
 	MC_CLOCK_RTC_ID,
 	MC_CLOCK_TIME_ID,
+	MC_CLOCK_STOPWATCH_ID,
+	MC_CLOCK_TIMER_ID,
+	MC_CLOCK_ALARM_ID,
 
 	/* NRF24 NETWORKS */
 #if defined (IF_NETWORK_NRF24_EN)
@@ -78,6 +81,9 @@ extern void task_display(ak_msg_t*);
 /* MINI CLOCK TASKS */
 extern void task_mc_rtc(ak_msg_t*);
 extern void mc_clock_time_handle(ak_msg_t*);
+extern void mc_clock_stopwatch_handle(ak_msg_t*);
+extern void mc_clock_timer_handle(ak_msg_t*);
+extern void mc_clock_alarm_handle(ak_msg_t*);
 
 /* RF24 NETWORK TASK */
 extern void task_rf24_phy(ak_msg_t*);

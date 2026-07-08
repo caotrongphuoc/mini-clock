@@ -177,7 +177,7 @@ enum {
 };
 
 /*****************************************************************************/
-/* MC CLOCK CLOCK task define
+/* MC CLOCK TIME task define
  */
 /*****************************************************************************/
 /* define timer */
@@ -188,6 +188,60 @@ enum {
 	MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
 	MC_CLOCK_TIME_SETUP,
 	MC_CLOCK_TIME_UPDATE,
+};
+
+/*****************************************************************************/
+/* MC CLOCK STOPWATCH task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define MC_CLOCK_STOPWATCH_TICK_INTERVAL (100)
+
+/* define signal */
+enum {
+	MC_CLOCK_STOPWATCH_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_STOPWATCH_SETUP,
+	MC_CLOCK_STOPWATCH_START_PAUSE,
+	MC_CLOCK_STOPWATCH_RESET,
+	MC_CLOCK_STOPWATCH_UPDATE,
+	MC_CLOCK_STOPWATCH_LAP,
+	MC_CLOCK_STOPWATCH_CLEAR_LAP,
+};
+
+/*****************************************************************************/
+/* MC CLOCK TIMER task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define MC_CLOCK_TIMER_TICK_INTERVAL (1000)
+
+/* define signal */
+enum {
+	MC_CLOCK_TIMER_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_TIMER_SETUP,
+	MC_CLOCK_TIMER_START_PAUSE,
+	MC_CLOCK_TIMER_RESET,
+	MC_CLOCK_TIMER_INC,
+	MC_CLOCK_TIMER_DEC,
+	MC_CLOCK_TIMER_UPDATE,
+	MC_CLOCK_TIMER_DISMISS,
+};
+
+/*****************************************************************************/
+/* MC CLOCK ALARM task define
+ */
+/*****************************************************************************/
+/* define signal */
+enum {
+	MC_CLOCK_ALARM_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_ALARM_SELECT,
+	MC_CLOCK_ALARM_PREV,
+	MC_CLOCK_ALARM_NEXT,
+	MC_CLOCK_ALARM_NEXT_FIELD,
+	MC_CLOCK_ALARM_TOGGLE,
+	MC_CLOCK_ALARM_DELETE,
+	MC_CLOCK_ALARM_FIRED,
+	MC_CLOCK_ALARM_DISMISS,
 };
 
 /*****************************************************************************/

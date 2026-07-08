@@ -2,8 +2,6 @@
 #define __SCR_CLOCK_ALARM_H__
 #include "screens.h"
 
-#define SCR_CLOCK_ALARM_MAX         (5)     // Maximum number of alarms
-
 typedef enum
 {
     SCR_CLOCK_ALARM_LIST,
