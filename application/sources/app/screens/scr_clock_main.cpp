@@ -51,19 +51,29 @@ void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 	buffer[10] = '\0';
 }
 
+void scr_clock_main_draw_lcd_border()
+{
+	view_render.drawRect(SCR_CLOCK_MAIN_LCD_BORDER_X,
+	                     SCR_CLOCK_MAIN_LCD_BORDER_Y,
+	                     SCR_CLOCK_MAIN_LCD_BORDER_W,
+	                     SCR_CLOCK_MAIN_LCD_BORDER_H,
+	                     WHITE);
+}
+
 void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 {
 	view_render.setTextSize(1);
 
 	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
 	{
-		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_STEP);
+		int16_t box_x = SCR_CLOCK_MAIN_WEEKDAY_AREA_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_SEG_W);
+		int16_t text_x = box_x + SCR_CLOCK_MAIN_WEEKDAY_TEXT_OFFSET_X;
 		uint8_t selected = ((i == weekday) && inverted);
 
 		if (selected)
 		{
-			view_render.fillRect(x - SCR_CLOCK_MAIN_SELECT_PAD_X,
-			                     SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - SCR_CLOCK_MAIN_SELECT_PAD_Y,
+			view_render.fillRect(box_x,
+			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_Y,
 			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_W,
 			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_H,
 			                     WHITE);
@@ -74,7 +84,7 @@ void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 			view_render.setTextColor(WHITE);
 		}
 
-		view_render.setCursor(x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
+		view_render.setCursor(text_x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
 		view_render.print(scr_clock_main_weekday_short_text(i));
 	}
 
@@ -114,6 +124,7 @@ void view_scr_clock_main()
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
+	scr_clock_main_draw_lcd_border();
 	scr_clock_main_draw_weekdays(clock_state.date.weekday, 1);
 
 	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,

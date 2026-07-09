@@ -272,6 +272,7 @@ void view_scr_clock_time_setting()
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
+	scr_clock_main_draw_lcd_border();
 	scr_clock_main_draw_weekdays(setting_date.weekday,
 	                             setting_location_choose == SCR_CLOCK_TIME_SETTING_WEEKDAY);
 
