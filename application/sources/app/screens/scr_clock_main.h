@@ -5,10 +5,6 @@
 
 #include "mc_clock_time.h"
 
-#define SCR_CLOCK_MAIN_LCD_BORDER_X (0)
-#define SCR_CLOCK_MAIN_LCD_BORDER_Y (0)
-#define SCR_CLOCK_MAIN_LCD_BORDER_W (LCD_WIDTH)
-#define SCR_CLOCK_MAIN_LCD_BORDER_H (LCD_HEIGHT)
 #define SCR_CLOCK_MAIN_CONTENT_X (1)
 #define SCR_CLOCK_MAIN_CONTENT_W (LCD_WIDTH - (SCR_CLOCK_MAIN_CONTENT_X * 2))
 
@@ -42,7 +38,6 @@
 const char* scr_clock_main_weekday_short_text(uint8_t weekday);
 void scr_clock_main_format_time(char* buffer, rtc_time_t* time);
 void scr_clock_main_format_date(char* buffer, rtc_date_t* date);
-void scr_clock_main_draw_lcd_border();
 void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted);
 
 #endif //__SCR_CLOCK_MAIN_H__
