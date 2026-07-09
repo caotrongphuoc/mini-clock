@@ -1,6 +1,7 @@
 #include "scr_clock_setting.h"
 
 #include "scr_clock_setting_display.h"
+#include "scr_clock_setting_sound.h"
 #include "mc_clock_time.h"
 
 /*****************************************************************************/
@@ -15,6 +16,7 @@ static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Display",
     "Sound",
+    "Mute",
     "Chime",
     "Reset",
     "Exit",
@@ -67,7 +69,7 @@ void view_scr_clock_setting()
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
 
-		if (i == SCR_CLOCK_SETTING_SOUND)
+		if (i == SCR_CLOCK_SETTING_MUTE)
 		{
 			view_render.drawBitmap(110,
 			                       frame_y + 2,
@@ -116,6 +118,11 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_SETTING_SOUND:
+			SCREEN_TRAN(scr_clock_setting_sound_handle, &scr_clock_setting_sound);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_MUTE:
 			setting_sound_off = !setting_sound_off;
 			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
