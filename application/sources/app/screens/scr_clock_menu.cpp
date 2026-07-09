@@ -76,6 +76,13 @@ void scr_clock_menu_draw_name()
     view_render.print(name);
 }
 
+void scr_clock_menu_draw_buttons()
+{
+    view_render.fillTriangle(16, 57, 22, 53, 22, 61, WHITE);
+    view_render.fillTriangle(67, 57, 61, 53, 61, 61, WHITE);
+    view_render.fillCircle(108, 57, 4, WHITE);
+}
+
 void scr_clock_menu_draw_time()
 {
     mc_clock_time_state_t state;
@@ -107,6 +114,7 @@ void view_scr_clock_menu()
     scr_clock_menu_draw_icon();
     scr_clock_menu_draw_arrows();
     scr_clock_menu_draw_name();
+    scr_clock_menu_draw_buttons();
 }
 
 /*****************************************************************************/
