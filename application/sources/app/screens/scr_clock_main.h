@@ -30,5 +30,8 @@
 #define SCR_CLOCK_MAIN_INFO_TEXT_SIZE (1)
 
 const char* scr_clock_main_weekday_text(uint8_t weekday);
+const char* scr_clock_main_weekday_short_text(uint8_t weekday);
+void scr_clock_main_format_time(char* buffer, rtc_time_t* time);
+void scr_clock_main_format_date(char* buffer, rtc_date_t* date);
 
 #endif //__SCR_CLOCK_MAIN_H__

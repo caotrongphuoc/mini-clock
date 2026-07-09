@@ -44,7 +44,7 @@ uint8_t scr_clock_time_setting_days_in_month(uint16_t year, uint8_t month)
 
 void scr_clock_time_setting_fix_date()
 {
-	uint8_t max_date = scr_clock_time_setting_days_in_month(setting_date.year,setting_date.month);
+	uint8_t max_date = scr_clock_time_setting_days_in_month(setting_date.year, setting_date.month);
 
 	if (setting_date.date > max_date)
 	{
@@ -145,20 +145,6 @@ view_screen_t scr_clock_time_setting = {
     .focus_item = 0,
 };
 
-void scr_clock_time_setting_write_2_digit(char* buffer, uint8_t value)
-{
-	buffer[0] = (value / 10) + '0';
-	buffer[1] = (value % 10) + '0';
-}
-
-void scr_clock_time_setting_write_4_digit(char* buffer, uint16_t value)
-{
-	buffer[0] = ((value / 1000) % 10) + '0';
-	buffer[1] = ((value / 100) % 10) + '0';
-	buffer[2] = ((value / 10) % 10) + '0';
-	buffer[3] = (value % 10) + '0';
-}
-
 void scr_clock_time_setting_print_text(int16_t x, int16_t y, const char* text, uint8_t text_size, uint8_t selected)
 {
 	uint8_t fg = selected ? BLACK : WHITE;
@@ -188,13 +174,34 @@ void scr_clock_time_setting_print_text(int16_t x, int16_t y, const char* text, u
 	view_render.setTextColor(WHITE);
 }
 
-void scr_clock_time_setting_print_weekday(uint8_t weekday)
+void scr_clock_time_setting_print_weekdays(uint8_t weekday)
 {
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_WEEKDAY_X,
-	                                  SCR_CLOCK_MAIN_WEEKDAY_Y,
-	                                  scr_clock_main_weekday_text(weekday),
-	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
-	                                  setting_location_choose == SCR_CLOCK_TIME_SETTING_WEEKDAY);
+	view_render.setTextSize(SCR_CLOCK_MAIN_INFO_TEXT_SIZE);
+
+	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
+	{
+		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_STEP);
+		uint8_t selected = (i == weekday);
+
+		if (selected)
+		{
+			view_render.fillRect(x - 2,
+			                     SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 2,
+			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_W,
+			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_H,
+			                     WHITE);
+			view_render.setTextColor(BLACK);
+		}
+		else
+		{
+			view_render.setTextColor(WHITE);
+		}
+
+		view_render.setCursor(x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
+		view_render.print(scr_clock_main_weekday_short_text(i));
+	}
+
+	view_render.setTextColor(WHITE);
 }
 
 void scr_clock_time_setting_print_time(char* time_text)
@@ -240,35 +247,44 @@ void scr_clock_time_setting_print_date(char* date_text)
 	char month_text[3] = {date_text[5], date_text[6], '\0'};
 	char date_value_text[3] = {date_text[8], date_text[9], '\0'};
 
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_X,
-	                                  SCR_CLOCK_MAIN_DATE_Y,
+	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_TEXT_X,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  year_text,
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
 	                                  setting_location_choose == SCR_CLOCK_TIME_SETTING_YEAR);
 
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_X + 4 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
-	                                  SCR_CLOCK_MAIN_DATE_Y,
+	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_TEXT_X + 4 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  "-",
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
 	                                  0);
 
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_X + 5 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
-	                                  SCR_CLOCK_MAIN_DATE_Y,
+	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_TEXT_X + 5 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  month_text,
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
 	                                  setting_location_choose == SCR_CLOCK_TIME_SETTING_MONTH);
 
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_X + 7 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
-	                                  SCR_CLOCK_MAIN_DATE_Y,
+	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_TEXT_X + 7 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  "-",
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
 	                                  0);
 
-	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_X + 8 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
-	                                  SCR_CLOCK_MAIN_DATE_Y,
+	scr_clock_time_setting_print_text(SCR_CLOCK_MAIN_DATE_TEXT_X + 8 * SCR_CLOCK_TIME_SETTING_INFO_CHAR_W,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  date_value_text,
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
 	                                  setting_location_choose == SCR_CLOCK_TIME_SETTING_DATE);
+}
+
+void scr_clock_time_setting_print_save()
+{
+	scr_clock_time_setting_print_text(110,
+	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
+	                                  "OK",
+	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
+	                                  setting_location_choose == SCR_CLOCK_TIME_SETTING_SAVE);
 }
 
 void view_scr_clock_time_setting()
@@ -276,36 +292,23 @@ void view_scr_clock_time_setting()
 	char date_text[11];
 	char time_text[9];
 
-	scr_clock_time_setting_write_4_digit(&date_text[0], setting_date.year);
-	date_text[4] = '-';
-	scr_clock_time_setting_write_2_digit(&date_text[5], setting_date.month);
-	date_text[7] = '-';
-	scr_clock_time_setting_write_2_digit(&date_text[8], setting_date.date);
-	date_text[10] = '\0';
-
-	scr_clock_time_setting_write_2_digit(&time_text[0], setting_time.hour);
-	time_text[2] = ':';
-	scr_clock_time_setting_write_2_digit(&time_text[3], setting_time.min);
-	time_text[5] = ':';
-	scr_clock_time_setting_write_2_digit(&time_text[6], setting_time.sec);
-	time_text[8] = '\0';
+	scr_clock_main_format_date(date_text, &setting_date);
+	scr_clock_main_format_time(time_text, &setting_time);
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
-	scr_clock_time_setting_print_weekday(setting_date.weekday);
+	scr_clock_time_setting_print_weekdays(setting_date.weekday);
+
+	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_Y,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_W,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_H,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_R,
+	                          WHITE);
 	scr_clock_time_setting_print_time(time_text);
 	scr_clock_time_setting_print_date(date_text);
-
-	if (setting_location_choose == SCR_CLOCK_TIME_SETTING_SAVE)
-	{
-		view_render.fillRect(88, 0, 36, 10, WHITE);
-		view_render.setTextColor(BLACK);
-		view_render.setTextSize(1);
-		view_render.setCursor(94, 1);
-		view_render.print("SAVE");
-		view_render.setTextColor(WHITE);
-	}
+	scr_clock_time_setting_print_save();
 }
 
 /*****************************************************************************/
@@ -328,7 +331,9 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		scr_clock_time_setting_fix_date();
 		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
 		{
-			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,setting_date.month,setting_date.date);
+			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
+			                                                       setting_date.month,
+			                                                       setting_date.date);
 		}
 	}
 	break;
