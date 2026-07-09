@@ -29,7 +29,7 @@ void view_scr_clock_timer()
 	uint8_t progress = 0;
 
 	mc_clock_timer_get_state(&timer_state);
-	sprintf(time_buf, "%02u:%02u", timer_state.remaining_min, timer_state.remaining_sec);
+	xsprintf(time_buf, "%02u:%02u", timer_state.remaining_min, timer_state.remaining_sec);
 
 	if (timer_state.set_minutes > 0)
 	{
