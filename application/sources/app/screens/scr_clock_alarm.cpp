@@ -33,7 +33,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	view_render.setTextSize(2);
 	view_render.print("Edit Alarm");
 
-	sprintf(buf, "%02u:%02u %s",
+	xsprintf(buf, "%02u:%02u %s",
 	        alarm->hour, alarm->minute,
 	        alarm->enabled ? "ON" : "OFF");
 	view_render.setCursor(5, 28);
@@ -65,7 +65,7 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 		view_render.fillRect(0, y, 128, 13, bg);
 		view_render.setTextColor(fg);
 		view_render.setTextSize(1);
-		sprintf(line, "%u. %02u:%02u %s",
+		xsprintf(line, "%u. %02u:%02u %s",
 		        idx + 1,
 		        state->alarm[idx].hour,
 		        state->alarm[idx].minute,
