@@ -4,9 +4,8 @@
 #include "screens.h"
 
 #define SCR_CLOCK_MENU_ITEM_NUMBER (6)
-#define SCR_CLOCK_MENU_COL_NUMBER (3)
-#define SCR_CLOCK_MENU_CELL_W (42)
-#define SCR_CLOCK_MENU_CELL_H (32)
+#define SCR_CLOCK_MENU_ICON_X (52)
+#define SCR_CLOCK_MENU_ICON_Y (18)
 
 typedef enum
 {

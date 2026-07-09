@@ -35,20 +35,14 @@ view_screen_t scr_clock_menu = {
     .focus_item = 0,
 };
 
-void scr_clock_menu_draw_item(uint8_t index)
+void scr_clock_menu_draw_icon()
 {
-    uint8_t col = index % SCR_CLOCK_MENU_COL_NUMBER;
-    uint8_t row = index / SCR_CLOCK_MENU_COL_NUMBER;
-    int16_t x = col * SCR_CLOCK_MENU_CELL_W;
-    int16_t y = row * SCR_CLOCK_MENU_CELL_H;
-    int16_t icon_x = x + ((SCR_CLOCK_MENU_CELL_W - SCR_CLOCK_MENU_ICON_W) / 2);
-    int16_t icon_y = y + ((SCR_CLOCK_MENU_CELL_H - SCR_CLOCK_MENU_ICON_H) / 2);
-
-    uint16_t bg = (index == current_location) ? WHITE : BLACK;
-    uint16_t fg = (index == current_location) ? BLACK : WHITE;
-
-    view_render.fillRect(x, y, SCR_CLOCK_MENU_CELL_W, SCR_CLOCK_MENU_CELL_H, bg);
-    view_render.drawBitmap(icon_x, icon_y, menu_bitmap[index], SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, fg);
+    view_render.drawBitmap(SCR_CLOCK_MENU_ICON_X,
+                           SCR_CLOCK_MENU_ICON_Y,
+                           menu_bitmap[current_location],
+                           SCR_CLOCK_MENU_ICON_W,
+                           SCR_CLOCK_MENU_ICON_H,
+                           WHITE);
 }
 
 void scr_clock_menu_draw_time()
@@ -79,10 +73,7 @@ void view_scr_clock_menu()
     view_render.clear();
     view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
     scr_clock_menu_draw_time();
-    for (uint8_t i = 0; i < SCR_CLOCK_MENU_ITEM_NUMBER; i++)
-    {
-        scr_clock_menu_draw_item(i);
-    }
+    scr_clock_menu_draw_icon();
 }
 
 /*****************************************************************************/
