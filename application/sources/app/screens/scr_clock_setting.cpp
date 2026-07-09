@@ -6,25 +6,13 @@
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/
 
-#define SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER (3)
-
 static uint8_t setting_location_choose;
-static uint8_t setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
 static uint8_t setting_sound_off;
 static uint8_t setting_chime_enabled;
-
-static const uint8_t setting_bright_value[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER] = {
-    0x20, 0x80, 0xCF,
-};
-
-static const char* const setting_bright_label[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER] = {
-    "[LO]", "[MD]", "[HI]",
-};
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Display",
-    "Bright",
     "Sound",
     "Chime",
     "Reset",
@@ -78,12 +66,7 @@ void view_scr_clock_setting()
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
 
-		if (i == SCR_CLOCK_SETTING_BRIGHT)
-		{
-			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_bright_label[setting_bright_level]);
-		}
-		else if (i == SCR_CLOCK_SETTING_SOUND)
+		if (i == SCR_CLOCK_SETTING_SOUND)
 		{
 			view_render.drawBitmap(110,
 			                       frame_y + 2,
@@ -131,12 +114,6 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_BRIGHT:
-			setting_bright_level = (setting_bright_level + 1) % SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER;
-			view_render.setContrast(setting_bright_value[setting_bright_level]);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
-
 		case SCR_CLOCK_SETTING_SOUND:
 			setting_sound_off = !setting_sound_off;
 			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
@@ -150,10 +127,8 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_SETTING_RESET:
-			setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
 			setting_sound_off = 0;
 			setting_chime_enabled = 0;
-			view_render.setContrast(setting_bright_value[setting_bright_level]);
 			BUZZER_Silent(BUZZER_SILENT_OFF);
 			mc_clock_time_set_chime_enabled(0);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
