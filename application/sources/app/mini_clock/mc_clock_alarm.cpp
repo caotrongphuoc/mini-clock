@@ -235,21 +235,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 				mc_clock_alarm_state.alarm[i] = mc_clock_alarm_state.alarm[i + 1];
 			}
 
-			if (mc_clock_alarm_state.total_alarm > 0)
-			{
-				mc_clock_alarm_state.total_alarm--;
-			}
-
-			if (mc_clock_alarm_state.current_item > mc_clock_alarm_state.total_alarm + 1)
-			{
-				mc_clock_alarm_state.current_item = mc_clock_alarm_state.total_alarm + 1;
-			}
-
-			if (mc_clock_alarm_state.scroll_offset > mc_clock_alarm_state.current_item)
-			{
-				mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
-			}
-
+			mc_clock_alarm_state.total_alarm--;
 			mc_clock_alarm_apply_rtc();
 		}
 	}
