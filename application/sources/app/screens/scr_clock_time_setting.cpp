@@ -1,5 +1,7 @@
 #include "scr_clock_time_setting.h"
 
+#include "task_mc_rtc.h"
+
 /*****************************************************************************/
 /* Variable Declaration - Clock time setting */
 /*****************************************************************************/
@@ -336,8 +338,15 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		if (setting_location_choose == SCR_CLOCK_TIME_SETTING_SAVE)
 		{
-			rtc_set_date(&setting_date);
-			rtc_set_time(&setting_time);
+			mc_clock_rtc_set_time_req_t req;
+			req.time = setting_time;
+			req.date = setting_date;
+			req.apply_time = 1;
+			req.apply_date = 1;
+			task_post_common_msg(MC_CLOCK_RTC_ID,
+			                     MC_CLOCK_RTC_SET_TIME_REQ,
+			                     (uint8_t*)&req,
+			                     sizeof(req));
 			task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
 			SCREEN_BACK();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
