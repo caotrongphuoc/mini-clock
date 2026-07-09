@@ -11,6 +11,7 @@ SOURCES_CPP += sources/app/screens/scr_clock_main.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_menu.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_setting.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_setting_display.cpp
+SOURCES_CPP += sources/app/screens/scr_clock_setting_sound.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_alarm.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_stopwatch.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_timer.cpp

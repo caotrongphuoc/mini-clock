@@ -64,6 +64,11 @@ extern view_dynamic_t dyn_view_scr_clock_setting_display;
 extern view_screen_t scr_clock_setting_display;
 extern void scr_clock_setting_display_handle(ak_msg_t* msg);
 
+// scr_clock_setting_sound
+extern view_dynamic_t dyn_view_scr_clock_setting_sound;
+extern view_screen_t scr_clock_setting_sound;
+extern void scr_clock_setting_sound_handle(ak_msg_t* msg);
+
 // scr_clock_time_setting
 extern view_dynamic_t dyn_view_scr_clock_time_setting;
 extern view_screen_t scr_clock_time_setting;
