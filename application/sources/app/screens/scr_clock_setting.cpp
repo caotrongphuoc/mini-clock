@@ -6,13 +6,11 @@
 
 static uint8_t setting_location_choose;
 static uint8_t setting_color_invert;
-static uint8_t setting_layout_mode;
 static uint8_t setting_sound_off;
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Color",
-    "Layout",
     "Sound",
     "Exit",
 };
@@ -69,11 +67,6 @@ void view_scr_clock_setting()
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_color_invert ? "[INV]" : "[NOR]");
 		}
-		else if (i == SCR_CLOCK_SETTING_LAYOUT)
-		{
-			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_layout_mode ? "[DTW]" : "[WTD]");
-		}
 		else if (i == SCR_CLOCK_SETTING_SOUND)
 		{
 			view_render.drawBitmap(110,
@@ -115,11 +108,6 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		case SCR_CLOCK_SETTING_COLOR:
 			setting_color_invert = !setting_color_invert;
 			view_render.invertDisplay(setting_color_invert);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
-
-		case SCR_CLOCK_SETTING_LAYOUT:
-			setting_layout_mode = !setting_layout_mode;
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
