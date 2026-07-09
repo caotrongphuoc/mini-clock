@@ -80,13 +80,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case SCREEN_EXIT:
-	{
-		APP_DBG_SIG("SCREEN_EXIT\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_STOPWATCH_TICK);
-	}
-	break;
-
 	case MC_CLOCK_STOPWATCH_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_TICK\n");
