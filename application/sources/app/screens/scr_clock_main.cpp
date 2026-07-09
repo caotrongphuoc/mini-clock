@@ -176,6 +176,7 @@ void scr_clock_main_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 	}
 	break;
