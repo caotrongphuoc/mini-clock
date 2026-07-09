@@ -3,10 +3,11 @@
 
 #include "screens.h"
 
-#define SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER (1)
+#define SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER (2)
 
 typedef enum
 {
+	SCR_CLOCK_SETTING_SOUND_MUTE,
 	SCR_CLOCK_SETTING_SOUND_BACK,
 } scr_clock_setting_sound_item_t;
 

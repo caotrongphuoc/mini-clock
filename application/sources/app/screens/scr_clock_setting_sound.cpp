@@ -3,8 +3,10 @@
 #include "scr_clock_setting.h"
 
 static uint8_t setting_sound_location_choose;
+static uint8_t setting_sound_off;
 
 static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
+    "Mute",
     "Back",
 };
 
@@ -50,6 +52,16 @@ void view_scr_clock_setting_sound()
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_sound_item_name[i]);
+
+		if (i == SCR_CLOCK_SETTING_SOUND_MUTE)
+		{
+			view_render.drawBitmap(110,
+			                       frame_y + 2,
+			                       setting_sound_off ? bitmap_clock_setting_speaker_off : bitmap_clock_setting_speaker_on,
+			                       8,
+			                       7,
+			                       fg);
+		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -71,6 +83,12 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		switch (setting_sound_location_choose)
 		{
+		case SCR_CLOCK_SETTING_SOUND_MUTE:
+			setting_sound_off = !setting_sound_off;
+			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
 		case SCR_CLOCK_SETTING_SOUND_BACK:
 		default:
 			SCREEN_BACK();

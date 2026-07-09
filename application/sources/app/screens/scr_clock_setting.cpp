@@ -9,14 +9,12 @@
 /*****************************************************************************/
 
 static uint8_t setting_location_choose;
-static uint8_t setting_sound_off;
 static uint8_t setting_chime_enabled;
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Display",
     "Sound",
-    "Mute",
     "Chime",
     "Reset",
     "Exit",
@@ -69,16 +67,7 @@ void view_scr_clock_setting()
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
 
-		if (i == SCR_CLOCK_SETTING_MUTE)
-		{
-			view_render.drawBitmap(110,
-			                       frame_y + 2,
-			                       setting_sound_off ? bitmap_clock_setting_speaker_off : bitmap_clock_setting_speaker_on,
-			                       8,
-			                       7,
-			                       fg);
-		}
-		else if (i == SCR_CLOCK_SETTING_CHIME)
+		if (i == SCR_CLOCK_SETTING_CHIME)
 		{
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
@@ -122,12 +111,6 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_MUTE:
-			setting_sound_off = !setting_sound_off;
-			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
-
 		case SCR_CLOCK_SETTING_CHIME:
 			setting_chime_enabled = !setting_chime_enabled;
 			mc_clock_time_set_chime_enabled(setting_chime_enabled);
@@ -135,10 +118,8 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_SETTING_RESET:
-			setting_sound_off = 0;
 			setting_chime_enabled = 0;
 			scr_clock_setting_display_reset();
-			BUZZER_Silent(BUZZER_SILENT_OFF);
 			mc_clock_time_set_chime_enabled(0);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
