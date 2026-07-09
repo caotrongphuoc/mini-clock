@@ -1,5 +1,9 @@
 #include "scr_clock_menu.h"
 
+#include "mc_clock_time.h"
+#include "scr_clock_main.h"
+#include "scr_clock_setting_display.h"
+
 /*****************************************************************************/
 /* Variable and Struct Declaration - Clock menu */
 /*****************************************************************************/
@@ -47,10 +51,34 @@ void scr_clock_menu_draw_item(uint8_t index)
     view_render.drawBitmap(icon_x, icon_y, menu_bitmap[index], SCR_CLOCK_MENU_ICON_W, SCR_CLOCK_MENU_ICON_H, fg);
 }
 
+void scr_clock_menu_draw_time()
+{
+    mc_clock_time_state_t state;
+    char time_text[12];
+    uint8_t use_12h = scr_clock_setting_is_12h_format();
+
+    mc_clock_time_get_state(&state);
+    scr_clock_main_format_time(time_text, &state.time, use_12h);
+
+    if (use_12h)
+    {
+        time_text[8] = ' ';
+        time_text[9] = (state.time.hour >= 12) ? 'P' : 'A';
+        time_text[10] = 'M';
+        time_text[11] = '\0';
+    }
+
+    view_render.setTextSize(1);
+    view_render.setTextColor(WHITE);
+    view_render.setCursor(use_12h ? 31 : 40, 3);
+    view_render.print(time_text);
+}
+
 void view_scr_clock_menu()
 {
     view_render.clear();
     view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
+    scr_clock_menu_draw_time();
     for (uint8_t i = 0; i < SCR_CLOCK_MENU_ITEM_NUMBER; i++)
     {
         scr_clock_menu_draw_item(i);
