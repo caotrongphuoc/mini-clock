@@ -88,9 +88,21 @@ void scr_clock_menu_draw_name()
 
 void scr_clock_menu_draw_buttons()
 {
-    view_render.fillTriangle(16, 57, 22, 53, 22, 61, WHITE);
-    view_render.fillTriangle(67, 57, 61, 53, 61, 61, WHITE);
-    view_render.fillCircle(108, 57, 4, WHITE);
+    view_render.drawRoundRect(8, 54, 36, 9, 2, WHITE);
+    view_render.drawRoundRect(46, 54, 36, 9, 2, WHITE);
+    view_render.drawRoundRect(84, 54, 36, 9, 2, WHITE);
+
+    view_render.setTextSize(1);
+    view_render.setTextColor(WHITE);
+
+    view_render.setCursor(20, 56);
+    view_render.print("UP");
+
+    view_render.setCursor(58, 56);
+    view_render.print("DN");
+
+    view_render.setCursor(90, 56);
+    view_render.print("MODE");
 }
 
 void scr_clock_menu_draw_time()
