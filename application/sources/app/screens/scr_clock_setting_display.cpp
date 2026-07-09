@@ -165,3 +165,12 @@ uint8_t scr_clock_setting_is_12h_format(void)
 {
 	return setting_time_format_12h;
 }
+
+void scr_clock_setting_display_reset(void)
+{
+	setting_time_format_12h = 0;
+	setting_color_invert = 0;
+	setting_bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
+	view_render.invertDisplay(0);
+	view_render.setContrast(setting_bright_value[setting_bright_level]);
+}

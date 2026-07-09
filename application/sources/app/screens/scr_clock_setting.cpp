@@ -1,5 +1,6 @@
 #include "scr_clock_setting.h"
 
+#include "scr_clock_setting_display.h"
 #include "mc_clock_time.h"
 
 /*****************************************************************************/
@@ -129,6 +130,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		case SCR_CLOCK_SETTING_RESET:
 			setting_sound_off = 0;
 			setting_chime_enabled = 0;
+			scr_clock_setting_display_reset();
 			BUZZER_Silent(BUZZER_SILENT_OFF);
 			mc_clock_time_set_chime_enabled(0);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
