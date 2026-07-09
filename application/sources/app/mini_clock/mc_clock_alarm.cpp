@@ -103,9 +103,9 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_PREV:
+	case MC_CLOCK_ALARM_UP:
 	{
-		APP_DBG_SIG("MC_CLOCK_ALARM_PREV\n");
+		APP_DBG_SIG("MC_CLOCK_ALARM_UP\n");
 		if (mc_clock_alarm_state.editing)
 		{
 			mc_clock_alarm_item_t* alarm = &mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm];
@@ -136,9 +136,9 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_NEXT:
+	case MC_CLOCK_ALARM_DOWN:
 	{
-		APP_DBG_SIG("MC_CLOCK_ALARM_NEXT\n");
+		APP_DBG_SIG("MC_CLOCK_ALARM_DOWN\n");
 		if (mc_clock_alarm_state.editing)
 		{
 			mc_clock_alarm_item_t* alarm = &mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm];

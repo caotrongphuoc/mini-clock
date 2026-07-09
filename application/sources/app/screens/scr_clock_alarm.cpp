@@ -155,7 +155,7 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_PREV);
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_UP);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
@@ -163,7 +163,7 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_NEXT);
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DOWN);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
