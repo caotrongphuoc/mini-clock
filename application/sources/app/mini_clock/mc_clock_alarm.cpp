@@ -4,7 +4,7 @@
 /* Variable Declaration - Clock alarm object */
 /*****************************************************************************/
 
-mc_clock_alarm_state_t mc_clock_alarm_state = {
+static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .current_item = 0,
     .scroll_offset = 0,
     .total_alarm = 3,
