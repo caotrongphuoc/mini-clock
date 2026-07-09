@@ -263,7 +263,7 @@ void view_scr_clock_time_setting()
 	char time_text[9];
 
 	scr_clock_main_format_date(date_text, &setting_date);
-	scr_clock_main_format_time(time_text, &setting_time);
+	scr_clock_main_format_time(time_text, &setting_time, 0);
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);

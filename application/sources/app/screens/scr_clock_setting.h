@@ -3,7 +3,7 @@
 
 #include "screens.h"
 
-#define SCR_CLOCK_SETTING_ITEM_NUMBER (5)
+#define SCR_CLOCK_SETTING_ITEM_NUMBER (6)
 #define SCR_CLOCK_SETTING_FRAME_X (2)
 #define SCR_CLOCK_SETTING_FRAME_Y_1 (2)
 #define SCR_CLOCK_SETTING_FRAME_STEP (12)
@@ -14,10 +14,13 @@
 typedef enum
 {
 	SCR_CLOCK_SETTING_TIME,
+	SCR_CLOCK_SETTING_FORMAT,
 	SCR_CLOCK_SETTING_COLOR,
 	SCR_CLOCK_SETTING_BRIGHT,
 	SCR_CLOCK_SETTING_SOUND,
 	SCR_CLOCK_SETTING_EXIT,
 } scr_clock_setting_item_t;
+
+uint8_t scr_clock_setting_is_12h_format(void);
 
 #endif //__SCR_CLOCK_SETTING_H__

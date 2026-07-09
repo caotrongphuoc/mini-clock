@@ -7,6 +7,7 @@
 #define SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER (3)
 
 static uint8_t setting_location_choose;
+static uint8_t setting_time_format_12h;
 static uint8_t setting_color_invert;
 static uint8_t setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
 static uint8_t setting_sound_off;
@@ -21,6 +22,7 @@ static const char* const setting_bright_label[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUM
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
+    "Format",
     "Color",
     "Bright",
     "Sound",
@@ -74,7 +76,12 @@ void view_scr_clock_setting()
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
 
-		if (i == SCR_CLOCK_SETTING_COLOR)
+		if (i == SCR_CLOCK_SETTING_FORMAT)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_time_format_12h ? "[12]" : "[24]");
+		}
+		else if (i == SCR_CLOCK_SETTING_COLOR)
 		{
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_color_invert ? "[INV]" : "[NOR]");
@@ -120,6 +127,11 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		{
 		case SCR_CLOCK_SETTING_TIME:
 			SCREEN_TRAN(scr_clock_time_setting_handle, &scr_clock_time_setting);
+			break;
+
+		case SCR_CLOCK_SETTING_FORMAT:
+			setting_time_format_12h = !setting_time_format_12h;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_COLOR:
@@ -179,4 +191,13 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 	default:
 		break;
 	}
+}
+
+/*****************************************************************************/
+/* Public API - Clock setting */
+/*****************************************************************************/
+
+uint8_t scr_clock_setting_is_12h_format(void)
+{
+	return setting_time_format_12h;
 }
