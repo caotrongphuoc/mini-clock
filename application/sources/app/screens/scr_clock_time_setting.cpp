@@ -294,11 +294,11 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		mc_clock_time_state_t clock_state;
+		mc_clock_time_state_t state;
 
-		mc_clock_time_get_state(&clock_state);
-		setting_time = clock_state.time;
-		setting_date = clock_state.date;
+		mc_clock_time_get_state(&state);
+		setting_time = state.time;
+		setting_date = state.date;
 		setting_location_choose = SCR_CLOCK_TIME_SETTING_YEAR;
 		scr_clock_time_setting_fix_date();
 		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
