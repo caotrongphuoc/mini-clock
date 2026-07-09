@@ -152,6 +152,18 @@ void Adafruit_oled_drv::display_off() {
 #endif
 }
 
+void Adafruit_oled_drv::invertDisplay(bool inverted) {
+#if defined(SH1106_DRIVER_EN)
+	writeCommand(inverted ? SH1106_INVERT_DISPLAY : SH1106_NORMAL_DISPLAY);
+#elif defined(SSD1306_DRIVER_EN)
+	writeCommand(inverted ? SSD1306_INVERT_DISPLAY : SSD1306_NORMAL_DISPLAY);
+#elif defined(SSD1309_DRIVER_EN)
+	writeCommand(inverted ? SSD1309_INVERT_DISPLAY : SSD1309_NORMAL_DISPLAY);
+#else
+#error "Don't know oled driver type."
+#endif
+}
+
 const unsigned char* Adafruit_oled_drv::getFrameBuffer() const {
 	return m_pFramebuffer;
 }

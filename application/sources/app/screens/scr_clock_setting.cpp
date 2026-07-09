@@ -114,6 +114,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 
 		case SCR_CLOCK_SETTING_COLOR:
 			setting_color_invert = !setting_color_invert;
+			view_render.invertDisplay(setting_color_invert);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 

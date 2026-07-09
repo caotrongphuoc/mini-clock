@@ -158,6 +158,9 @@ public:
 	//off screen
 	void display_off();
 
+	//invert or restore display colors at hardware level
+	void invertDisplay(bool inverted);
+
 	const unsigned char* getFrameBuffer() const;
 	unsigned int getFrameBufferSize() const;
 
