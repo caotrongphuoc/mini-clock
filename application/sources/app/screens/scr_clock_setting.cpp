@@ -1,5 +1,7 @@
 #include "scr_clock_setting.h"
 
+#include "mc_clock_time.h"
+
 /*****************************************************************************/
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/
@@ -11,6 +13,7 @@ static uint8_t setting_time_format_12h;
 static uint8_t setting_color_invert;
 static uint8_t setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
 static uint8_t setting_sound_off;
+static uint8_t setting_chime_enabled;
 
 static const uint8_t setting_bright_value[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER] = {
     0x20, 0x80, 0xCF,
@@ -26,6 +29,7 @@ static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Color",
     "Bright",
     "Sound",
+    "Chime",
     "Exit",
 };
 
@@ -100,6 +104,11 @@ void view_scr_clock_setting()
 			                       7,
 			                       fg);
 		}
+		else if (i == SCR_CLOCK_SETTING_CHIME)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
+		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -149,6 +158,12 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		case SCR_CLOCK_SETTING_SOUND:
 			setting_sound_off = !setting_sound_off;
 			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_CHIME:
+			setting_chime_enabled = !setting_chime_enabled;
+			mc_clock_time_set_chime_enabled(setting_chime_enabled);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 

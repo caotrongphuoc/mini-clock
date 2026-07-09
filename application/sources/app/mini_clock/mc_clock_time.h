@@ -17,5 +17,6 @@ typedef struct
 
 void mc_clock_time_handle(ak_msg_t* msg);
 void mc_clock_time_get_state(mc_clock_time_state_t* state);
+void mc_clock_time_set_chime_enabled(uint8_t enabled);
 
 #endif //__MC_CLOCK_TIME_H__
