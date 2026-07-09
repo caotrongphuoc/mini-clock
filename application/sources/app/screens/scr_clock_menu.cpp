@@ -66,8 +66,8 @@ void scr_clock_menu_draw_icon()
 
 void scr_clock_menu_draw_arrows()
 {
-    view_render.fillTriangle(8, 30, 14, 25, 14, 35, WHITE);
-    view_render.fillTriangle(120, 30, 114, 25, 114, 35, WHITE);
+    view_render.fillTriangle(8, 28, 14, 23, 14, 33, WHITE);
+    view_render.fillTriangle(119, 28, 113, 23, 113, 33, WHITE);
 }
 
 void scr_clock_menu_draw_name()
@@ -82,27 +82,27 @@ void scr_clock_menu_draw_name()
 
     view_render.setTextSize(1);
     view_render.setTextColor(WHITE);
-    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 45);
+    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
     view_render.print(name);
 }
 
 void scr_clock_menu_draw_buttons()
 {
-    view_render.drawRoundRect(8, 54, 36, 9, 2, WHITE);
-    view_render.drawRoundRect(46, 54, 36, 9, 2, WHITE);
-    view_render.drawRoundRect(84, 54, 36, 9, 2, WHITE);
+    view_render.drawRoundRect(8, 52, 36, 9, 2, WHITE);
+    view_render.drawRoundRect(46, 52, 36, 9, 2, WHITE);
+    view_render.drawRoundRect(84, 52, 36, 9, 2, WHITE);
 
     view_render.setTextSize(1);
     view_render.setTextColor(WHITE);
 
-    view_render.setCursor(20, 56);
-    view_render.print("UP");
+    view_render.setCursor(14, 53);
+    view_render.print("LEFT");
 
-    view_render.setCursor(58, 56);
-    view_render.print("DN");
+    view_render.setCursor(49, 53);
+    view_render.print("RIGHT");
 
-    view_render.setCursor(90, 56);
-    view_render.print("MODE");
+    view_render.setCursor(87, 53);
+    view_render.print("ENTER");
 }
 
 void scr_clock_menu_draw_time()
