@@ -4,9 +4,11 @@
 
 static uint8_t setting_display_location_choose;
 static uint8_t setting_time_format_12h;
+static uint8_t setting_color_invert;
 
 static const char* const setting_display_item_name[SCR_CLOCK_SETTING_DISPLAY_ITEM_NUMBER] = {
     "Format",
+    "Color",
     "Back",
 };
 
@@ -58,6 +60,11 @@ void view_scr_clock_setting_display()
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_time_format_12h ? "[12]" : "[24]");
 		}
+		else if (i == SCR_CLOCK_SETTING_DISPLAY_COLOR)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_color_invert ? "[INV]" : "[NOR]");
+		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -81,6 +88,12 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 		{
 		case SCR_CLOCK_SETTING_DISPLAY_FORMAT:
 			setting_time_format_12h = !setting_time_format_12h;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_DISPLAY_COLOR:
+			setting_color_invert = !setting_color_invert;
+			view_render.invertDisplay(setting_color_invert);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
