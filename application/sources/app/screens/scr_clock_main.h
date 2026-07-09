@@ -6,7 +6,7 @@
 #include "mc_clock_time.h"
 
 #define SCR_CLOCK_MAIN_TIME_X (16)
-#define SCR_CLOCK_MAIN_TIME_Y (24)
+#define SCR_CLOCK_MAIN_TIME_Y (27)
 #define SCR_CLOCK_MAIN_WEEKDAY_ROW_X (5)
 #define SCR_CLOCK_MAIN_WEEKDAY_ROW_Y (6)
 #define SCR_CLOCK_MAIN_WEEKDAY_STEP (18)
