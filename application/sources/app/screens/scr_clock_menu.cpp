@@ -170,6 +170,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		switch (current_location)
 		{
 		case SCR_CLOCK_MENU_CLOCK:
@@ -214,6 +215,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		{
 			current_location--;
 		}
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
@@ -225,6 +227,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		{
 			current_location = 0;
 		}
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
