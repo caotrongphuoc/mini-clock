@@ -4,19 +4,6 @@
 /* View helper - Clock main */
 /*****************************************************************************/
 
-const char* scr_clock_main_weekday_text(uint8_t weekday)
-{
-	const char* weekday_text[] = {
-	    "---", "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
-
-	if (weekday > RTC_WEEKDAY_SUN)
-	{
-		return weekday_text[0];
-	}
-
-	return weekday_text[weekday];
-}
-
 const char* scr_clock_main_weekday_short_text(uint8_t weekday)
 {
 	const char* weekday_text[] = {

@@ -20,16 +20,9 @@
 #define SCR_CLOCK_MAIN_DATE_TEXT_X (34)
 #define SCR_CLOCK_MAIN_DATE_TEXT_Y (56)
 
-/* Reused by time setting screen to keep the edit layout aligned. */
-#define SCR_CLOCK_MAIN_DATE_X (24)
-#define SCR_CLOCK_MAIN_DATE_Y (48)
-#define SCR_CLOCK_MAIN_WEEKDAY_X (52)
-#define SCR_CLOCK_MAIN_WEEKDAY_Y (0)
-
 #define SCR_CLOCK_MAIN_TIME_TEXT_SIZE (2)
 #define SCR_CLOCK_MAIN_INFO_TEXT_SIZE (1)
 
-const char* scr_clock_main_weekday_text(uint8_t weekday);
 const char* scr_clock_main_weekday_short_text(uint8_t weekday);
 void scr_clock_main_format_time(char* buffer, rtc_time_t* time);
 void scr_clock_main_format_date(char* buffer, rtc_date_t* date);
