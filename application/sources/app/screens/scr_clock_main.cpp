@@ -17,6 +17,19 @@ const char* scr_clock_main_weekday_text(uint8_t weekday)
 	return weekday_text[weekday];
 }
 
+const char* scr_clock_main_weekday_short_text(uint8_t weekday)
+{
+	const char* weekday_text[] = {
+	    "--", "MO", "TU", "WE", "TH", "FR", "SA", "SU"};
+
+	if (weekday > RTC_WEEKDAY_SUN)
+	{
+		return weekday_text[0];
+	}
+
+	return weekday_text[weekday];
+}
+
 void scr_clock_main_write_2_digit(char* buffer, uint8_t value)
 {
 	buffer[0] = (value / 10) + '0';
@@ -53,18 +66,20 @@ void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 
 void scr_clock_main_draw_weekdays(uint8_t weekday)
 {
-	const char* weekday_text[] = {"M", "T", "W", "T", "F", "S", "S"};
-
 	view_render.setTextSize(1);
 
 	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
 	{
-		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * 17);
+		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_STEP);
 		uint8_t selected = (i == weekday);
 
 		if (selected)
 		{
-			view_render.fillRect(x - 2, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 2, 10, 10, WHITE);
+			view_render.fillRect(x - 2,
+			                     SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 2,
+			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_W,
+			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_H,
+			                     WHITE);
 			view_render.setTextColor(BLACK);
 		}
 		else
@@ -73,7 +88,7 @@ void scr_clock_main_draw_weekdays(uint8_t weekday)
 		}
 
 		view_render.setCursor(x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
-		view_render.print(weekday_text[i - RTC_WEEKDAY_MON]);
+		view_render.print(scr_clock_main_weekday_short_text(i));
 	}
 
 	view_render.setTextColor(WHITE);
@@ -114,7 +129,12 @@ void view_scr_clock_main()
 
 	scr_clock_main_draw_weekdays(clock_state.date.weekday);
 
-	view_render.drawRoundRect(7, 18, 114, 32, 4, WHITE);
+	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_Y,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_W,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_H,
+	                          SCR_CLOCK_MAIN_TIME_FRAME_R,
+	                          WHITE);
 	view_render.setTextSize(SCR_CLOCK_MAIN_TIME_TEXT_SIZE);
 	view_render.setCursor(SCR_CLOCK_MAIN_TIME_X, SCR_CLOCK_MAIN_TIME_Y);
 	view_render.print(time_text);
