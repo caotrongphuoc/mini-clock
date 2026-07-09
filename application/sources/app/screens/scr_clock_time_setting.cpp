@@ -164,43 +164,17 @@ void scr_clock_time_setting_print_text(int16_t x, int16_t y, const char* text, u
 
 	if (selected)
 	{
-		view_render.fillRect(x - 1, y - 1, len * char_w + 2, char_h + 2, WHITE);
+		view_render.fillRect(x - SCR_CLOCK_MAIN_SELECT_PAD_X,
+		                     y - SCR_CLOCK_MAIN_SELECT_PAD_Y,
+		                     len * char_w + (SCR_CLOCK_MAIN_SELECT_PAD_X * 2),
+		                     char_h + (SCR_CLOCK_MAIN_SELECT_PAD_Y * 2),
+		                     WHITE);
 	}
 
 	view_render.setTextSize(text_size);
 	view_render.setTextColor(fg, bg);
 	view_render.setCursor(x, y);
 	view_render.print(text);
-	view_render.setTextColor(WHITE);
-}
-
-void scr_clock_time_setting_print_weekdays(uint8_t weekday)
-{
-	view_render.setTextSize(SCR_CLOCK_MAIN_INFO_TEXT_SIZE);
-
-	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
-	{
-		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_STEP);
-		uint8_t selected = (i == weekday);
-
-		if (selected)
-		{
-			view_render.fillRect(x - 2,
-			                     SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 2,
-			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_W,
-			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_H,
-			                     WHITE);
-			view_render.setTextColor(BLACK);
-		}
-		else
-		{
-			view_render.setTextColor(WHITE);
-		}
-
-		view_render.setCursor(x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
-		view_render.print(scr_clock_main_weekday_short_text(i));
-	}
-
 	view_render.setTextColor(WHITE);
 }
 
@@ -280,7 +254,7 @@ void scr_clock_time_setting_print_date(char* date_text)
 
 void scr_clock_time_setting_print_save()
 {
-	scr_clock_time_setting_print_text(110,
+	scr_clock_time_setting_print_text(SCR_CLOCK_TIME_SETTING_SAVE_X,
 	                                  SCR_CLOCK_MAIN_DATE_TEXT_Y,
 	                                  "OK",
 	                                  SCR_CLOCK_MAIN_INFO_TEXT_SIZE,
@@ -298,7 +272,8 @@ void view_scr_clock_time_setting()
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
-	scr_clock_time_setting_print_weekdays(setting_date.weekday);
+	scr_clock_main_draw_weekdays(setting_date.weekday,
+	                             setting_location_choose == SCR_CLOCK_TIME_SETTING_WEEKDAY);
 
 	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,
 	                          SCR_CLOCK_MAIN_TIME_FRAME_Y,
