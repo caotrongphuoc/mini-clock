@@ -51,6 +51,23 @@ void mc_clock_alarm_apply_rtc(void)
 	task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
 }
 
+static void mc_clock_alarm_scroll_to_current(void)
+{
+	if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.total_alarm)
+	{
+		return;
+	}
+
+	if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.scroll_offset)
+	{
+		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
+	}
+	else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + 3)
+	{
+		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
+	}
+}
+
 /*****************************************************************************/
 /* Handle - Clock alarm object */
 /*****************************************************************************/
@@ -129,10 +146,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			mc_clock_alarm_state.current_item--;
 		}
 
-		if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.scroll_offset)
-		{
-			mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
-		}
+		mc_clock_alarm_scroll_to_current();
 	}
 	break;
 
@@ -159,10 +173,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			mc_clock_alarm_state.current_item = 0;
 		}
 
-		if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + 3)
-		{
-			mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
-		}
+		mc_clock_alarm_scroll_to_current();
 	}
 	break;
 
