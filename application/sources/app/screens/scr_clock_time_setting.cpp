@@ -14,9 +14,9 @@ static uint8_t setting_location_choose = SCR_CLOCK_TIME_SETTING_YEAR;
 /* Value helper - Clock time setting */
 /*****************************************************************************/
 
-uint16_t scr_clock_time_setting_wrap_value(uint16_t value, uint16_t min, uint16_t max, int8_t step)
+uint16_t scr_clock_time_setting_wrap_value(uint16_t value, uint16_t min, uint16_t max, int8_t direction)
 {
-	if (step > 0)
+	if (direction > 0)
 	{
 		return (value >= max) ? min : value + 1;
 	}
