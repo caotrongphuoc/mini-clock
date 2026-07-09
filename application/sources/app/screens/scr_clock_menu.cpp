@@ -50,6 +50,7 @@ void scr_clock_menu_draw_item(uint8_t index)
 void view_scr_clock_menu()
 {
     view_render.clear();
+    view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
     for (uint8_t i = 0; i < SCR_CLOCK_MENU_ITEM_NUMBER; i++)
     {
         scr_clock_menu_draw_item(i);
