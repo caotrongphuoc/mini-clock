@@ -4,8 +4,8 @@
 #include "screens.h"
 
 #define SCR_CLOCK_MENU_ITEM_NUMBER (6)
-#define SCR_CLOCK_MENU_ICON_X (52)
-#define SCR_CLOCK_MENU_ICON_Y (16)
+#define SCR_CLOCK_MENU_ICON_X (53)
+#define SCR_CLOCK_MENU_ICON_Y (17)
 #define SCR_CLOCK_MENU_FRAME_X (6)
 #define SCR_CLOCK_MENU_FRAME_Y (13)
 #define SCR_CLOCK_MENU_FRAME_W (116)
