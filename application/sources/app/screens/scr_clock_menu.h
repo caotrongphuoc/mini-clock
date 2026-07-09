@@ -6,6 +6,11 @@
 #define SCR_CLOCK_MENU_ITEM_NUMBER (6)
 #define SCR_CLOCK_MENU_ICON_X (52)
 #define SCR_CLOCK_MENU_ICON_Y (18)
+#define SCR_CLOCK_MENU_FRAME_X (6)
+#define SCR_CLOCK_MENU_FRAME_Y (13)
+#define SCR_CLOCK_MENU_FRAME_W (116)
+#define SCR_CLOCK_MENU_FRAME_H (32)
+#define SCR_CLOCK_MENU_FRAME_R (4)
 
 typedef enum
 {

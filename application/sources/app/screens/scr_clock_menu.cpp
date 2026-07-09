@@ -44,6 +44,16 @@ view_screen_t scr_clock_menu = {
     .focus_item = 0,
 };
 
+void scr_clock_menu_draw_frame()
+{
+    view_render.drawRoundRect(SCR_CLOCK_MENU_FRAME_X,
+                              SCR_CLOCK_MENU_FRAME_Y,
+                              SCR_CLOCK_MENU_FRAME_W,
+                              SCR_CLOCK_MENU_FRAME_H,
+                              SCR_CLOCK_MENU_FRAME_R,
+                              WHITE);
+}
+
 void scr_clock_menu_draw_icon()
 {
     view_render.drawBitmap(SCR_CLOCK_MENU_ICON_X,
@@ -72,7 +82,7 @@ void scr_clock_menu_draw_name()
 
     view_render.setTextSize(1);
     view_render.setTextColor(WHITE);
-    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 44);
+    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 45);
     view_render.print(name);
 }
 
@@ -111,6 +121,7 @@ void view_scr_clock_menu()
     view_render.clear();
     view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
     scr_clock_menu_draw_time();
+    scr_clock_menu_draw_frame();
     scr_clock_menu_draw_icon();
     scr_clock_menu_draw_arrows();
     scr_clock_menu_draw_name();
