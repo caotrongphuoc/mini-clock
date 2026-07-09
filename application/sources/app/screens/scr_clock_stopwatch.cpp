@@ -28,7 +28,7 @@ static void scr_clock_stopwatch_format_time(char* buf, uint32_t elapsed_ms)
 	uint32_t seconds = total_sec % 60;
 	uint32_t centis = (elapsed_ms % 1000) / 10;
 
-	sprintf(buf, "%02lu:%02lu.%02lu", minutes, seconds, centis);
+	xsprintf(buf, "%02lu:%02lu.%02lu", minutes, seconds, centis);
 }
 
 void view_scr_clock_stopwatch()
@@ -57,7 +57,7 @@ void view_scr_clock_stopwatch()
 
 	view_render.setCursor(80, 46);
 	char lap_buf[10];
-	sprintf(lap_buf, "LAP %u", state.lap_count);
+	xsprintf(lap_buf, "LAP %u", state.lap_count);
 	view_render.print(lap_buf);
 }
 
