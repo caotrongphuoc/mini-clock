@@ -15,8 +15,6 @@ typedef struct
 	rtc_date_t date;
 } mc_clock_time_state_t;
 
-extern mc_clock_time_state_t clock_state;
-
 void mc_clock_time_handle(ak_msg_t* msg);
 void mc_clock_time_get_state(mc_clock_time_state_t* state);
 

@@ -4,7 +4,7 @@
 /* Variable Declaration - Clock object */
 /*****************************************************************************/
 
-mc_clock_time_state_t clock_state;
+static mc_clock_time_state_t clock_state;
 
 /*****************************************************************************/
 /* Public API - Clock object */
