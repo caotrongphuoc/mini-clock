@@ -1,14 +1,6 @@
 #ifndef __SCR_CLOCK_ALARM_H__
 #define __SCR_CLOCK_ALARM_H__
-#include "screens.h"
 
-typedef enum
-{
-    SCR_CLOCK_ALARM_LIST,
-    SCR_CLOCK_ALARM_ADD,
-    SCR_CLOCK_ALARM_EDIT,
-    SCR_CLOCK_ALARM_DELETE,
-    SCR_CLOCK_ALARM_BACK,
-} scr_clock_alarm_item_t;
+#include "screens.h"
 
 #endif //__SCR_CLOCK_ALARM_H__

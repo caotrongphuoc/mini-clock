@@ -4,8 +4,6 @@
 #include <stdio.h>
 
 static uint8_t current_state = 0;
-static uint8_t current_item = SCR_CLOCK_STOPWATCH_DISPLAY;
-
 static uint32_t stopwatch_seconds = 0;
 
 static void view_scr_clock_stopwatch();
@@ -89,8 +87,6 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
     case SCREEN_ENTRY:
     {
-        current_item = SCR_CLOCK_STOPWATCH_DISPLAY;
-
         current_state = 0;
 
         stopwatch_seconds = 0;
