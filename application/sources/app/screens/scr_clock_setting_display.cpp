@@ -3,8 +3,10 @@
 #include "scr_clock_setting.h"
 
 static uint8_t setting_display_location_choose;
+static uint8_t setting_time_format_12h;
 
 static const char* const setting_display_item_name[SCR_CLOCK_SETTING_DISPLAY_ITEM_NUMBER] = {
+    "Format",
     "Back",
 };
 
@@ -50,6 +52,12 @@ void view_scr_clock_setting_display()
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_display_item_name[i]);
+
+		if (i == SCR_CLOCK_SETTING_DISPLAY_FORMAT)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_time_format_12h ? "[12]" : "[24]");
+		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -62,15 +70,26 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		setting_display_location_choose = SCR_CLOCK_SETTING_DISPLAY_BACK;
+		setting_display_location_choose = SCR_CLOCK_SETTING_DISPLAY_FORMAT;
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
-		SCREEN_BACK();
-		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+		switch (setting_display_location_choose)
+		{
+		case SCR_CLOCK_SETTING_DISPLAY_FORMAT:
+			setting_time_format_12h = !setting_time_format_12h;
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_DISPLAY_BACK:
+		default:
+			SCREEN_BACK();
+			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+			break;
+		}
 	}
 	break;
 
@@ -104,4 +123,9 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 	default:
 		break;
 	}
+}
+
+uint8_t scr_clock_setting_is_12h_format(void)
+{
+	return setting_time_format_12h;
 }

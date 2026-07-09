@@ -1,6 +1,6 @@
 #include "scr_clock_main.h"
 
-#include "scr_clock_setting.h"
+#include "scr_clock_setting_display.h"
 
 /*****************************************************************************/
 /* View helper - Clock main */
