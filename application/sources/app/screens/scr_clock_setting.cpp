@@ -4,13 +4,25 @@
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/
 
+#define SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER (3)
+
 static uint8_t setting_location_choose;
 static uint8_t setting_color_invert;
+static uint8_t setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
 static uint8_t setting_sound_off;
+
+static const uint8_t setting_bright_value[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER] = {
+    0x20, 0x80, 0xCF,
+};
+
+static const char* const setting_bright_label[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER] = {
+    "[LO]", "[MD]", "[HI]",
+};
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Color",
+    "Bright",
     "Sound",
     "Exit",
 };
@@ -67,6 +79,11 @@ void view_scr_clock_setting()
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_color_invert ? "[INV]" : "[NOR]");
 		}
+		else if (i == SCR_CLOCK_SETTING_BRIGHT)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_bright_label[setting_bright_level]);
+		}
 		else if (i == SCR_CLOCK_SETTING_SOUND)
 		{
 			view_render.drawBitmap(110,
@@ -108,6 +125,12 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		case SCR_CLOCK_SETTING_COLOR:
 			setting_color_invert = !setting_color_invert;
 			view_render.invertDisplay(setting_color_invert);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_BRIGHT:
+			setting_bright_level = (setting_bright_level + 1) % SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER;
+			view_render.setContrast(setting_bright_value[setting_bright_level]);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 

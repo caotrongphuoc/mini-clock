@@ -161,6 +161,9 @@ public:
 	//invert or restore display colors at hardware level
 	void invertDisplay(bool inverted);
 
+	//set panel contrast (0..255) at hardware level
+	void setContrast(unsigned char contrast);
+
 	const unsigned char* getFrameBuffer() const;
 	unsigned int getFrameBufferSize() const;
 
