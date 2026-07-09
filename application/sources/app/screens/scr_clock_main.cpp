@@ -51,107 +51,20 @@ void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 	buffer[10] = '\0';
 }
 
-void scr_clock_main_draw_horizontal_segment(int16_t x, int16_t y, uint8_t color)
-{
-	view_render.fillRect(x + SCR_CLOCK_MAIN_SEG_T,
-	                     y,
-	                     SCR_CLOCK_MAIN_SEG_W - (2 * SCR_CLOCK_MAIN_SEG_T),
-	                     SCR_CLOCK_MAIN_SEG_T,
-	                     color);
-}
-
-void scr_clock_main_draw_vertical_segment(int16_t x, int16_t y, uint8_t color)
-{
-	view_render.fillRect(x,
-	                     y,
-	                     SCR_CLOCK_MAIN_SEG_T,
-	                     (SCR_CLOCK_MAIN_SEG_H / 2) - SCR_CLOCK_MAIN_SEG_T,
-	                     color);
-}
-
-void scr_clock_main_draw_digit(uint8_t digit, int16_t x, int16_t y)
-{
-	const uint8_t digit_mask[] = {
-	    0x3F, 0x06, 0x5B, 0x4F, 0x66,
-	    0x6D, 0x7D, 0x07, 0x7F, 0x6F};
-	uint8_t mask = digit_mask[digit % 10];
-	int16_t middle_y = y + (SCR_CLOCK_MAIN_SEG_H / 2) - (SCR_CLOCK_MAIN_SEG_T / 2);
-	int16_t bottom_y = y + SCR_CLOCK_MAIN_SEG_H - SCR_CLOCK_MAIN_SEG_T;
-	int16_t right_x = x + SCR_CLOCK_MAIN_SEG_W - SCR_CLOCK_MAIN_SEG_T;
-	int16_t lower_y = y + (SCR_CLOCK_MAIN_SEG_H / 2);
-
-	if (mask & 0x01)
-	{
-		scr_clock_main_draw_horizontal_segment(x, y, WHITE);
-	}
-	if (mask & 0x02)
-	{
-		scr_clock_main_draw_vertical_segment(right_x, y + SCR_CLOCK_MAIN_SEG_T, WHITE);
-	}
-	if (mask & 0x04)
-	{
-		scr_clock_main_draw_vertical_segment(right_x, lower_y, WHITE);
-	}
-	if (mask & 0x08)
-	{
-		scr_clock_main_draw_horizontal_segment(x, bottom_y, WHITE);
-	}
-	if (mask & 0x10)
-	{
-		scr_clock_main_draw_vertical_segment(x, lower_y, WHITE);
-	}
-	if (mask & 0x20)
-	{
-		scr_clock_main_draw_vertical_segment(x, y + SCR_CLOCK_MAIN_SEG_T, WHITE);
-	}
-	if (mask & 0x40)
-	{
-		scr_clock_main_draw_horizontal_segment(x, middle_y, WHITE);
-	}
-}
-
-void scr_clock_main_draw_colon(int16_t x, int16_t y)
-{
-	view_render.fillRect(x, y + 7, 3, 3, WHITE);
-	view_render.fillRect(x, y + 16, 3, 3, WHITE);
-}
-
-void scr_clock_main_draw_time(rtc_time_t* time)
-{
-	int16_t x = SCR_CLOCK_MAIN_SEG_X;
-	int16_t y = SCR_CLOCK_MAIN_SEG_Y;
-
-	scr_clock_main_draw_digit(time->hour / 10, x, y);
-	x += 15;
-	scr_clock_main_draw_digit(time->hour % 10, x, y);
-	x += 16;
-	scr_clock_main_draw_colon(x, y);
-	x += 7;
-
-	scr_clock_main_draw_digit(time->min / 10, x, y);
-	x += 15;
-	scr_clock_main_draw_digit(time->min % 10, x, y);
-	x += 16;
-	scr_clock_main_draw_colon(x, y);
-	x += 7;
-
-	scr_clock_main_draw_digit(time->sec / 10, x, y);
-	x += 15;
-	scr_clock_main_draw_digit(time->sec % 10, x, y);
-}
-
 void scr_clock_main_draw_weekdays(uint8_t weekday)
 {
+	const char* weekday_text[] = {"M", "T", "W", "T", "F", "S", "S"};
+
 	view_render.setTextSize(1);
 
 	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
 	{
-		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * 18);
+		int16_t x = SCR_CLOCK_MAIN_WEEKDAY_ROW_X + ((i - RTC_WEEKDAY_MON) * 17);
 		uint8_t selected = (i == weekday);
 
 		if (selected)
 		{
-			view_render.fillRect(x - 1, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 1, 18, 9, WHITE);
+			view_render.fillRect(x - 2, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y - 2, 10, 10, WHITE);
 			view_render.setTextColor(BLACK);
 		}
 		else
@@ -160,7 +73,7 @@ void scr_clock_main_draw_weekdays(uint8_t weekday)
 		}
 
 		view_render.setCursor(x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
-		view_render.print(scr_clock_main_weekday_text(i));
+		view_render.print(weekday_text[i - RTC_WEEKDAY_MON]);
 	}
 
 	view_render.setTextColor(WHITE);
@@ -189,16 +102,22 @@ view_screen_t scr_clock_main = {
 void view_scr_clock_main()
 {
 	mc_clock_time_state_t clock_state;
+	char time_text[9];
 	char date_text[11];
 
 	mc_clock_time_get_state(&clock_state);
+	scr_clock_main_format_time(time_text, &clock_state.time);
 	scr_clock_main_format_date(date_text, &clock_state.date);
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
 	scr_clock_main_draw_weekdays(clock_state.date.weekday);
-	scr_clock_main_draw_time(&clock_state.time);
+
+	view_render.drawRoundRect(7, 18, 114, 32, 4, WHITE);
+	view_render.setTextSize(SCR_CLOCK_MAIN_TIME_TEXT_SIZE);
+	view_render.setCursor(SCR_CLOCK_MAIN_TIME_X, SCR_CLOCK_MAIN_TIME_Y);
+	view_render.print(time_text);
 
 	view_render.setTextSize(SCR_CLOCK_MAIN_INFO_TEXT_SIZE);
 	view_render.setCursor(SCR_CLOCK_MAIN_DATE_TEXT_X, SCR_CLOCK_MAIN_DATE_TEXT_Y);
