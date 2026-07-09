@@ -1,12 +1,15 @@
 #include "scr_clock_setting_sound.h"
 
 #include "scr_clock_setting.h"
+#include "mc_clock_time.h"
 
 static uint8_t setting_sound_location_choose;
 static uint8_t setting_sound_off;
+static uint8_t setting_chime_enabled;
 
 static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
     "Mute",
+    "Chime",
     "Back",
 };
 
@@ -62,6 +65,11 @@ void view_scr_clock_setting_sound()
 			                       7,
 			                       fg);
 		}
+		else if (i == SCR_CLOCK_SETTING_SOUND_CHIME)
+		{
+			view_render.setCursor(92, frame_y + 2);
+			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
+		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -86,6 +94,12 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 		case SCR_CLOCK_SETTING_SOUND_MUTE:
 			setting_sound_off = !setting_sound_off;
 			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_SOUND_CHIME:
+			setting_chime_enabled = !setting_chime_enabled;
+			mc_clock_time_set_chime_enabled(setting_chime_enabled);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 

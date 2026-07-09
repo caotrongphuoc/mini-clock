@@ -2,20 +2,17 @@
 
 #include "scr_clock_setting_display.h"
 #include "scr_clock_setting_sound.h"
-#include "mc_clock_time.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/
 
 static uint8_t setting_location_choose;
-static uint8_t setting_chime_enabled;
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
     "Display",
     "Sound",
-    "Chime",
     "Reset",
     "Exit",
 };
@@ -66,12 +63,6 @@ void view_scr_clock_setting()
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
-
-		if (i == SCR_CLOCK_SETTING_CHIME)
-		{
-			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
-		}
 	}
 
 	view_render.setTextColor(WHITE);
@@ -111,16 +102,8 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_CHIME:
-			setting_chime_enabled = !setting_chime_enabled;
-			mc_clock_time_set_chime_enabled(setting_chime_enabled);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
-
 		case SCR_CLOCK_SETTING_RESET:
-			setting_chime_enabled = 0;
 			scr_clock_setting_display_reset();
-			mc_clock_time_set_chime_enabled(0);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 
