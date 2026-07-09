@@ -24,7 +24,7 @@ view_screen_t scr_clock_alarm = {
 static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 {
 	const mc_clock_alarm_item_t* alarm = &state->alarm[state->editing_alarm];
-	char buf[24];
+	char buf[12];
 
 	view_render.drawRoundRect(0, 0, 128, 64, 5, WHITE);
 	view_render.setTextColor(WHITE);
@@ -60,7 +60,7 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 		uint8_t y = i * 13;
 		uint16_t bg = (idx == state->current_item) ? WHITE : BLACK;
 		uint16_t fg = (idx == state->current_item) ? BLACK : WHITE;
-		char line[25];
+		char line[16];
 
 		view_render.fillRect(0, y, 128, 13, bg);
 		view_render.setTextColor(fg);
