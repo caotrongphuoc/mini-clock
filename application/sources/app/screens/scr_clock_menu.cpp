@@ -18,6 +18,15 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_exit,
 };
 
+static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
+    "Clock",
+    "Alarm",
+    "Stopwatch",
+    "Timer",
+    "Setting",
+    "Exit",
+};
+
 /*****************************************************************************/
 /* View - Clock menu */
 /*****************************************************************************/
@@ -51,6 +60,22 @@ void scr_clock_menu_draw_arrows()
     view_render.fillTriangle(120, 30, 114, 25, 114, 35, WHITE);
 }
 
+void scr_clock_menu_draw_name()
+{
+    const char* name = menu_name[current_location];
+    uint8_t len = 0;
+
+    while (name[len] != '\0')
+    {
+        len++;
+    }
+
+    view_render.setTextSize(1);
+    view_render.setTextColor(WHITE);
+    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 44);
+    view_render.print(name);
+}
+
 void scr_clock_menu_draw_time()
 {
     mc_clock_time_state_t state;
@@ -81,6 +106,7 @@ void view_scr_clock_menu()
     scr_clock_menu_draw_time();
     scr_clock_menu_draw_icon();
     scr_clock_menu_draw_arrows();
+    scr_clock_menu_draw_name();
 }
 
 /*****************************************************************************/
