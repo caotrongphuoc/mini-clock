@@ -4,7 +4,7 @@
 /* Variable Declaration - Clock timer object */
 /*****************************************************************************/
 
-mc_clock_timer_state_t mc_clock_timer_state = {
+static mc_clock_timer_state_t mc_clock_timer_state = {
     .set_minutes = 5,
     .remaining_min = 5,
     .remaining_sec = 0,

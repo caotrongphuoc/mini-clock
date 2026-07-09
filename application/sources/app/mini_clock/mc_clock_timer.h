@@ -20,8 +20,6 @@ typedef struct
 	uint8_t finished;
 } mc_clock_timer_state_t;
 
-extern mc_clock_timer_state_t mc_clock_timer_state;
-
 void mc_clock_timer_handle(ak_msg_t* msg);
 void mc_clock_timer_get_state(mc_clock_timer_state_t* state);
 
