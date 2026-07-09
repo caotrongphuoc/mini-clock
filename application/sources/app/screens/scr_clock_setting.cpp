@@ -30,6 +30,7 @@ static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Bright",
     "Sound",
     "Chime",
+    "Reset",
     "Exit",
 };
 
@@ -165,6 +166,19 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			setting_chime_enabled = !setting_chime_enabled;
 			mc_clock_time_set_chime_enabled(setting_chime_enabled);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+			break;
+
+		case SCR_CLOCK_SETTING_RESET:
+			setting_time_format_12h = 0;
+			setting_color_invert = 0;
+			setting_bright_level = SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUMBER - 1;
+			setting_sound_off = 0;
+			setting_chime_enabled = 0;
+			view_render.invertDisplay(0);
+			view_render.setContrast(setting_bright_value[setting_bright_level]);
+			BUZZER_Silent(BUZZER_SILENT_OFF);
+			mc_clock_time_set_chime_enabled(0);
+			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 
 		case SCR_CLOCK_SETTING_EXIT:
