@@ -105,27 +105,9 @@ void scr_clock_main_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{
-	case AC_DISPLAY_INITIAL:
-<<<<<<< HEAD
-	{
-		APP_DBG_SIG("AC_DISPLAY_INITIAL\n");
-		view_render.initialize();
-		view_render_display_on();
-		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
-		timer_set(AC_TASK_DISPLAY_ID,
-		          MC_CLOCK_TIME_TICK,
-		          MC_CLOCK_TIME_TICK_INTERVAL,
-		          TIMER_PERIODIC);
-	}
-	break;
-
 	case SCREEN_ENTRY:
-=======
->>>>>>> 2451a8a44acef62f5e8e46a154c7b101558579b8
 	{
-		APP_DBG_SIG("AC_DISPLAY_INITIAL\n");
-		view_render.initialize();
-		view_render_display_on();
+		APP_DBG_SIG("SCREEN_ENTRY\n");
 		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
