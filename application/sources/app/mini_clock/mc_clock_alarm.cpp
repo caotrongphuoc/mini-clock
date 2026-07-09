@@ -30,25 +30,49 @@ void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 
 void mc_clock_alarm_apply_rtc(void)
 {
+	rtc_time_t now;
+	uint16_t now_min;
+	uint16_t best_delta = 24 * 60;
+	uint8_t best_idx = 0;
+	uint8_t found = 0;
+
+	rtc_get_time(&now);
+	now_min = now.hour * 60 + now.min;
+
 	for (uint8_t i = 0; i < mc_clock_alarm_state.total_alarm; i++)
 	{
-		if (mc_clock_alarm_state.alarm[i].enabled)
+		if (!mc_clock_alarm_state.alarm[i].enabled)
 		{
-			mc_clock_rtc_set_alarm_req_t req;
-			req.time.hour = mc_clock_alarm_state.alarm[i].hour;
-			req.time.min = mc_clock_alarm_state.alarm[i].minute;
-			req.time.sec = 0;
-			req.weekday = RTC_ALARM_ANY_WEEKDAY;
+			continue;
+		}
 
-			task_post_common_msg(MC_CLOCK_RTC_ID,
-			                     MC_CLOCK_RTC_SET_ALARM_REQ,
-			                     (uint8_t*)&req,
-			                     sizeof(req));
-			return;
+		uint16_t a_min = mc_clock_alarm_state.alarm[i].hour * 60 + mc_clock_alarm_state.alarm[i].minute;
+		uint16_t delta = (a_min > now_min) ? (a_min - now_min) : (24 * 60 - (now_min - a_min));
+
+		if (!found || delta < best_delta)
+		{
+			found = 1;
+			best_delta = delta;
+			best_idx = i;
 		}
 	}
 
-	task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
+	if (!found)
+	{
+		task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
+		return;
+	}
+
+	mc_clock_rtc_set_alarm_req_t req;
+	req.time.hour = mc_clock_alarm_state.alarm[best_idx].hour;
+	req.time.min = mc_clock_alarm_state.alarm[best_idx].minute;
+	req.time.sec = 0;
+	req.weekday = RTC_ALARM_ANY_WEEKDAY;
+
+	task_post_common_msg(MC_CLOCK_RTC_ID,
+	                     MC_CLOCK_RTC_SET_ALARM_REQ,
+	                     (uint8_t*)&req,
+	                     sizeof(req));
 }
 
 static void mc_clock_alarm_scroll_to_current(void)
@@ -244,6 +268,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_ALARM_DISMISS\n");
 		mc_clock_alarm_state.ringing = 0;
 		BUZZER_Disable();
+		mc_clock_alarm_apply_rtc();
 	}
 	break;
 
