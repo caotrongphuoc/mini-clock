@@ -51,15 +51,6 @@ void scr_clock_main_format_date(char* buffer, rtc_date_t* date)
 	buffer[10] = '\0';
 }
 
-void scr_clock_main_draw_lcd_border()
-{
-	view_render.drawRect(SCR_CLOCK_MAIN_LCD_BORDER_X,
-	                     SCR_CLOCK_MAIN_LCD_BORDER_Y,
-	                     SCR_CLOCK_MAIN_LCD_BORDER_W,
-	                     SCR_CLOCK_MAIN_LCD_BORDER_H,
-	                     WHITE);
-}
-
 void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 {
 	view_render.setTextSize(1);
@@ -124,7 +115,7 @@ void view_scr_clock_main()
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
-	scr_clock_main_draw_lcd_border();
+	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 	scr_clock_main_draw_weekdays(clock_state.date.weekday, 1);
 
 	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,
@@ -158,13 +149,6 @@ void scr_clock_main_handle(ak_msg_t* msg)
 		          MC_CLOCK_TIME_TICK,
 		          MC_CLOCK_TIME_TICK_INTERVAL,
 		          TIMER_PERIODIC);
-	}
-	break;
-
-	case SCREEN_EXIT:
-	{
-		APP_DBG_SIG("SCREEN_EXIT\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 	}
 	break;
 
