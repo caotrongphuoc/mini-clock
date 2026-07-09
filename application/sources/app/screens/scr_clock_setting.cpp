@@ -25,6 +25,7 @@ static const char* const setting_bright_label[SCR_CLOCK_SETTING_BRIGHT_LEVEL_NUM
 
 static const char* const setting_item_name[SCR_CLOCK_SETTING_ITEM_NUMBER] = {
     "Time",
+    "Display",
     "Format",
     "Color",
     "Bright",
@@ -137,6 +138,11 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		{
 		case SCR_CLOCK_SETTING_TIME:
 			SCREEN_TRAN(scr_clock_time_setting_handle, &scr_clock_time_setting);
+			break;
+
+		case SCR_CLOCK_SETTING_DISPLAY:
+			SCREEN_TRAN(scr_clock_setting_display_handle, &scr_clock_setting_display);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_FORMAT:
