@@ -104,6 +104,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 
 		case SCR_CLOCK_SETTING_RESET:
 			scr_clock_setting_display_reset();
+			scr_clock_setting_sound_reset();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 

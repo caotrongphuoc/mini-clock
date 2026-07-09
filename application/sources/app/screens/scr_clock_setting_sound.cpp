@@ -143,3 +143,11 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 		break;
 	}
 }
+
+void scr_clock_setting_sound_reset(void)
+{
+	setting_sound_off = 0;
+	setting_chime_enabled = 0;
+	BUZZER_Silent(BUZZER_SILENT_OFF);
+	mc_clock_time_set_chime_enabled(0);
+}

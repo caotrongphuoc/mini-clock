@@ -12,4 +12,6 @@ typedef enum
 	SCR_CLOCK_SETTING_SOUND_BACK,
 } scr_clock_setting_sound_item_t;
 
+void scr_clock_setting_sound_reset(void);
+
 #endif //__SCR_CLOCK_SETTING_SOUND_H__
