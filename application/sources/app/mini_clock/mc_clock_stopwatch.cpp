@@ -4,7 +4,7 @@
 /* Variable Declaration - Clock stopwatch object */
 /*****************************************************************************/
 
-mc_clock_stopwatch_state_t mc_clock_stopwatch_state;
+static mc_clock_stopwatch_state_t mc_clock_stopwatch_state;
 
 /*****************************************************************************/
 /* Public API - Clock stopwatch object */

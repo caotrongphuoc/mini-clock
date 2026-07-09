@@ -18,8 +18,6 @@ typedef struct
 	uint32_t lap_ms[MC_CLOCK_STOPWATCH_LAP_MAX];
 } mc_clock_stopwatch_state_t;
 
-extern mc_clock_stopwatch_state_t mc_clock_stopwatch_state;
-
 void mc_clock_stopwatch_handle(ak_msg_t* msg);
 void mc_clock_stopwatch_get_state(mc_clock_stopwatch_state_t* state);
 
