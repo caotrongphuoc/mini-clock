@@ -81,9 +81,9 @@ void scr_clock_time_setting_change_value(int8_t step)
 	{
 	case SCR_CLOCK_TIME_SETTING_YEAR:
 		setting_date.year = scr_clock_time_setting_wrap_value(setting_date.year,
-		                                                       SCR_CLOCK_TIME_SETTING_YEAR_MIN,
-		                                                       SCR_CLOCK_TIME_SETTING_YEAR_MAX,
-		                                                       step);
+		                                                      SCR_CLOCK_TIME_SETTING_YEAR_MIN,
+		                                                      SCR_CLOCK_TIME_SETTING_YEAR_MAX,
+		                                                      step);
 		scr_clock_time_setting_fix_date();
 		break;
 
@@ -149,12 +149,8 @@ void scr_clock_time_setting_print_text(int16_t x, int16_t y, const char* text, u
 {
 	uint8_t fg = selected ? BLACK : WHITE;
 	uint8_t bg = selected ? WHITE : BLACK;
-	uint8_t char_w = (text_size == SCR_CLOCK_MAIN_TIME_TEXT_SIZE) ?
-	    SCR_CLOCK_TIME_SETTING_TIME_CHAR_W :
-	    SCR_CLOCK_TIME_SETTING_INFO_CHAR_W;
-	uint8_t char_h = (text_size == SCR_CLOCK_MAIN_TIME_TEXT_SIZE) ?
-	    SCR_CLOCK_TIME_SETTING_TIME_CHAR_H :
-	    SCR_CLOCK_TIME_SETTING_INFO_CHAR_H;
+	uint8_t char_w = (text_size == SCR_CLOCK_MAIN_TIME_TEXT_SIZE) ? SCR_CLOCK_TIME_SETTING_TIME_CHAR_W : SCR_CLOCK_TIME_SETTING_INFO_CHAR_W;
+	uint8_t char_h = (text_size == SCR_CLOCK_MAIN_TIME_TEXT_SIZE) ? SCR_CLOCK_TIME_SETTING_TIME_CHAR_H : SCR_CLOCK_TIME_SETTING_INFO_CHAR_H;
 	uint8_t len = 0;
 
 	while (text[len] != '\0')
@@ -272,7 +268,7 @@ void view_scr_clock_time_setting()
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
-	scr_clock_main_draw_lcd_border();
+	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 	scr_clock_main_draw_weekdays(setting_date.weekday,
 	                             setting_location_choose == SCR_CLOCK_TIME_SETTING_WEEKDAY);
 
@@ -308,8 +304,8 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
 		{
 			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-			                                                       setting_date.month,
-			                                                       setting_date.date);
+			                                                      setting_date.month,
+			                                                      setting_date.date);
 		}
 	}
 	break;
