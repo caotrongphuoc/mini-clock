@@ -46,98 +46,98 @@ view_screen_t scr_clock_menu = {
 
 void scr_clock_menu_draw_frame()
 {
-    view_render.drawRoundRect(SCR_CLOCK_MENU_FRAME_X,
-                              SCR_CLOCK_MENU_FRAME_Y,
-                              SCR_CLOCK_MENU_FRAME_W,
-                              SCR_CLOCK_MENU_FRAME_H,
-                              SCR_CLOCK_MENU_FRAME_R,
-                              WHITE);
+	view_render.drawRoundRect(SCR_CLOCK_MENU_FRAME_X,
+	                          SCR_CLOCK_MENU_FRAME_Y,
+	                          SCR_CLOCK_MENU_FRAME_W,
+	                          SCR_CLOCK_MENU_FRAME_H,
+	                          SCR_CLOCK_MENU_FRAME_R,
+	                          WHITE);
 }
 
 void scr_clock_menu_draw_icon()
 {
-    view_render.drawBitmap(SCR_CLOCK_MENU_ICON_X,
-                           SCR_CLOCK_MENU_ICON_Y,
-                           menu_bitmap[current_location],
-                           SCR_CLOCK_MENU_ICON_W,
-                           SCR_CLOCK_MENU_ICON_H,
-                           WHITE);
+	view_render.drawBitmap(SCR_CLOCK_MENU_ICON_X,
+	                       SCR_CLOCK_MENU_ICON_Y,
+	                       menu_bitmap[current_location],
+	                       SCR_CLOCK_MENU_ICON_W,
+	                       SCR_CLOCK_MENU_ICON_H,
+	                       WHITE);
 }
 
 void scr_clock_menu_draw_arrows()
 {
-    view_render.fillTriangle(8, 28, 14, 23, 14, 33, WHITE);
-    view_render.fillTriangle(119, 28, 113, 23, 113, 33, WHITE);
+	view_render.fillTriangle(8, 32, 15, 25, 15, 39, WHITE);
+	view_render.fillTriangle(119, 32, 112, 25, 112, 39, WHITE);
 }
 
 void scr_clock_menu_draw_name()
 {
-    const char* name = menu_name[current_location];
-    uint8_t len = 0;
+	const char* name = menu_name[current_location];
+	uint8_t len = 0;
 
-    while (name[len] != '\0')
-    {
-        len++;
-    }
+	while (name[len] != '\0')
+	{
+		len++;
+	}
 
-    view_render.setTextSize(1);
-    view_render.setTextColor(WHITE);
-    view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
-    view_render.print(name);
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+	view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
+	view_render.print(name);
 }
 
 void scr_clock_menu_draw_buttons()
 {
-    view_render.drawRoundRect(8, 52, 36, 9, 2, WHITE);
-    view_render.drawRoundRect(46, 52, 36, 9, 2, WHITE);
-    view_render.drawRoundRect(84, 52, 36, 9, 2, WHITE);
+	view_render.drawRoundRect(8, 53, 36, 9, 2, WHITE);
+	view_render.drawRoundRect(46, 53, 36, 9, 2, WHITE);
+	view_render.drawRoundRect(84, 53, 36, 9, 2, WHITE);
 
-    view_render.setTextSize(1);
-    view_render.setTextColor(WHITE);
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
 
-    view_render.setCursor(14, 53);
-    view_render.print("LEFT");
+	view_render.setCursor(14, 54);
+	view_render.print("Left");
 
-    view_render.setCursor(49, 53);
-    view_render.print("RIGHT");
+	view_render.setCursor(49, 54);
+	view_render.print("Right");
 
-    view_render.setCursor(87, 53);
-    view_render.print("ENTER");
+	view_render.setCursor(87, 54);
+	view_render.print("Enter");
 }
 
 void scr_clock_menu_draw_time()
 {
-    mc_clock_time_state_t state;
-    char time_text[12];
-    uint8_t use_12h = scr_clock_setting_is_12h_format();
+	mc_clock_time_state_t state;
+	char time_text[12];
+	uint8_t use_12h = scr_clock_setting_is_12h_format();
 
-    mc_clock_time_get_state(&state);
-    scr_clock_main_format_time(time_text, &state.time, use_12h);
+	mc_clock_time_get_state(&state);
+	scr_clock_main_format_time(time_text, &state.time, use_12h);
 
-    if (use_12h)
-    {
-        time_text[8] = ' ';
-        time_text[9] = (state.time.hour >= 12) ? 'P' : 'A';
-        time_text[10] = 'M';
-        time_text[11] = '\0';
-    }
+	if (use_12h)
+	{
+		time_text[8] = ' ';
+		time_text[9] = (state.time.hour >= 12) ? 'P' : 'A';
+		time_text[10] = 'M';
+		time_text[11] = '\0';
+	}
 
-    view_render.setTextSize(1);
-    view_render.setTextColor(WHITE);
-    view_render.setCursor(use_12h ? 31 : 40, 3);
-    view_render.print(time_text);
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+	view_render.setCursor(use_12h ? 31 : 40, 3);
+	view_render.print(time_text);
 }
 
 void view_scr_clock_menu()
 {
-    view_render.clear();
-    view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
-    scr_clock_menu_draw_time();
-    scr_clock_menu_draw_frame();
-    scr_clock_menu_draw_icon();
-    scr_clock_menu_draw_arrows();
-    scr_clock_menu_draw_name();
-    scr_clock_menu_draw_buttons();
+	view_render.clear();
+	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
+	scr_clock_menu_draw_time();
+	scr_clock_menu_draw_frame();
+	scr_clock_menu_draw_icon();
+	scr_clock_menu_draw_arrows();
+	scr_clock_menu_draw_name();
+	scr_clock_menu_draw_buttons();
 }
 
 /*****************************************************************************/
@@ -145,90 +145,90 @@ void view_scr_clock_menu()
 /*****************************************************************************/
 void scr_clock_menu_handle(ak_msg_t* msg)
 {
-    switch (msg->sig)
-    {
-    case SCREEN_ENTRY:
-    {
-        APP_DBG_SIG("SCREEN_ENTRY\n");
-        current_location = SCR_CLOCK_MENU_CLOCK;
-        task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
-        timer_set(AC_TASK_DISPLAY_ID,
-                  MC_CLOCK_TIME_TICK,
-                  MC_CLOCK_TIME_TICK_INTERVAL,
-                  TIMER_PERIODIC);
-    }
-    break;
+	switch (msg->sig)
+	{
+	case SCREEN_ENTRY:
+	{
+		APP_DBG_SIG("SCREEN_ENTRY\n");
+		current_location = SCR_CLOCK_MENU_CLOCK;
+		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
+		timer_set(AC_TASK_DISPLAY_ID,
+		          MC_CLOCK_TIME_TICK,
+		          MC_CLOCK_TIME_TICK_INTERVAL,
+		          TIMER_PERIODIC);
+	}
+	break;
 
-    case MC_CLOCK_TIME_TICK:
-    {
-        APP_DBG_SIG("MC_CLOCK_TIME_TICK\n");
-        task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
-    }
-    break;
+	case MC_CLOCK_TIME_TICK:
+	{
+		APP_DBG_SIG("MC_CLOCK_TIME_TICK\n");
+		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
+	}
+	break;
 
-    case AC_DISPLAY_BUTON_MODE_PRESSED:
-    {
-        APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
-        timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
-        switch (current_location)
-        {
-        case SCR_CLOCK_MENU_CLOCK:
-            SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
-            break;
+	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+		switch (current_location)
+		{
+		case SCR_CLOCK_MENU_CLOCK:
+			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
+			break;
 
-        case SCR_CLOCK_MENU_ALARM:
-            SCREEN_TRAN(scr_clock_alarm_handle, &scr_clock_alarm);
-            break;
+		case SCR_CLOCK_MENU_ALARM:
+			SCREEN_TRAN(scr_clock_alarm_handle, &scr_clock_alarm);
+			break;
 
-        case SCR_CLOCK_MENU_STOPWATCH:
-            SCREEN_TRAN(scr_clock_stopwatch_handle, &scr_clock_stopwatch);
-            break;
+		case SCR_CLOCK_MENU_STOPWATCH:
+			SCREEN_TRAN(scr_clock_stopwatch_handle, &scr_clock_stopwatch);
+			break;
 
-        case SCR_CLOCK_MENU_TIMER:
-            SCREEN_TRAN(scr_clock_timer_handle, &scr_clock_timer);
-            break;
+		case SCR_CLOCK_MENU_TIMER:
+			SCREEN_TRAN(scr_clock_timer_handle, &scr_clock_timer);
+			break;
 
-        case SCR_CLOCK_MENU_SETTING:
-            SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
-            break;
+		case SCR_CLOCK_MENU_SETTING:
+			SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
+			break;
 
-        case SCR_CLOCK_MENU_EXIT:
-            SCREEN_TRAN(scr_idle_handle, &scr_idle);
-            break;
+		case SCR_CLOCK_MENU_EXIT:
+			SCREEN_TRAN(scr_idle_handle, &scr_idle);
+			break;
 
-        default:
-            APP_DBG("[MENU] item %u is not ready\n", current_location);
-            break;
-        }
-    }
-    break;
+		default:
+			APP_DBG("[MENU] item %u is not ready\n", current_location);
+			break;
+		}
+	}
+	break;
 
-    case AC_DISPLAY_BUTON_UP_PRESSED:
-    {
-        APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
-        if (current_location == 0)
-        {
-            current_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
-        }
-        else
-        {
-            current_location--;
-        }
-    }
-    break;
+	case AC_DISPLAY_BUTON_UP_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		if (current_location == 0)
+		{
+			current_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+		}
+		else
+		{
+			current_location--;
+		}
+	}
+	break;
 
-    case AC_DISPLAY_BUTON_DOWN_PRESSED:
-    {
-        APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-        current_location++;
-        if (current_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
-        {
-            current_location = 0;
-        }
-    }
-    break;
+	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		current_location++;
+		if (current_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
+		{
+			current_location = 0;
+		}
+	}
+	break;
 
-    default:
-        break;
-    }
+	default:
+		break;
+	}
 }
