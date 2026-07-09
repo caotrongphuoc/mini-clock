@@ -148,4 +148,3 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 		break;
 	}
 }
-
