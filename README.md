@@ -98,9 +98,9 @@ If you have any questions, suggestions, or feedback about this project or firmwa
 
 <p style="font-size: 20px;"><strong>Josef Tan</strong> - Software Engineer - Embedded Systems</p>
 
-> **Note**  
-> Thank you for visiting this repository.  
-> If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
+``` Note
+For questions related to this project, embedded systems, or firmware development, please feel free to reach out through GitHub or LinkedIn.
+````
 
 <a href="https://github.com/joseftanlang">
   <img src="https://img.shields.io/badge/GitHub-joseftanlang-181717?style=for-the-badge&logo=github&logoColor=white"/>
