@@ -15,6 +15,8 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_stopwatch,
     bitmap_clock_menu_timer,
     bitmap_clock_menu_setting,
+	bitmap_world_clock,
+	bitmap_calender_display,
     bitmap_clock_menu_exit,
 };
 
@@ -23,6 +25,8 @@ static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     "Alarm",
     "Stopwatch",
     "Timer",
+	"World Clock",
+	"Caledner",
     "Setting",
     "Exit",
 };
@@ -188,7 +192,13 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		case SCR_CLOCK_MENU_TIMER:
 			SCREEN_TRAN(scr_clock_timer_handle, &scr_clock_timer);
 			break;
-
+		
+		case SCR_CLOCK_MENU_WORLD_CLOCK:
+			SCREEN_TRAN(scr_world_clock_handle, &scr_world_clock);
+			break;
+		case SCR_CLOCK_MENU_CALENDAR:
+			SCREEN_TRAN(scr_clock_calender_handle, &scr_clock_calender);
+			break;
 		case SCR_CLOCK_MENU_SETTING:
 			SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
 			break;

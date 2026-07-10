@@ -245,6 +245,38 @@ enum {
 };
 
 /*****************************************************************************/
+/* MC CLOCK WORLD CLOCK task define
+ */
+/*****************************************************************************/
+/* define signal */
+enum {
+	MC_CLOCK_WORLD_CLOCK_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_WORLD_CLOCK_UPDATE,
+	MC_CLOCK_WORLD_CLOCK_SELECT_UP,
+	MC_CLOCK_WORLD_CLOCK_SELECT_DOWN,
+};
+
+/*****************************************************************************/
+/* MC CLOCK CALENDAR task define
+ */
+/*****************************************************************************/
+/* define signal */
+enum {
+	MC_CLOCK_CALENDAR_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_CALENDAR_UPDATE,
+	MC_CLOCK_CALENDAR_NEXT_MONTH,
+	MC_CLOCK_CALENDAR_PREV_MONTH,
+	MC_CLOCK_CALENDAR_ADD_EVENT,
+	MC_CLOCK_CALENDAR_EDIT_EVENT,
+	MC_CLOCK_CALENDAR_DELETE_EVENT,
+	MC_CLOCK_CALENDAR_NEXT_FIELD,
+	MC_CLOCK_CALENDAR_FIELD_INC,
+	MC_CLOCK_CALENDAR_FIELD_DEC,
+	MC_CLOCK_CALENDAR_ALARM_FIRED,
+	MC_CLOCK_CALENDAR_ALARM_DISMISS,
+};
+
+/*****************************************************************************/
 /*  app function declare
  */
 /*****************************************************************************/

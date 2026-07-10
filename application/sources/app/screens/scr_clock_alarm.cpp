@@ -34,8 +34,8 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	view_render.print("Edit Alarm");
 
 	xsprintf(buf, "%02u:%02u %s",
-	        alarm->hour, alarm->minute,
-	        alarm->enabled ? "ON" : "OFF");
+	         alarm->hour, alarm->minute,
+	         alarm->enabled ? "ON" : "OFF");
 	view_render.setCursor(5, 28);
 	view_render.setTextSize(2);
 	view_render.print(buf);
@@ -66,10 +66,10 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 		view_render.setTextColor(fg);
 		view_render.setTextSize(1);
 		xsprintf(line, "%u. %02u:%02u %s",
-		        idx + 1,
-		        state->alarm[idx].hour,
-		        state->alarm[idx].minute,
-		        state->alarm[idx].enabled ? "[ON]" : "[OFF]");
+		         idx + 1,
+		         state->alarm[idx].hour,
+		         state->alarm[idx].minute,
+		         state->alarm[idx].enabled ? "[ON]" : "[OFF]");
 		view_render.setCursor(4, y + 3);
 		view_render.print(line);
 	}
@@ -130,15 +130,35 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+
 		mc_clock_alarm_get_state(&state);
 
-		if (!state.editing && state.current_item == state.total_alarm + 1)
+		uint8_t add_item = state.total_alarm;
+		uint8_t back_item = state.total_alarm + 1;
+
+		if (!state.editing)
 		{
-			SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
-			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+			if (state.current_item == back_item)
+			{
+				SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
+				BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+				break;
+			}
+
+			if (state.current_item == add_item)
+			{
+				task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SELECT);
+				BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+				break;
+			}
+
+			// Existing alarm selected
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SELECT);
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 		}
 
+		// Editing mode
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SELECT);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

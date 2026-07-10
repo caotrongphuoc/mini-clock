@@ -15,4 +15,6 @@ SOURCES_CPP += sources/app/screens/scr_clock_setting_sound.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_alarm.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_stopwatch.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_timer.cpp
+SOURCES_CPP += sources/app/screens/scr_world_clock.cpp
+SOURCES_CPP += sources/app/screens/scr_clock_calender.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_time_setting.cpp

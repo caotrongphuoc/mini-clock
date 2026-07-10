@@ -62,6 +62,8 @@
 /* ----------------------- Platform includes --------------------------------*/
 
 #include "buzzer.h"
+#include "mc_clock_world_clock.h"
+#include "mc_clock_calender.h"
 
 /* ----------------------- Json includes ------------------------------------*/
 //#include "json.hpp"
@@ -270,6 +272,9 @@ void app_init_state_machine() {
  */
 void app_task_init() {
 	SCREEN_CTOR(&scr_mng_app, scr_startup_handle, &scr_startup);
+
+	mc_clock_world_clock_init();
+	mc_clock_calendar_init();
 
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
 }

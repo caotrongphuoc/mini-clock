@@ -27,6 +27,8 @@ const task_t app_task_table[] = {
 	{MC_CLOCK_STOPWATCH_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_stopwatch_handle},
 	{MC_CLOCK_TIMER_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_timer_handle},
 	{MC_CLOCK_ALARM_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_alarm_handle},
+	{MC_CLOCK_WORLD_CLOCK_ID	,	TASK_PRI_LEVEL_4	,	mc_clock_world_clock_handle},
+	{MC_CLOCK_CALENDAR_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_calendar_handle},
 
 	/*************************************************************************/
 	/* RF24 NETWORK TASK */
