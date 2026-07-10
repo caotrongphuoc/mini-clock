@@ -36,10 +36,12 @@ Through this project, I practiced several embedded concepts:
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> AK Embedded Base Kit - STM32L151</p>
 
-[AK Embedded Base Kit](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu) is an evaluation kit aimed at intermediate and advanced embedded software learners.
+[AK Embedded Base Kit](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu) is a development kit for people who already have some experience with embedded programming.
 
-The kit integrates a **1.54" OLED LCD**, **3 push buttons**, and **a buzzer** capable of playing short melodies, giving you everything you need to study **event-driven systems** through hands-on game-machine design.
-It also exposes **RS485**, the **Qwiic Connect System**, and **Grove** connectors, so it doubles as a convenient prototyping board for real-world embedded projects.
+The board has a **1.54-inch OLED display**, **3 push buttons**, and **a buzzer** for playing simple sounds. These features make it useful for learning **event-driven programming** by building small games.
+
+It also supports **RS485**, **Qwiic**, and **Grove** connections, so you can use it to test sensors, modules, and other embedded projects.
+
 
 **MCU Overview:**
 
