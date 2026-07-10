@@ -98,15 +98,14 @@ If you have any questions, suggestions, or feedback about this project or firmwa
 
 <p style="font-size: 20px;"><strong>Josef Tan</strong> - Software Engineer - Embedded Systems</p>
 
-``` Note
-Thank you for visiting this repository.
-If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
-```
+> **Note**  
+> Thank you for visiting this repository.  
+> If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
 
 <a href="https://github.com/joseftanlang">
   <img src="https://img.shields.io/badge/GitHub-joseftanlang-181717?style=for-the-badge&logo=github&logoColor=white"/>
 </a>
 
-<a href="https://www.linkedin.com/in/cao-trong-phuoc/">
-  <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+<a href="https://www.linkedin.com/in/josef-tan/">
+  <img src="https://img.shields.io/badge/LinkedIn-Josef%20Tan-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
 </a>
