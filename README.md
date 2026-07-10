@@ -96,7 +96,7 @@ If you have any questions, suggestions, or feedback about this project or firmwa
   <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
 </a>
 
-<p style="font-size: 20px;"><strong>Josef Tan</strong> - Software and Embedded Systems Engineer</p>
+<p style="font-size: 20px;"><strong>Josef Tan</strong> - Software Engineer - Embedded Systems</p>
 
 ``` Note
 Thank you for visiting this repository.
