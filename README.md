@@ -57,7 +57,7 @@ Flash Partitions Layout
 => Used for data sharing between Bootloader and Application
 
 [ 0x08003000 - 0x0801FFFF ] : Application Partition (116 KB)
-=> Zomwar firmware
+=> Mini Clock firmware
 ```
 
 **MCU Naming Convention:**
