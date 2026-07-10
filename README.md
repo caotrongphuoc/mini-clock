@@ -10,6 +10,10 @@
 
 ## Documentation
 
+| File | Description |
+|---|---|
+| [README.md](README.md) | Main project overview, hardware information, operation, and object descriptions. |
+
 ## Introduction
 
 Mini Clock is a digital desk clock built on the AK Embedded Base Kit.
