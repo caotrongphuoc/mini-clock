@@ -70,7 +70,7 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/board/board-view-top-bottom.png" width="900"/></td>
+    <td align="center"><img src="hardware/images/board-view-top-bottom.png" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Board view Top + Bottom </p>
