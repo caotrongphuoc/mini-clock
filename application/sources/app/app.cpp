@@ -64,6 +64,7 @@
 #include "buzzer.h"
 #include "mc_clock_world_clock.h"
 #include "mc_clock_calender.h"
+#include "mc_clock_alarm.h"
 
 /* ----------------------- Json includes ------------------------------------*/
 //#include "json.hpp"
@@ -275,6 +276,7 @@ void app_task_init() {
 
 	mc_clock_world_clock_init();
 	mc_clock_calendar_init();
+	mc_clock_alarm_apply_rtc();
 
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
 }

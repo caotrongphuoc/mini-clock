@@ -2,6 +2,8 @@
 
 #include "rtc.h"
 #include "buzzer.h"
+#include "mc_clock_time.h"
+#include "mc_clock_world_clock.h"
 #include "app_dbg.h"
 #include "task_list.h"
 
@@ -78,11 +80,16 @@ uint8_t mc_calendar_has_event_on_day(
 
 static void mc_calendar_sync_today(void)
 {
-    rtc_date_t date;
-    rtc_get_date(&date);
-    calendar.today_year  = date.year;
-    calendar.today_month = date.month;
-    calendar.today_day   = date.date;
+    rtc_time_t raw_time;
+    rtc_date_t raw_date;
+    rtc_time_t local_time;
+    rtc_date_t local_date;
+    rtc_get_time(&raw_time);
+    rtc_get_date(&raw_date);
+    mc_clock_time_adjust_timezone(&raw_time, &raw_date, mc_clock_world_clock_get_selected_offset_minutes(), &local_time, &local_date);
+    calendar.today_year  = local_date.year;
+    calendar.today_month = local_date.month;
+    calendar.today_day   = local_date.date;
 }
 
 

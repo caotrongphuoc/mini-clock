@@ -3,13 +3,12 @@
 #include "rtc.h"
 #include "app_dbg.h"
 #include "task_list.h"
+#include "mc_clock_alarm.h"
 
 #include <string.h>
 
 
 static mc_world_clock_state_t world_clock;
-
-
 
 /*****************************************************************************/
 /* Helper - build UTC label string from offset in minutes                    */
@@ -78,7 +77,7 @@ void mc_clock_world_clock_init(void)
     build_utc_label(world_clock.country[5].utc_label, 1 * 60);
 
     /* Australia (AEDT)  UTC+10  => offset = (10 - 7) * 60 = 180 */
-    strcpy(world_clock.country[6].name, "Australia");
+    strcpy(world_clock.country[6].name, "Austria");
     world_clock.country[6].timezone_offset_minutes = 180;
     build_utc_label(world_clock.country[6].utc_label, 10 * 60);
 
@@ -97,8 +96,6 @@ void mc_clock_world_clock_init(void)
     world_clock.country[9].timezone_offset_minutes = 120;
     build_utc_label(world_clock.country[9].utc_label, 9 * 60);
 
-
-
     world_clock.selected_country = 0;
 
     world_clock.hour   = 0;
@@ -107,32 +104,25 @@ void mc_clock_world_clock_init(void)
 
 }
 
-
-
-
 void mc_clock_world_clock_select_country(
         uint8_t index)
 {
-
     if(index < MC_WORLD_CLOCK_MAX_COUNTRY)
     {
         world_clock.selected_country = index;
     }
-
 }
-
-
 
 void mc_clock_world_clock_get_state(
         mc_world_clock_state_t* state)
 {
-
-    memcpy(state,
-            &world_clock,
-            sizeof(mc_world_clock_state_t));
-
+    memcpy(state,&world_clock,sizeof(mc_world_clock_state_t));
 }
 
+int16_t mc_clock_world_clock_get_selected_offset_minutes(void)
+{
+    return world_clock.country[world_clock.selected_country].timezone_offset_minutes;
+}
 
 /*****************************************************************************/
 /* Handle - World Clock                                                       */
@@ -163,7 +153,6 @@ static void mc_clock_world_clock_update(void)
 void mc_clock_world_clock_handle(
         ak_msg_t* msg)
 {
-
     switch(msg->sig)
     {
 
@@ -195,6 +184,7 @@ void mc_clock_world_clock_handle(
                 world_clock.selected_country = 0;
             }
             mc_clock_world_clock_update();
+            mc_clock_alarm_apply_rtc();
         }
         break;
 
@@ -211,6 +201,7 @@ void mc_clock_world_clock_handle(
                 world_clock.selected_country = MC_WORLD_CLOCK_MAX_COUNTRY - 1;
             }
             mc_clock_world_clock_update();
+            mc_clock_alarm_apply_rtc();
         }
         break;
 

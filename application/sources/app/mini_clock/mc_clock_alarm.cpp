@@ -1,4 +1,5 @@
 #include "mc_clock_alarm.h"
+#include "mc_clock_world_clock.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Clock alarm object */
@@ -33,11 +34,13 @@ void mc_clock_alarm_apply_rtc(void)
 	rtc_time_t now;
 	uint16_t now_min;
 	uint16_t best_delta = 24 * 60;
-	uint8_t best_idx = 0;
+	uint16_t best_a_min_rtc = 0;
 	uint8_t found = 0;
 
 	rtc_get_time(&now);
 	now_min = now.hour * 60 + now.min;
+
+	int16_t offset_minutes = mc_clock_world_clock_get_selected_offset_minutes();
 
 	for (uint8_t i = 0; i < mc_clock_alarm_state.total_alarm; i++)
 	{
@@ -46,14 +49,17 @@ void mc_clock_alarm_apply_rtc(void)
 			continue;
 		}
 
-		uint16_t a_min = mc_clock_alarm_state.alarm[i].hour * 60 + mc_clock_alarm_state.alarm[i].minute;
-		uint16_t delta = (a_min > now_min) ? (a_min - now_min) : (24 * 60 - (now_min - a_min));
+		// Convert local country alarm time to base RTC timezone time
+		int32_t a_min_rtc = (int32_t)mc_clock_alarm_state.alarm[i].hour * 60 + mc_clock_alarm_state.alarm[i].minute - offset_minutes;
+		a_min_rtc = ((a_min_rtc % 1440) + 1440) % 1440;
+
+		uint16_t delta = (a_min_rtc > now_min) ? (a_min_rtc - now_min) : (24 * 60 - (now_min - a_min_rtc));
 
 		if (!found || delta < best_delta)
 		{
 			found = 1;
 			best_delta = delta;
-			best_idx = i;
+			best_a_min_rtc = (uint16_t)a_min_rtc;
 		}
 	}
 
@@ -64,8 +70,8 @@ void mc_clock_alarm_apply_rtc(void)
 	}
 
 	mc_clock_rtc_set_alarm_req_t req;
-	req.time.hour = mc_clock_alarm_state.alarm[best_idx].hour;
-	req.time.min = mc_clock_alarm_state.alarm[best_idx].minute;
+	req.time.hour = (uint8_t)(best_a_min_rtc / 60);
+	req.time.min = (uint8_t)(best_a_min_rtc % 60);
 	req.time.sec = 0;
 	req.weekday = RTC_ALARM_ANY_WEEKDAY;
 

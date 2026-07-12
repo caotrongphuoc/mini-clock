@@ -51,7 +51,7 @@ static void view_scr_world_clock()
 
     /* ── Header: "World Clock" ── */
     view_render.setTextSize(1);
-    view_render.setCursor(22, 3);
+    view_render.setCursor(30, 3);
     view_render.print("World Clock");
 
     view_render.drawLine(0, 12, 128, 12, WHITE);
@@ -75,12 +75,16 @@ static void view_scr_world_clock()
 
     /* ── UTC label ── */
     view_render.setTextSize(1);
-    view_render.setCursor(4, 52);
+    view_render.setCursor(55, 16);
     view_render.print(country->utc_label);
 
     /* ── Navigation hint ── */
-    view_render.setCursor(60, 52);
-    view_render.print("UP/DN:select");
+    view_render.setCursor(15, 52);
+    view_render.print("UP");
+    view_render.setCursor(50, 52);
+    view_render.print("DOWN");
+    view_render.setCursor(100, 52);
+    view_render.print("MODE");
 }
 
 

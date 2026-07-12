@@ -14,9 +14,9 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_alarm,
     bitmap_clock_menu_stopwatch,
     bitmap_clock_menu_timer,
-    bitmap_clock_menu_setting,
 	bitmap_world_clock,
 	bitmap_calender_display,
+    bitmap_clock_menu_setting,
     bitmap_clock_menu_exit,
 };
 

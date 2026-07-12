@@ -56,4 +56,8 @@ void mc_clock_world_clock_get_state(
 
 
 
+int16_t mc_clock_world_clock_get_selected_offset_minutes(void);
+
+
+
 #endif
