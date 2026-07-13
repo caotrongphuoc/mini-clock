@@ -445,7 +445,7 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 		{
 		case MC_CAL_MODE_MONTH:
 			/* MODE in month view: go to event list for selected day */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, M C_CLOCK_CALENDAR_EDIT_EVENT);
+			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_EDIT_EVENT);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 

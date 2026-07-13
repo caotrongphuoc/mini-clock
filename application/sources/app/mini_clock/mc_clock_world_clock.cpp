@@ -10,10 +10,7 @@
 
 static mc_world_clock_state_t world_clock;
 
-/*****************************************************************************/
 /* Helper - build UTC label string from offset in minutes                    */
-/*****************************************************************************/
-
 static void build_utc_label(char* out, int16_t offset_from_utc_min)
 {
     char sign = (offset_from_utc_min >= 0) ? '+' : '-';
@@ -34,10 +31,7 @@ static void build_utc_label(char* out, int16_t offset_from_utc_min)
 }
 
 
-/*****************************************************************************/
 /* Init - World Clock                                                         */
-/*****************************************************************************/
-
 /*
  * RTC is set to Vietnam local time (UTC+7).
  * All offsets below are relative to Vietnam time:
@@ -144,14 +138,11 @@ static void mc_clock_world_clock_update(void)
     world_clock.second = now.sec;
 }
 
-
-
 void mc_clock_world_clock_handle(
         ak_msg_t* msg)
 {
     switch(msg->sig)
     {
-
         case MC_CLOCK_WORLD_CLOCK_SETUP:
         {
             APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SETUP\n");
@@ -159,14 +150,12 @@ void mc_clock_world_clock_handle(
         }
         break;
 
-
         case MC_CLOCK_WORLD_CLOCK_UPDATE:
         {
             APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_UPDATE\n");
             mc_clock_world_clock_update();
         }
         break;
-
 
         case MC_CLOCK_WORLD_CLOCK_SELECT_UP:
         {
@@ -184,7 +173,6 @@ void mc_clock_world_clock_handle(
         }
         break;
 
-
         case MC_CLOCK_WORLD_CLOCK_SELECT_DOWN:
         {
             APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_DOWN\n");
@@ -200,7 +188,6 @@ void mc_clock_world_clock_handle(
             mc_clock_alarm_apply_rtc();
         }
         break;
-
 
         default:
         break;
