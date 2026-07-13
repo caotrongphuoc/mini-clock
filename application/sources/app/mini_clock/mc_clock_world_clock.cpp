@@ -124,10 +124,6 @@ int16_t mc_clock_world_clock_get_selected_offset_minutes(void)
     return world_clock.country[world_clock.selected_country].timezone_offset_minutes;
 }
 
-/*****************************************************************************/
-/* Handle - World Clock                                                       */
-/*****************************************************************************/
-
 static void mc_clock_world_clock_update(void)
 {
     rtc_time_t now;

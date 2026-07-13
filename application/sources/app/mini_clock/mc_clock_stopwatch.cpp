@@ -1,24 +1,15 @@
 #include "mc_clock_stopwatch.h"
 
-/*****************************************************************************/
 /* Variable Declaration - Clock stopwatch object */
-/*****************************************************************************/
-
 static mc_clock_stopwatch_state_t mc_clock_stopwatch_state;
 
-/*****************************************************************************/
 /* Public API - Clock stopwatch object */
-/*****************************************************************************/
-
 void mc_clock_stopwatch_get_state(mc_clock_stopwatch_state_t* state)
 {
 	*state = mc_clock_stopwatch_state;
 }
 
-/*****************************************************************************/
 /* Handle - Clock stopwatch object */
-/*****************************************************************************/
-
 void mc_clock_stopwatch_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)

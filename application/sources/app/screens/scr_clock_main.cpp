@@ -1,10 +1,5 @@
 #include "scr_clock_main.h"
-
 #include "scr_clock_setting_display.h"
-
-/*****************************************************************************/
-/* View helper - Clock main */
-/*****************************************************************************/
 
 const char* scr_clock_main_weekday_short_text(uint8_t weekday)
 {
@@ -95,10 +90,6 @@ void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 	view_render.setTextColor(WHITE);
 }
 
-/*****************************************************************************/
-/* View - Clock main */
-/*****************************************************************************/
-
 static void view_scr_clock_main();
 
 view_dynamic_t dyn_view_scr_clock_main = {
@@ -145,10 +136,6 @@ void view_scr_clock_main()
 	view_render.setCursor(SCR_CLOCK_MAIN_DATE_TEXT_X, SCR_CLOCK_MAIN_DATE_TEXT_Y);
 	view_render.print(date_text);
 }
-
-/*****************************************************************************/
-/* Handle - Clock main */
-/*****************************************************************************/
 
 void scr_clock_main_handle(ak_msg_t* msg)
 {

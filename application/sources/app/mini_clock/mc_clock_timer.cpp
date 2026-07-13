@@ -1,9 +1,5 @@
 #include "mc_clock_timer.h"
 
-/*****************************************************************************/
-/* Variable Declaration - Clock timer object */
-/*****************************************************************************/
-
 static mc_clock_timer_state_t mc_clock_timer_state = {
     .set_minutes = 5,
     .remaining_min = 5,
@@ -12,18 +8,10 @@ static mc_clock_timer_state_t mc_clock_timer_state = {
     .finished = 0,
 };
 
-/*****************************************************************************/
-/* Public API - Clock timer object */
-/*****************************************************************************/
-
 void mc_clock_timer_get_state(mc_clock_timer_state_t* state)
 {
 	*state = mc_clock_timer_state;
 }
-
-/*****************************************************************************/
-/* Handle - Clock timer object */
-/*****************************************************************************/
 
 void mc_clock_timer_handle(ak_msg_t* msg)
 {

@@ -4,10 +4,6 @@
 #include "task_list.h"
 #include "timer.h"
 
-/*****************************************************************************/
-/* View - World Clock                                                         */
-/*****************************************************************************/
-
 static void view_scr_world_clock();
 
 view_dynamic_t dyn_view_scr_world_clock = {
@@ -86,11 +82,6 @@ static void view_scr_world_clock()
     view_render.setCursor(100, 52);
     view_render.print("MODE");
 }
-
-
-/*****************************************************************************/
-/* Handle - World Clock                                                       */
-/*****************************************************************************/
 
 void scr_world_clock_handle(
         ak_msg_t* msg)

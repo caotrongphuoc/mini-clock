@@ -4,9 +4,6 @@
 #include "scr_clock_main.h"
 #include "scr_clock_setting_display.h"
 
-/*****************************************************************************/
-/* Variable and Struct Declaration - Clock menu */
-/*****************************************************************************/
 static uint8_t current_location = SCR_CLOCK_MENU_CLOCK;
 
 static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
@@ -31,9 +28,6 @@ static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     "Exit",
 };
 
-/*****************************************************************************/
-/* View - Clock menu */
-/*****************************************************************************/
 static void view_scr_clock_menu();
 view_dynamic_t dyn_view_scr_clock_menu = {
     {
@@ -144,9 +138,6 @@ void view_scr_clock_menu()
 	scr_clock_menu_draw_buttons();
 }
 
-/*****************************************************************************/
-/* Handle - Clock menu */
-/*****************************************************************************/
 void scr_clock_menu_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
@@ -155,7 +146,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		current_location = SCR_CLOCK_MENU_CLOCK;
-		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
+		mc_clock_time_update_local();
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
 		          MC_CLOCK_TIME_TICK_INTERVAL,

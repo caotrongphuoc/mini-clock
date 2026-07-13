@@ -1,10 +1,7 @@
 #include "mc_clock_alarm.h"
 #include "mc_clock_world_clock.h"
 
-/*****************************************************************************/
 /* Variable Declaration - Clock alarm object */
-/*****************************************************************************/
-
 static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .current_item = 0,
     .scroll_offset = 0,
@@ -20,10 +17,7 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
     },
 };
 
-/*****************************************************************************/
 /* Public API - Clock alarm object */
-/*****************************************************************************/
-
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 {
 	*state = mc_clock_alarm_state;
@@ -97,10 +91,6 @@ static void mc_clock_alarm_scroll_to_current(void)
 		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
 	}
 }
-
-/*****************************************************************************/
-/* Handle - Clock alarm object */
-/*****************************************************************************/
 
 void mc_clock_alarm_handle(ak_msg_t* msg)
 {

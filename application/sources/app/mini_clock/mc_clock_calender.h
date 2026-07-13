@@ -130,5 +130,6 @@ uint8_t mc_calendar_days_in_month(uint8_t month, uint16_t year);
 
 uint8_t mc_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
 
+void mc_clock_calendar_sync(void);
 
 #endif /* __MC_CLOCK_CALENDAR_H__ */

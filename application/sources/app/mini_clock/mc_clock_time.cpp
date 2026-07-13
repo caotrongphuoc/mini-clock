@@ -2,18 +2,10 @@
 
 #include "buzzer.h"
 #include "mc_clock_world_clock.h"
-
-/*****************************************************************************/
-/* Variable Declaration - Clock object */
-/*****************************************************************************/
-
 static mc_clock_time_state_t clock_state;
 static uint8_t clock_chime_enabled;
 
-/*****************************************************************************/
 /* Public API - Clock object */
-/*****************************************************************************/
-
 void mc_clock_time_get_state(mc_clock_time_state_t* state)
 {
 	*state = clock_state;
@@ -96,10 +88,6 @@ void mc_clock_time_update_local(void)
 	rtc_get_date(&raw_date);
 	mc_clock_time_adjust_timezone(&raw_time, &raw_date, mc_clock_world_clock_get_selected_offset_minutes(), &clock_state.time, &clock_state.date);
 }
-
-/*****************************************************************************/
-/* Handle - Clock object */
-/*****************************************************************************/
 
 void mc_clock_time_handle(ak_msg_t* msg)
 {
