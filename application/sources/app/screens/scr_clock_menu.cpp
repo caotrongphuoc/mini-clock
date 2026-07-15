@@ -23,7 +23,7 @@ static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     "Stopwatch",
     "Timer",
 	"World Clock",
-	"Caledner",
+	"Calender",
     "Setting",
     "Exit",
 };

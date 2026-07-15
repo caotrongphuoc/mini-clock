@@ -8,7 +8,7 @@
 #include "task_list.h"
 #include "app_dbg.h"
 
-#define MC_CLOCK_STOPWATCH_LAP_MAX (3)
+#define MC_CLOCK_STOPWATCH_LAP_MAX (10)
 
 typedef struct
 {

@@ -1,11 +1,7 @@
 #include "scr_clock_stopwatch.h"
-
 #include "mc_clock_stopwatch.h"
 
-/*****************************************************************************/
-/* View - Clock stopwatch */
-/*****************************************************************************/
-
+static uint8_t stopwatch_lap_scroll = 0;
 static void view_scr_clock_stopwatch();
 
 view_dynamic_t dyn_view_scr_clock_stopwatch = {
@@ -53,12 +49,40 @@ void view_scr_clock_stopwatch()
 
 	view_render.setCursor(6, 46);
 	view_render.setTextSize(1);
-	view_render.print(state.running ? "RUNNING" : "STOPPED");
 
-	view_render.setCursor(80, 46);
-	char lap_buf[10];
-	xsprintf(lap_buf, "LAP %u", state.lap_count);
-	view_render.print(lap_buf);
+	/* Status */
+	view_render.setCursor(6, 42);
+	view_render.print(state.running ? "RUN" : "STOP");
+
+	/* Show laps */
+	uint8_t start = stopwatch_lap_scroll;
+
+	for (uint8_t i = 0; i < 2; i++)
+	{
+		uint8_t lap_index = start + i;
+
+		if (lap_index >= state.lap_count)
+		{
+			break;
+		}
+
+		char lap_buf[20];
+
+		uint32_t lap_time = state.lap_ms[lap_index];
+
+		uint32_t sec = lap_time / 1000;
+		uint32_t ms = (lap_time % 1000) / 10;
+
+		xsprintf(lap_buf,
+		         "LAP%u %02lu:%02lu.%02lu",
+		         lap_index + 1,
+		         sec / 60,
+		         sec % 60,
+		         ms);
+
+		view_render.setCursor(35, 42 + i * 10);
+		view_render.print(lap_buf);
+	}
 }
 
 /*****************************************************************************/
@@ -105,8 +129,10 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_LAP);
+
+		stopwatch_lap_scroll = 0;
+
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
@@ -114,7 +140,15 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_CLEAR_LAP);
+
+		mc_clock_stopwatch_state_t state;
+		mc_clock_stopwatch_get_state(&state);
+
+		if (stopwatch_lap_scroll + 2 < state.lap_count)
+		{
+			stopwatch_lap_scroll++;
+		}
+
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;

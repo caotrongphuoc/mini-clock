@@ -4,9 +4,15 @@
 #include "ak.h"
 #include "app.h"
 #include "message.h"
+#include "rtc.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "mc_clock_alarm.h"
+
+#include <string.h>
 
 
-#define MC_WORLD_CLOCK_MAX_COUNTRY (10)
+#define MC_WORLD_CLOCK_MAX_COUNTRY (32)
 
 
 typedef struct

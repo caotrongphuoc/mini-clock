@@ -1,13 +1,15 @@
 #include "mc_clock_calender.h"
 
-#include "rtc.h"
-#include "buzzer.h"
-#include "mc_clock_time.h"
-#include "mc_clock_world_clock.h"
-#include "app_dbg.h"
-#include "task_list.h"
 
-#include <string.h>
+
+const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
+{
+	"None",
+	"Daily",
+	"Weekly",
+	"Monthly",
+	"Yearly"
+};
 
 /* Category names                                                             */
 const char* const MC_CAL_CAT_NAME[MC_CAL_CAT_MAX] = {
@@ -280,8 +282,20 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			break; /* Already ringing — wait for dismiss */
 		}
 
-		rtc_time_t now;
-		rtc_get_time(&now);
+		rtc_time_t raw_time;
+		rtc_date_t raw_date;
+		rtc_time_t local_time;
+		rtc_date_t local_date;
+
+		rtc_get_time(&raw_time);
+		rtc_get_date(&raw_date);
+
+		mc_clock_time_adjust_timezone(
+		    &raw_time,
+		    &raw_date,
+		    mc_clock_world_clock_get_selected_offset_minutes(),
+		    &local_time,
+		    &local_date);
 
 		for (uint8_t i = 0; i < calendar.total_events; i++)
 		{
@@ -295,9 +309,9 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			if (ev->year == calendar.today_year &&
 			    ev->month == calendar.today_month &&
 			    ev->day == calendar.today_day &&
-			    ev->start_hour == now.hour &&
-			    ev->start_min == now.min &&
-			    now.sec == 0)
+			    ev->start_hour == local_time.hour &&
+			    ev->start_min == local_time.min &&
+			    local_time.sec == 0)
 			{
 				APP_DBG_SIG("MC_CLOCK_CALENDAR_UPDATE — alarm fired for event %u\n", i);
 				ev->alarm_fired = 1;

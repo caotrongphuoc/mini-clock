@@ -77,19 +77,19 @@ void mc_clock_alarm_apply_rtc(void)
 
 static void mc_clock_alarm_scroll_to_current(void)
 {
-	if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.total_alarm)
-	{
-		return;
-	}
+    if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.total_alarm)
+    {
+        return;
+    }
 
-	if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.scroll_offset)
-	{
-		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
-	}
-	else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + 3)
-	{
-		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
-	}
+    if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.scroll_offset)
+    {
+        mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
+    }
+    else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + 3)
+    {
+        mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
+    }
 }
 
 void mc_clock_alarm_handle(ak_msg_t* msg)
@@ -106,60 +106,19 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-		// case MC_CLOCK_ALARM_SELECT:
-		// {
-		// 	APP_DBG_SIG("MC_CLOCK_ALARM_SELECT\n");
-		// 	if (mc_clock_alarm_state.editing)
-		// 	{
-		// 		mc_clock_alarm_state.editing = 0;
-		// 		mc_clock_alarm_apply_rtc();
-		// 		break;
-		// 	}
-
-		// 	if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm)
-		// 	{
-		// 		if (mc_clock_alarm_state.total_alarm < MC_CLOCK_ALARM_MAX)
-		// 		{
-		// 			uint8_t new_alarm = mc_clock_alarm_state.total_alarm;
-		// 			mc_clock_alarm_state.alarm[new_alarm].hour = 8;
-		// 			mc_clock_alarm_state.alarm[new_alarm].minute = 0;
-		// 			mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
-		// 			mc_clock_alarm_state.total_alarm++;
-		// 			mc_clock_alarm_state.current_item = new_alarm;
-		// 			mc_clock_alarm_apply_rtc();
-		// 		}
-		// 		break;
-		// 	}
-
-		// 	if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
-		// 	{
-		// 		mc_clock_alarm_state.editing = 1;
-		// 		mc_clock_alarm_state.editing_alarm = mc_clock_alarm_state.current_item;
-		// 		mc_clock_alarm_state.editing_field = 0;
-		// 	}
-		// }
-		// break;
-
 	case MC_CLOCK_ALARM_SELECT:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_SELECT\n");
 
 		if (mc_clock_alarm_state.editing)
 		{
+			// Finish editing
 			mc_clock_alarm_state.editing = 0;
 			mc_clock_alarm_apply_rtc();
 			break;
 		}
 
-		// Back item
-		mc_clock_alarm_state.current_item++;
-
-		if (mc_clock_alarm_state.current_item > mc_clock_alarm_state.total_alarm + 1)
-		{
-			mc_clock_alarm_state.current_item = 0;
-		}
-
-		// Add New item
+		// Add New button
 		if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm)
 		{
 			if (mc_clock_alarm_state.total_alarm < MC_CLOCK_ALARM_MAX)
@@ -172,11 +131,18 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 				mc_clock_alarm_state.total_alarm++;
 
-				// Move to the new alarm, not Add/Back
+				// Select the newly created alarm
 				mc_clock_alarm_state.current_item = new_alarm;
-				mc_clock_alarm_state.scroll_offset = 0;
+
 				mc_clock_alarm_apply_rtc();
 			}
+
+			break;
+		}
+
+		// Back button
+		if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm + 1)
+		{
 			break;
 		}
 

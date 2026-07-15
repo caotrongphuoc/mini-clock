@@ -225,6 +225,7 @@ enum {
 	MC_CLOCK_TIMER_DEC,
 	MC_CLOCK_TIMER_UPDATE,
 	MC_CLOCK_TIMER_DISMISS,
+	MC_CLOCK_TIMER_NEXT_FIELD,
 };
 
 /*****************************************************************************/

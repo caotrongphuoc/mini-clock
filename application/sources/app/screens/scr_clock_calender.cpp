@@ -24,6 +24,10 @@ static const char* const MONTH_NAME[13] = {
     "Dec",
 };
 
+/*****************************************************************************/
+/* Day names                                                                */
+/*****************************************************************************/
+
 static const char* const DOW_NAME[7] = {
     "Mo",
     "Tu",
@@ -35,7 +39,7 @@ static const char* const DOW_NAME[7] = {
 };
 
 /*****************************************************************************/
-/* View helper — weekday of 1st of month (0=Mon … 6=Sun, Zeller)            */
+/* View helper — weekday of 1st of month (0=Mon … 6=Sun)           			 */
 /*****************************************************************************/
 
 static uint8_t first_weekday_of_month(uint8_t month, uint16_t year)
@@ -57,6 +61,18 @@ static uint8_t first_weekday_of_month(uint8_t month, uint16_t year)
 static void view_scr_calendar_month(const mc_calendar_state_t* st)
 {
 	char buf[20];
+	uint8_t first_dow = first_weekday_of_month(st->view_month, st->view_year);
+	uint8_t days_in_m = mc_calendar_days_in_month(st->view_month, st->view_year);
+	/* Scroll so the selected week stays visible */
+	uint8_t selected_cell = first_dow + (st->selected_day - 1);
+	uint8_t selected_row = selected_cell / 7;
+
+	int16_t scroll_y = 0;
+
+	if (selected_row >= 3)
+	{
+		scroll_y = (selected_row - 2) * 9;
+	}
 
 	/* Header: month name + year */
 	xsprintf(buf, "%s %u", MONTH_NAME[st->view_month], st->view_year);
@@ -77,10 +93,6 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 
 	view_render.drawLine(0, 20, 128, 20, WHITE);
 
-	/* Day cells */
-	uint8_t first_dow = first_weekday_of_month(st->view_month, st->view_year);
-	uint8_t days_in_m = mc_calendar_days_in_month(st->view_month, st->view_year);
-
 	for (uint8_t day = 1; day <= days_in_m; day++)
 	{
 		uint8_t cell_idx = first_dow + (day - 1);
@@ -88,7 +100,12 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		uint8_t row = cell_idx / 7;
 
 		int16_t x = 2 + col * 18;
-		int16_t y = 22 + row * 9;
+		int16_t y = 22 + row * 9 - scroll_y;
+
+		if (y < 21 || y > 63)
+		{
+			continue;
+		}
 
 		uint8_t is_today = (day == st->today_day &&
 		                    st->view_month == st->today_month &&
@@ -125,11 +142,6 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 			                     is_selected ? BLACK : WHITE);
 		}
 	}
-
-	/* Bottom hint */
-	// view_render.drawLine(0, 57, 128, 57, WHITE);
-	// view_render.setCursor(2, 59);
-	// view_render.print("MODE:list  L-MODE:add");
 }
 
 /*****************************************************************************/

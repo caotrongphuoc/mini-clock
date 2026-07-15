@@ -1,16 +1,28 @@
 #include "scr_clock_setting_sound.h"
-
 #include "scr_clock_setting.h"
 #include "mc_clock_time.h"
 
 static uint8_t setting_sound_location_choose;
 static uint8_t setting_sound_off;
 static uint8_t setting_chime_enabled;
+static uint8_t setting_music_choice;
 
 static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
     "Mute",
     "Chime",
+    "Music",
     "Back",
+};
+
+static const char* const music_name[] = {
+    "Adventure",
+    "Space",
+    "Battle",
+    "Alarm 1",
+    "Alarm 2",
+    "Beep",
+    "Morning",
+    "Urgent",
 };
 
 static void view_scr_clock_setting_sound();
@@ -57,6 +69,7 @@ void view_scr_clock_setting_sound()
 		view_render.print(setting_sound_item_name[i]);
 
 		if (i == SCR_CLOCK_SETTING_SOUND_MUTE)
+
 		{
 			view_render.drawBitmap(110,
 			                       frame_y + 2,
@@ -65,10 +78,17 @@ void view_scr_clock_setting_sound()
 			                       7,
 			                       fg);
 		}
+
 		else if (i == SCR_CLOCK_SETTING_SOUND_CHIME)
 		{
 			view_render.setCursor(92, frame_y + 2);
 			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
+		}
+
+		else if (i == SCR_CLOCK_SETTING_SOUND_MUSIC)
+		{
+			view_render.setCursor(65, frame_y + 2);
+			view_render.print(music_name[setting_music_choice]);
 		}
 	}
 
@@ -102,6 +122,19 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 			mc_clock_time_set_chime_enabled(setting_chime_enabled);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
+
+		case SCR_CLOCK_SETTING_SOUND_MUSIC:
+		{
+			setting_music_choice++;
+
+			if (setting_music_choice >= MUSIC_LIST_NUMBER)
+			{
+				setting_music_choice = 0;
+			}
+
+			BUZZER_PlaySound(music_list[setting_music_choice]);
+		}
+		break;
 
 		case SCR_CLOCK_SETTING_SOUND_BACK:
 		default:

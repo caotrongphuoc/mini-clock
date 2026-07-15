@@ -1,13 +1,19 @@
 #include "mc_clock_timer.h"
 
 static mc_clock_timer_state_t mc_clock_timer_state = {
-    .set_minutes = 5,
-    .remaining_min = 5,
+    .set_hour = 0,
+    .set_min = 1,
+    .set_sec = 0,
+
+    .remaining_hour = 0,
+    .remaining_min = 1,
     .remaining_sec = 0,
+
     .running = 0,
     .finished = 0,
-};
 
+    .edit_field = MC_TIMER_EDIT_MIN,
+};
 void mc_clock_timer_get_state(mc_clock_timer_state_t* state)
 {
 	*state = mc_clock_timer_state;
@@ -29,17 +35,23 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		if (mc_clock_timer_state.finished)
 		{
 			mc_clock_timer_state.finished = 0;
-			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
-			mc_clock_timer_state.remaining_sec = 0;
+
+			mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+			mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
+
 			BUZZER_Disable();
 			break;
 		}
 
-		if (mc_clock_timer_state.running == 0 &&
+		if (!mc_clock_timer_state.running &&
+		    mc_clock_timer_state.remaining_hour == 0 &&
 		    mc_clock_timer_state.remaining_min == 0 &&
 		    mc_clock_timer_state.remaining_sec == 0)
 		{
-			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
+			mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+			mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
 		}
 
 		mc_clock_timer_state.running = !mc_clock_timer_state.running;
@@ -51,69 +63,118 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_RESET\n");
 		mc_clock_timer_state.running = 0;
 		mc_clock_timer_state.finished = 0;
-		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
-		mc_clock_timer_state.remaining_sec = 0;
+
+		mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+		mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
+
+		BUZZER_Disable();
 		BUZZER_Disable();
 	}
 	break;
 
 	case MC_CLOCK_TIMER_INC:
 	{
-		APP_DBG_SIG("MC_CLOCK_TIMER_INC\n");
-		if (mc_clock_timer_state.running == 0)
+		if (!mc_clock_timer_state.running)
 		{
 			mc_clock_timer_state.finished = 0;
-			mc_clock_timer_state.set_minutes += MC_CLOCK_TIMER_STEP_MINUTES;
-			if (mc_clock_timer_state.set_minutes > MC_CLOCK_TIMER_MAX_MINUTES)
+
+			switch (mc_clock_timer_state.edit_field)
 			{
-				mc_clock_timer_state.set_minutes = MC_CLOCK_TIMER_MAX_MINUTES;
+			case MC_TIMER_EDIT_HOUR:
+				if (mc_clock_timer_state.set_hour < 23)
+					mc_clock_timer_state.set_hour++;
+				break;
+
+			case MC_TIMER_EDIT_MIN:
+				if (mc_clock_timer_state.set_min < 59)
+					mc_clock_timer_state.set_min++;
+				break;
+
+			case MC_TIMER_EDIT_SEC:
+				if (mc_clock_timer_state.set_sec < 59)
+					mc_clock_timer_state.set_sec++;
+				break;
 			}
-			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
-			mc_clock_timer_state.remaining_sec = 0;
+
+			mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+			mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
 		}
 	}
 	break;
 
 	case MC_CLOCK_TIMER_DEC:
 	{
-		APP_DBG_SIG("MC_CLOCK_TIMER_DEC\n");
-		if (mc_clock_timer_state.running == 0)
+		if (!mc_clock_timer_state.running)
 		{
 			mc_clock_timer_state.finished = 0;
-			if (mc_clock_timer_state.set_minutes >= MC_CLOCK_TIMER_STEP_MINUTES)
+
+			switch (mc_clock_timer_state.edit_field)
 			{
-				mc_clock_timer_state.set_minutes -= MC_CLOCK_TIMER_STEP_MINUTES;
+			case MC_TIMER_EDIT_HOUR:
+				if (mc_clock_timer_state.set_hour > 0)
+					mc_clock_timer_state.set_hour--;
+				break;
+
+			case MC_TIMER_EDIT_MIN:
+				if (mc_clock_timer_state.set_min > 0)
+					mc_clock_timer_state.set_min--;
+				break;
+
+			case MC_TIMER_EDIT_SEC:
+				if (mc_clock_timer_state.set_sec > 0)
+					mc_clock_timer_state.set_sec--;
+				break;
 			}
-			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
-			mc_clock_timer_state.remaining_sec = 0;
+
+			mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+			mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+			mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
+		}
+	}
+	break;
+
+	case MC_CLOCK_TIMER_NEXT_FIELD:
+	{
+		if (!mc_clock_timer_state.running)
+		{
+			mc_clock_timer_state.edit_field++;
+
+			if (mc_clock_timer_state.edit_field > MC_TIMER_EDIT_SEC)
+			{
+				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_HOUR;
+			}
 		}
 	}
 	break;
 
 	case MC_CLOCK_TIMER_UPDATE:
 	{
-		APP_DBG_SIG("MC_CLOCK_TIMER_UPDATE\n");
-		if (mc_clock_timer_state.running == 0)
-		{
+		if (!mc_clock_timer_state.running)
 			break;
-		}
 
 		if (mc_clock_timer_state.remaining_sec > 0)
 		{
 			mc_clock_timer_state.remaining_sec--;
-			break;
 		}
-
-		if (mc_clock_timer_state.remaining_min > 0)
+		else if (mc_clock_timer_state.remaining_min > 0)
 		{
 			mc_clock_timer_state.remaining_min--;
 			mc_clock_timer_state.remaining_sec = 59;
-			break;
 		}
-
-		mc_clock_timer_state.running = 0;
-		mc_clock_timer_state.finished = 1;
-		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
+		else if (mc_clock_timer_state.remaining_hour > 0)
+		{
+			mc_clock_timer_state.remaining_hour--;
+			mc_clock_timer_state.remaining_min = 59;
+			mc_clock_timer_state.remaining_sec = 59;
+		}
+		else
+		{
+			mc_clock_timer_state.running = 0;
+			mc_clock_timer_state.finished = 1;
+			BUZZER_PlaySound(BUZZER_SOUND_ALARM_URGENT);  //Later this will be sync to the setting from the EEPROM
+		}
 	}
 	break;
 
@@ -122,8 +183,10 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_DISMISS\n");
 		mc_clock_timer_state.running = 0;
 		mc_clock_timer_state.finished = 0;
-		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_minutes;
-		mc_clock_timer_state.remaining_sec = 0;
+		mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
+		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
+		mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
+		// mc_clock_timer_state.remaining_sec = 0;
 		BUZZER_Disable();
 	}
 	break;
