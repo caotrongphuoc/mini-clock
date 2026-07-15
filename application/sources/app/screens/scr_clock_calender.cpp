@@ -480,31 +480,53 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 		switch (st.mode)
 		{
 		case MC_CAL_MODE_MONTH:
-			/* Long-press MODE in month view = Add new event */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_ADD_EVENT);
+		{
+			/* Add new event */
+			task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+			                   MC_CLOCK_CALENDAR_ADD_EVENT);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
+		}
+		break;
 
 		case MC_CAL_MODE_LIST:
-			/* Long-press MODE in list view = Delete selected event */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_DELETE_EVENT);
+		{
+			/* Delete selected event */
+			task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+			                   MC_CLOCK_CALENDAR_DELETE_EVENT);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
+		}
+		break;
 
 		case MC_CAL_MODE_EDIT:
 		{
-                if (st.is_new_event)
-                {
-				task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_DELETE_EVENT);
+			if (st.is_new_event)
+			{
+				/* Cancel new event */
+				task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+				                   MC_CLOCK_CALENDAR_DELETE_EVENT);
 			}
 			else
-			{ 
-				task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_EDIT_EVENT);
+			{
+				/* Finish editing */
+				task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+				                   MC_CLOCK_CALENDAR_NEXT_FIELD);
+
+				/* Jump directly to last field so NEXT_FIELD exits edit mode */
+				while (st.editing_field < (MC_CAL_FIELD_MAX - 1))
+				{
+					task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+					                   MC_CLOCK_CALENDAR_NEXT_FIELD);
+					st.editing_field++;
+				}
+
+				task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
+				                   MC_CLOCK_CALENDAR_NEXT_FIELD);
 			}
 
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}
 		break;
+
 		default:
 			break;
 		}

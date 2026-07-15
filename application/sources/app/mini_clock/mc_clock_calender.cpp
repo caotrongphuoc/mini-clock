@@ -468,20 +468,34 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_CALENDAR_NEXT_FIELD\n");
 
-		if (calendar.mode == MC_CAL_MODE_EDIT)
+		if (calendar.mode != MC_CAL_MODE_EDIT)
 		{
-			if (calendar.editing_field + 1 < MC_CAL_FIELD_MAX)
+			break;
+		}
+
+		if (calendar.editing_field < (MC_CAL_FIELD_MAX - 1))
+		{
+			/* Move to next editable field */
+			calendar.editing_field++;
+		}
+		else
+		{
+			/* Finished editing */
+
+			calendar.events[calendar.editing_event].alarm_fired = 0;
+
+			calendar.current_event = calendar.editing_event;
+			calendar.scroll_offset = 0;
+			mc_calendar_scroll_to_event();
+
+			if (calendar.is_new_event)
 			{
-				calendar.editing_field++;
+				calendar.is_new_event = 0;
+				calendar.mode = MC_CAL_MODE_MONTH;
 			}
 			else
 			{
-				/* Last field confirmed — reset alarm_fired so alarm can fire */
-				calendar.events[calendar.editing_event].alarm_fired = 0;
 				calendar.mode = MC_CAL_MODE_LIST;
-				calendar.current_event = calendar.editing_event;
-				calendar.scroll_offset = 0;
-				mc_calendar_scroll_to_event();
 			}
 		}
 	}
