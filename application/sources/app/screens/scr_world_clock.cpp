@@ -32,11 +32,6 @@ static void view_scr_world_clock()
 	xsprintf(time_buf, "%02u:%02u:%02u",
 	         state.hour, state.minute, state.second);
 
-	/* Country index label e.g. " 1/10" */
-	// char idx_buf[8];
-	// xsprintf(idx_buf, "%u/%u",
-	//          state.selected_country + 1,
-	//          MC_WORLD_CLOCK_MAX_COUNTRY);
 	char idx_buf[8];
 	xsprintf(idx_buf, "%u", state.selected_country + 1);
 
