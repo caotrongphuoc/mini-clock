@@ -6,10 +6,10 @@
 #include "mc_clock_world_clock.h"
 
 
-extern void scr_world_clock_show(void);
+extern void scr_clock_world_show(void);
 
 
-extern void scr_world_clock_handle(
+extern void scr_clock_world_handle(
         ak_msg_t* msg);
 
 

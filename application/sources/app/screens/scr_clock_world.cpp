@@ -1,25 +1,25 @@
-#include "scr_world_clock.h"
+#include "scr_clock_world.h"
 
 #include "mc_clock_world_clock.h"
 #include "task_list.h"
 #include "timer.h"
 
-static void view_scr_world_clock();
+static void view_scr_clock_world();
 
-view_dynamic_t dyn_view_scr_world_clock = {
+view_dynamic_t dyn_view_scr_clock_world = {
     {
         .item_type = ITEM_TYPE_DYNAMIC,
     },
-    view_scr_world_clock};
+    view_scr_clock_world};
 
-view_screen_t scr_world_clock = {
-    &dyn_view_scr_world_clock,
+view_screen_t scr_clock_world = {
+    &dyn_view_scr_clock_world,
     ITEM_NULL,
     ITEM_NULL,
     .focus_item = 0,
 };
 
-static void view_scr_world_clock()
+static void view_scr_clock_world()
 {
 	mc_world_clock_state_t state;
 
@@ -80,7 +80,7 @@ static void view_scr_world_clock()
 	view_render.print("MODE");
 }
 
-void scr_world_clock_handle(
+void scr_clock_world_handle(
     ak_msg_t* msg)
 {
 

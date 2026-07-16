@@ -283,7 +283,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_MENU_WORLD_CLOCK:
-			SCREEN_TRAN(scr_world_clock_handle, &scr_world_clock);
+			SCREEN_TRAN(scr_clock_world_handle, &scr_clock_world);
 			break;
 		case SCR_CLOCK_MENU_CALENDAR:
 			SCREEN_TRAN(scr_clock_calendar_handle, &scr_clock_calendar);

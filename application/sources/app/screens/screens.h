@@ -74,10 +74,10 @@ extern view_dynamic_t dyn_view_scr_clock_time_setting;
 extern view_screen_t scr_clock_time_setting;
 extern void scr_clock_time_setting_handle(ak_msg_t* msg);
 
-//scr_world_clock
-extern view_dynamic_t dyn_view_scr_world_clock;
-extern view_screen_t scr_world_clock;
-extern void scr_world_clock_handle(ak_msg_t* msg);
+//scr_clock_world
+extern view_dynamic_t dyn_view_scr_clock_world;
+extern view_screen_t scr_clock_world;
+extern void scr_clock_world_handle(ak_msg_t* msg);
 
 // scr_clock_calendar
 extern view_dynamic_t dyn_view_scr_clock_calendar;
