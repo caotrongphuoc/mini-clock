@@ -109,6 +109,7 @@ void scr_world_clock_handle(
 
 	case MC_CLOCK_TIME_TICK:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIME_TICK [world clock]\n");
 		/* Every second: update the world clock state then re-render */
 		task_post_pure_msg(MC_CLOCK_WORLD_CLOCK_ID, MC_CLOCK_WORLD_CLOCK_UPDATE);
 	}

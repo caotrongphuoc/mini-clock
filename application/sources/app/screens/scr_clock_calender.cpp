@@ -448,6 +448,7 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIME_TICK:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIME_TICK [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		task_post_pure_msg(
@@ -641,6 +642,7 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.mode == MC_CAL_MODE_MONTH)
