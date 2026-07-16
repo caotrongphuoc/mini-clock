@@ -23,6 +23,11 @@ void mc_clock_alarm_set_sound(uint8_t sound)
 	mc_clock_alarm_state.alarm_sound = sound;
 }
 
+uint8_t mc_clock_alarm_get_sound(void)
+{
+	return mc_clock_alarm_state.alarm_sound;
+}
+
 /* Public API - Clock alarm object */
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 {

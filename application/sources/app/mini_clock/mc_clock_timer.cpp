@@ -1,5 +1,7 @@
 #include "mc_clock_timer.h"
 
+#include "mc_clock_alarm.h"
+
 static mc_clock_timer_state_t mc_clock_timer_state = {
     .set_hour = 0,
     .set_min = 1,
@@ -172,7 +174,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		{
 			mc_clock_timer_state.running = 0;
 			mc_clock_timer_state.finished = 1;
-			BUZZER_PlaySound(BUZZER_SOUND_ALARM_URGENT);  //Later this will be sync to the setting from the EEPROM
+			BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
 		}
 	}
 	break;

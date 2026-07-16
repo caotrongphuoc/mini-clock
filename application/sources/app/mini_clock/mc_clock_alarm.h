@@ -36,5 +36,6 @@ void mc_clock_alarm_handle(ak_msg_t* msg);
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state);
 void mc_clock_alarm_apply_rtc(void);
 void mc_clock_alarm_set_sound(uint8_t sound);
+uint8_t mc_clock_alarm_get_sound(void);
 
 #endif //__MC_CLOCK_ALARM_H__
