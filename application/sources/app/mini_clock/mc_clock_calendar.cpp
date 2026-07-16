@@ -337,6 +337,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	/* 1-second tick: update today's date and check event alarms           */
 	case MC_CLOCK_CALENDAR_UPDATE:
 	{
+		APP_DBG_SIG("MC_CLOCK_CALENDAR_UPDATE\n");
 		mc_calendar_sync_today();
 
 		if (calendar.ringing)
