@@ -152,12 +152,14 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_STOPWATCH_HELP:
 	{
+		APP_DBG_SIG("MC_CLOCK_STOPWATCH_HELP\n");
 		stopwatch_help = 0;
 	}
 	break;
 
 	case MC_CLOCK_STOPWATCH_TICK:
 	{
+		APP_DBG_SIG("MC_CLOCK_STOPWATCH_TICK\n");
 		task_post_pure_msg(
 		    MC_CLOCK_STOPWATCH_ID,
 		    MC_CLOCK_STOPWATCH_UPDATE);
@@ -166,6 +168,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		stopwatch_help = 0;
 
 		task_post_pure_msg(
@@ -178,6 +181,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
 		task_post_pure_msg(
 		    MC_CLOCK_STOPWATCH_ID,
 		    MC_CLOCK_STOPWATCH_RESET);
@@ -188,6 +192,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
 		stopwatch_help = 0;
 
 		task_post_pure_msg(
@@ -202,6 +207,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
 		stopwatch_help = 0;
 
 		mc_clock_stopwatch_state_t state;
@@ -219,6 +225,8 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
 	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_%s_PRESSED\n",
+		            msg->sig == AC_DISPLAY_BUTON_LONG_UP_PRESSED ? "UP" : "DOWN");
 		timer_remove_attr(
 		    AC_TASK_DISPLAY_ID,
 		    MC_CLOCK_STOPWATCH_TICK);

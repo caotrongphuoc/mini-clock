@@ -173,6 +173,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_TICK:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_TICK\n");
 		task_post_pure_msg(
 		    MC_CLOCK_TIMER_ID,
 		    MC_CLOCK_TIMER_UPDATE);
@@ -220,6 +221,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	// This is to start the timer
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
 	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
 		timer_help = 0;
 		task_post_pure_msg(MC_CLOCK_TIMER_ID,
 		                   MC_CLOCK_TIMER_START_PAUSE);
