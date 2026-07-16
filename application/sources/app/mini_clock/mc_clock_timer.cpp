@@ -185,7 +185,6 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		mc_clock_timer_state.remaining_hour = mc_clock_timer_state.set_hour;
 		mc_clock_timer_state.remaining_min = mc_clock_timer_state.set_min;
 		mc_clock_timer_state.remaining_sec = mc_clock_timer_state.set_sec;
-		// mc_clock_timer_state.remaining_sec = 0;
 		BUZZER_Disable();
 	}
 	break;
