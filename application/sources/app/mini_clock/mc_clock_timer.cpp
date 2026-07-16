@@ -76,6 +76,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_INC:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_INC\n");
 		if (!mc_clock_timer_state.running)
 		{
 			mc_clock_timer_state.finished = 0;
@@ -107,6 +108,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_DEC:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_DEC\n");
 		if (!mc_clock_timer_state.running)
 		{
 			mc_clock_timer_state.finished = 0;
@@ -138,6 +140,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_NEXT_FIELD:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_NEXT_FIELD\n");
 		if (!mc_clock_timer_state.running)
 		{
 			mc_clock_timer_state.edit_field++;
@@ -152,6 +155,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_UPDATE:
 	{
+		APP_DBG_SIG("MC_CLOCK_TIMER_UPDATE\n");
 		if (!mc_clock_timer_state.running)
 			break;
 
