@@ -424,7 +424,6 @@ static void view_scr_clock_calendar()
 		break;
 	}
 
-	mc_clock_calendar_clear_redraw();
 }
 
 void scr_clock_calendar_handle(ak_msg_t* msg)

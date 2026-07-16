@@ -20,7 +20,6 @@ const char* const MC_CAL_CAT_NAME[MC_CAL_CAT_MAX] = {
 
 /* Variable Declaration                                                       */
 static mc_calendar_state_t calendar;
-static uint8_t calendar_need_redraw = 1;
 
 /* Helper - days in month (leap year aware)                                  */
 uint8_t mc_calendar_days_in_month(uint8_t month, uint16_t year)
@@ -288,21 +287,6 @@ void mc_clock_calendar_get_state(mc_calendar_state_t* state)
 	memcpy(state, &calendar, sizeof(mc_calendar_state_t));
 }
 
-void mc_clock_calendar_request_redraw(void)
-{
-	calendar_need_redraw = 1;
-}
-
-uint8_t mc_clock_calendar_need_redraw(void)
-{
-	return calendar_need_redraw;
-}
-
-void mc_clock_calendar_clear_redraw(void)
-{
-	calendar_need_redraw = 0;
-}
-
 void mc_clock_calendar_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
@@ -328,9 +312,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		calendar.is_new_event = 0;
 		calendar.ringing = 0;
 
-		calendar_need_redraw = 1;
 
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -418,7 +400,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.view_month++;
 		}
 		mc_calendar_clamp_day();
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -435,7 +416,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.view_month--;
 		}
 		mc_calendar_clamp_day();
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -468,7 +448,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		calendar.editing_field = MC_CAL_FIELD_YEAR;
 		calendar.is_new_event = 1;
 		calendar.mode = MC_CAL_MODE_EDIT;
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -499,7 +478,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.scroll_offset = 0;
 			calendar.mode = MC_CAL_MODE_LIST;
 
-			mc_clock_calendar_request_redraw();
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
@@ -514,7 +492,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 
 			calendar.mode = MC_CAL_MODE_EDIT;
 
-			mc_clock_calendar_request_redraw();
 		}
 	}
 	break;
@@ -551,7 +528,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 
 			mc_calendar_scroll_to_event();
 		}
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -568,7 +544,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		{
 			/* Move to next editable field */
 			calendar.editing_field++;
-			mc_clock_calendar_request_redraw();
 		}
 		else
 		{
@@ -588,7 +563,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			else
 			{
 				calendar.mode = MC_CAL_MODE_LIST;
-				mc_clock_calendar_request_redraw();
 			}
 		}
 	}
@@ -601,7 +575,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		if (calendar.mode == MC_CAL_MODE_EDIT)
 		{
 			mc_calendar_field_change(+1);
-			mc_clock_calendar_request_redraw();
 		}
 		else if (calendar.mode == MC_CAL_MODE_MONTH)
 		{
@@ -611,7 +584,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			if (calendar.selected_day < max_day)
 			{
 				calendar.selected_day++;
-				mc_clock_calendar_request_redraw();
 			}
 			else
 			{
@@ -628,7 +600,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				mc_calendar_scroll_to_event();
 			}
 		}
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -677,7 +648,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				mc_calendar_scroll_to_event();
 			}
 		}
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
@@ -694,7 +664,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.mode = MC_CAL_MODE_LIST;
 		}
 
-		mc_clock_calendar_request_redraw();
 	}
 	break;
 
