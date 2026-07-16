@@ -207,8 +207,7 @@ static void BUZZER_PlayTones(const Tone_TypeDef* tones)
 	{
 		_tones = tones;
 		_tones_playing = true;
-		//Disable the bottom line to avoid the buzzer being disabled when the first tone is a silence period
-		// BUZZER_Enable(_tones->frequency, _tones->duration);
+		BUZZER_Enable(_tones->frequency, _tones->duration);
 	}
 }
 
