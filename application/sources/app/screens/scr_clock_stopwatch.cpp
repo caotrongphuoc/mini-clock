@@ -230,6 +230,9 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 		timer_remove_attr(
 		    AC_TASK_DISPLAY_ID,
 		    MC_CLOCK_STOPWATCH_TICK);
+		timer_remove_attr(
+		    AC_TASK_DISPLAY_ID,
+		    MC_CLOCK_STOPWATCH_HELP);
 
 		SCREEN_TRAN(
 		    scr_clock_menu_handle,
