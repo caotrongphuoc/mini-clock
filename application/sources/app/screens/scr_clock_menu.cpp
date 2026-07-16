@@ -146,24 +146,6 @@ void scr_clock_menu_draw_indicator()
 	}
 }
 
-// void scr_clock_menu_draw_buttons()
-// {
-// 	view_render.drawRoundRect(8, 53, 36, 9, 2, WHITE);
-// 	view_render.drawRoundRect(46, 53, 36, 9, 2, WHITE);
-// 	view_render.drawRoundRect(84, 53, 36, 9, 2, WHITE);
-
-// 	view_render.setTextSize(1);
-// 	view_render.setTextColor(WHITE);
-// 	view_render.setCursor(14, 54);
-// 	view_render.print("Left");
-
-// 	view_render.setCursor(49, 54);
-// 	view_render.print("Right");
-
-// 	view_render.setCursor(87, 54);
-// 	view_render.print("Enter");
-// }
-
 void scr_clock_menu_draw_time()
 {
 	mc_clock_time_state_t state;
