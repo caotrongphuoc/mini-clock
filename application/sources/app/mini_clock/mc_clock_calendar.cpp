@@ -1,5 +1,7 @@
 #include "mc_clock_calendar.h"
 
+#include "mc_clock_alarm.h"
+
 const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
     {
         "None",
@@ -390,7 +392,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_CALENDAR_ALARM_FIRED\n");
 		calendar.ringing = 1;
-		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
+		BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
 	}
 	break;
 
