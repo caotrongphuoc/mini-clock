@@ -101,6 +101,7 @@ typedef struct
 	uint8_t mode; /* mc_calendar_mode_t          */
 
 	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
+	
 
 } mc_calendar_state_t;
 

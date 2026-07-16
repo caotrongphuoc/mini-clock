@@ -79,11 +79,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 	view_render.setTextSize(1);
 	view_render.setCursor(2, 2);
 	view_render.print(buf);
-
-	/* Navigation hint */
-	view_render.setCursor(82, 2);
-	view_render.print("< MON >");
-
+	
 	/* Day-of-week headers */
 	for (uint8_t d = 0; d < 7; d++)
 	{
@@ -223,8 +219,10 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 		view_render.print(buf);
 
 		/* Alarm indicator */
-		view_render.setCursor(114, y + 2);
-		view_render.print(ev->alarm_enabled ? "A" : " ");
+		if (ev->alarm_enabled)
+		{
+			view_render.drawRoundRect(114, y + 2, 10, 8, 2, fg);
+		}
 
 		view_render.setTextColor(WHITE);
 
@@ -241,7 +239,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 	/* Bottom hints */
 	view_render.drawLine(0, 50, 128, 50, WHITE);
 	view_render.setCursor(2, 52);
-	view_render.print("Edit    Del    Back");
+	view_render.print(" Mode to Edit");
 }
 
 /*****************************************************************************/
@@ -320,11 +318,11 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 
 	/* Progress bar */
 	uint8_t bar_w = (uint8_t)(((uint16_t)(st->editing_field + 1) * 110) / MC_CAL_FIELD_MAX);
-	view_render.fillRect(8, 54, bar_w, 4, WHITE);
+	view_render.fillRect(8, 48, bar_w, 4, WHITE);
 	// view_render.drawRect(8, 54, 110, 4, WHITE);
 
 	/* Hint */
-	view_render.setCursor(4, 59);
+	view_render.setCursor(4, 54);
 	view_render.print("UP/DN:val  MD:next");
 }
 
@@ -436,8 +434,11 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIME_TICK:
 	{
-		/* Every second: check alarms */
-		task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_UPDATE);
+		mc_clock_calendar_get_state(&st);
+
+		task_post_pure_msg(
+		    MC_CLOCK_CALENDAR_ID,
+		    MC_CLOCK_CALENDAR_UPDATE);
 	}
 	break;
 
@@ -615,13 +616,19 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.mode == MC_CAL_MODE_MONTH)
 		{
-			/* Long-DOWN: next month */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_NEXT_MONTH);
+			task_post_pure_msg(
+			    MC_CLOCK_CALENDAR_ID,
+			    MC_CLOCK_CALENDAR_NEXT_MONTH);
+		}
+		else
+		{
+			task_post_pure_msg(
+			    MC_CLOCK_CALENDAR_ID,
+			    MC_CLOCK_CALENDAR_BACK);
 		}
 
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);

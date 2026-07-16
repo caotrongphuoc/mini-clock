@@ -4,15 +4,20 @@
 #include "scr_clock_main.h"
 #include "scr_clock_setting_display.h"
 
+// animation variables
 static uint8_t current_location = SCR_CLOCK_MENU_CLOCK;
+static uint8_t target_location;
+static int8_t animation_offset = 0;
+static int8_t animation_direction = 0; // -1 = left, +1 = right
+static uint8_t animation_running = 0;
 
 static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_clock,
     bitmap_clock_menu_alarm,
     bitmap_clock_menu_stopwatch,
     bitmap_clock_menu_timer,
-	bitmap_world_clock,
-	bitmap_calender_display,
+    bitmap_world_clock,
+    bitmap_calender_display,
     bitmap_clock_menu_setting,
     bitmap_clock_menu_exit,
 };
@@ -22,8 +27,8 @@ static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     "Alarm",
     "Stopwatch",
     "Timer",
-	"World Clock",
-	"Calender",
+    "World Clock",
+    "Calender",
     "Setting",
     "Exit",
 };
@@ -62,6 +67,39 @@ void scr_clock_menu_draw_icon()
 	                       WHITE);
 }
 
+// animation functions
+void scr_clock_menu_draw_icon_xy(int16_t x,
+                                 int16_t y,
+                                 uint8_t index)
+{
+	view_render.drawBitmap(x,
+	                       y,
+	                       menu_bitmap[index],
+	                       SCR_CLOCK_MENU_ICON_W,
+	                       SCR_CLOCK_MENU_ICON_H,
+	                       WHITE);
+}
+
+// Draw the name of the menu item at a specific x position
+void scr_clock_menu_draw_name_xy(int16_t x,
+                                 uint8_t index)
+{
+	const char* name = menu_name[index];
+
+	uint8_t len = 0;
+
+	while (name[len])
+		len++;
+
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+
+	view_render.setCursor(x - len * 3,
+	                      42);
+
+	view_render.print(name);
+}
+
 void scr_clock_menu_draw_arrows()
 {
 	view_render.fillTriangle(8, 32, 15, 25, 15, 39, WHITE);
@@ -84,24 +122,47 @@ void scr_clock_menu_draw_name()
 	view_render.print(name);
 }
 
-void scr_clock_menu_draw_buttons()
+void scr_clock_menu_draw_indicator()
 {
-	view_render.drawRoundRect(8, 53, 36, 9, 2, WHITE);
-	view_render.drawRoundRect(46, 53, 36, 9, 2, WHITE);
-	view_render.drawRoundRect(84, 53, 36, 9, 2, WHITE);
+	const uint8_t spacing = 10;
+	const uint8_t count = SCR_CLOCK_MENU_ITEM_NUMBER;
 
-	view_render.setTextSize(1);
-	view_render.setTextColor(WHITE);
+	int16_t start_x = (LCD_WIDTH - ((count - 1) * spacing)) / 2;
+	int16_t y = 55;
 
-	view_render.setCursor(14, 54);
-	view_render.print("Left");
+	for (uint8_t i = 0; i < count; i++)
+	{
+		int16_t x = start_x + i * spacing;
 
-	view_render.setCursor(49, 54);
-	view_render.print("Right");
-
-	view_render.setCursor(87, 54);
-	view_render.print("Enter");
+		if (i == current_location)
+		{
+			view_render.fillRoundRect(x - 2, y - 2, 5, 5, 1, WHITE);
+		}
+		else
+		{
+			view_render.drawCircle(x, y, 2, WHITE);
+		}
+	}
 }
+
+// void scr_clock_menu_draw_buttons()
+// {
+// 	view_render.drawRoundRect(8, 53, 36, 9, 2, WHITE);
+// 	view_render.drawRoundRect(46, 53, 36, 9, 2, WHITE);
+// 	view_render.drawRoundRect(84, 53, 36, 9, 2, WHITE);
+
+// 	view_render.setTextSize(1);
+// 	view_render.setTextColor(WHITE);
+
+// 	view_render.setCursor(14, 54);
+// 	view_render.print("Left");
+
+// 	view_render.setCursor(49, 54);
+// 	view_render.print("Right");
+
+// 	view_render.setCursor(87, 54);
+// 	view_render.print("Enter");
+// }
 
 void scr_clock_menu_draw_time()
 {
@@ -128,14 +189,47 @@ void scr_clock_menu_draw_time()
 
 void view_scr_clock_menu()
 {
+	APP_DBG("VIEW START\n");
 	view_render.clear();
+
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
+
 	scr_clock_menu_draw_time();
 	scr_clock_menu_draw_frame();
-	scr_clock_menu_draw_icon();
+
+	int16_t center = SCR_CLOCK_MENU_ICON_X;
+
+	if (animation_running)
+	{
+		scr_clock_menu_draw_icon_xy(
+		    center + animation_direction * animation_offset,
+		    SCR_CLOCK_MENU_ICON_Y,
+		    current_location);
+
+		scr_clock_menu_draw_name_xy(
+		    center + animation_direction * animation_offset + 16,
+		    current_location);
+
+		scr_clock_menu_draw_icon_xy(
+		    center + animation_direction * animation_offset +
+		        (-animation_direction * 64),
+		    SCR_CLOCK_MENU_ICON_Y,
+		    target_location);
+
+		scr_clock_menu_draw_name_xy(
+		    center + animation_direction * animation_offset +
+		        (-animation_direction * 64) + 16,
+		    target_location);
+	}
+	else
+	{
+		scr_clock_menu_draw_icon();
+		scr_clock_menu_draw_name();
+	}
+
 	scr_clock_menu_draw_arrows();
-	scr_clock_menu_draw_name();
-	scr_clock_menu_draw_buttons();
+	scr_clock_menu_draw_indicator();
+	APP_DBG("VIEW END\n");
 }
 
 void scr_clock_menu_handle(ak_msg_t* msg)
@@ -157,7 +251,18 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	case MC_CLOCK_TIME_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIME_TICK\n");
-		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
+
+		if (animation_running)
+		{
+			animation_offset += MENU_ANIMATION_STEP;
+
+			if (animation_offset >= MENU_ANIMATION_END)
+			{
+				current_location = target_location;
+				animation_running = 0;
+				animation_offset = 0;
+			}
+		}
 	}
 	break;
 
@@ -183,7 +288,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		case SCR_CLOCK_MENU_TIMER:
 			SCREEN_TRAN(scr_clock_timer_handle, &scr_clock_timer);
 			break;
-		
+
 		case SCR_CLOCK_MENU_WORLD_CLOCK:
 			SCREEN_TRAN(scr_world_clock_handle, &scr_world_clock);
 			break;
@@ -208,26 +313,38 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
-		if (current_location == 0)
+
+		if (animation_running == 0)
 		{
-			current_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+			if (current_location == 0)
+				target_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+			else
+				target_location = current_location - 1;
+
+			animation_direction = 1;
+			animation_offset = 0;
+			animation_running = 1;
 		}
-		else
-		{
-			current_location--;
-		}
+
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
-
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-		current_location++;
-		if (current_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
+
+		if (animation_running == 0)
 		{
-			current_location = 0;
+			target_location = current_location + 1;
+
+			if (target_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
+				target_location = 0;
+
+			animation_direction = -1;
+			animation_offset = 0;
+			animation_running = 1;
 		}
+
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;

@@ -9,8 +9,12 @@
 #define SCR_CLOCK_MENU_FRAME_X (6)
 #define SCR_CLOCK_MENU_FRAME_Y (13)
 #define SCR_CLOCK_MENU_FRAME_W (116)
-#define SCR_CLOCK_MENU_FRAME_H (38)
+#define SCR_CLOCK_MENU_FRAME_H (48) //with the words bottom is 38 else 48
 #define SCR_CLOCK_MENU_FRAME_R (4)
+
+// Animation variables
+#define MENU_ANIMATION_STEP 8
+#define MENU_ANIMATION_END 64
 
 typedef enum
 {

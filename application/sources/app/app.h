@@ -181,7 +181,7 @@ enum {
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_TIME_TICK_INTERVAL (1000)
+#define MC_CLOCK_TIME_TICK_INTERVAL (1000) // If you want a good animation need to reduce to 10
 
 /* define signal */
 enum {
@@ -205,6 +205,7 @@ enum {
 	MC_CLOCK_STOPWATCH_RESET,
 	MC_CLOCK_STOPWATCH_UPDATE,
 	MC_CLOCK_STOPWATCH_LAP,
+	MC_CLOCK_STOPWATCH_HELP,
 	MC_CLOCK_STOPWATCH_CLEAR_LAP,
 };
 
@@ -269,6 +270,7 @@ enum {
 	MC_CLOCK_CALENDAR_PREV_MONTH,
 	MC_CLOCK_CALENDAR_ADD_EVENT,
 	MC_CLOCK_CALENDAR_EDIT_EVENT,
+	MC_CLOCK_CALENDAR_BACK,
 	MC_CLOCK_CALENDAR_DELETE_EVENT,
 	MC_CLOCK_CALENDAR_NEXT_FIELD,
 	MC_CLOCK_CALENDAR_FIELD_INC,

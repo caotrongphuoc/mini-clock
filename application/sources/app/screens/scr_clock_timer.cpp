@@ -1,12 +1,9 @@
 #include "scr_clock_timer.h"
-
 #include "mc_clock_timer.h"
 
-/*****************************************************************************/
-/* View - Clock timer */
-/*****************************************************************************/
-
 static void view_scr_clock_timer();
+static uint8_t timer_help = 0;
+static uint8_t timer_help_counter = 0;
 
 view_dynamic_t dyn_view_scr_clock_timer = {
     {
@@ -21,6 +18,29 @@ view_screen_t scr_clock_timer = {
     .focus_item = 0,
 };
 
+static void scr_clock_timer_draw_help()
+{
+	view_render.setTextColor(WHITE);
+
+	view_render.setTextSize(2);
+	view_render.setCursor(25, 3);
+	view_render.print("TIMER");
+
+	view_render.setTextSize(1);
+
+	view_render.setCursor(15, 22);
+	view_render.print("MODE  Select field");
+
+	view_render.setCursor(15, 32);
+	view_render.print("UP    Increase");
+
+	view_render.setCursor(15, 42);
+	view_render.print("DOWN  Decrease");
+
+	view_render.setCursor(15, 52);
+	view_render.print("LONG START/BACK");
+}
+
 void view_scr_clock_timer()
 {
 	mc_clock_timer_state_t timer_state;
@@ -30,6 +50,11 @@ void view_scr_clock_timer()
 	mc_clock_timer_get_state(&timer_state);
 
 	view_render.clear();
+	if (timer_help)
+	{
+		scr_clock_timer_draw_help();
+		return;
+	}
 
 	xsprintf(time_buf, "%02u:%02u:%02u",
 	         timer_state.remaining_hour,
@@ -107,6 +132,22 @@ void view_scr_clock_timer()
 	view_render.setCursor(5, 52);
 	view_render.setTextSize(1);
 	view_render.print(timer_state.running ? "RUNNING" : "STOPPED");
+	view_render.setCursor(75, 52);
+
+	switch (timer_state.edit_field)
+	{
+	case MC_TIMER_EDIT_HOUR:
+		view_render.print("HOUR");
+		break;
+
+	case MC_TIMER_EDIT_MIN:
+		view_render.print("MIN");
+		break;
+
+	case MC_TIMER_EDIT_SEC:
+		view_render.print("SEC");
+		break;
+	}
 
 	view_render.fillRect(5, 60, (progress * 118) / 100, 3, WHITE);
 }
@@ -120,6 +161,10 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
+
+		timer_help = 1;
+		timer_help_counter = 0;
+
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIMER_TICK,
@@ -130,13 +175,25 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 
 	case MC_CLOCK_TIMER_TICK:
 	{
-		APP_DBG_SIG("MC_CLOCK_TIMER_TICK\n");
-		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_UPDATE);
+		task_post_pure_msg(
+		    MC_CLOCK_TIMER_ID,
+		    MC_CLOCK_TIMER_UPDATE);
+
+		if (timer_help)
+		{
+			timer_help_counter++;
+
+			if (timer_help_counter >= (5000 / MC_CLOCK_TIMER_TICK_INTERVAL))
+			{
+				timer_help = 0;
+			}
+		}
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
+		timer_help = 0;
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		mc_clock_timer_get_state(&timer_state);
 
@@ -164,6 +221,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 
 	// This is to start the timer
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
+	timer_help = 0;
 	{
 		task_post_pure_msg(MC_CLOCK_TIMER_ID,
 		                   MC_CLOCK_TIMER_START_PAUSE);
@@ -173,6 +231,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
+	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_RESET);
@@ -181,6 +240,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
+	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIMER_TICK);
@@ -190,6 +250,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
+	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
 		mc_clock_timer_get_state(&timer_state);
@@ -205,6 +266,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
 		mc_clock_timer_get_state(&timer_state);

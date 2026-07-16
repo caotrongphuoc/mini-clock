@@ -1,15 +1,12 @@
 #include "mc_clock_calender.h"
 
-
-
 const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
-{
-	"None",
-	"Daily",
-	"Weekly",
-	"Monthly",
-	"Yearly"
-};
+    {
+        "None",
+        "Daily",
+        "Weekly",
+        "Monthly",
+        "Yearly"};
 
 /* Category names                                                             */
 const char* const MC_CAL_CAT_NAME[MC_CAL_CAT_MAX] = {
@@ -241,7 +238,40 @@ void mc_clock_calendar_init(void)
 	calendar.view_month = date.month;
 	calendar.selected_day = date.date;
 
-	calendar.total_events = 0;
+	calendar.total_events = 3;
+
+	/* Event 1 */
+	calendar.events[0].year = calendar.today_year;
+	calendar.events[0].month = calendar.today_month;
+	calendar.events[0].day = calendar.today_day;
+	calendar.events[0].start_hour = 8;
+	calendar.events[0].start_min = 0;
+	calendar.events[0].end_hour = 9;
+	calendar.events[0].end_min = 0;
+	calendar.events[0].category = MC_CAL_CAT_WORK;
+	calendar.events[0].alarm_enabled = 1;
+
+	/* Event 2 */
+	calendar.events[1].year = calendar.today_year;
+	calendar.events[1].month = calendar.today_month;
+	calendar.events[1].day = calendar.today_day;
+	calendar.events[1].start_hour = 10;
+	calendar.events[1].start_min = 0;
+	calendar.events[1].end_hour = 11;
+	calendar.events[1].end_min = 30;
+	calendar.events[1].category = MC_CAL_CAT_MEETING;
+	calendar.events[1].alarm_enabled = 0;
+
+	/* Event 3 */
+	calendar.events[2].year = calendar.today_year;
+	calendar.events[2].month = calendar.today_month;
+	calendar.events[2].day = calendar.today_day;
+	calendar.events[2].start_hour = 18;
+	calendar.events[2].start_min = 0;
+	calendar.events[2].end_hour = 18;
+	calendar.events[2].end_min = 15;
+	calendar.events[2].category = MC_CAL_CAT_REMINDER;
+	calendar.events[2].alarm_enabled = 0;
 	calendar.mode = MC_CAL_MODE_MONTH;
 }
 
@@ -301,9 +331,11 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		{
 			mc_calendar_event_t* ev = &calendar.events[i];
 
-			if (!ev->alarm_enabled || ev->alarm_fired)
+			if (ev->year != calendar.today_year ||
+			    ev->month != calendar.today_month ||
+			    ev->day != calendar.today_day)
 			{
-				continue;
+				ev->alarm_fired = 0;
 			}
 
 			if (ev->year == calendar.today_year &&
@@ -408,11 +440,13 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	/* From LIST view: enter EDIT mode for the selected event.             */
 	case MC_CLOCK_CALENDAR_EDIT_EVENT:
 	{
-		APP_DBG_SIG("MC_CLOCK_CALENDAR_EDIT_EVENT\n");
+		APP_DBG_SIG("EDIT EVENT MODE=%u CURRENT=%u TOTAL=%u\n",
+		            calendar.mode,
+		            calendar.current_event,
+		            calendar.total_events);
 
 		if (calendar.mode == MC_CAL_MODE_MONTH)
 		{
-			/* Find first event on selected day */
 			calendar.current_event = 255;
 
 			for (uint8_t i = 0; i < calendar.total_events; i++)
@@ -426,19 +460,27 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				}
 			}
 
+			if (calendar.current_event == 255)
+			{
+				calendar.scroll_offset = 0;
+				calendar.mode = MC_CAL_MODE_LIST;
+				break;
+			}
+
 			calendar.scroll_offset = 0;
 			calendar.mode = MC_CAL_MODE_LIST;
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
-			if (calendar.current_event != 255 &&
-			    calendar.current_event < calendar.total_events)
+			if (calendar.current_event == 255)
 			{
-				calendar.editing_event = calendar.current_event;
-				calendar.editing_field = MC_CAL_FIELD_YEAR;
-				calendar.is_new_event = 0;
-				calendar.mode = MC_CAL_MODE_EDIT;
+				break;
 			}
+
+			calendar.editing_event = calendar.current_event;
+			calendar.editing_field = MC_CAL_FIELD_YEAR;
+			calendar.is_new_event = 0;
+			calendar.mode = MC_CAL_MODE_EDIT;
 		}
 	}
 	break;
@@ -576,11 +618,31 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
+			if (calendar.current_event == 255)
+			{
+				break;
+			}
+
 			if (calendar.current_event > 0)
 			{
 				calendar.current_event--;
 				mc_calendar_scroll_to_event();
 			}
+		}
+	}
+	break;
+
+	case MC_CLOCK_CALENDAR_BACK:
+	{
+		APP_DBG_SIG("MC_CLOCK_CALENDAR_BACK\n");
+
+		if (calendar.mode == MC_CAL_MODE_LIST)
+		{
+			calendar.mode = MC_CAL_MODE_MONTH;
+		}
+		else if (calendar.mode == MC_CAL_MODE_EDIT)
+		{
+			calendar.mode = MC_CAL_MODE_LIST;
 		}
 	}
 	break;
