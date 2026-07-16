@@ -219,8 +219,8 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 
 	// This is to start the timer
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
-	timer_help = 0;
 	{
+		timer_help = 0;
 		task_post_pure_msg(MC_CLOCK_TIMER_ID,
 		                   MC_CLOCK_TIMER_START_PAUSE);
 
@@ -229,18 +229,18 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
-	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED\n");
+		timer_help = 0;
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_RESET);
 		BUZZER_PlaySound(BUZZER_SOUND_USB_DISCONNECTED);
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
-	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED\n");
+		timer_help = 0;
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIMER_TICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
@@ -248,9 +248,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
-	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		timer_help = 0;
 		mc_clock_timer_get_state(&timer_state);
 		if (timer_state.finished)
 		{
@@ -264,9 +264,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
-	timer_help = 0;
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		timer_help = 0;
 		mc_clock_timer_get_state(&timer_state);
 		if (timer_state.finished)
 		{
