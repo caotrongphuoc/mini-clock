@@ -10,12 +10,18 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .editing_alarm = 0,
     .editing_field = 0,
     .ringing = 0,
+    .alarm_sound = BUZZER_SOUND_ALARM_CLASSIC,
     .alarm = {
         {7, 30, 1},
         {8, 0, 1},
         {12, 15, 0},
     },
 };
+
+void mc_clock_alarm_set_sound(uint8_t sound)
+{
+	mc_clock_alarm_state.alarm_sound = sound;
+}
 
 /* Public API - Clock alarm object */
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
@@ -261,7 +267,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");
 		mc_clock_alarm_state.ringing = 1;
-		BUZZER_PlaySound(BUZZER_SOUND_GOODBYE);
+		BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_state.alarm_sound);
 	}
 	break;
 

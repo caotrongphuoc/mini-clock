@@ -1,6 +1,7 @@
 #include "scr_clock_setting_sound.h"
 #include "scr_clock_setting.h"
 #include "mc_clock_time.h"
+#include "mc_clock_alarm.h"
 
 static uint8_t setting_sound_location_choose;
 static uint8_t setting_sound_off;
@@ -132,6 +133,7 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 				setting_music_choice = 0;
 			}
 
+			mc_clock_alarm_set_sound(music_list[setting_music_choice]);
 			BUZZER_PlaySound(music_list[setting_music_choice]);
 		}
 		break;
@@ -181,6 +183,8 @@ void scr_clock_setting_sound_reset(void)
 {
 	setting_sound_off = 0;
 	setting_chime_enabled = 0;
+	setting_music_choice = 0;
 	BUZZER_Silent(BUZZER_SILENT_OFF);
 	mc_clock_time_set_chime_enabled(0);
+	mc_clock_alarm_set_sound(music_list[0]);
 }
