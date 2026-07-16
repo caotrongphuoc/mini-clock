@@ -325,7 +325,6 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 	/* Progress bar */
 	uint8_t bar_w = (uint8_t)(((uint16_t)(st->editing_field + 1) * 110) / MC_CAL_FIELD_MAX);
 	view_render.fillRect(8, 48, bar_w, 4, WHITE);
-	// view_render.drawRect(8, 54, 110, 4, WHITE);
 
 	/* Hint */
 	view_render.setCursor(4, 54);
