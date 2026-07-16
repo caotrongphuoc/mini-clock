@@ -261,7 +261,6 @@ void mc_clock_world_clock_handle(
                 world_clock.selected_country = 0;
             }
             mc_clock_world_clock_update();
-            mc_clock_alarm_apply_rtc();
         }
         break;
 
@@ -277,7 +276,6 @@ void mc_clock_world_clock_handle(
                 world_clock.selected_country = MC_WORLD_CLOCK_MAX_COUNTRY - 1;
             }
             mc_clock_world_clock_update();
-            mc_clock_alarm_apply_rtc();
         }
         break;
 
