@@ -6,16 +6,16 @@
 static uint8_t setting_sound_location_choose;
 static uint8_t setting_sound_off;
 static uint8_t setting_chime_enabled;
-static uint8_t setting_music_choice;
+static uint8_t setting_alarm_choice;
 
 static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
     "Mute",
     "Chime",
-    "Music",
+    "Alarm",
     "Back",
 };
 
-static const char* const music_name[] = {
+static const char* const alarm_sound_name[] = {
     "Adventure",
     "Space",
     "Battle",
@@ -86,10 +86,10 @@ void view_scr_clock_setting_sound()
 			view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
 		}
 
-		else if (i == SCR_CLOCK_SETTING_SOUND_MUSIC)
+		else if (i == SCR_CLOCK_SETTING_SOUND_ALARM)
 		{
 			view_render.setCursor(65, frame_y + 2);
-			view_render.print(music_name[setting_music_choice]);
+			view_render.print(alarm_sound_name[setting_alarm_choice]);
 		}
 	}
 
@@ -124,17 +124,17 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_SOUND_MUSIC:
+		case SCR_CLOCK_SETTING_SOUND_ALARM:
 		{
-			setting_music_choice++;
+			setting_alarm_choice++;
 
-			if (setting_music_choice >= MUSIC_LIST_NUMBER)
+			if (setting_alarm_choice >= ALARM_SOUND_LIST_NUMBER)
 			{
-				setting_music_choice = 0;
+				setting_alarm_choice = 0;
 			}
 
-			mc_clock_alarm_set_sound(music_list[setting_music_choice]);
-			BUZZER_PlaySound(music_list[setting_music_choice]);
+			mc_clock_alarm_set_sound(alarm_sound_list[setting_alarm_choice]);
+			BUZZER_PlaySound(alarm_sound_list[setting_alarm_choice]);
 		}
 		break;
 
@@ -183,8 +183,8 @@ void scr_clock_setting_sound_reset(void)
 {
 	setting_sound_off = 0;
 	setting_chime_enabled = 0;
-	setting_music_choice = 0;
+	setting_alarm_choice = 0;
 	BUZZER_Silent(BUZZER_SILENT_OFF);
 	mc_clock_time_set_chime_enabled(0);
-	mc_clock_alarm_set_sound(music_list[0]);
+	mc_clock_alarm_set_sound(alarm_sound_list[0]);
 }
