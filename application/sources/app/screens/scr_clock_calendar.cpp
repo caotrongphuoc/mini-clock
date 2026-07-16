@@ -144,21 +144,6 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 /* View — Event list for selected day                                         */
 /*****************************************************************************/
 
-static uint8_t count_events_on_day(const mc_calendar_state_t* st)
-{
-	uint8_t count = 0;
-	for (uint8_t i = 0; i < st->total_events; i++)
-	{
-		if (st->events[i].year == st->view_year &&
-		    st->events[i].month == st->view_month &&
-		    st->events[i].day == st->selected_day)
-		{
-			count++;
-		}
-	}
-	return count;
-}
-
 static void view_scr_calendar_list(const mc_calendar_state_t* st)
 {
 	char buf[24];
