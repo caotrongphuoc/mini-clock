@@ -465,7 +465,6 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 		if (st.ringing)
 		{
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_ALARM_DISMISS);
-			BUZZER_Disable();
 			break;
 		}
 
