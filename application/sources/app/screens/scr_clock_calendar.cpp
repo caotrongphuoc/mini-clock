@@ -661,6 +661,15 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
+	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_UP_PRESSED [calendar]\n");
+		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
+		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
+	}
+	break;
+
 	default:
 		break;
 	}
