@@ -3,7 +3,7 @@
 
 
 #include "screens.h"
-#include "mc_clock_world_clock.h"
+#include "mc_clock_world.h"
 
 
 extern void scr_clock_world_show(void);

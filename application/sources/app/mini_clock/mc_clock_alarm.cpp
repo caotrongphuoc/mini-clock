@@ -1,5 +1,5 @@
 #include "mc_clock_alarm.h"
-#include "mc_clock_world_clock.h"
+#include "mc_clock_world.h"
 
 /* Variable Declaration - Clock alarm object */
 static mc_clock_alarm_state_t mc_clock_alarm_state = {

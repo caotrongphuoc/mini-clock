@@ -1,7 +1,7 @@
 #include "mc_clock_time.h"
 
 #include "buzzer.h"
-#include "mc_clock_world_clock.h"
+#include "mc_clock_world.h"
 static mc_clock_time_state_t clock_state;
 static uint8_t clock_chime_enabled;
 

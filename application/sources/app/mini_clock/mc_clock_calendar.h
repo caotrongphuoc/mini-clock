@@ -7,7 +7,7 @@
 #include "rtc.h"
 #include "buzzer.h"
 #include "mc_clock_time.h"
-#include "mc_clock_world_clock.h"
+#include "mc_clock_world.h"
 #include "app_dbg.h"
 #include "task_list.h"
 
