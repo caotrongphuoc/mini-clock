@@ -222,7 +222,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		current_location = SCR_CLOCK_MENU_CLOCK;
-		mc_clock_time_update_local();
+		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
 		          MC_CLOCK_TIME_TICK_INTERVAL - 900,
