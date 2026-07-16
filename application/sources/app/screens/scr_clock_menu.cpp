@@ -118,7 +118,6 @@ void scr_clock_menu_draw_name()
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
-	view_render.setTextWrap(false); // Disable text wrapping so that the text doesn't wrap to the next line
 	view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
 	view_render.print(name);
 }
