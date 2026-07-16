@@ -138,6 +138,8 @@ enum {
 	AC_DISPLAY_BUTON_LONG_MODE_PRESSED,
 	AC_DISPLAY_BUTON_LONG_UP_PRESSED,
 	AC_DISPLAY_BUTON_LONG_DOWN_PRESSED,
+	AC_DISPLAY_BUTON_MODE_UP_PRESSED,
+	AC_DISPLAY_BUTON_MODE_DOWN_PRESSED,
 	AC_DISPLAY_SHOW_LOGO,
 	AC_DISPLAY_SHOW_IDLE,
 	AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
@@ -181,7 +183,7 @@ enum {
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_TIME_TICK_INTERVAL (1000) // If you want a good animation need to reduce to 10
+#define MC_CLOCK_TIME_TICK_INTERVAL (1000)
 
 /* define signal */
 enum {

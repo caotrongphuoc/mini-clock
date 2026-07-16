@@ -23,7 +23,7 @@ static void scr_clock_timer_draw_help()
 	view_render.setTextColor(WHITE);
 
 	view_render.setTextSize(2);
-	view_render.setCursor(25, 3);
+	view_render.setCursor(34, 3);
 	view_render.print("TIMER");
 
 	view_render.setTextSize(1);

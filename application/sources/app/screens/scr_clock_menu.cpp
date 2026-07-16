@@ -118,6 +118,7 @@ void scr_clock_menu_draw_name()
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
+	view_render.setTextWrap(false); // Disable text wrapping so that the text doesn't wrap to the next line
 	view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
 	view_render.print(name);
 }
@@ -153,7 +154,6 @@ void scr_clock_menu_draw_indicator()
 
 // 	view_render.setTextSize(1);
 // 	view_render.setTextColor(WHITE);
-
 // 	view_render.setCursor(14, 54);
 // 	view_render.print("Left");
 
@@ -243,7 +243,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		mc_clock_time_update_local();
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
-		          MC_CLOCK_TIME_TICK_INTERVAL,
+		          MC_CLOCK_TIME_TICK_INTERVAL - 900,
 		          TIMER_PERIODIC);
 	}
 	break;
@@ -321,7 +321,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			else
 				target_location = current_location - 1;
 
-			animation_direction = 1;
+			animation_direction = -1;
 			animation_offset = 0;
 			animation_running = 1;
 		}
@@ -340,7 +340,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			if (target_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
 				target_location = 0;
 
-			animation_direction = -1;
+			animation_direction = 1;
 			animation_offset = 0;
 			animation_running = 1;
 		}

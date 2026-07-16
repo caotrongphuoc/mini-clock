@@ -37,7 +37,7 @@ static void scr_clock_stopwatch_draw_help()
 	view_render.setTextColor(WHITE);
 
 	view_render.setTextSize(2);
-	view_render.setCursor(20, 3);
+	view_render.setCursor(10, 3);
 	view_render.print("STOPWATCH");
 
 	view_render.setTextSize(1);

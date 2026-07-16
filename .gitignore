@@ -1,2 +1,9 @@
+# VS Code settings
 .vscode/
-*/build*/
+
+# Build folders
+**/build*/
+
+# Ignore Makefiles
+boot/Makefile
+application/Makefile

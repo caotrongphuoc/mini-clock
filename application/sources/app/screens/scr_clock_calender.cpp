@@ -79,7 +79,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 	view_render.setTextSize(1);
 	view_render.setCursor(2, 2);
 	view_render.print(buf);
-	
+
 	/* Day-of-week headers */
 	for (uint8_t d = 0; d < 7; d++)
 	{
@@ -199,7 +199,8 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 		}
 
 		int16_t y = 13 + shown * 15;
-		uint8_t sel = (i == st->current_event);
+		uint8_t sel = (st->current_event < st->total_events &&
+		               i == st->current_event);
 		uint16_t bg = sel ? WHITE : BLACK;
 		uint16_t fg = sel ? BLACK : WHITE;
 
@@ -262,6 +263,8 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 {
 	if (st->editing_event >= st->total_events)
 	{
+		view_render.setCursor(25, 30);
+		view_render.print("NO EVENT");
 		return;
 	}
 
@@ -277,7 +280,10 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 
 	/* Field label */
 	view_render.setCursor(4, 16);
-	view_render.print(FIELD_LABEL[st->editing_field]);
+	if (st->editing_field < MC_CAL_FIELD_MAX)
+	{
+		view_render.print(FIELD_LABEL[st->editing_field]);
+	}
 
 	/* Current value */
 	view_render.setTextSize(2);
@@ -382,11 +388,17 @@ view_screen_t scr_clock_calender = {
 static void view_scr_clock_calender()
 {
 	mc_calendar_state_t st;
+
 	mc_clock_calendar_get_state(&st);
+
+	/*
+	 * Always redraw.
+	 * Calendar is small (128x64), avoiding skipped frames
+	 * prevents blank pages after mode changes.
+	 */
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);
-	// view_render.drawRect(0, 0, 128, 64, WHITE);
 
 	if (st.ringing)
 	{
@@ -412,6 +424,8 @@ static void view_scr_clock_calender()
 		view_scr_calendar_month(&st);
 		break;
 	}
+
+	mc_clock_calendar_clear_redraw();
 }
 
 void scr_clock_calender_handle(ak_msg_t* msg)
@@ -457,23 +471,34 @@ void scr_clock_calender_handle(ak_msg_t* msg)
 		switch (st.mode)
 		{
 		case MC_CAL_MODE_MONTH:
-			/* MODE in month view: go to event list for selected day */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_EDIT_EVENT);
+		{
+			task_post_pure_msg(
+			    MC_CLOCK_CALENDAR_ID,
+			    MC_CLOCK_CALENDAR_EDIT_EVENT);
+
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
+		}
+		break;
 
 		case MC_CAL_MODE_LIST:
-			/* MODE in list view: edit selected event */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_EDIT_EVENT);
+		{
+			task_post_pure_msg(
+			    MC_CLOCK_CALENDAR_ID,
+			    MC_CLOCK_CALENDAR_EDIT_EVENT);
+
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
+		}
+		break;
 
 		case MC_CAL_MODE_EDIT:
-			/* MODE in edit view: advance to next field / confirm */
-			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_NEXT_FIELD);
-			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-			break;
+		{
+			task_post_pure_msg(
+			    MC_CLOCK_CALENDAR_ID,
+			    MC_CLOCK_CALENDAR_NEXT_FIELD);
 
+			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+		}
+		break;
 		default:
 			break;
 		}
