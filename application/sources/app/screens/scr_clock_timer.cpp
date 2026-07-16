@@ -61,28 +61,6 @@ void view_scr_clock_timer()
 	         timer_state.remaining_min,
 	         timer_state.remaining_sec);
 
-	if (!timer_state.running)
-	{
-		uint8_t x = 20;
-
-		switch (timer_state.edit_field)
-		{
-		case MC_TIMER_EDIT_HOUR:
-			x = 20;
-			break;
-
-		case MC_TIMER_EDIT_MIN:
-			x = 56;
-			break;
-
-		case MC_TIMER_EDIT_SEC:
-			x = 92;
-			break;
-		}
-
-		view_render.drawLine(x, 54, x + 20, 54, WHITE);
-	}
-
 	if (timer_state.set_min > 0)
 	{
 		uint32_t total =
@@ -100,8 +78,6 @@ void view_scr_clock_timer()
 			progress = ((total - remain) * 100UL) / total;
 		}
 	}
-
-	view_render.clear();
 
 	if (timer_state.finished)
 	{
@@ -150,6 +126,28 @@ void view_scr_clock_timer()
 	}
 
 	view_render.fillRect(5, 60, (progress * 118) / 100, 3, WHITE);
+
+	if (!timer_state.running)
+	{
+		uint8_t x = 20;
+
+		switch (timer_state.edit_field)
+		{
+		case MC_TIMER_EDIT_HOUR:
+			x = 20;
+			break;
+
+		case MC_TIMER_EDIT_MIN:
+			x = 56;
+			break;
+
+		case MC_TIMER_EDIT_SEC:
+			x = 92;
+			break;
+		}
+
+		view_render.drawLine(x, 54, x + 20, 54, WHITE);
+	}
 }
 
 void scr_clock_timer_handle(ak_msg_t* msg)
