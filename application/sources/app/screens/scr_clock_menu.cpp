@@ -225,7 +225,11 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
-		          MC_CLOCK_TIME_TICK_INTERVAL - 900,
+		          MC_CLOCK_TIME_TICK_INTERVAL,
+		          TIMER_PERIODIC);
+		timer_set(AC_TASK_DISPLAY_ID,
+		          AC_DISPLAY_MENU_ANIM_TICK,
+		          AC_DISPLAY_MENU_ANIM_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 	}
 	break;
@@ -233,6 +237,13 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	case MC_CLOCK_TIME_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIME_TICK\n");
+		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
+	}
+	break;
+
+	case AC_DISPLAY_MENU_ANIM_TICK:
+	{
+		APP_DBG_SIG("AC_DISPLAY_MENU_ANIM_TICK\n");
 
 		if (animation_running)
 		{
@@ -252,6 +263,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_MENU_ANIM_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		switch (current_location)
 		{
