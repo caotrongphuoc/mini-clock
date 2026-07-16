@@ -1,4 +1,4 @@
-#include "mc_clock_calender.h"
+#include "mc_clock_calendar.h"
 
 const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
     {

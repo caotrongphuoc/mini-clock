@@ -79,9 +79,9 @@ extern view_dynamic_t dyn_view_scr_world_clock;
 extern view_screen_t scr_world_clock;
 extern void scr_world_clock_handle(ak_msg_t* msg);
 
-// scr_clock_calender
-extern view_dynamic_t dyn_view_scr_clock_calender;
-extern view_screen_t scr_clock_calender;
-extern void scr_clock_calender_handle(ak_msg_t* msg);
+// scr_clock_calendar
+extern view_dynamic_t dyn_view_scr_clock_calendar;
+extern view_screen_t scr_clock_calendar;
+extern void scr_clock_calendar_handle(ak_msg_t* msg);
 
 #endif //__SCREENS_H__

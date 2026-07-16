@@ -1,6 +1,6 @@
-#include "scr_clock_calender.h"
+#include "scr_clock_calendar.h"
 
-#include "mc_clock_calender.h"
+#include "mc_clock_calendar.h"
 #include "task_list.h"
 #include "timer.h"
 
@@ -370,22 +370,22 @@ static void view_scr_calendar_ringing(const mc_calendar_state_t* st)
 /* Main view dispatch                                                         */
 /*****************************************************************************/
 
-static void view_scr_clock_calender();
+static void view_scr_clock_calendar();
 
-view_dynamic_t dyn_view_scr_clock_calender = {
+view_dynamic_t dyn_view_scr_clock_calendar = {
     {
         .item_type = ITEM_TYPE_DYNAMIC,
     },
-    view_scr_clock_calender};
+    view_scr_clock_calendar};
 
-view_screen_t scr_clock_calender = {
-    &dyn_view_scr_clock_calender,
+view_screen_t scr_clock_calendar = {
+    &dyn_view_scr_clock_calendar,
     ITEM_NULL,
     ITEM_NULL,
     .focus_item = 0,
 };
 
-static void view_scr_clock_calender()
+static void view_scr_clock_calendar()
 {
 	mc_calendar_state_t st;
 
@@ -428,7 +428,7 @@ static void view_scr_clock_calender()
 	mc_clock_calendar_clear_redraw();
 }
 
-void scr_clock_calender_handle(ak_msg_t* msg)
+void scr_clock_calendar_handle(ak_msg_t* msg)
 {
 	mc_calendar_state_t st;
 

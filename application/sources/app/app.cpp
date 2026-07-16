@@ -63,7 +63,7 @@
 
 #include "buzzer.h"
 #include "mc_clock_world_clock.h"
-#include "mc_clock_calender.h"
+#include "mc_clock_calendar.h"
 #include "mc_clock_alarm.h"
 
 /* ----------------------- Json includes ------------------------------------*/
