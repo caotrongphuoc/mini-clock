@@ -24,7 +24,7 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
 };
 
 static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
-    "Clock",
+    "Digital",
     "Analog",
     "Alarm",
     "Stopwatch",
