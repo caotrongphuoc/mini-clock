@@ -9,11 +9,14 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
 
     .editing = 0,
     .editing_alarm = 0,
-<<<<<<< HEAD
-    .editing_field = 0,
+    .editing_field = MC_CLOCK_ALARM_EDIT_HOUR,
+
     .ringing = 0,
-    .alarm_sound = BUZZER_SOUND_ALARM_CLASSIC,
-    .alarm = {
+
+    .sound = BUZZER_SOUND_ALARM_CLASSIC,
+
+    .alarm =
+    {
         {7, 30, 1},
         {8, 0, 1},
         {12, 15, 0},
@@ -22,27 +25,13 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
 
 void mc_clock_alarm_set_sound(uint8_t sound)
 {
-	mc_clock_alarm_state.alarm_sound = sound;
+    mc_clock_alarm_state.sound = (buzzer_sound_t)sound;
 }
 
 uint8_t mc_clock_alarm_get_sound(void)
 {
-	return mc_clock_alarm_state.alarm_sound;
+    return (uint8_t)mc_clock_alarm_state.sound;
 }
-
-=======
-    .editing_field = MC_CLOCK_ALARM_EDIT_HOUR,
-
-    .ringing = 0,
-
-    .alarm =
-        {
-            {7, 30, 1},
-            {8, 0, 1},
-            {12, 15, 0},
-        },
-};
->>>>>>> eb1b664 (updated bitmap)
 /* Public API - Clock alarm object */
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 {
@@ -100,6 +89,8 @@ void mc_clock_alarm_apply_rtc(void)
 	                     (uint8_t*)&req,
 	                     sizeof(req));
 }
+
+
 
 static void mc_clock_alarm_scroll_to_current(void)
 {
@@ -412,7 +403,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");
 		mc_clock_alarm_state.ringing = 1;
-		BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_state.alarm_sound);
+		BUZZER_PlaySound(mc_clock_alarm_state.sound);
 	}
 	break;
 

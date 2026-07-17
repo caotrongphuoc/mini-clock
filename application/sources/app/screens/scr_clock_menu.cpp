@@ -1,9 +1,5 @@
 #include "scr_clock_menu.h"
 
-#include "mc_clock_time.h"
-#include "scr_clock_main.h"
-#include "scr_clock_setting_display.h"
-
 // animation variables
 static uint8_t current_location = SCR_CLOCK_MENU_CLOCK;
 static uint8_t target_location;
@@ -118,6 +114,7 @@ void scr_clock_menu_draw_name()
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
+	view_render.setTextWrap(false); // Disable text wrapping so that the text doesn't wrap to the next line
 	view_render.setCursor((LCD_WIDTH - len * 6) / 2, 42);
 	view_render.print(name);
 }
@@ -227,8 +224,8 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		          MC_CLOCK_TIME_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 		timer_set(AC_TASK_DISPLAY_ID,
-		          AC_DISPLAY_MENU_ANIM_TICK,
-		          AC_DISPLAY_MENU_ANIM_TICK_INTERVAL,
+		          AC_DISPLAY_WELCOME_TEXT_ANIM_TICK,
+		          AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 	}
 	break;
@@ -240,7 +237,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_MENU_ANIM_TICK:
+	case AC_DISPLAY_WELCOME_TEXT_ANIM_TICK:
 	{
 		APP_DBG_SIG("AC_DISPLAY_MENU_ANIM_TICK\n");
 
@@ -264,7 +261,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_MENU_ANIM_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		switch (current_location)
 		{

@@ -6,6 +6,14 @@ static uint8_t stopwatch_help = 0;
 
 static void view_scr_clock_stopwatch();
 
+uint8_t box_y = 40;
+uint8_t box_x = 5;
+uint8_t box_w = 28;
+uint8_t box_h = 10;
+
+uint8_t run_y = box_y;
+uint8_t stop_y = box_y + 11;
+
 view_dynamic_t dyn_view_scr_clock_stopwatch = {
     {
         .item_type = ITEM_TYPE_DYNAMIC,
@@ -18,6 +26,16 @@ view_screen_t scr_clock_stopwatch = {
     ITEM_NULL,
     .focus_item = 0,
 };
+
+// Make things centric function
+static void draw_center_text(const char* text, uint8_t y, uint8_t size)
+{
+	uint16_t width = strlen(text) * 6 * size;
+
+	view_render.setTextSize(size);
+	view_render.setCursor((128 - width) / 2, y);
+	view_render.print(text);
+}
 
 static void scr_clock_stopwatch_format_time(char* buf, uint32_t elapsed_ms)
 {
@@ -74,18 +92,42 @@ void view_scr_clock_stopwatch()
 
 	view_render.setTextColor(WHITE);
 
-	view_render.setCursor(10, 3);
-	view_render.setTextSize(2);
-	view_render.print("STOPWATCH");
+	draw_center_text("STOPWATCH", 3, 2);
 
-	view_render.setCursor(6, 24);
-	view_render.setTextSize(2);
-	view_render.print(time_buf);
+	draw_center_text(time_buf, 24, 2);
+
+	if (state.running)
+	{
+		view_render.fillRoundRect(
+		    box_x,
+		    run_y,
+		    box_w,
+		    10,
+		    2,
+		    WHITE);
+	}
+	else
+	{
+		view_render.fillRoundRect(
+		    box_x,
+		    stop_y,
+		    box_w,
+		    10,
+		    2,
+		    WHITE);
+	}
 
 	view_render.setTextSize(1);
 
-	view_render.setCursor(6, 42);
-	view_render.print(state.running ? "RUN" : "STOP");
+	// RUN
+	view_render.setCursor(box_x + 2, run_y + 2);
+	view_render.setTextColor(state.running ? BLACK : WHITE);
+	view_render.print("RUN");
+
+	// STOP
+	view_render.setCursor(box_x + 2, stop_y + 2);
+	view_render.setTextColor(state.running ? WHITE : BLACK);
+	view_render.print("STOP");
 
 	uint8_t start = stopwatch_lap_scroll;
 
@@ -112,7 +154,7 @@ void view_scr_clock_stopwatch()
 		         sec % 60,
 		         ms);
 
-		view_render.setCursor(35, 42 + i * 10);
+		view_render.setCursor(38, 42 + i * 10);
 		view_render.print(lap_buf);
 	}
 }

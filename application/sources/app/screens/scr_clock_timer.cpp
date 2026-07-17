@@ -146,7 +146,7 @@ void view_scr_clock_timer()
 			break;
 		}
 
-		view_render.drawLine(x, 54, x + 20, 54, WHITE);
+		view_render.drawLine(x, 45, x + 22, 45, WHITE);
 	}
 }
 

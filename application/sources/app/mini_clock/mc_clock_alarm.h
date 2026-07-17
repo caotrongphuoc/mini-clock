@@ -32,26 +32,25 @@ typedef enum
 
 typedef struct
 {
-	// List navigation
-	uint8_t current_item;
-	uint8_t scroll_offset;
-	uint8_t total_alarm;
+    // List navigation
+    uint8_t current_item;
+    uint8_t scroll_offset;
+    uint8_t total_alarm;
 
-	// Editing state
-	uint8_t editing;
-	uint8_t editing_alarm;
+    // Editing state
+    uint8_t editing;
+    uint8_t editing_alarm;
 
-	mc_clock_alarm_edit_field_t editing_field;
+    mc_clock_alarm_edit_field_t editing_field;
 
-	// Alarm ringing state
-	uint8_t ringing;
-<<<<<<< HEAD
-	uint8_t alarm_sound;
-=======
+    // Alarm ringing state
+    uint8_t ringing;
 
-	// Alarm storage
->>>>>>> eb1b664 (updated bitmap)
-	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
+    // Selected alarm sound
+    buzzer_sound_t sound;
+
+    // Alarm storage
+    mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
 
 } mc_clock_alarm_state_t;
 
