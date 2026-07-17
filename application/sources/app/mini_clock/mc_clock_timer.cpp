@@ -138,21 +138,6 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_TIMER_NEXT_FIELD:
-	{
-		APP_DBG_SIG("MC_CLOCK_TIMER_NEXT_FIELD\n");
-		if (!mc_clock_timer_state.running)
-		{
-			mc_clock_timer_state.edit_field++;
-
-			if (mc_clock_timer_state.edit_field > MC_TIMER_EDIT_SEC)
-			{
-				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_HOUR;
-			}
-		}
-	}
-	break;
-
 	case MC_CLOCK_TIMER_UPDATE:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIMER_UPDATE\n");
@@ -194,6 +179,22 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		BUZZER_Disable();
 	}
 	break;
+
+	case MC_CLOCK_TIMER_NEXT_FIELD:
+{
+	if (!mc_clock_timer_state.running)
+	{
+		if (mc_clock_timer_state.edit_field == MC_TIMER_EDIT_HOUR)
+		{
+			mc_clock_timer_state.edit_field = MC_TIMER_EDIT_SEC;
+		}
+		else
+		{
+			mc_clock_timer_state.edit_field--;
+		}
+	}
+}
+break;
 
 	default:
 		break;

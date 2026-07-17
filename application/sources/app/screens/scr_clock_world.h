@@ -4,6 +4,9 @@
 
 #include "screens.h"
 #include "mc_clock_world.h"
+#include "task_list.h"
+#include "timer.h"
+#include <stdlib.h>
 
 
 extern void scr_clock_world_show(void);

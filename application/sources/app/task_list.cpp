@@ -22,13 +22,14 @@ const task_t app_task_table[] = {
 	/*************************************************************************/
 	/* MINI CLOCK TASKS */
 	/*************************************************************************/
-	{MC_CLOCK_RTC_ID			,	TASK_PRI_LEVEL_5	,	task_mc_rtc			},
-	{MC_CLOCK_TIME_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_time_handle},
-	{MC_CLOCK_STOPWATCH_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_stopwatch_handle},
-	{MC_CLOCK_TIMER_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_timer_handle},
-	{MC_CLOCK_ALARM_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_alarm_handle},
-	{MC_CLOCK_WORLD_CLOCK_ID	,	TASK_PRI_LEVEL_4	,	mc_clock_world_clock_handle},
-	{MC_CLOCK_CALENDAR_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_calendar_handle},
+	{MC_CLOCK_RTC_ID			,	TASK_PRI_LEVEL_5	,	task_mc_rtc					},
+	{MC_CLOCK_TIME_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_time_handle		},
+	{MC_CLOCK_STOPWATCH_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_stopwatch_handle	},
+	{MC_CLOCK_TIMER_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_timer_handle		},
+	{MC_CLOCK_ALARM_ID			,	TASK_PRI_LEVEL_4	,	mc_clock_alarm_handle		},
+	{MC_CLOCK_WORLD_CLOCK_ID	,	TASK_PRI_LEVEL_4	,	mc_clock_world_clock_handle	},
+	{MC_CLOCK_CALENDAR_ID		,	TASK_PRI_LEVEL_4	,	mc_clock_calendar_handle	},
+	{MC_CLOCK_COMPASS_ID,           TASK_PRI_LEVEL_4	, 	mc_clock_compass_handle		},
 
 	/*************************************************************************/
 	/* RF24 NETWORK TASK */

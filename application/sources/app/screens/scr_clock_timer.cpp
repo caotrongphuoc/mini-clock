@@ -191,32 +191,32 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
+{
+	APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+
+	timer_help = 0;
+
+	mc_clock_timer_get_state(&timer_state);
+
+
+	if (timer_state.finished)
 	{
-		timer_help = 0;
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
-		mc_clock_timer_get_state(&timer_state);
-
-		if (timer_state.finished)
-		{
-			task_post_pure_msg(MC_CLOCK_TIMER_ID,
-			                   MC_CLOCK_TIMER_DISMISS);
-			break;
-		}
-
-		if (!timer_state.running)
-		{
-			task_post_pure_msg(MC_CLOCK_TIMER_ID,
-			                   MC_CLOCK_TIMER_NEXT_FIELD);
-		}
-		else
-		{
-			task_post_pure_msg(MC_CLOCK_TIMER_ID,
-			                   MC_CLOCK_TIMER_START_PAUSE);
-		}
-
-		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+		task_post_pure_msg(
+		    MC_CLOCK_TIMER_ID,
+		    MC_CLOCK_TIMER_DISMISS);
 	}
-	break;
+	else
+	{
+		task_post_pure_msg(
+		    MC_CLOCK_TIMER_ID,
+		    MC_CLOCK_TIMER_START_PAUSE);
+	}
+
+
+	BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+}
+break;
+
 
 	// This is to start the timer
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
@@ -280,6 +280,44 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
+
+	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
+{
+	APP_DBG_SIG("MODE + UP\n");
+
+	timer_help = 0;
+
+	mc_clock_timer_get_state(&timer_state);
+
+	if (!timer_state.running)
+	{
+		task_post_pure_msg(
+		    MC_CLOCK_TIMER_ID,
+		    MC_CLOCK_TIMER_NEXT_FIELD);
+	}
+
+	BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+}
+break;
+
+case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
+{
+	APP_DBG_SIG("MODE + DOWN\n");
+
+	timer_help = 0;
+
+	mc_clock_timer_get_state(&timer_state);
+
+	if (!timer_state.running)
+	{
+		task_post_pure_msg(
+		    MC_CLOCK_TIMER_ID,
+		    MC_CLOCK_TIMER_NEXT_FIELD);
+	}
+
+	BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+}
+break;
 
 	default:
 		break;

@@ -14,6 +14,7 @@ extern const unsigned char PROGMEM bitmap_clock_menu_timer[];
 extern const unsigned char PROGMEM bitmap_clock_menu_setting[];
 extern const unsigned char PROGMEM bitmap_calendar_display[];
 extern const unsigned char PROGMEM bitmap_world_clock[];
+extern const unsigned char PROGMEM bitmap_compass[];    
 extern const unsigned char PROGMEM bitmap_clock_menu_exit[];
 
 extern const unsigned char PROGMEM bitmap_clock_setting_speaker_on[];

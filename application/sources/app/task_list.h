@@ -34,6 +34,7 @@ enum {
 	MC_CLOCK_ALARM_ID,
 	MC_CLOCK_WORLD_CLOCK_ID,
 	MC_CLOCK_CALENDAR_ID,
+	MC_CLOCK_COMPASS_ID,
 
 	/* NRF24 NETWORKS */
 #if defined (IF_NETWORK_NRF24_EN)
@@ -88,6 +89,7 @@ extern void mc_clock_timer_handle(ak_msg_t*);
 extern void mc_clock_alarm_handle(ak_msg_t*);
 extern void mc_clock_world_clock_handle(ak_msg_t*);
 extern void mc_clock_calendar_handle(ak_msg_t*);
+extern void mc_clock_compass_handle(ak_msg_t*);
 
 /* RF24 NETWORK TASK */
 extern void task_rf24_phy(ak_msg_t*);

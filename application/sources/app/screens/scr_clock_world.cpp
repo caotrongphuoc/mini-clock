@@ -1,9 +1,5 @@
 #include "scr_clock_world.h"
 
-#include "mc_clock_world.h"
-#include "task_list.h"
-#include "timer.h"
-
 static void view_scr_clock_world();
 
 view_dynamic_t dyn_view_scr_clock_world = {
@@ -19,65 +15,139 @@ view_screen_t scr_clock_world = {
     .focus_item = 0,
 };
 
+static int16_t world_anim_offset = 0;
+static int16_t world_anim_target = 0;
+
+static int8_t world_anim_direction = 0;
+
+static uint8_t world_anim_running = 0;
+
+static uint8_t world_old_country = 0;
+
+static void draw_world_clock_content(
+    mc_world_clock_state_t* state,
+    int16_t offset)
+{
+	const mc_world_clock_country_t* country =
+	    &state->country[state->selected_country];
+
+	char time_buf[12];
+
+	xsprintf(time_buf,
+	         "%02u:%02u:%02u",
+	         state->hour,
+	         state->minute,
+	         state->second);
+
+	char idx_buf[8];
+
+	xsprintf(idx_buf,
+	         "%u",
+	         state->selected_country + 1);
+
+	view_render.drawRect(
+	    offset,
+	    0,
+	    128,
+	    64,
+	    WHITE);
+
+	view_render.setTextSize(1);
+
+	view_render.setCursor(offset + 30, 3);
+	view_render.print("World Clock");
+
+	view_render.drawLine(
+	    offset,
+	    12,
+	    offset + 128,
+	    12,
+	    WHITE);
+
+	view_render.setCursor(offset + 4, 16);
+	view_render.print(country->name);
+
+	view_render.setCursor(offset + 61, 16);
+	view_render.print(country->utc_label);
+
+	view_render.setCursor(offset + 116, 16);
+	view_render.print(idx_buf);
+
+	view_render.setTextSize(2);
+
+	view_render.setCursor(offset + 20, 28);
+	view_render.print(time_buf);
+
+	view_render.setTextSize(1);
+
+	view_render.setCursor(offset + 15, 52);
+	view_render.print("UP");
+
+	view_render.setCursor(offset + 50, 52);
+	view_render.print("DOWN");
+
+	view_render.setCursor(offset + 100, 52);
+	view_render.print("MODE");
+}
+
 static void view_scr_clock_world()
 {
 	mc_world_clock_state_t state;
 
 	mc_clock_world_clock_get_state(&state);
 
-	const mc_world_clock_country_t* country =
-	    &state.country[state.selected_country];
-
-	char time_buf[12];
-	xsprintf(time_buf, "%02u:%02u:%02u",
-	         state.hour, state.minute, state.second);
-
-	char idx_buf[8];
-	xsprintf(idx_buf, "%u", state.selected_country + 1);
-
 	view_render.clear();
+
 	view_render.setTextColor(WHITE);
 
-	/* ── Border ── */
-	view_render.drawRect(0, 0, 128, 64, WHITE);
+	if (world_anim_running)
+	{
+		mc_world_clock_state_t old_state = state;
 
-	/* ── Header: "World Clock" ── */
-	view_render.setTextSize(1);
-	view_render.setCursor(30, 3);
-	view_render.print("World Clock");
+		old_state.selected_country = world_old_country;
 
-	view_render.drawLine(0, 12, 128, 12, WHITE);
+		/*
+		 * old screen leaves
+		 */
+		draw_world_clock_content(
+		    &old_state,
+		    world_anim_offset);
 
-	/* ── Country name ── */
-	view_render.setTextSize(1);
-	view_render.setCursor(4, 16);
-	view_render.print(country->name);
+		/*
+		 * new screen enters
+		 */
+		draw_world_clock_content(
+		    &state,
+		    world_anim_offset + world_anim_direction * 128);
 
-	/* ── Country index (right-aligned) ── */
-	uint8_t idx_len = 0;
-	const char* p = idx_buf;
-	while (*p++)
-		idx_len++;
-	view_render.setCursor(124 - idx_len * 6, 16);
-	view_render.print(idx_buf);
+		/*
+		 * smooth movement
+		 */
+		world_anim_offset -= world_anim_direction * 32;
 
-	/* ── Time display (large) ── */
-	view_render.setTextSize(2);
-	view_render.setCursor(20, 28);
-	view_render.print(time_buf);
+		if (abs(world_anim_offset) >= 128)
+		{
+			world_anim_running = 0;
+			world_anim_offset = 0;
+		}
+	}
+	else
+	{
+		draw_world_clock_content(
+		    &state,
+		    0);
+	}
 
-	/* ── UTC label ── */
-	view_render.setTextSize(1);
-	view_render.setCursor(61, 16);
-	view_render.print(country->utc_label);
+	view_render.setTextColor(WHITE);
+}
 
-	/* ── Navigation hint ── */
-	view_render.setCursor(15, 52);
-	view_render.print("UP");
-	view_render.setCursor(50, 52);
-	view_render.print("DOWN");
-	view_render.setCursor(100, 52);
-	view_render.print("MODE");
+static void world_start_animation(int8_t direction)
+{
+	world_anim_direction = direction;
+
+	world_anim_offset = 0;
+
+	world_anim_running = 1;
 }
 
 void scr_clock_world_handle(
@@ -89,49 +159,100 @@ void scr_clock_world_handle(
 
 	case SCREEN_ENTRY:
 	{
-		APP_DBG_SIG("SCREEN_ENTRY [world clock]\n");
+		APP_DBG_SIG(
+		    "SCREEN_ENTRY [world clock]\n");
 
-		/* Initialize and compute time for current country */
-		task_post_pure_msg(MC_CLOCK_WORLD_CLOCK_ID, MC_CLOCK_WORLD_CLOCK_SETUP);
+		task_post_pure_msg(
+		    MC_CLOCK_WORLD_CLOCK_ID,
+		    MC_CLOCK_WORLD_CLOCK_SETUP);
 
-		/* Reuse the 1-second tick from the time module */
-		timer_set(AC_TASK_DISPLAY_ID,
-		          MC_CLOCK_TIME_TICK,
-		          MC_CLOCK_TIME_TICK_INTERVAL,
-		          TIMER_PERIODIC);
+		timer_set(
+		    AC_TASK_DISPLAY_ID,
+		    MC_CLOCK_TIME_TICK,
+		    MC_CLOCK_TIME_TICK_INTERVAL - 950,
+		    TIMER_PERIODIC);
 	}
 	break;
 
 	case MC_CLOCK_TIME_TICK:
 	{
-		APP_DBG_SIG("MC_CLOCK_TIME_TICK [world clock]\n");
-		/* Every second: update the world clock state then re-render */
-		task_post_pure_msg(MC_CLOCK_WORLD_CLOCK_ID, MC_CLOCK_WORLD_CLOCK_UPDATE);
+		task_post_pure_msg(
+		    MC_CLOCK_WORLD_CLOCK_ID,
+		    MC_CLOCK_WORLD_CLOCK_UPDATE);
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED [world clock]\n");
-		task_post_pure_msg(MC_CLOCK_WORLD_CLOCK_ID, MC_CLOCK_WORLD_CLOCK_SELECT_DOWN);
-		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+		mc_world_clock_state_t state;
+
+		mc_clock_world_clock_get_state(&state);
+
+		world_old_country = state.selected_country;
+
+		if (rand() & 1)
+		{
+			world_start_animation(-1);
+		}
+		else
+		{
+			world_start_animation(-1);
+		}
+
+		task_post_pure_msg(
+		    MC_CLOCK_WORLD_CLOCK_ID,
+		    MC_CLOCK_WORLD_CLOCK_SELECT_DOWN);
+
+		BUZZER_PlaySound(
+		    BUZZER_SOUND_CLICK);
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED [world clock]\n");
-		task_post_pure_msg(MC_CLOCK_WORLD_CLOCK_ID, MC_CLOCK_WORLD_CLOCK_SELECT_UP);
-		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+
+		mc_world_clock_state_t state;
+
+		mc_clock_world_clock_get_state(&state);
+
+		world_old_country =
+		    state.selected_country;
+
+		/*
+		 * UP:
+		 * random enter from top or left
+		 */
+		if (rand() & 1)
+		{
+			world_start_animation(1);
+		}
+		else
+		{
+			world_start_animation(1);
+		}
+
+		task_post_pure_msg(
+		    MC_CLOCK_WORLD_CLOCK_ID,
+		    MC_CLOCK_WORLD_CLOCK_SELECT_UP);
+
+		BUZZER_PlaySound(
+		    BUZZER_SOUND_CLICK);
 	}
 	break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED [world clock]\n");
-		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
-		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
-		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
+
+		timer_remove_attr(
+		    AC_TASK_DISPLAY_ID,
+		    MC_CLOCK_TIME_TICK);
+
+		BUZZER_PlaySound(
+		    BUZZER_SOUND_CLICK);
+
+		SCREEN_TRAN(
+		    scr_clock_menu_handle,
+		    &scr_clock_menu);
 	}
 	break;
 
