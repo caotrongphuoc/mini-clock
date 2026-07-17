@@ -14,6 +14,7 @@
 #define ANALOG_MIN_LEN 15
 #define ANALOG_SEC_LEN 19
 #define ANALOG_HUB_R 2
+#define ANALOG_NUM_R 13
 
 static void view_scr_clock_analog();
 
@@ -108,7 +109,10 @@ void scr_clock_analog_draw_face()
 {
 	view_render.drawCircle(ANALOG_CX, ANALOG_CY, ANALOG_R, WHITE);
 
-	for (uint8_t h = 0; h < 12; h++)
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+
+	for (uint8_t h = 1; h <= 12; h++)
 	{
 		float angle = h * 30.0f * DEG_TO_RAD;
 		float s = sinf(angle);
@@ -116,12 +120,28 @@ void scr_clock_analog_draw_face()
 
 		uint8_t tick_len = (h % 3 == 0) ? ANALOG_TICK_MAJOR : ANALOG_TICK_MINOR;
 
-		int16_t x1 = ANALOG_CX + (int16_t)(s * ANALOG_R);
-		int16_t y1 = ANALOG_CY - (int16_t)(c * ANALOG_R);
-		int16_t x2 = ANALOG_CX + (int16_t)(s * (ANALOG_R - tick_len));
-		int16_t y2 = ANALOG_CY - (int16_t)(c * (ANALOG_R - tick_len));
+		int16_t tx1 = ANALOG_CX + (int16_t)(s * ANALOG_R);
+		int16_t ty1 = ANALOG_CY - (int16_t)(c * ANALOG_R);
+		int16_t tx2 = ANALOG_CX + (int16_t)(s * (ANALOG_R - tick_len));
+		int16_t ty2 = ANALOG_CY - (int16_t)(c * (ANALOG_R - tick_len));
 
-		view_render.drawLine(x1, y1, x2, y2, WHITE);
+		view_render.drawLine(tx1, ty1, tx2, ty2, WHITE);
+
+		int16_t nx = ANALOG_CX + (int16_t)(s * ANALOG_NUM_R);
+		int16_t ny = ANALOG_CY - (int16_t)(c * ANALOG_NUM_R);
+
+		if (h < 10)
+		{
+			char buf[2] = {(char)('0' + h), '\0'};
+			view_render.setCursor(nx - 2, ny - 3);
+			view_render.print(buf);
+		}
+		else
+		{
+			char buf[3] = {'1', (char)('0' + h - 10), '\0'};
+			view_render.setCursor(nx - 5, ny - 3);
+			view_render.print(buf);
+		}
 	}
 }
 
