@@ -16,7 +16,6 @@ view_screen_t scr_clock_world = {
 };
 
 static int16_t world_anim_offset = 0;
-static int16_t world_anim_target = 0;
 
 static int8_t world_anim_direction = 0;
 
