@@ -10,6 +10,8 @@
 #define ANALOG_R 22
 #define ANALOG_TICK_MAJOR 5
 #define ANALOG_TICK_MINOR 3
+#define ANALOG_HOUR_LEN 10
+#define ANALOG_MIN_LEN 15
 
 static void view_scr_clock_analog();
 
@@ -52,6 +54,49 @@ void scr_clock_analog_draw_header(const rtc_date_t* date)
 	view_render.print(buf);
 }
 
+void scr_clock_analog_draw_hand(float sin_a, float cos_a, uint8_t length, uint8_t thickness)
+{
+	int16_t x_end = ANALOG_CX + (int16_t)(sin_a * length);
+	int16_t y_end = ANALOG_CY - (int16_t)(cos_a * length);
+
+	view_render.drawLine(ANALOG_CX, ANALOG_CY, x_end, y_end, WHITE);
+
+	if (thickness < 2)
+	{
+		return;
+	}
+
+	int8_t px, py;
+	if (fabsf(cos_a) > fabsf(sin_a))
+	{
+		px = (cos_a > 0) ? 1 : -1;
+		py = 0;
+	}
+	else
+	{
+		px = 0;
+		py = (sin_a > 0) ? 1 : -1;
+	}
+
+	view_render.drawLine(ANALOG_CX + px, ANALOG_CY + py, x_end + px, y_end + py, WHITE);
+
+	if (thickness >= 3)
+	{
+		view_render.drawLine(ANALOG_CX - px, ANALOG_CY - py, x_end - px, y_end - py, WHITE);
+	}
+}
+
+void scr_clock_analog_draw_hands(const rtc_time_t* time)
+{
+	float hour_angle = ((time->hour % 12) * 30.0f + time->min * 0.5f) * DEG_TO_RAD;
+	float min_angle = time->min * 6.0f * DEG_TO_RAD;
+
+	scr_clock_analog_draw_hand(sinf(hour_angle), cosf(hour_angle),
+	                           ANALOG_HOUR_LEN, 3);
+	scr_clock_analog_draw_hand(sinf(min_angle), cosf(min_angle),
+	                           ANALOG_MIN_LEN, 2);
+}
+
 void scr_clock_analog_draw_face()
 {
 	view_render.drawCircle(ANALOG_CX, ANALOG_CY, ANALOG_R, WHITE);
@@ -83,6 +128,7 @@ void view_scr_clock_analog()
 
 	scr_clock_analog_draw_header(&state.date);
 	scr_clock_analog_draw_face();
+	scr_clock_analog_draw_hands(&state.time);
 }
 
 void scr_clock_analog_handle(ak_msg_t* msg)
