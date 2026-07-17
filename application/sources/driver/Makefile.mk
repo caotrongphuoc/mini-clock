@@ -7,4 +7,3 @@ include sources/driver/AsyncDelay/Makefile.mk
 include sources/driver/gpio/Makefile.mk
 include sources/driver/buzzer/Makefile.mk
 include sources/driver/rtc/Makefile.mk
-include sources/driver/compass_driver/Makefile.mk
