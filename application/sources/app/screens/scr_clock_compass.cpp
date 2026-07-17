@@ -192,7 +192,7 @@ void scr_clock_compass_handle(
 
 	case MC_CLOCK_COMPASS_UPDATE:
 	{
-
+		APP_DBG_SIG("MC_CLOCK_COMPASS_UPDATE\n");
 		task_post_pure_msg(
 		    MC_CLOCK_COMPASS_ID,
 		    MC_CLOCK_COMPASS_UPDATE);
@@ -201,7 +201,7 @@ void scr_clock_compass_handle(
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
-
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(
 		    AC_TASK_DISPLAY_ID,
 		    MC_CLOCK_COMPASS_UPDATE);
