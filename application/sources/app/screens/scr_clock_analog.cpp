@@ -6,15 +6,15 @@
 #include "scr_clock_main.h"
 
 #define ANALOG_CX 64
-#define ANALOG_CY 38
-#define ANALOG_R 22
+#define ANALOG_CY 32
+#define ANALOG_R 30
 #define ANALOG_TICK_MAJOR 5
 #define ANALOG_TICK_MINOR 3
-#define ANALOG_HOUR_LEN 10
-#define ANALOG_MIN_LEN 15
-#define ANALOG_SEC_LEN 19
+#define ANALOG_HOUR_LEN 13
+#define ANALOG_MIN_LEN 20
+#define ANALOG_SEC_LEN 27
 #define ANALOG_HUB_R 2
-#define ANALOG_NUM_R 13
+#define ANALOG_NUM_R 19
 
 static void view_scr_clock_analog();
 
@@ -31,29 +31,35 @@ view_screen_t scr_clock_analog = {
     .focus_item = 0,
 };
 
-void scr_clock_analog_draw_header(const rtc_date_t* date)
+void scr_clock_analog_draw_date_column(const rtc_date_t* date)
 {
-	char buf[14];
 	const char* wd = scr_clock_main_weekday_short_text(date->weekday);
-
-	buf[0] = wd[0];
-	buf[1] = wd[1];
-	buf[2] = ' ';
-	buf[3] = '0' + (date->date / 10) % 10;
-	buf[4] = '0' + date->date % 10;
-	buf[5] = '/';
-	buf[6] = '0' + (date->month / 10) % 10;
-	buf[7] = '0' + date->month % 10;
-	buf[8] = '/';
-	buf[9] = '0' + (date->year / 1000) % 10;
-	buf[10] = '0' + (date->year / 100) % 10;
-	buf[11] = '0' + (date->year / 10) % 10;
-	buf[12] = '0' + date->year % 10;
-	buf[13] = '\0';
+	char buf[5];
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
-	view_render.setCursor(25, 3);
+
+	view_render.setCursor(11, 8);
+	view_render.write(wd[0]);
+	view_render.write(wd[1]);
+
+	buf[0] = '0' + (date->date / 10) % 10;
+	buf[1] = '0' + date->date % 10;
+	buf[2] = '\0';
+	view_render.setCursor(11, 20);
+	view_render.print(buf);
+
+	buf[0] = '0' + (date->month / 10) % 10;
+	buf[1] = '0' + date->month % 10;
+	view_render.setCursor(11, 32);
+	view_render.print(buf);
+
+	buf[0] = '0' + (date->year / 1000) % 10;
+	buf[1] = '0' + (date->year / 100) % 10;
+	buf[2] = '0' + (date->year / 10) % 10;
+	buf[3] = '0' + date->year % 10;
+	buf[4] = '\0';
+	view_render.setCursor(5, 47);
 	view_render.print(buf);
 }
 
@@ -153,7 +159,7 @@ void view_scr_clock_analog()
 	view_render.clear();
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 
-	scr_clock_analog_draw_header(&state.date);
+	scr_clock_analog_draw_date_column(&state.date);
 	scr_clock_analog_draw_face();
 	scr_clock_analog_draw_hands(&state.time);
 }
