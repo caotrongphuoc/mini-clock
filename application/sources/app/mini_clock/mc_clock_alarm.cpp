@@ -390,10 +390,6 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			}
 
 			mc_clock_alarm_state.total_alarm--;
-			if (mc_clock_alarm_state.current_item > mc_clock_alarm_state.total_alarm + 1)
-			{
-				mc_clock_alarm_state.current_item = mc_clock_alarm_state.total_alarm;
-			}
 			mc_clock_alarm_apply_rtc();
 		}
 	}
