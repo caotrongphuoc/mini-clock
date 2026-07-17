@@ -92,7 +92,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 	/* DOW headers centered per column */
 	for (uint8_t d = 0; d < 7; d++)
 	{
-		view_render.setCursor(CAL_COL_CENTER(d) - 5, 10);
+		view_render.setCursor(CAL_COL_CENTER(d) - 5, 9);
 		view_render.print(DOW_NAME[d]);
 	}
 
