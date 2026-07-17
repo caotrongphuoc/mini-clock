@@ -12,6 +12,8 @@
 #define ANALOG_TICK_MINOR 3
 #define ANALOG_HOUR_LEN 10
 #define ANALOG_MIN_LEN 15
+#define ANALOG_SEC_LEN 19
+#define ANALOG_HUB_R 2
 
 static void view_scr_clock_analog();
 
@@ -90,11 +92,16 @@ void scr_clock_analog_draw_hands(const rtc_time_t* time)
 {
 	float hour_angle = ((time->hour % 12) * 30.0f + time->min * 0.5f) * DEG_TO_RAD;
 	float min_angle = time->min * 6.0f * DEG_TO_RAD;
+	float sec_angle = time->sec * 6.0f * DEG_TO_RAD;
 
 	scr_clock_analog_draw_hand(sinf(hour_angle), cosf(hour_angle),
 	                           ANALOG_HOUR_LEN, 3);
 	scr_clock_analog_draw_hand(sinf(min_angle), cosf(min_angle),
 	                           ANALOG_MIN_LEN, 2);
+	scr_clock_analog_draw_hand(sinf(sec_angle), cosf(sec_angle),
+	                           ANALOG_SEC_LEN, 1);
+
+	view_render.fillCircle(ANALOG_CX, ANALOG_CY, ANALOG_HUB_R, WHITE);
 }
 
 void scr_clock_analog_draw_face()
