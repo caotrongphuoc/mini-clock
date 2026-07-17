@@ -359,12 +359,6 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_BACK:
-	{
-		APP_DBG_SIG("MC_CLOCK_ALARM_BACK\n");
-	}
-	break;
-
 	case MC_CLOCK_ALARM_TOGGLE:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_TOGGLE\n");
