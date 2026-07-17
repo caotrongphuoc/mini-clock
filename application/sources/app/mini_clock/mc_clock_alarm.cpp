@@ -5,7 +5,7 @@
 static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .current_item = 0,
     .scroll_offset = 0,
-    .total_alarm = 3,
+    .total_alarm = 0,
 
     .editing = 0,
     .editing_alarm = 0,
@@ -14,13 +14,6 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .ringing = 0,
 
     .sound = BUZZER_SOUND_ALARM_CLASSIC,
-
-    .alarm =
-    {
-        {7, 30, 1},
-        {8, 0, 1},
-        {12, 15, 0},
-    },
 };
 
 void mc_clock_alarm_set_sound(uint8_t sound)
