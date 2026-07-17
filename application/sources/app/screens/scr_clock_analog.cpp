@@ -3,8 +3,8 @@
 #include <math.h>
 
 #include "mc_clock_time.h"
+#include "mc_clock_world.h"
 #include "scr_clock_main.h"
-#include "scr_clock_setting_display.h"
 
 #define ANALOG_CX 64
 #define ANALOG_CY 32
@@ -157,35 +157,38 @@ void scr_clock_analog_draw_face()
 	}
 }
 
-void scr_clock_analog_draw_right_panel(const rtc_time_t* time)
+void scr_clock_analog_draw_right_panel()
 {
 	view_render.drawRoundRect(95, 5, 30, 54, 3, WHITE);
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
 	view_render.setCursor(101, 10);
-	view_render.print("SEC");
+	view_render.print("UTC");
 
 	view_render.drawLine(99, 20, 121, 20, WHITE);
 
-	char buf[3];
-	buf[0] = '0' + (time->sec / 10) % 10;
-	buf[1] = '0' + time->sec % 10;
-	buf[2] = '\0';
-	view_render.setTextSize(2);
-	view_render.setCursor(98, 26);
-	view_render.print(buf);
+	mc_world_clock_state_t world_state;
+	mc_clock_world_clock_get_state(&world_state);
+	const char* offset_str = world_state.country[world_state.selected_country].utc_label + 3;
 
-	view_render.setTextSize(1);
-	view_render.setCursor(104, 48);
-	if (scr_clock_setting_is_12h_format())
+	uint8_t len = 0;
+	while (offset_str[len])
 	{
-		view_render.print((time->hour >= 12) ? "PM" : "AM");
+		len++;
+	}
+
+	if (len <= 2)
+	{
+		view_render.setTextSize(2);
+		view_render.setCursor(95 + (30 - len * 12) / 2, 30);
 	}
 	else
 	{
-		view_render.print("24");
+		view_render.setTextSize(1);
+		view_render.setCursor(95 + (30 - len * 6) / 2, 34);
 	}
+	view_render.print(offset_str);
 }
 
 void view_scr_clock_analog()
@@ -197,7 +200,7 @@ void view_scr_clock_analog()
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 
 	scr_clock_analog_draw_date_column(&state.date);
-	scr_clock_analog_draw_right_panel(&state.time);
+	scr_clock_analog_draw_right_panel();
 	scr_clock_analog_draw_face();
 	scr_clock_analog_draw_hands(&state.time);
 }

@@ -171,13 +171,14 @@ HARDWARE_OPTION += \
 		-USH1106_DRIVER_EN
 
 # Console log compile option
-CONSOLE_OPTION +=			\
-		-DLOGIN_PRINT_EN	\
-		-DSYS_PRINT_EN		\
-		-DAPP_PRINT_EN		\
-		-DSYS_DBG_EN		\
-		-DAPP_DBG_EN		\
-		-DAPP_DBG_SIG_EN	\
+# Disabled to avoid UART-blocking lag in menu animation and periodic ticks.
+# CONSOLE_OPTION +=			\
+# 		-DLOGIN_PRINT_EN	\
+# 		-DSYS_PRINT_EN		\
+# 		-DAPP_PRINT_EN		\
+# 		-DSYS_DBG_EN		\
+# 		-DAPP_DBG_EN		\
+# 		-DAPP_DBG_SIG_EN	\
 
 GENERAL_FLAGS +=			\
 		$(RTOS_DEV_OPTION)	\
