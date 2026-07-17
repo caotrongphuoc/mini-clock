@@ -1,7 +1,4 @@
 #include "scr_clock_alarm.h"
-
-#include "mc_clock_alarm.h"
-
 /*****************************************************************************/
 /* View - Clock alarm */
 /*****************************************************************************/
@@ -23,8 +20,10 @@ view_screen_t scr_clock_alarm = {
 
 static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 {
-	const mc_clock_alarm_item_t* alarm = &state->alarm[state->editing_alarm];
-	char buf[12];
+	const mc_clock_alarm_item_t* alarm =
+	    &state->alarm[state->editing_alarm];
+
+	char buf[16];
 
 	view_render.drawRoundRect(0, 0, 128, 64, 5, WHITE);
 	view_render.setTextColor(WHITE);
@@ -33,16 +32,83 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	view_render.setTextSize(2);
 	view_render.print("Edit Alarm");
 
-	xsprintf(buf, "%02u:%02u %s",
-	         alarm->hour, alarm->minute,
-	         alarm->enabled ? "ON" : "OFF");
-	view_render.setCursor(5, 28);
-	view_render.setTextSize(2);
-	view_render.print(buf);
+	switch (state->editing_field)
+	{
+	case MC_CLOCK_ALARM_EDIT_HOUR: // Hour
+	{
+		xsprintf(buf, "[%02u]:%02u %s",
+		         alarm->hour,
+		         alarm->minute,
+		         alarm->enabled ? "ON" : "OFF");
 
-	view_render.setCursor(5, 55);
-	view_render.setTextSize(1);
-	view_render.print(state->editing_field == 0 ? "Edit Hour" : "Edit Minute");
+		view_render.setCursor(5, 28);
+		view_render.setTextSize(2);
+		view_render.print(buf);
+
+		view_render.setCursor(5, 55);
+		view_render.setTextSize(1);
+		view_render.print("Edit Hour");
+	}
+	break;
+
+	case MC_CLOCK_ALARM_EDIT_MINUTE: // Minute
+	{
+		xsprintf(buf, "%02u:[%02u] %s",
+		         alarm->hour,
+		         alarm->minute,
+		         alarm->enabled ? "ON" : "OFF");
+
+		view_render.setCursor(5, 28);
+		view_render.setTextSize(2);
+		view_render.print(buf);
+
+		view_render.setCursor(5, 55);
+		view_render.setTextSize(1);
+		view_render.print("Edit Minute");
+	}
+	break;
+
+	case MC_CLOCK_ALARM_EDIT_ENABLE: // ON/OFF
+	{
+		xsprintf(buf, "%02u:%02u [%s]",
+		         alarm->hour,
+		         alarm->minute,
+		         alarm->enabled ? "ON" : "OFF");
+
+		view_render.setCursor(5, 28);
+		view_render.setTextSize(2);
+		view_render.print(buf);
+
+		view_render.setCursor(5, 55);
+		view_render.setTextSize(1);
+		view_render.print("Edit Enable");
+	}
+	break;
+
+	case MC_CLOCK_ALARM_EDIT_DELETE: // Delete
+	{
+		view_render.setCursor(5, 28);
+		view_render.setTextSize(2);
+		view_render.print("Delete?");
+
+		view_render.setCursor(5, 55);
+		view_render.setTextSize(1);
+		view_render.print("MODE = YES");
+	}
+	break;
+
+	case MC_CLOCK_ALARM_EDIT_SAVE: // Save
+	{
+		view_render.setCursor(5, 28);
+		view_render.setTextSize(2);
+		view_render.print("Save?");
+
+		view_render.setCursor(5, 55);
+		view_render.setTextSize(1);
+		view_render.print("MODE = YES");
+	}
+	break;
+	}
 }
 
 static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
@@ -123,9 +189,17 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SETUP);
+
+		mc_clock_alarm_state_t state;
+
+		mc_clock_alarm_get_state(&state);
+
+		state.current_item = 0;
+		state.scroll_offset = 0;
+		state.editing = 0;
+
+		break;
 	}
-	break;
 
 	case AC_DISPLAY_BUTON_MODE_PRESSED:
 	{
@@ -163,6 +237,25 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
+	case AC_DISPLAY_BUTON_UP_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_UP);
+
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
+	break;
+
+	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	{
+		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DOWN);
+
+		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+	}
+	break;
 
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
 	{
@@ -172,19 +265,26 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_UP);
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_UP_PRESSED\n");
+
+		task_post_pure_msg(
+		    MC_CLOCK_ALARM_ID,
+		    MC_CLOCK_ALARM_ADD_NEW);
+
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DOWN);
-		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
+		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_DOWN_PRESSED\n");
+
+		SCREEN_TRAN(scr_clock_menu_handle,
+		            &scr_clock_menu);
+
+		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 	}
 	break;
 

@@ -38,7 +38,7 @@ static void scr_clock_timer_draw_help()
 	view_render.print("DOWN  Decrease");
 
 	view_render.setCursor(15, 52);
-	view_render.print("LONG START/BACK");
+	view_render.print("LONG  START/BACK");
 }
 
 void view_scr_clock_timer()

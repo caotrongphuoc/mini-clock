@@ -47,6 +47,8 @@ void view_scr_clock_setting()
 		bool selected = (i == setting_location_choose);
 		uint8_t fg = selected ? BLACK : WHITE;
 
+
+		// Draw frame of the item
 		if (selected)
 		{
 			view_render.fillRoundRect(SCR_CLOCK_SETTING_FRAME_X, frame_y,
@@ -63,6 +65,8 @@ void view_scr_clock_setting()
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_item_name[i]);
+
+		view_render.drawBitmap(100, 10, bitmap_clock_4, 11, 11, fg);
 	}
 
 	view_render.setTextColor(WHITE);

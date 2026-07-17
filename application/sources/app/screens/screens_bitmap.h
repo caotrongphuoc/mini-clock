@@ -19,4 +19,12 @@ extern const unsigned char PROGMEM bitmap_clock_menu_exit[];
 extern const unsigned char PROGMEM bitmap_clock_setting_speaker_on[];
 extern const unsigned char PROGMEM bitmap_clock_setting_speaker_off[];
 
+extern const unsigned char PROGMEM bitmap_bell_off[];
+extern const unsigned char PROGMEM bitmap_bell_ring[];
+extern const unsigned char PROGMEM bitmap_clock_4[];
+extern const unsigned char PROGMEM bitmap_log_out[];
+extern const unsigned char PROGMEM bitmap_monitor[];
+extern const unsigned char PROGMEM bitmap_rotate_ccw[];
+extern const unsigned char PROGMEM bitmap_volume_2[];
+
 #endif //__SCREENS_BITMAP_H__

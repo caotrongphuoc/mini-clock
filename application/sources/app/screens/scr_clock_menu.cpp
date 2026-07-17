@@ -244,6 +244,8 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_MENU_ANIM_TICK\n");
 
+		mc_clock_time_update_local();
+
 		if (animation_running)
 		{
 			animation_offset += MENU_ANIMATION_STEP;
@@ -309,10 +311,10 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 
 		if (animation_running == 0)
 		{
-			if (current_location == 0)
-				target_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
-			else
-				target_location = current_location - 1;
+			target_location = current_location + 1;
+
+			if (target_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
+				target_location = 0;
 
 			animation_direction = -1;
 			animation_offset = 0;
@@ -328,10 +330,10 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 
 		if (animation_running == 0)
 		{
-			target_location = current_location + 1;
-
-			if (target_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
-				target_location = 0;
+			if (current_location == 0)
+				target_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+			else
+				target_location = current_location - 1;
 
 			animation_direction = 1;
 			animation_offset = 0;
