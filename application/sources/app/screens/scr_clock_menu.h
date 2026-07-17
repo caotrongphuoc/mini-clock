@@ -17,7 +17,6 @@
 #define SCR_CLOCK_MENU_FRAME_R (4)
 
 // Animation variables
-#define MENU_ANIMATION_STEP 8
 #define MENU_ANIMATION_END 64
 
 typedef enum

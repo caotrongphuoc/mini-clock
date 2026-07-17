@@ -3,9 +3,13 @@
 // animation variables
 static uint8_t current_location = SCR_CLOCK_MENU_CLOCK;
 static uint8_t target_location;
-static int8_t animation_offset = 0;
 static int8_t animation_direction = 0; // -1 = left, +1 = right
 static uint8_t animation_running = 0;
+static uint8_t animation_step = 0;
+
+// Ease in-out curve, 8 steps from 0 to 64
+static const uint8_t ease_offsets[] = {0, 2, 8, 20, 32, 44, 56, 62, 64};
+#define ANIM_FRAME_COUNT (sizeof(ease_offsets) / sizeof(ease_offsets[0]) - 1)
 
 static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_clock,
@@ -181,24 +185,24 @@ void view_scr_clock_menu()
 
 	if (animation_running)
 	{
+		int16_t offset = animation_direction * ease_offsets[animation_step];
+
 		scr_clock_menu_draw_icon_xy(
-		    center + animation_direction * animation_offset,
+		    center + offset,
 		    SCR_CLOCK_MENU_ICON_Y,
 		    current_location);
 
 		scr_clock_menu_draw_name_xy(
-		    center + animation_direction * animation_offset + 16,
+		    center + offset + 16,
 		    current_location);
 
 		scr_clock_menu_draw_icon_xy(
-		    center + animation_direction * animation_offset +
-		        (-animation_direction * 64),
+		    center + offset - animation_direction * MENU_ANIMATION_END,
 		    SCR_CLOCK_MENU_ICON_Y,
 		    target_location);
 
 		scr_clock_menu_draw_name_xy(
-		    center + animation_direction * animation_offset +
-		        (-animation_direction * 64) + 16,
+		    center + offset - animation_direction * MENU_ANIMATION_END + 16,
 		    target_location);
 	}
 	else
@@ -226,8 +230,8 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		          MC_CLOCK_TIME_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 		timer_set(AC_TASK_DISPLAY_ID,
-		          AC_DISPLAY_WELCOME_TEXT_ANIM_TICK,
-		          AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL,
+		          AC_DISPLAY_MENU_ANIM_TICK,
+		          AC_DISPLAY_MENU_ANIM_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 	}
 	break;
@@ -239,21 +243,19 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_WELCOME_TEXT_ANIM_TICK:
+	case AC_DISPLAY_MENU_ANIM_TICK:
 	{
 		APP_DBG_SIG("AC_DISPLAY_MENU_ANIM_TICK\n");
 
-		mc_clock_time_update_local();
-
 		if (animation_running)
 		{
-			animation_offset += MENU_ANIMATION_STEP;
+			animation_step++;
 
-			if (animation_offset >= MENU_ANIMATION_END)
+			if (animation_step > ANIM_FRAME_COUNT)
 			{
 				current_location = target_location;
 				animation_running = 0;
-				animation_offset = 0;
+				animation_step = 0;
 			}
 		}
 	}
@@ -263,7 +265,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
-		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_WELCOME_TEXT_ANIM_TICK);
+		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_MENU_ANIM_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		switch (current_location)
 		{
@@ -319,7 +321,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 				target_location = 0;
 
 			animation_direction = -1;
-			animation_offset = 0;
+			animation_step = 0;
 			animation_running = 1;
 		}
 
@@ -338,7 +340,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 				target_location = current_location - 1;
 
 			animation_direction = 1;
-			animation_offset = 0;
+			animation_step = 0;
 			animation_running = 1;
 		}
 
