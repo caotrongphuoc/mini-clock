@@ -2,6 +2,7 @@
 #define __MC_COMPASS_H__
 
 #include "ak.h"
+#include "app_dbg.h"
 
 enum
 {

@@ -22,6 +22,7 @@ void mc_clock_compass_handle(
 
 	case MC_CLOCK_COMPASS_SETUP:
 	{
+		APP_DBG_SIG("MC_CLOCK_COMPASS_SETUP\n");
 		qmc5885l_init();
 
 		memset(&compass_raw, 0, sizeof(compass_raw));
@@ -35,6 +36,7 @@ void mc_clock_compass_handle(
 
 	case MC_CLOCK_COMPASS_UPDATE:
 	{
+		APP_DBG_SIG("MC_CLOCK_COMPASS_UPDATE\n");
 		if (qmc5885l_read(&compass_raw))
 		{
 			compass_state.x = compass_raw.x;
