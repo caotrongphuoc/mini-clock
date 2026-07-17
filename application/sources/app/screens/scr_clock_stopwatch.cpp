@@ -6,13 +6,12 @@ static uint8_t stopwatch_help = 0;
 
 static void view_scr_clock_stopwatch();
 
-uint8_t box_y = 40;
-uint8_t box_x = 5;
-uint8_t box_w = 28;
-uint8_t box_h = 10;
+static const uint8_t box_y = 40;
+static const uint8_t box_x = 5;
+static const uint8_t box_w = 28;
 
-uint8_t run_y = box_y;
-uint8_t stop_y = box_y + 11;
+static const uint8_t run_y = box_y;
+static const uint8_t stop_y = box_y + 11;
 
 view_dynamic_t dyn_view_scr_clock_stopwatch = {
     {
