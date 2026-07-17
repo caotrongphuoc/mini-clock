@@ -4,6 +4,7 @@
 
 #include "mc_clock_time.h"
 #include "scr_clock_main.h"
+#include "scr_clock_setting_display.h"
 
 #define ANALOG_CX 64
 #define ANALOG_CY 32
@@ -14,7 +15,7 @@
 #define ANALOG_MIN_LEN 20
 #define ANALOG_SEC_LEN 27
 #define ANALOG_HUB_R 2
-#define ANALOG_NUM_R 19
+#define ANALOG_NUM_R 21
 
 static void view_scr_clock_analog();
 
@@ -133,6 +134,11 @@ void scr_clock_analog_draw_face()
 
 		view_render.drawLine(tx1, ty1, tx2, ty2, WHITE);
 
+		if (h % 3 != 0)
+		{
+			continue;
+		}
+
 		int16_t nx = ANALOG_CX + (int16_t)(s * ANALOG_NUM_R);
 		int16_t ny = ANALOG_CY - (int16_t)(c * ANALOG_NUM_R);
 
@@ -151,6 +157,37 @@ void scr_clock_analog_draw_face()
 	}
 }
 
+void scr_clock_analog_draw_right_panel(const rtc_time_t* time)
+{
+	view_render.drawRoundRect(95, 5, 30, 54, 3, WHITE);
+
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+	view_render.setCursor(101, 10);
+	view_render.print("SEC");
+
+	view_render.drawLine(99, 20, 121, 20, WHITE);
+
+	char buf[3];
+	buf[0] = '0' + (time->sec / 10) % 10;
+	buf[1] = '0' + time->sec % 10;
+	buf[2] = '\0';
+	view_render.setTextSize(2);
+	view_render.setCursor(98, 26);
+	view_render.print(buf);
+
+	view_render.setTextSize(1);
+	view_render.setCursor(104, 48);
+	if (scr_clock_setting_is_12h_format())
+	{
+		view_render.print((time->hour >= 12) ? "PM" : "AM");
+	}
+	else
+	{
+		view_render.print("24");
+	}
+}
+
 void view_scr_clock_analog()
 {
 	mc_clock_time_state_t state;
@@ -160,6 +197,7 @@ void view_scr_clock_analog()
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 
 	scr_clock_analog_draw_date_column(&state.date);
+	scr_clock_analog_draw_right_panel(&state.time);
 	scr_clock_analog_draw_face();
 	scr_clock_analog_draw_hands(&state.time);
 }
