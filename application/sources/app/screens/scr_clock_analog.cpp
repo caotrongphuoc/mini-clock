@@ -159,14 +159,14 @@ void scr_clock_analog_draw_face()
 
 void scr_clock_analog_draw_right_panel()
 {
-	view_render.drawRoundRect(95, 5, 30, 54, 3, WHITE);
+	view_render.drawRoundRect(100, 8, 26, 48, 3, WHITE);
 
 	view_render.setTextSize(1);
 	view_render.setTextColor(WHITE);
-	view_render.setCursor(101, 10);
+	view_render.setCursor(104, 13);
 	view_render.print("UTC");
 
-	view_render.drawLine(99, 20, 121, 20, WHITE);
+	view_render.drawLine(102, 23, 123, 23, WHITE);
 
 	mc_world_clock_state_t world_state;
 	mc_clock_world_clock_get_state(&world_state);
@@ -181,12 +181,12 @@ void scr_clock_analog_draw_right_panel()
 	if (len <= 2)
 	{
 		view_render.setTextSize(2);
-		view_render.setCursor(95 + (30 - len * 12) / 2, 30);
+		view_render.setCursor(100 + (26 - len * 12) / 2, 32);
 	}
 	else
 	{
 		view_render.setTextSize(1);
-		view_render.setCursor(95 + (30 - len * 6) / 2, 34);
+		view_render.setCursor(100 + (26 - len * 6) / 2, 36);
 	}
 	view_render.print(offset_str);
 }
