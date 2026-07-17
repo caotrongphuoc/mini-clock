@@ -58,36 +58,45 @@ static uint8_t first_weekday_of_month(uint8_t month, uint16_t year)
 /* View — Monthly grid                                                        */
 /*****************************************************************************/
 
+/*
+ * Grid geometry: 7 columns × 18 px = 126 px (1 px margin each side)
+ * Rows: 9 px tall, up to 5 visible at once (scroll for month-6)
+ */
+#define CAL_COL_W    18
+#define CAL_COL_CENTER(c) (10 + (c) * CAL_COL_W)
+#define CAL_ROW_H    9
+#define CAL_GRID_Y   19
+
 static void view_scr_calendar_month(const mc_calendar_state_t* st)
 {
-	char buf[20];
+	char buf[16];
 	uint8_t first_dow = first_weekday_of_month(st->view_month, st->view_year);
 	uint8_t days_in_m = mc_calendar_days_in_month(st->view_month, st->view_year);
-	/* Scroll so the selected week stays visible */
 	uint8_t selected_cell = first_dow + (st->selected_day - 1);
 	uint8_t selected_row = selected_cell / 7;
 
 	int16_t scroll_y = 0;
-
-	if (selected_row >= 3)
+	if (selected_row >= 4)
 	{
-		scroll_y = (selected_row - 2) * 9;
+		scroll_y = (selected_row - 3) * CAL_ROW_H;
 	}
 
-	/* Header: month name + year */
-	xsprintf(buf, "%s %u", MONTH_NAME[st->view_month], st->view_year);
 	view_render.setTextSize(1);
-	view_render.setCursor(2, 2);
+	view_render.setTextColor(WHITE);
+
+	/* Header "Mmm YYYY" - always 8 chars = 47 px, centered */
+	xsprintf(buf, "%s %u", MONTH_NAME[st->view_month], st->view_year);
+	view_render.setCursor(40, 1);
 	view_render.print(buf);
 
-	/* Day-of-week headers */
+	/* DOW headers centered per column */
 	for (uint8_t d = 0; d < 7; d++)
 	{
-		view_render.setCursor(2 + d * 18, 12);
+		view_render.setCursor(CAL_COL_CENTER(d) - 5, 10);
 		view_render.print(DOW_NAME[d]);
 	}
 
-	view_render.drawLine(0, 20, 128, 20, WHITE);
+	view_render.drawLine(0, 17, 127, 17, WHITE);
 
 	for (uint8_t day = 1; day <= days_in_m; day++)
 	{
@@ -95,10 +104,10 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		uint8_t col = cell_idx % 7;
 		uint8_t row = cell_idx / 7;
 
-		int16_t x = 2 + col * 18;
-		int16_t y = 22 + row * 9 - scroll_y;
+		int16_t center_x = CAL_COL_CENTER(col);
+		int16_t y = CAL_GRID_Y + row * CAL_ROW_H - scroll_y;
 
-		if (y < 21 || y > 63)
+		if (y < 18 || y > 61)
 		{
 			continue;
 		}
@@ -110,32 +119,31 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		uint8_t has_event = mc_calendar_has_event_on_day(
 		    st->view_year, st->view_month, day);
 
+		int16_t box_x = center_x - 6;
+
 		if (is_selected)
 		{
-			view_render.fillRect(x - 1, y - 1, 14, 9, WHITE);
+			view_render.fillRect(box_x, y - 1, 13, 8, WHITE);
 			view_render.setTextColor(BLACK);
 		}
 		else
 		{
 			view_render.setTextColor(WHITE);
-		}
-
-		if (is_today && !is_selected)
-		{
-			view_render.drawRect(x - 1, y - 1, 14, 9, WHITE);
+			if (is_today)
+			{
+				view_render.drawRect(box_x, y - 1, 13, 8, WHITE);
+			}
 		}
 
 		xsprintf(buf, "%2u", day);
-		view_render.setCursor(x, y);
+		view_render.setCursor(center_x - 5, y);
 		view_render.print(buf);
 
 		view_render.setTextColor(WHITE);
 
-		/* Event dot */
 		if (has_event)
 		{
-			view_render.fillRect(x + 10, y + 6, 2, 2,
-			                     is_selected ? BLACK : WHITE);
+			view_render.fillRect(center_x - 1, y + 8, 2, 1, WHITE);
 		}
 	}
 }
@@ -148,18 +156,20 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 {
 	char buf[24];
 
+	view_render.setTextSize(1);
+	view_render.setTextColor(WHITE);
+
 	/* Header */
 	xsprintf(buf, "%u %s %u", st->selected_day,
 	         MONTH_NAME[st->view_month], st->view_year);
-	view_render.setTextSize(1);
-	view_render.setCursor(2, 2);
+	view_render.setCursor(2, 1);
 	view_render.print(buf);
 
-	view_render.drawLine(0, 10, 128, 10, WHITE);
+	view_render.drawLine(0, 9, 127, 9, WHITE);
 
-	/* Events for this day (up to 3 visible) */
+	/* Events, 2-line layout, up to 2 visible (17 tall each) */
 	uint8_t shown = 0;
-	uint8_t ev_idx = 0; /* global events[] index for items shown */
+	uint8_t ev_idx = 0;
 
 	for (uint8_t i = 0; i < st->total_events; i++)
 	{
@@ -178,37 +188,35 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 			continue;
 		}
 
-		if (shown >= 3)
+		if (shown >= 2)
 		{
 			break;
 		}
 
-		int16_t y = 13 + shown * 15;
+		int16_t y = 11 + shown * 18;
 		uint8_t sel = (st->current_event < st->total_events &&
 		               i == st->current_event);
 		uint16_t bg = sel ? WHITE : BLACK;
 		uint16_t fg = sel ? BLACK : WHITE;
 
-		view_render.fillRect(0, y, 128, 14, bg);
+		view_render.fillRect(0, y, 128, 17, bg);
 		view_render.setTextColor(fg);
-		view_render.setTextSize(1);
 
-		/* Category tag */
-		view_render.setCursor(2, y + 2);
+		/* Line 1: category + alarm indicator */
+		view_render.setCursor(4, y + 2);
 		view_render.print(MC_CAL_CAT_NAME[ev->category]);
 
-		/* Time */
-		xsprintf(buf, "%02u:%02u-%02u:%02u",
-		         ev->start_hour, ev->start_min,
-		         ev->end_hour, ev->end_min);
-		view_render.setCursor(52, y + 2);
-		view_render.print(buf);
-
-		/* Alarm indicator */
 		if (ev->alarm_enabled)
 		{
 			view_render.drawRoundRect(114, y + 2, 10, 8, 2, fg);
 		}
+
+		/* Line 2: time range */
+		xsprintf(buf, "%02u:%02u - %02u:%02u",
+		         ev->start_hour, ev->start_min,
+		         ev->end_hour, ev->end_min);
+		view_render.setCursor(4, y + 10);
+		view_render.print(buf);
 
 		view_render.setTextColor(WHITE);
 
@@ -218,14 +226,14 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 
 	if (shown == 0)
 	{
-		view_render.setCursor(20, 28);
+		view_render.setCursor(16, 26);
 		view_render.print("No events today");
 	}
 
-	/* Bottom hints */
-	view_render.drawLine(0, 50, 128, 50, WHITE);
-	view_render.setCursor(2, 52);
-	view_render.print(" Mode to Edit");
+	/* Bottom hint */
+	view_render.drawLine(0, 50, 127, 50, WHITE);
+	view_render.setCursor(2, 54);
+	view_render.print("Mode: Edit");
 }
 
 /*****************************************************************************/
