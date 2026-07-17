@@ -185,13 +185,13 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_NEXT_FIELD\n");
 		if (!mc_clock_timer_state.running)
 		{
-			if (mc_clock_timer_state.edit_field == MC_TIMER_EDIT_HOUR)
+			if (mc_clock_timer_state.edit_field == MC_TIMER_EDIT_SEC)
 			{
-				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_SEC;
+				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_HOUR;
 			}
 			else
 			{
-				mc_clock_timer_state.edit_field--;
+				mc_clock_timer_state.edit_field++;
 			}
 		}
 	}
