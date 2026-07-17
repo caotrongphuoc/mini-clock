@@ -171,13 +171,13 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		{
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case 3: // Delete
+			case MC_CLOCK_ALARM_EDIT_DELETE:
 			{
 				mc_clock_alarm_delete_current();
 			}
 			break;
 
-			case 4: // Save
+			case MC_CLOCK_ALARM_EDIT_SAVE:
 			{
 				mc_clock_alarm_state.editing = 0;
 				mc_clock_alarm_apply_rtc();
@@ -240,15 +240,15 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case 0:
+			case MC_CLOCK_ALARM_EDIT_HOUR:
 				alarm->hour = (alarm->hour + 1) % 24;
 				break;
 
-			case 1:
+			case MC_CLOCK_ALARM_EDIT_MINUTE:
 				alarm->minute = (alarm->minute + 1) % 60;
 				break;
 
-			case 2:
+			case MC_CLOCK_ALARM_EDIT_ENABLE:
 				alarm->enabled = 1;
 				break;
 
@@ -282,17 +282,17 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case 0:
+			case MC_CLOCK_ALARM_EDIT_HOUR:
 				alarm->hour =
 				    (alarm->hour == 0) ? 23 : alarm->hour - 1;
 				break;
 
-			case 1:
+			case MC_CLOCK_ALARM_EDIT_MINUTE:
 				alarm->minute =
 				    (alarm->minute == 0) ? 59 : alarm->minute - 1;
 				break;
 
-			case 2:
+			case MC_CLOCK_ALARM_EDIT_ENABLE:
 				alarm->enabled = 0;
 				break;
 
