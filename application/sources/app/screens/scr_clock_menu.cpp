@@ -13,6 +13,7 @@ static const uint8_t ease_offsets[] = {0, 2, 8, 20, 32, 44, 56, 62, 64};
 
 static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_clock,
+    bitmap_clock_menu_clock,
     bitmap_clock_menu_alarm,
     bitmap_clock_menu_stopwatch,
     bitmap_clock_menu_timer,
@@ -24,6 +25,7 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
 
 static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     "Clock",
+    "Analog",
     "Alarm",
     "Stopwatch",
     "Timer",
@@ -269,6 +271,10 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		{
 		case SCR_CLOCK_MENU_CLOCK:
 			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
+			break;
+
+		case SCR_CLOCK_MENU_ANALOG:
+			SCREEN_TRAN(scr_clock_analog_handle, &scr_clock_analog);
 			break;
 
 		case SCR_CLOCK_MENU_ALARM:
