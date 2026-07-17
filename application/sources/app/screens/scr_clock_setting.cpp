@@ -28,7 +28,6 @@ static const unsigned char* const setting_bitmap[SCR_CLOCK_SETTING_ITEM_NUMBER] 
 /*****************************************************************************/
 /* View - Clock setting */
 /*****************************************************************************/
-static uint8_t setting_scroll_offset;
 static void view_scr_clock_setting();
 
 view_dynamic_t dyn_view_scr_clock_setting = {
@@ -49,19 +48,12 @@ void view_scr_clock_setting()
 {
 	view_render.setTextSize(1);
 
-	const uint8_t visible_items = 4;
-
-	for (uint8_t i = 0; i < visible_items; i++)
+	for (uint8_t i = 0; i < SCR_CLOCK_SETTING_ITEM_NUMBER; i++)
 	{
-		uint8_t index = setting_scroll_offset + i;
-
-		if (index >= SCR_CLOCK_SETTING_ITEM_NUMBER)
-			break;
-
 		uint8_t frame_y = SCR_CLOCK_SETTING_FRAME_Y_1 +
 		                  SCR_CLOCK_SETTING_FRAME_STEP * i;
 
-		bool selected = (index == setting_location_choose);
+		bool selected = (i == setting_location_choose);
 
 		uint8_t fg = selected ? BLACK : WHITE;
 
@@ -89,13 +81,13 @@ void view_scr_clock_setting()
 		// Text left
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
-		view_render.print(setting_item_name[index]);
+		view_render.print(setting_item_name[i]);
 
 		// Bitmap right
 		view_render.drawBitmap(
 		    105,
 		    frame_y + 1,
-		    setting_bitmap[index],
+		    setting_bitmap[i],
 		    11,
 		    11,
 		    fg);
@@ -116,7 +108,6 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		setting_location_choose = SCR_CLOCK_SETTING_TIME;
-		setting_scroll_offset = 0;
 	}
 	break;
 
@@ -157,17 +148,10 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_UP_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
-
 		if (setting_location_choose > 0)
 		{
 			setting_location_choose--;
 		}
-
-		if (setting_location_choose < setting_scroll_offset)
-		{
-			setting_scroll_offset = setting_location_choose;
-		}
-
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
@@ -175,17 +159,10 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
-
 		if (setting_location_choose < SCR_CLOCK_SETTING_ITEM_NUMBER - 1)
 		{
 			setting_location_choose++;
 		}
-
-		if (setting_location_choose >= setting_scroll_offset + 4)
-		{
-			setting_scroll_offset = setting_location_choose - 3;
-		}
-
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
