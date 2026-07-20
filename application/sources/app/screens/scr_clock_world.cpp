@@ -47,8 +47,8 @@ static void draw_world_clock_content(
 	view_render.drawRect(
 	    offset,
 	    0,
-	    128,
-	    64,
+	    LCD_WIDTH,
+	    LCD_HEIGHT,
 	    WHITE);
 
 	view_render.setTextSize(1);
@@ -59,7 +59,7 @@ static void draw_world_clock_content(
 	view_render.drawLine(
 	    offset,
 	    12,
-	    offset + 128,
+	    offset + LCD_WIDTH,
 	    12,
 	    WHITE);
 
@@ -117,14 +117,14 @@ static void view_scr_clock_world()
 		 */
 		draw_world_clock_content(
 		    &state,
-		    world_anim_offset + world_anim_direction * 128);
+		    world_anim_offset + world_anim_direction * LCD_WIDTH);
 
 		/*
 		 * smooth movement
 		 */
 		world_anim_offset -= world_anim_direction * 32;
 
-		if (abs(world_anim_offset) >= 128)
+		if (abs(world_anim_offset) >= LCD_WIDTH)
 		{
 			world_anim_running = 0;
 			world_anim_offset = 0;

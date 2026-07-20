@@ -25,7 +25,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 
 	char buf[16];
 
-	view_render.drawRoundRect(0, 0, 128, 64, 5, WHITE);
+	view_render.drawRoundRect(0, 0, LCD_WIDTH, LCD_HEIGHT, 5, WHITE);
 	view_render.setTextColor(WHITE);
 
 	view_render.setCursor(5, 5);
@@ -128,7 +128,7 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 		uint16_t fg = (idx == state->current_item) ? BLACK : WHITE;
 		char line[16];
 
-		view_render.fillRect(0, y, 128, 13, bg);
+		view_render.fillRect(0, y, LCD_WIDTH, 13, bg);
 		view_render.setTextColor(fg);
 		view_render.setTextSize(1);
 		xsprintf(line, "%u. %02u:%02u %s",
@@ -143,7 +143,7 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 	uint8_t add_focus = (state->current_item == state->total_alarm);
 	uint8_t back_focus = (state->current_item == state->total_alarm + 1);
 
-	view_render.fillRect(0, 40, 128, 24, BLACK);
+	view_render.fillRect(0, 40, LCD_WIDTH, 24, BLACK);
 
 	view_render.fillRoundRect(4, 43, 70, 14, 3, add_focus ? WHITE : BLACK);
 	view_render.drawRoundRect(4, 43, 70, 14, 3, WHITE);

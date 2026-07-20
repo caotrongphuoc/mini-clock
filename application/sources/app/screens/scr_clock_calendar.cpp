@@ -96,7 +96,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		view_render.print(DOW_NAME[d]);
 	}
 
-	view_render.drawLine(0, 17, 127, 17, WHITE);
+	view_render.drawLine(0, 17, LCD_WIDTH - 1, 17, WHITE);
 
 	for (uint8_t day = 1; day <= days_in_m; day++)
 	{
@@ -165,7 +165,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 	view_render.setCursor(2, 1);
 	view_render.print(buf);
 
-	view_render.drawLine(0, 9, 127, 9, WHITE);
+	view_render.drawLine(0, 9, LCD_WIDTH - 1, 9, WHITE);
 
 	/* Events, 2-line layout, up to 2 visible (17 tall each) */
 	uint8_t shown = 0;
@@ -199,7 +199,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 		uint16_t bg = sel ? WHITE : BLACK;
 		uint16_t fg = sel ? BLACK : WHITE;
 
-		view_render.fillRect(0, y, 128, 17, bg);
+		view_render.fillRect(0, y, LCD_WIDTH, 17, bg);
 		view_render.setTextColor(fg);
 
 		/* Line 1: category + alarm indicator */
@@ -231,7 +231,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 	}
 
 	/* Bottom hint */
-	view_render.drawLine(0, 50, 127, 50, WHITE);
+	view_render.drawLine(0, 50, LCD_WIDTH - 1, 50, WHITE);
 	view_render.setCursor(2, 54);
 	view_render.print("Mode: Edit");
 }
@@ -264,7 +264,7 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 	const mc_calendar_event_t* ev = &st->events[st->editing_event];
 	char buf[20];
 
-	view_render.drawRoundRect(0, 0, 128, 64, 4, WHITE);
+	view_render.drawRoundRect(0, 0, LCD_WIDTH, LCD_HEIGHT, 4, WHITE);
 
 	/* Title */
 	view_render.setTextSize(1);

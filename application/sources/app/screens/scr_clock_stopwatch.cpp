@@ -32,7 +32,7 @@ static void draw_center_text(const char* text, uint8_t y, uint8_t size)
 	uint16_t width = strlen(text) * 6 * size;
 
 	view_render.setTextSize(size);
-	view_render.setCursor((128 - width) / 2, y);
+	view_render.setCursor((LCD_WIDTH - width) / 2, y);
 	view_render.print(text);
 }
 
@@ -78,7 +78,7 @@ void view_scr_clock_stopwatch()
 	char time_buf[12];
 
 	view_render.clear();
-	view_render.drawRoundRect(0, 0, 128, 64, 5, WHITE);
+	view_render.drawRoundRect(0, 0, LCD_WIDTH, LCD_HEIGHT, 5, WHITE);
 
 	if (stopwatch_help)
 	{

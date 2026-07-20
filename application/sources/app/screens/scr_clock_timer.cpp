@@ -81,7 +81,7 @@ void view_scr_clock_timer()
 
 	if (timer_state.finished)
 	{
-		view_render.fillRect(0, 0, 128, 64, WHITE);
+		view_render.fillRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 		view_render.setTextColor(BLACK);
 
 		view_render.setCursor(18, 8);
@@ -94,7 +94,7 @@ void view_scr_clock_timer()
 		return;
 	}
 
-	view_render.drawRoundRect(0, 0, 128, 64, 6, WHITE);
+	view_render.drawRoundRect(0, 0, LCD_WIDTH, LCD_HEIGHT, 6, WHITE);
 	view_render.setTextColor(WHITE);
 
 	view_render.setCursor(34, 3);
