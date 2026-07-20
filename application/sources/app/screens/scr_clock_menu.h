@@ -5,7 +5,6 @@
 #include "mc_clock_time.h"
 #include "scr_clock_main.h"
 #include "scr_clock_setting_display.h"
-#include "screens.h"
 
 #define SCR_CLOCK_MENU_ITEM_NUMBER (9)
 #define SCR_CLOCK_MENU_ICON_X (53)
