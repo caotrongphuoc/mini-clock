@@ -63,4 +63,13 @@ void mc_clock_alarm_apply_rtc(void);
 void mc_clock_alarm_set_sound(uint8_t sound);
 uint8_t mc_clock_alarm_get_sound(void);
 
+/* Persistent bank stored in EEPROM (total + alarm array only) */
+typedef struct
+{
+	uint8_t               total_alarm;
+	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
+} mc_clock_alarm_bank_t;
+
+void mc_clock_alarm_load_from_eeprom(void);
+
 #endif // __MC_CLOCK_ALARM_H__

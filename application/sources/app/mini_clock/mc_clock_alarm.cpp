@@ -1,5 +1,16 @@
 #include "mc_clock_alarm.h"
 #include "mc_clock_world.h"
+#include "eeprom.h"
+#include "app_eeprom.h"
+
+#define MC_CLOCK_ALARM_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_alarm_bank_t))
+
+typedef struct
+{
+	uint32_t              magic_number;
+	mc_clock_alarm_bank_t data;
+	uint8_t               check_sum;
+} mc_clock_alarm_eeprom_t;
 
 /* Variable Declaration - Clock alarm object */
 static mc_clock_alarm_state_t mc_clock_alarm_state = {
@@ -15,6 +26,43 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
 
     .sound = BUZZER_SOUND_ALARM_CLASSIC,
 };
+
+static void mc_clock_alarm_save_to_eeprom(void)
+{
+	mc_clock_alarm_eeprom_t eeprom_data;
+
+	eeprom_data.data.total_alarm = mc_clock_alarm_state.total_alarm;
+	for (uint8_t i = 0; i < MC_CLOCK_ALARM_MAX; i++)
+	{
+		eeprom_data.data.alarm[i] = mc_clock_alarm_state.alarm[i];
+	}
+
+	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number, &eeprom_data.check_sum, MC_CLOCK_ALARM_CHECKSUM_SIZE);
+	eeprom_write(EEPROM_ALARM_START_ADDR, (uint8_t*)&eeprom_data, sizeof(eeprom_data));
+}
+
+void mc_clock_alarm_load_from_eeprom(void)
+{
+	mc_clock_alarm_eeprom_t eeprom_data;
+
+	uint8_t ret = eeprom_read(EEPROM_ALARM_START_ADDR, (uint8_t*)&eeprom_data, sizeof(eeprom_data));
+
+	if (ret == EEPROM_DRIVER_OK &&
+	    mc_clock_eeprom_is_valid(&eeprom_data.magic_number, eeprom_data.check_sum, MC_CLOCK_ALARM_CHECKSUM_SIZE))
+	{
+		mc_clock_alarm_state.total_alarm = eeprom_data.data.total_alarm;
+		if (mc_clock_alarm_state.total_alarm > MC_CLOCK_ALARM_MAX)
+		{
+			mc_clock_alarm_state.total_alarm = 0;
+		}
+		for (uint8_t i = 0; i < MC_CLOCK_ALARM_MAX; i++)
+		{
+			mc_clock_alarm_state.alarm[i] = eeprom_data.data.alarm[i];
+		}
+	}
+
+	mc_clock_alarm_apply_rtc();
+}
 
 void mc_clock_alarm_set_sound(uint8_t sound)
 {
@@ -68,6 +116,7 @@ void mc_clock_alarm_apply_rtc(void)
 	if (!found)
 	{
 		task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
+		mc_clock_alarm_save_to_eeprom();
 		return;
 	}
 
@@ -81,6 +130,8 @@ void mc_clock_alarm_apply_rtc(void)
 	                     MC_CLOCK_RTC_SET_ALARM_REQ,
 	                     (uint8_t*)&req,
 	                     sizeof(req));
+
+	mc_clock_alarm_save_to_eeprom();
 }
 
 

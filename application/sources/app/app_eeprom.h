@@ -14,6 +14,7 @@
 #define EEPROM_END_ADDR           (0x1000)
 
 #define EEPROM_SETTING_START_ADDR (0x0010)
+#define EEPROM_ALARM_START_ADDR   (0x0100)
 
 #define MC_CLOCK_EEPROM_MAGIC_NUMBER ((uint32_t)0x6D63636B) // "mcck"
 
@@ -44,6 +45,10 @@ extern "C"
 	extern mc_clock_setting_t clock_setting_data;
 	extern bool mc_clock_setting_read(mc_clock_setting_t* data);
 	extern bool mc_clock_setting_write(mc_clock_setting_t* data);
+
+	extern uint8_t mc_clock_eeprom_checksum(uint8_t* data, uint32_t size);
+	extern void    mc_clock_eeprom_update_checksum(uint32_t* magic_number, uint8_t* check_sum, uint32_t check_sum_size);
+	extern bool    mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_t check_sum_size);
 
 #ifdef __cplusplus
 }

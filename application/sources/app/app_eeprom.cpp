@@ -12,7 +12,7 @@ typedef struct
 
 #define MC_CLOCK_SETTING_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_setting_t))
 
-static uint8_t mc_clock_eeprom_checksum(uint8_t* data, uint32_t size)
+uint8_t mc_clock_eeprom_checksum(uint8_t* data, uint32_t size)
 {
 	uint8_t check_sum = 0;
 
@@ -24,13 +24,13 @@ static uint8_t mc_clock_eeprom_checksum(uint8_t* data, uint32_t size)
 	return check_sum;
 }
 
-static void mc_clock_eeprom_update_checksum(uint32_t* magic_number, uint8_t* check_sum, uint32_t check_sum_size)
+void mc_clock_eeprom_update_checksum(uint32_t* magic_number, uint8_t* check_sum, uint32_t check_sum_size)
 {
 	*magic_number = MC_CLOCK_EEPROM_MAGIC_NUMBER;
 	*check_sum    = mc_clock_eeprom_checksum((uint8_t*)magic_number, check_sum_size);
 }
 
-static bool mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_t check_sum_size)
+bool mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_t check_sum_size)
 {
 	return (*magic_number == MC_CLOCK_EEPROM_MAGIC_NUMBER) &&
 	       (check_sum == mc_clock_eeprom_checksum((uint8_t*)magic_number, check_sum_size));
