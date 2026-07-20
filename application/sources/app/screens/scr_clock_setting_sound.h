@@ -30,5 +30,6 @@ static const buzzer_sound_t alarm_sound_list[] = {
 #define ALARM_SOUND_LIST_NUMBER (sizeof(alarm_sound_list) / sizeof(alarm_sound_list[0]))
 
 void scr_clock_setting_sound_reset(void);
+void scr_clock_setting_sound_apply(void);
 
 #endif //__SCR_CLOCK_SETTING_SOUND_H__

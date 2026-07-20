@@ -1,11 +1,11 @@
 #include "scr_clock_setting_display.h"
 
 #include "scr_clock_setting.h"
+#include "app_eeprom.h"
 
 #define SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER (3)
 
 static uint8_t setting_display_location_choose;
-static uint8_t setting_time_format_12h;
 static uint8_t setting_color_invert;
 static uint8_t setting_bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
 
@@ -70,7 +70,7 @@ void view_scr_clock_setting_display()
 		if (i == SCR_CLOCK_SETTING_DISPLAY_FORMAT)
 		{
 			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_time_format_12h ? "[12]" : "[24]");
+			view_render.print(clock_setting_data.format_12h ? "[12]" : "[24]");
 		}
 		else if (i == SCR_CLOCK_SETTING_DISPLAY_COLOR)
 		{
@@ -104,7 +104,8 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 		switch (setting_display_location_choose)
 		{
 		case SCR_CLOCK_SETTING_DISPLAY_FORMAT:
-			setting_time_format_12h = !setting_time_format_12h;
+			clock_setting_data.format_12h = !clock_setting_data.format_12h;
+			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
@@ -163,12 +164,12 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 
 uint8_t scr_clock_setting_is_12h_format(void)
 {
-	return setting_time_format_12h;
+	return clock_setting_data.format_12h;
 }
 
 void scr_clock_setting_display_reset(void)
 {
-	setting_time_format_12h = 0;
+	clock_setting_data.format_12h = 0;
 	setting_color_invert = 0;
 	setting_bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
 	view_render.invertDisplay(0);

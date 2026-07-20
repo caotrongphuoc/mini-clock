@@ -2,11 +2,9 @@
 #include "scr_clock_setting.h"
 #include "mc_clock_time.h"
 #include "mc_clock_alarm.h"
+#include "app_eeprom.h"
 
 static uint8_t setting_sound_location_choose;
-static uint8_t setting_sound_off;
-static uint8_t setting_chime_enabled;
-static uint8_t setting_alarm_choice;
 
 static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
     "Mute",
@@ -74,7 +72,7 @@ void view_scr_clock_setting_sound()
 		{
 			view_render.drawBitmap(110,
 			                       frame_y + 2,
-			                       setting_sound_off ? bitmap_clock_setting_speaker_off : bitmap_clock_setting_speaker_on,
+			                       clock_setting_data.sound_off ? bitmap_clock_setting_speaker_off : bitmap_clock_setting_speaker_on,
 			                       8,
 			                       7,
 			                       fg);
@@ -83,14 +81,14 @@ void view_scr_clock_setting_sound()
 		else if (i == SCR_CLOCK_SETTING_SOUND_CHIME)
 		{
 			// view_render.setCursor(92, frame_y + 2);
-			// view_render.print(setting_chime_enabled ? "[ON] " : "[OFF]");
-			view_render.drawBitmap( 110,  frame_y + 1,  setting_chime_enabled ? bitmap_bell_ring : bitmap_bell_off, 11, 11, fg);
+			// view_render.print(clock_setting_data.chime_enabled ? "[ON] " : "[OFF]");
+			view_render.drawBitmap( 110,  frame_y + 1,  clock_setting_data.chime_enabled ? bitmap_bell_ring : bitmap_bell_off, 11, 11, fg);
 		}
 
 		else if (i == SCR_CLOCK_SETTING_SOUND_ALARM)
 		{
 			view_render.setCursor(65, frame_y + 2);
-			view_render.print(alarm_sound_name[setting_alarm_choice]);
+			view_render.print(alarm_sound_name[clock_setting_data.alarm_sound]);
 		}
 	}
 
@@ -114,28 +112,31 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 		switch (setting_sound_location_choose)
 		{
 		case SCR_CLOCK_SETTING_SOUND_MUTE:
-			setting_sound_off = !setting_sound_off;
-			BUZZER_Silent(setting_sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+			clock_setting_data.sound_off = !clock_setting_data.sound_off;
+			BUZZER_Silent(clock_setting_data.sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_SOUND_CHIME:
-			setting_chime_enabled = !setting_chime_enabled;
-			mc_clock_time_set_chime_enabled(setting_chime_enabled);
+			clock_setting_data.chime_enabled = !clock_setting_data.chime_enabled;
+			mc_clock_time_set_chime_enabled(clock_setting_data.chime_enabled);
+			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
 		case SCR_CLOCK_SETTING_SOUND_ALARM:
 		{
-			setting_alarm_choice++;
+			clock_setting_data.alarm_sound++;
 
-			if (setting_alarm_choice >= ALARM_SOUND_LIST_NUMBER)
+			if (clock_setting_data.alarm_sound >= ALARM_SOUND_LIST_NUMBER)
 			{
-				setting_alarm_choice = 0;
+				clock_setting_data.alarm_sound = 0;
 			}
 
-			mc_clock_alarm_set_sound(alarm_sound_list[setting_alarm_choice]);
-			BUZZER_PlaySound(alarm_sound_list[setting_alarm_choice]);
+			mc_clock_alarm_set_sound(alarm_sound_list[clock_setting_data.alarm_sound]);
+			mc_clock_setting_write(&clock_setting_data);
+			BUZZER_PlaySound(alarm_sound_list[clock_setting_data.alarm_sound]);
 		}
 		break;
 
@@ -182,10 +183,22 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 
 void scr_clock_setting_sound_reset(void)
 {
-	setting_sound_off = 0;
-	setting_chime_enabled = 0;
-	setting_alarm_choice = 0;
+	clock_setting_data.sound_off = 0;
+	clock_setting_data.chime_enabled = 0;
+	clock_setting_data.alarm_sound = 0;
 	BUZZER_Silent(BUZZER_SILENT_OFF);
 	mc_clock_time_set_chime_enabled(0);
 	mc_clock_alarm_set_sound(alarm_sound_list[0]);
+}
+
+void scr_clock_setting_sound_apply(void)
+{
+	BUZZER_Silent(clock_setting_data.sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+	mc_clock_time_set_chime_enabled(clock_setting_data.chime_enabled);
+
+	if (clock_setting_data.alarm_sound >= ALARM_SOUND_LIST_NUMBER)
+	{
+		clock_setting_data.alarm_sound = 0;
+	}
+	mc_clock_alarm_set_sound(alarm_sound_list[clock_setting_data.alarm_sound]);
 }

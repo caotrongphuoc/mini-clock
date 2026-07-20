@@ -1,5 +1,8 @@
 #include "scr_startup.h"
 
+#include "app_eeprom.h"
+#include "scr_clock_setting_sound.h"
+
 static void view_scr_startup();
 
 view_dynamic_t dyn_view_startup = {
@@ -42,6 +45,8 @@ void scr_startup_handle(ak_msg_t *msg) {
 		APP_DBG_SIG("AC_DISPLAY_INITIAL\n");
 		view_render.initialize();
 		view_render_display_on();
+		mc_clock_setting_read(&clock_setting_data);
+		scr_clock_setting_sound_apply();
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO, AC_DISPLAY_STARTUP_INTERVAL, TIMER_ONE_SHOT);
 	} break;
 

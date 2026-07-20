@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "app.h"
-#include "mc_clock_alarm.h"
 
 /**
  *****************************************************************************
@@ -15,7 +14,6 @@
 #define EEPROM_END_ADDR           (0x1000)
 
 #define EEPROM_SETTING_START_ADDR (0x0010)
-#define EEPROM_ALARM_START_ADDR   (0x0100)
 
 #define MC_CLOCK_EEPROM_MAGIC_NUMBER ((uint32_t)0x6D63636B) // "mcck"
 
@@ -38,27 +36,14 @@ typedef struct
 	uint8_t world_country; // index into world clock country[]
 } mc_clock_setting_t;
 
-/******************************************************************************/
-/* Alarm bank                                                                 */
-/******************************************************************************/
-
-typedef struct
-{
-	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
-} mc_clock_alarm_bank_t;
-
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-	extern mc_clock_setting_t    clock_setting_data;
+	extern mc_clock_setting_t clock_setting_data;
 	extern bool mc_clock_setting_read(mc_clock_setting_t* data);
 	extern bool mc_clock_setting_write(mc_clock_setting_t* data);
-
-	extern mc_clock_alarm_bank_t clock_alarm_data;
-	extern bool mc_clock_alarm_bank_read(mc_clock_alarm_bank_t* data);
-	extern bool mc_clock_alarm_bank_write(mc_clock_alarm_bank_t* data);
 
 #ifdef __cplusplus
 }
