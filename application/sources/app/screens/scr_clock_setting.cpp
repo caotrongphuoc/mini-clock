@@ -4,6 +4,7 @@
 #include "scr_clock_setting_sound.h"
 #include "app_eeprom.h"
 #include "mc_clock_world.h"
+#include "mc_clock_alarm.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Clock setting */
@@ -138,6 +139,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			clock_setting_data.world_country = 0;
 			mc_clock_world_clock_select_country(0);
 			mc_clock_setting_write(&clock_setting_data);
+			mc_clock_alarm_apply_rtc();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 
