@@ -27,7 +27,7 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .sound = BUZZER_SOUND_ALARM_CLASSIC,
 };
 
-static void mc_clock_alarm_save_to_eeprom(void)
+void mc_clock_alarm_save_to_eeprom(void)
 {
 	mc_clock_alarm_eeprom_t eeprom_data;
 

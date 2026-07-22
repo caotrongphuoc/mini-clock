@@ -39,13 +39,14 @@ bool mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_
 /*****************************************************************************/
 /* Setting                                                                    */
 /*****************************************************************************/
-static void mc_clock_setting_set_default(mc_clock_setting_t* data)
+void mc_clock_setting_set_default(mc_clock_setting_t* data)
 {
 	data->format_12h    = MC_CLOCK_SETTING_FORMAT_12H_DEFAULT;
 	data->sound_off     = MC_CLOCK_SETTING_SOUND_OFF_DEFAULT;
 	data->chime_enabled = MC_CLOCK_SETTING_CHIME_DEFAULT;
 	data->alarm_sound   = MC_CLOCK_SETTING_ALARM_SOUND_DEFAULT;
 	data->world_country = MC_CLOCK_SETTING_WORLD_COUNTRY_DEFAULT;
+	data->bright_level  = MC_CLOCK_SETTING_BRIGHT_LEVEL_DEFAULT;
 }
 
 bool mc_clock_setting_read(mc_clock_setting_t* data)

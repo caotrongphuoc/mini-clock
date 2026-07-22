@@ -7,7 +7,6 @@
 
 static uint8_t setting_display_location_choose;
 static uint8_t setting_color_invert;
-static uint8_t setting_bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
 
 static const uint8_t setting_bright_value[SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER] = {
     0x20, 0x80, 0xCF,
@@ -80,7 +79,7 @@ void view_scr_clock_setting_display()
 		else if (i == SCR_CLOCK_SETTING_DISPLAY_BRIGHT)
 		{
 			view_render.setCursor(92, frame_y + 2);
-			view_render.print(setting_bright_label[setting_bright_level]);
+			view_render.print(setting_bright_label[clock_setting_data.bright_level]);
 		}
 	}
 
@@ -116,8 +115,9 @@ void scr_clock_setting_display_handle(ak_msg_t* msg)
 			break;
 
 		case SCR_CLOCK_SETTING_DISPLAY_BRIGHT:
-			setting_bright_level = (setting_bright_level + 1) % SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER;
-			view_render.setContrast(setting_bright_value[setting_bright_level]);
+			clock_setting_data.bright_level = (clock_setting_data.bright_level + 1) % SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER;
+			view_render.setContrast(setting_bright_value[clock_setting_data.bright_level]);
+			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
@@ -171,7 +171,16 @@ void scr_clock_setting_display_reset(void)
 {
 	clock_setting_data.format_12h = 0;
 	setting_color_invert = 0;
-	setting_bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
+	clock_setting_data.bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
 	view_render.invertDisplay(0);
-	view_render.setContrast(setting_bright_value[setting_bright_level]);
+	view_render.setContrast(setting_bright_value[clock_setting_data.bright_level]);
+}
+
+void scr_clock_setting_display_apply(void)
+{
+	if (clock_setting_data.bright_level >= SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER)
+	{
+		clock_setting_data.bright_level = SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER - 1;
+	}
+	view_render.setContrast(setting_bright_value[clock_setting_data.bright_level]);
 }

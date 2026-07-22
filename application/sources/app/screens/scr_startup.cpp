@@ -1,6 +1,7 @@
 #include "scr_startup.h"
 
 #include "app_eeprom.h"
+#include "scr_clock_setting_display.h"
 #include "scr_clock_setting_sound.h"
 #include "mc_clock_alarm.h"
 #include "mc_clock_world.h"
@@ -48,6 +49,7 @@ void scr_startup_handle(ak_msg_t *msg) {
 		view_render.initialize();
 		view_render_display_on();
 		mc_clock_setting_read(&clock_setting_data);
+		scr_clock_setting_display_apply();
 		scr_clock_setting_sound_apply();
 		mc_clock_world_clock_select_country(clock_setting_data.world_country);
 		mc_clock_alarm_load_from_eeprom();
