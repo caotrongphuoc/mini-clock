@@ -47,6 +47,7 @@ void mc_clock_setting_set_default(mc_clock_setting_t* data)
 	data->alarm_sound   = MC_CLOCK_SETTING_ALARM_SOUND_DEFAULT;
 	data->world_country = MC_CLOCK_SETTING_WORLD_COUNTRY_DEFAULT;
 	data->bright_level  = MC_CLOCK_SETTING_BRIGHT_LEVEL_DEFAULT;
+	data->color_invert  = MC_CLOCK_SETTING_COLOR_INVERT_DEFAULT;
 }
 
 bool mc_clock_setting_read(mc_clock_setting_t* data)

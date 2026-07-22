@@ -28,6 +28,7 @@
 #define MC_CLOCK_SETTING_ALARM_SOUND_DEFAULT   (0)
 #define MC_CLOCK_SETTING_WORLD_COUNTRY_DEFAULT (0)
 #define MC_CLOCK_SETTING_BRIGHT_LEVEL_DEFAULT  (2) // HIGH
+#define MC_CLOCK_SETTING_COLOR_INVERT_DEFAULT  (0)
 
 typedef struct
 {
@@ -37,6 +38,7 @@ typedef struct
 	uint8_t alarm_sound;   // index into alarm_sound_list[]
 	uint8_t world_country; // index into world clock country[]
 	uint8_t bright_level;  // 0=LO, 1=MD, 2=HI
+	uint8_t color_invert;  // 0=normal, 1=inverted
 } mc_clock_setting_t;
 
 #ifdef __cplusplus
