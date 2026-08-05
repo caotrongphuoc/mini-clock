@@ -5,6 +5,7 @@
 #include "scr_clock_setting_sound.h"
 #include "mc_clock_alarm.h"
 #include "mc_clock_world.h"
+#include "mc_clock_calendar.h"
 
 static void view_scr_startup();
 
@@ -53,6 +54,7 @@ void scr_startup_handle(ak_msg_t *msg) {
 		scr_clock_setting_sound_apply();
 		mc_clock_world_clock_select_country(clock_setting_data.world_country);
 		mc_clock_alarm_load_from_eeprom();
+		mc_clock_calendar_load_from_eeprom();
 		timer_set(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO, AC_DISPLAY_STARTUP_INTERVAL, TIMER_ONE_SHOT);
 	} break;
 

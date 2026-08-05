@@ -154,4 +154,13 @@ uint8_t mc_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
 
 void mc_clock_calendar_sync(void);
 
+/* Persistent bank stored in EEPROM (total + events array) */
+typedef struct
+{
+	uint8_t             total_events;
+	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
+} mc_calendar_bank_t;
+
+void mc_clock_calendar_load_from_eeprom(void);
+
 #endif /* __MC_CLOCK_CALENDAR_H__ */

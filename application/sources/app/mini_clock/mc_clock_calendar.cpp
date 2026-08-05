@@ -1,6 +1,17 @@
 #include "mc_clock_calendar.h"
 
 #include "mc_clock_alarm.h"
+#include "eeprom.h"
+#include "app_eeprom.h"
+
+#define MC_CALENDAR_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_calendar_bank_t))
+
+typedef struct
+{
+	uint32_t           magic_number;
+	mc_calendar_bank_t data;
+	uint8_t            check_sum;
+} mc_calendar_eeprom_t;
 
 const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
     {
@@ -277,6 +288,50 @@ void mc_clock_calendar_init(void)
 	calendar.mode = MC_CAL_MODE_MONTH;
 }
 
+void mc_clock_calendar_save_to_eeprom(void)
+{
+	mc_calendar_eeprom_t eeprom_data;
+
+	eeprom_data.data.total_events = calendar.total_events;
+	for (uint8_t i = 0; i < MC_CALENDAR_MAX_EVENTS; i++)
+	{
+		eeprom_data.data.events[i] = calendar.events[i];
+	}
+
+	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number,
+	                                &eeprom_data.check_sum,
+	                                MC_CALENDAR_CHECKSUM_SIZE);
+
+	eeprom_write(EEPROM_CALENDAR_START_ADDR,
+	             (uint8_t*)&eeprom_data,
+	             sizeof(eeprom_data));
+}
+
+void mc_clock_calendar_load_from_eeprom(void)
+{
+	mc_calendar_eeprom_t eeprom_data;
+
+	uint8_t ret = eeprom_read(EEPROM_CALENDAR_START_ADDR,
+	                          (uint8_t*)&eeprom_data,
+	                          sizeof(eeprom_data));
+
+	if (ret == EEPROM_DRIVER_OK &&
+	    mc_clock_eeprom_is_valid(&eeprom_data.magic_number,
+	                             eeprom_data.check_sum,
+	                             MC_CALENDAR_CHECKSUM_SIZE))
+	{
+		calendar.total_events = eeprom_data.data.total_events;
+		if (calendar.total_events > MC_CALENDAR_MAX_EVENTS)
+		{
+			calendar.total_events = 0;
+		}
+		for (uint8_t i = 0; i < MC_CALENDAR_MAX_EVENTS; i++)
+		{
+			calendar.events[i] = eeprom_data.data.events[i];
+		}
+	}
+}
+
 void mc_clock_calendar_get_state(mc_calendar_state_t* state)
 {
 	if (state == NULL)
@@ -520,6 +575,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			{
 				calendar.current_event = 255;
 				calendar.mode = MC_CAL_MODE_MONTH;
+				mc_clock_calendar_save_to_eeprom();
 				break;
 			}
 
@@ -527,6 +583,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				calendar.current_event = calendar.total_events - 1;
 
 			mc_calendar_scroll_to_event();
+			mc_clock_calendar_save_to_eeprom();
 		}
 	}
 	break;
@@ -564,6 +621,8 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			{
 				calendar.mode = MC_CAL_MODE_LIST;
 			}
+
+			mc_clock_calendar_save_to_eeprom();
 		}
 	}
 	break;
