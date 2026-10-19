@@ -10,6 +10,152 @@
 #include "rtc.h"
 
 /*****************************************************************************/
+/* Variable Declaration - MC RTC task */
+/*****************************************************************************/
+/* A write the RTC did not acknowledge (bus error, RTC backing off) is kept and
+ * retried on each 1 Hz tick, so a request is never lost silently. */
+#define MC_CLOCK_RTC_RETRY_MAX (10)
+
+typedef enum
+{
+	MC_CLOCK_RTC_ALARM_OP_NONE = 0,
+	MC_CLOCK_RTC_ALARM_OP_SET,
+	MC_CLOCK_RTC_ALARM_OP_CLEAR,
+} mc_clock_rtc_alarm_op_t;
+
+static mc_clock_rtc_set_time_req_t rtc_pending_time;
+static uint8_t rtc_pending_time_tries; /* 0 = nothing pending */
+
+static mc_clock_rtc_set_alarm_req_t rtc_pending_alarm;
+static uint8_t rtc_pending_alarm_op;
+static uint8_t rtc_pending_alarm_tries;
+
+/*****************************************************************************/
+/* Private helpers - MC RTC task */
+/*****************************************************************************/
+static uint8_t mc_clock_rtc_days_in_month(uint16_t year, uint8_t month)
+{
+	static const uint8_t days[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+	if (month < 1 || month > 12)
+	{
+		return 31;
+	}
+
+	if (month == 2 && (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0))
+	{
+		return 29;
+	}
+
+	return days[month];
+}
+
+/* A retry happens one tick later, so the requested time moves on by 1 s */
+static void mc_clock_rtc_advance_one_second(mc_clock_rtc_set_time_req_t* req)
+{
+	if (++req->time.sec < 60)
+	{
+		return;
+	}
+	req->time.sec = 0;
+
+	if (++req->time.min < 60)
+	{
+		return;
+	}
+	req->time.min = 0;
+
+	if (++req->time.hour < 24)
+	{
+		return;
+	}
+	req->time.hour = 0;
+
+	req->date.weekday = (req->date.weekday >= RTC_WEEKDAY_SUN) ? RTC_WEEKDAY_MON : req->date.weekday + 1;
+
+	if (++req->date.date <= mc_clock_rtc_days_in_month(req->date.year, req->date.month))
+	{
+		return;
+	}
+	req->date.date = 1;
+
+	if (++req->date.month <= 12)
+	{
+		return;
+	}
+	req->date.month = 1;
+	req->date.year++;
+}
+
+static uint8_t mc_clock_rtc_write_time(const mc_clock_rtc_set_time_req_t* req)
+{
+	if (req->apply_time && !rtc_set_time(&req->time))
+	{
+		return 0;
+	}
+
+	if (req->apply_date && !rtc_set_date(&req->date))
+	{
+		return 0;
+	}
+
+	return 1;
+}
+
+static void mc_clock_rtc_try_time(void)
+{
+	if (mc_clock_rtc_write_time(&rtc_pending_time))
+	{
+		rtc_pending_time_tries = 0;
+		/* The next alarm depends on the current time */
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
+		return;
+	}
+
+	if (++rtc_pending_time_tries > MC_CLOCK_RTC_RETRY_MAX)
+	{
+		APP_DBG("[RTC] set time dropped after %u tries\n", MC_CLOCK_RTC_RETRY_MAX);
+		rtc_pending_time_tries = 0;
+	}
+}
+
+static void mc_clock_rtc_try_alarm(void)
+{
+	uint8_t ok;
+
+	if (rtc_pending_alarm_op == MC_CLOCK_RTC_ALARM_OP_SET)
+	{
+		ok = rtc_set_alarm_a(&rtc_pending_alarm.time, rtc_pending_alarm.weekday);
+	}
+	else
+	{
+		ok = rtc_clear_alarm_a();
+	}
+
+	if (ok || ++rtc_pending_alarm_tries > MC_CLOCK_RTC_RETRY_MAX)
+	{
+		if (!ok)
+		{
+			APP_DBG("[RTC] alarm update dropped after %u tries\n", MC_CLOCK_RTC_RETRY_MAX);
+		}
+		rtc_pending_alarm_op = MC_CLOCK_RTC_ALARM_OP_NONE;
+		rtc_pending_alarm_tries = 0;
+	}
+}
+
+/* The latest alarm request replaces any pending one */
+static void mc_clock_rtc_queue_alarm(uint8_t op, const mc_clock_rtc_set_alarm_req_t* req)
+{
+	rtc_pending_alarm_op = op;
+	rtc_pending_alarm_tries = 0;
+	if (req)
+	{
+		rtc_pending_alarm = *req;
+	}
+	mc_clock_rtc_try_alarm();
+}
+
+/*****************************************************************************/
 /* Handle - MC RTC task */
 /*****************************************************************************/
 
@@ -23,6 +169,17 @@ void task_mc_rtc(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_TICK_1S\n");
 
+		if (rtc_pending_time_tries)
+		{
+			mc_clock_rtc_advance_one_second(&rtc_pending_time);
+			mc_clock_rtc_try_time();
+		}
+
+		if (rtc_pending_alarm_op != MC_CLOCK_RTC_ALARM_OP_NONE)
+		{
+			mc_clock_rtc_try_alarm();
+		}
+
 		if (rtc_take_alarm_a_flag())
 		{
 			APP_DBG("[RTC] ALARM_A fired\n");
@@ -35,59 +192,37 @@ void task_mc_rtc(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_RTC_ALARM_FIRED:
-	{
-		APP_DBG_SIG("MC_CLOCK_RTC_ALARM_FIRED\n");
-		APP_DBG("[RTC] ALARM_A fired\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_FIRED);
-	}
-	break;
-
 	case MC_CLOCK_RTC_SET_TIME_REQ:
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_SET_TIME_REQ\n");
-		mc_clock_rtc_set_time_req_t* req =
-		    (mc_clock_rtc_set_time_req_t*)get_data_common_msg(msg);
-
-		if (req->apply_time)
+		if (get_data_len_common_msg(msg) != sizeof(mc_clock_rtc_set_time_req_t))
 		{
-			rtc_set_time(&req->time);
+			break;
 		}
 
-		if (req->apply_date)
-		{
-			rtc_set_date(&req->date);
-		}
-
-		/* The next alarm depends on the current time */
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
+		rtc_pending_time = *(mc_clock_rtc_set_time_req_t*)get_data_common_msg(msg);
+		rtc_pending_time_tries = 1;
+		mc_clock_rtc_try_time();
 	}
 	break;
 
 	case MC_CLOCK_RTC_SET_ALARM_REQ:
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_SET_ALARM_REQ\n");
-		mc_clock_rtc_set_alarm_req_t* req =
-		    (mc_clock_rtc_set_alarm_req_t*)get_data_common_msg(msg);
+		if (get_data_len_common_msg(msg) != sizeof(mc_clock_rtc_set_alarm_req_t))
+		{
+			break;
+		}
 
-		rtc_set_alarm_a(&req->time, req->weekday);
+		mc_clock_rtc_queue_alarm(MC_CLOCK_RTC_ALARM_OP_SET,
+		                         (mc_clock_rtc_set_alarm_req_t*)get_data_common_msg(msg));
 	}
 	break;
 
 	case MC_CLOCK_RTC_CLEAR_ALARM_REQ:
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_CLEAR_ALARM_REQ\n");
-		rtc_clear_alarm_a();
-	}
-	break;
-
-	case MC_CLOCK_RTC_SET_WAKEUP_REQ:
-	{
-		APP_DBG_SIG("MC_CLOCK_RTC_SET_WAKEUP_REQ\n");
-		mc_clock_rtc_set_wakeup_req_t* req =
-		    (mc_clock_rtc_set_wakeup_req_t*)get_data_common_msg(msg);
-
-		rtc_set_wakeup(req->seconds);
+		mc_clock_rtc_queue_alarm(MC_CLOCK_RTC_ALARM_OP_CLEAR, NULL);
 	}
 	break;
 

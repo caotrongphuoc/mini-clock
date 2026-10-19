@@ -15,8 +15,4 @@ typedef struct {
 	uint8_t    weekday;
 } mc_clock_rtc_set_alarm_req_t;
 
-typedef struct {
-	uint32_t seconds;
-} mc_clock_rtc_set_wakeup_req_t;
-
 #endif /* __TASK_MC_RTC_H__ */

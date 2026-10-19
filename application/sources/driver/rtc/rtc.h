@@ -33,13 +33,14 @@ extern "C"
 	void rtc_init(void);
 
 	void rtc_get_time(rtc_time_t* time);
-	void rtc_set_time(const rtc_time_t* time);
+	uint8_t rtc_set_time(const rtc_time_t* time);
 
 	void rtc_get_date(rtc_date_t* date);
-	void rtc_set_date(const rtc_date_t* date);
+	uint8_t rtc_set_date(const rtc_date_t* date);
 
-	void rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday);
-	void rtc_clear_alarm_a(void);
+	/* Setters return 1 when the RTC acknowledged the write, 0 otherwise */
+	uint8_t rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday);
+	uint8_t rtc_clear_alarm_a(void);
 	/* Poll the alarm flag: returns 1 once per match and clears the flag.
 	 * Used instead of the INT pin, which is not routed to an EXTI line. */
 	uint8_t rtc_take_alarm_a_flag(void);

@@ -187,13 +187,9 @@ enum {
 	enum
 	{
 		MC_CLOCK_RTC_TICK_1S = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_RTC_ALARM_FIRED,
-		MC_CLOCK_RTC_WAKEUP,
 		MC_CLOCK_RTC_SET_TIME_REQ,
-		MC_CLOCK_RTC_SET_DATE_REQ,
 		MC_CLOCK_RTC_SET_ALARM_REQ,
 		MC_CLOCK_RTC_CLEAR_ALARM_REQ,
-		MC_CLOCK_RTC_SET_WAKEUP_REQ,
 	};
 
 /*****************************************************************************/

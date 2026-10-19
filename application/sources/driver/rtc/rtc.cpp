@@ -92,7 +92,7 @@ void rtc_get_time(rtc_time_t* time)
 	rtc_last_time = *time;
 }
 
-void rtc_set_time(const rtc_time_t* time)
+uint8_t rtc_set_time(const rtc_time_t* time)
 {
 	uint8_t data[3];
 
@@ -100,7 +100,7 @@ void rtc_set_time(const rtc_time_t* time)
 	data[1] = rtc_pcf85063a_bin_to_bcd(time->min);
 	data[2] = rtc_pcf85063a_bin_to_bcd(time->hour);
 
-	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_SECONDS, data, sizeof(data));
+	return rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_SECONDS, data, sizeof(data));
 }
 
 void rtc_get_date(rtc_date_t* date)
@@ -120,7 +120,7 @@ void rtc_get_date(rtc_date_t* date)
 	rtc_last_date = *date;
 }
 
-void rtc_set_date(const rtc_date_t* date)
+uint8_t rtc_set_date(const rtc_date_t* date)
 {
 	uint8_t data[4];
 
@@ -129,10 +129,10 @@ void rtc_set_date(const rtc_date_t* date)
 	data[2] = rtc_pcf85063a_bin_to_bcd(date->month);
 	data[3] = rtc_pcf85063a_bin_to_bcd((date->year >= 2000) ? (date->year - 2000) : 0);
 
-	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_DAYS, data, sizeof(data));
+	return rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_DAYS, data, sizeof(data));
 }
 
-void rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday)
+uint8_t rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday)
 {
 	uint8_t data[5];
 	uint8_t ctrl_2 = 0;
@@ -147,30 +147,39 @@ void rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday)
 
 	if (rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_ALARM, data, sizeof(data)) == 0)
 	{
-		return;
+		return 0;
 	}
 
 	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1) == 0)
 	{
-		return;
+		return 0;
 	}
 
 	ctrl_2 &= ~RTC_PCF85063A_CTRL_2_AF;
 	ctrl_2 |= RTC_PCF85063A_CTRL_2_AIE;
-	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
+	return rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
 }
 
-void rtc_clear_alarm_a(void)
+uint8_t rtc_clear_alarm_a(void)
 {
 	uint8_t ctrl_2 = 0;
+	/* Disable every match field: AF is set on a match even with AIE off */
+	const uint8_t disabled[5] = {
+	    RTC_PCF85063A_ALARM_DISABLE, RTC_PCF85063A_ALARM_DISABLE, RTC_PCF85063A_ALARM_DISABLE,
+	    RTC_PCF85063A_ALARM_DISABLE, RTC_PCF85063A_ALARM_DISABLE};
+
+	if (rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_ALARM, disabled, sizeof(disabled)) == 0)
+	{
+		return 0;
+	}
 
 	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1) == 0)
 	{
-		return;
+		return 0;
 	}
 
 	ctrl_2 &= ~(RTC_PCF85063A_CTRL_2_AIE | RTC_PCF85063A_CTRL_2_AF);
-	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
+	return rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
 }
 
 uint8_t rtc_take_alarm_a_flag(void)
@@ -182,7 +191,8 @@ uint8_t rtc_take_alarm_a_flag(void)
 		return 0;
 	}
 
-	if ((ctrl_2 & RTC_PCF85063A_CTRL_2_AF) == 0)
+	/* Only an armed alarm (AIE set by rtc_set_alarm_a) counts */
+	if ((ctrl_2 & RTC_PCF85063A_CTRL_2_AF) == 0 || (ctrl_2 & RTC_PCF85063A_CTRL_2_AIE) == 0)
 	{
 		return 0;
 	}
