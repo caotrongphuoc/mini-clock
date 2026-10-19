@@ -97,7 +97,23 @@ Flash Partitions Layout
 
 This section describes the screens and objects of **Mini Clock**.
 
-After the boot logo, the clock opens on the **Digital** screen. Press **[Mode]** to open the **Menu**, which offers:
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/framed/scr_clock_main.gif" alt="Banner-themed card around the captured Digital screen: weekday bar, HH:MM:SS and date" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 3:</em></strong> Digital screen</p>
+
+After the boot logo, the clock opens on the **Digital** screen. Press **[Mode]** to open the **Menu**:
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/framed/scr_clock_menu.gif" alt="Banner-themed card around the captured menu cycling through its nine items" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 4:</em></strong> Menu screen</p>
+
+The menu offers:
 
 - **Digital:** Large `HH:MM:SS`, weekday bar, and date, in 12h or 24h format.
 - **Analog:** Clock face with hour, minute, and second hands, the date, and the UTC offset.
@@ -109,46 +125,69 @@ After the boot logo, the clock opens on the **Digital** screen. Press **[Mode]**
 - **Setting:** Time and date, display (12/24h, colour invert, brightness), sound (mute, hourly chime, alarm melody), and reset.
 - **Exit:** Idle animation of bouncing balls.
 
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/framed/scr_clock_analog.gif" alt="Banner-themed card around the captured Analog screen with moving second hand" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 5:</em></strong> Analog screen</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/framed/scr_clock_setting.png" alt="Banner-themed card around the Setting list: Time, Display, Sound, Reset, Exit" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 6:</em></strong> Setting screen</p>
+
 #### Objects in the Clock:
 
 <div align="center">
 <table>
   <thead>
     <tr>
+      <th align="center">Bitmap</th>
       <th align="center">Object Name</th>
       <th align="center">Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_rtc.png" alt="Time setting screen that writes the RTC through the RTC task" width="256" height="144"/></td>
       <td align="center"><strong>RTC</strong></td>
       <td>Owns the PCF85063A on I2C. Sends the one-second tick, polls the alarm flag, and retries a write the chip did not acknowledge.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_time.gif" alt="Digital screen ticking each second" width="256" height="144"/></td>
       <td align="center"><strong>Time</strong></td>
       <td>Local time for the selected time zone, and the hourly chime.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_alarm.png" alt="Alarm list with three alarms, one switched off" width="256" height="144"/></td>
       <td align="center"><strong>Alarm</strong></td>
       <td>Alarm list stored in EEPROM. Programs the next enabled alarm into the RTC.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_stopwatch.gif" alt="Stopwatch running with two laps" width="256" height="144"/></td>
       <td align="center"><strong>Stopwatch</strong></td>
       <td>Counts in 0.1 s steps on its own timer while running, and records laps.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_timer.gif" alt="Timer counting down from one minute" width="256" height="144"/></td>
       <td align="center"><strong>Timer</strong></td>
       <td>Counts down on the one-second tick and rings when it reaches zero.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_world.gif" alt="World Clock cycling Vietnam, England, France and Egypt" width="256" height="144"/></td>
       <td align="center"><strong>World Clock</strong></td>
       <td>City table and the selected time zone.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_calendar.png" alt="Calendar month grid with the selected day" width="256" height="144"/></td>
       <td align="center"><strong>Calendar</strong></td>
       <td>Events stored in EEPROM. Checks reminders on the one-second tick.</td>
     </tr>
     <tr>
+      <td align="center" valign="middle"><img src="resources/images/objects/table/mc_clock_ringing.gif" alt="ALARM ringing page with a blinking title" width="256" height="144"/></td>
       <td align="center"><strong>Ringing</strong></td>
       <td>Shared full-screen page for an alarm, a finished timer, or a calendar reminder.</td>
     </tr>
@@ -180,6 +219,13 @@ The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means ho
 - **Ringing:** An alarm, a finished timer, or a reminder opens an **ALARM**, **TIMER**, or **EVENT** page on top of any screen. The selected alarm melody repeats every 5 seconds. Any button dismisses it, and it stops by itself after 60 seconds. A source that fires while another one is ringing replaces it.
 - **Persistence:** Settings, alarms, and events are stored in EEPROM with a magic number and a checksum. An invalid record falls back to the defaults.
 - **Sound:** Mute silences every sound, including the boot melody. The hourly chime plays at the start of each hour.
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/screens/framed/scr_clock_ringing.gif" alt="Banner-themed card around the captured ALARM ringing page with its blinking title" width="720"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 7:</em></strong> Ringing screen</p>
 
 > **Note:** The release build compiles the console output out. To inspect a running clock, see [Build, Flash, and Debug](docs/01-guide-coding-rules.md).
 
