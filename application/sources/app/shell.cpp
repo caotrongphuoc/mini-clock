@@ -44,6 +44,8 @@
 #include "buzzer.h"
 #include "rtc.h"
 #include "task_mc_rtc.h"
+#include "mc_clock_alarm.h"
+#include "mc_clock_calendar.h"
 
 /*****************************************************************************/
 /*  local declare
@@ -378,8 +380,24 @@ int32_t shell_fatal(uint8_t* argv) {
 	return 0;
 }
 
+/* stt : read-only snapshot of the alarm and calendar objects */
 int32_t shell_stt(uint8_t* argv) {
 	(void)argv;
+
+	mc_clock_alarm_state_t alarm;
+	mc_clock_alarm_get_state(&alarm);
+	LOGIN_PRINT("alarm total:%u cur:%u scroll:%u edit:%u idx:%u field:%u ring:%u\n",
+	            alarm.total_alarm, alarm.current_item, alarm.scroll_offset,
+	            alarm.editing, alarm.editing_alarm, alarm.editing_field, alarm.ringing);
+	for (uint8_t i = 0; i < alarm.total_alarm && i < MC_CLOCK_ALARM_MAX; i++) {
+		LOGIN_PRINT("  %u. %02u:%02u %s\n", i + 1, alarm.alarm[i].hour, alarm.alarm[i].minute, alarm.alarm[i].enabled ? "on" : "off");
+	}
+
+	mc_calendar_state_t cal;
+	mc_clock_calendar_get_state(&cal);
+	LOGIN_PRINT("calendar total:%u mode:%u view:%04u-%02u-%02u cur:%u scroll:%u edit:%u new:%u ring:%u\n",
+	            cal.total_events, cal.mode, cal.view_year, cal.view_month, cal.selected_day,
+	            cal.current_event, cal.scroll_offset, cal.editing_event, cal.is_new_event, cal.ringing);
 	return 0;
 }
 
