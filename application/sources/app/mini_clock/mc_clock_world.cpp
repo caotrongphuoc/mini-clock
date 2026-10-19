@@ -138,7 +138,7 @@ void mc_clock_world_clock_handle(
 		mc_clock_world_clock_update();
 		/* Alarm times are stored in the selected country's local time;
 		 * reprogram RTC so the alarm fires at the correct raw time. */
-		mc_clock_alarm_apply_rtc();
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
 	}
 	break;
 
@@ -158,7 +158,7 @@ void mc_clock_world_clock_handle(
 		mc_clock_world_clock_update();
 		/* Alarm times are stored in the selected country's local time;
 		 * reprogram RTC so the alarm fires at the correct raw time. */
-		mc_clock_alarm_apply_rtc();
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
 	}
 	break;
 

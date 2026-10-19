@@ -58,6 +58,9 @@ void task_mc_rtc(ak_msg_t* msg)
 		{
 			rtc_set_date(&req->date);
 		}
+
+		/* The next alarm depends on the current time */
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
 	}
 	break;
 

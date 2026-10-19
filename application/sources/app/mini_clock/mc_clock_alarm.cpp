@@ -15,6 +15,9 @@ typedef struct
 	uint8_t               check_sum;
 } mc_clock_alarm_eeprom_t;
 
+/* Other modules request a re-arm with MC_CLOCK_ALARM_REARM */
+static void mc_clock_alarm_apply_rtc(void);
+
 /* Variable Declaration - Clock alarm object */
 static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .current_item = 0,
@@ -92,7 +95,7 @@ void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
 	*state = mc_clock_alarm_state;
 }
 
-void mc_clock_alarm_apply_rtc(void)
+static void mc_clock_alarm_apply_rtc(void)
 {
 	rtc_time_t now;
 	uint16_t now_min;
@@ -506,6 +509,14 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		mc_clock_alarm_state.ringing = 1;
 		BUZZER_PlaySound(mc_clock_alarm_state.sound);
 		mc_clock_ring_request(MC_CLOCK_RING_SOURCE_ALARM, mc_clock_alarm_state.sound);
+	}
+	break;
+
+	/* RTC time or display timezone changed: pick the next alarm again */
+	case MC_CLOCK_ALARM_REARM:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_REARM\n");
+		mc_clock_alarm_apply_rtc();
 	}
 	break;
 

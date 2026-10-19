@@ -270,6 +270,7 @@ enum {
 		MC_CLOCK_ALARM_FIRED,
 		MC_CLOCK_ALARM_DISMISS,
 		MC_CLOCK_ALARM_ADD_NEW,
+		MC_CLOCK_ALARM_REARM,
 	};
 
 	/*****************************************************************************/

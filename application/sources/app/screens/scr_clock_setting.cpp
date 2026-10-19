@@ -139,7 +139,7 @@ void scr_clock_setting_handle(ak_msg_t* msg)
 			clock_setting_data.world_country = 0;
 			mc_clock_world_clock_select_country(0);
 			mc_clock_setting_write(&clock_setting_data);
-			mc_clock_alarm_apply_rtc();
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_REARM);
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 			break;
 

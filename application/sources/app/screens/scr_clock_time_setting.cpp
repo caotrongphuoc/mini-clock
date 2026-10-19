@@ -330,8 +330,8 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 			                     MC_CLOCK_RTC_SET_TIME_REQ,
 			                     (uint8_t*)&req,
 			                     sizeof(req));
+			/* The RTC task re-arms the alarms once the new time is written */
 			task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
-			mc_clock_alarm_apply_rtc();
 			SCREEN_BACK();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		}
