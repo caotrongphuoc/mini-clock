@@ -227,6 +227,16 @@ extern void oled_res_digital_write_high();
 extern int  oled_res_digital_read();
 
 /******************************************************************************
+* i2c1 bus (Qwiic/Grove: SCL PB6, SDA PB7) - used by the external RTC
+*******************************************************************************/
+#define IO_I2C1_PORT				(GPIOB)
+#define IO_I2C1_SCL_PIN				(GPIO_Pin_6)
+#define IO_I2C1_SDA_PIN				(GPIO_Pin_7)
+
+extern uint8_t io_i2c1_bus_busy();
+extern void io_i2c1_bus_recover();
+
+/******************************************************************************
 * eeprom function
 *******************************************************************************/
 #define EEPROM_BASE_ADDRESS         (0x08080000)

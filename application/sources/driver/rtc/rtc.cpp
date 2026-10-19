@@ -9,6 +9,7 @@
 #include "rtc.h"
 
 #include "Wire.h"
+#include "sys_ctrl.h"
 
 #define RTC_PCF85063A_I2C_ADDR (0x51)
 
@@ -30,6 +31,10 @@
 #define RTC_PCF85063A_TIMER_MODE_TIE (0x02)
 #define RTC_PCF85063A_TIMER_MODE_1HZ (0x10)
 
+/* After a failed transfer, skip the bus for this long so a missing or stuck
+ * RTC cannot stall every caller for the full I2C timeout. */
+#define RTC_PCF85063A_RETRY_INTERVAL_MS (5000)
+
 static uint8_t rtc_pcf85063a_bcd_to_bin(uint8_t value);
 static uint8_t rtc_pcf85063a_bin_to_bcd(uint8_t value);
 static uint8_t rtc_pcf85063a_weekday_to_reg(uint8_t weekday);
@@ -38,6 +43,23 @@ static uint8_t rtc_pcf85063a_read_regs(uint8_t reg, uint8_t* data, uint8_t len);
 static uint8_t rtc_pcf85063a_write_regs(uint8_t reg, const uint8_t* data, uint8_t len);
 static uint8_t rtc_pcf85063a_is_time_lost(void);
 static void rtc_seed_default_time(void);
+static void rtc_pcf85063a_bus_reset(void);
+static uint8_t rtc_pcf85063a_bus_ready(void);
+
+static uint8_t (*rtc_bus_busy)(void);
+static void (*rtc_bus_recover)(void);
+
+static uint8_t rtc_offline;
+static uint32_t rtc_offline_since_ms;
+
+static rtc_time_t rtc_last_time;
+static rtc_date_t rtc_last_date = {1, 1, 2026, RTC_WEEKDAY_MON};
+
+void rtc_bus_ops_init(uint8_t (*bus_busy)(void), void (*bus_recover)(void))
+{
+	rtc_bus_busy = bus_busy;
+	rtc_bus_recover = bus_recover;
+}
 
 void rtc_init(void)
 {
@@ -60,15 +82,14 @@ void rtc_get_time(rtc_time_t* time)
 
 	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_SECONDS, data, sizeof(data)) == 0)
 	{
-		time->hour = 0;
-		time->min = 0;
-		time->sec = 0;
+		*time = rtc_last_time;
 		return;
 	}
 
 	time->sec = rtc_pcf85063a_bcd_to_bin(data[0] & 0x7F);
 	time->min = rtc_pcf85063a_bcd_to_bin(data[1] & 0x7F);
 	time->hour = rtc_pcf85063a_bcd_to_bin(data[2] & 0x3F);
+	rtc_last_time = *time;
 }
 
 void rtc_set_time(const rtc_time_t* time)
@@ -88,10 +109,7 @@ void rtc_get_date(rtc_date_t* date)
 
 	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_DAYS, data, sizeof(data)) == 0)
 	{
-		date->date = 1;
-		date->month = 1;
-		date->year = 2026;
-		date->weekday = RTC_WEEKDAY_MON;
+		*date = rtc_last_date;
 		return;
 	}
 
@@ -99,6 +117,7 @@ void rtc_get_date(rtc_date_t* date)
 	date->weekday = rtc_pcf85063a_weekday_from_reg(data[1] & 0x07);
 	date->month = rtc_pcf85063a_bcd_to_bin(data[2] & 0x1F);
 	date->year = 2000 + rtc_pcf85063a_bcd_to_bin(data[3]);
+	rtc_last_date = *date;
 }
 
 void rtc_set_date(const rtc_date_t* date)
@@ -234,6 +253,51 @@ static uint8_t rtc_pcf85063a_weekday_from_reg(uint8_t weekday)
 	return weekday;
 }
 
+/* Re-initialise the bus after a failed transfer: release a slave holding SDA,
+ * then reset the I2C peripheral (twi leaves it BUSY after NACK/timeout). */
+static void rtc_pcf85063a_bus_reset(void)
+{
+	if (rtc_bus_recover)
+	{
+		rtc_bus_recover();
+	}
+
+	Wire.begin();
+	Wire.setClock(100000);
+}
+
+static void rtc_pcf85063a_set_offline(void)
+{
+	rtc_pcf85063a_bus_reset();
+	rtc_offline = 1;
+	rtc_offline_since_ms = sys_ctrl_millis();
+}
+
+static uint8_t rtc_pcf85063a_bus_ready(void)
+{
+	if (rtc_offline)
+	{
+		if ((uint32_t)(sys_ctrl_millis() - rtc_offline_since_ms) < RTC_PCF85063A_RETRY_INTERVAL_MS)
+		{
+			return 0;
+		}
+		rtc_offline = 0;
+	}
+
+	if (rtc_bus_busy && rtc_bus_busy())
+	{
+		rtc_pcf85063a_bus_reset();
+
+		if (rtc_bus_busy())
+		{
+			rtc_pcf85063a_set_offline();
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
 static uint8_t rtc_pcf85063a_read_regs(uint8_t reg, uint8_t* data, uint8_t len)
 {
 	if (len == 0)
@@ -241,15 +305,22 @@ static uint8_t rtc_pcf85063a_read_regs(uint8_t reg, uint8_t* data, uint8_t len)
 		return 1;
 	}
 
+	if (rtc_pcf85063a_bus_ready() == 0)
+	{
+		return 0;
+	}
+
 	Wire.beginTransmission(RTC_PCF85063A_I2C_ADDR);
 	Wire.write(reg);
 	if (Wire.endTransmission(false) != 0)
 	{
+		rtc_pcf85063a_set_offline();
 		return 0;
 	}
 
 	if (Wire.requestFrom((uint8_t)RTC_PCF85063A_I2C_ADDR, len) != len)
 	{
+		rtc_pcf85063a_set_offline();
 		return 0;
 	}
 
@@ -258,6 +329,7 @@ static uint8_t rtc_pcf85063a_read_regs(uint8_t reg, uint8_t* data, uint8_t len)
 		int value = Wire.read();
 		if (value < 0)
 		{
+			rtc_pcf85063a_set_offline();
 			return 0;
 		}
 		data[i] = (uint8_t)value;
@@ -268,6 +340,11 @@ static uint8_t rtc_pcf85063a_read_regs(uint8_t reg, uint8_t* data, uint8_t len)
 
 static uint8_t rtc_pcf85063a_write_regs(uint8_t reg, const uint8_t* data, uint8_t len)
 {
+	if (rtc_pcf85063a_bus_ready() == 0)
+	{
+		return 0;
+	}
+
 	Wire.beginTransmission(RTC_PCF85063A_I2C_ADDR);
 	Wire.write(reg);
 	for (uint8_t i = 0; i < len; i++)
@@ -275,16 +352,24 @@ static uint8_t rtc_pcf85063a_write_regs(uint8_t reg, const uint8_t* data, uint8_
 		Wire.write(data[i]);
 	}
 
-	return Wire.endTransmission() == 0;
+	if (Wire.endTransmission() != 0)
+	{
+		rtc_pcf85063a_set_offline();
+		return 0;
+	}
+
+	return 1;
 }
 
+/* Only a successful read with the oscillator-stop flag set means the time is
+ * lost; a bus error must not overwrite a valid RTC time with defaults. */
 static uint8_t rtc_pcf85063a_is_time_lost(void)
 {
 	uint8_t seconds = 0;
 
 	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_SECONDS, &seconds, 1) == 0)
 	{
-		return 1;
+		return 0;
 	}
 
 	return (seconds & RTC_PCF85063A_SECONDS_OS) ? 1 : 0;

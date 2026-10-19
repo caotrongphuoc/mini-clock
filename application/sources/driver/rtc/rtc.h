@@ -27,6 +27,9 @@ extern "C"
 		uint8_t weekday;
 	} rtc_date_t;
 
+	/* Inject the board I2C helpers (io_cfg) before rtc_init(): bus_busy reports a
+	 * stuck bus, bus_recover clocks a stuck slave free. Both may be NULL. */
+	void rtc_bus_ops_init(uint8_t (*bus_busy)(void), void (*bus_recover)(void));
 	void rtc_init(void);
 
 	void rtc_get_time(rtc_time_t* time);

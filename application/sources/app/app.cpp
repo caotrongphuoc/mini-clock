@@ -158,6 +158,7 @@ int main_app() {
 	BUZZER_Init();
 	BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 
+	rtc_bus_ops_init(io_i2c1_bus_busy, io_i2c1_bus_recover);
 	rtc_init();
 
 	/* get boot share data */

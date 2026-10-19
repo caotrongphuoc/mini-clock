@@ -499,6 +499,52 @@ int oled_res_digital_read() {
 }
 
 /******************************************************************************
+* i2c1 bus function
+*******************************************************************************/
+uint8_t io_i2c1_bus_busy() {
+	return (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY) == SET) ? 1 : 0;
+}
+
+/* Release a slave that holds SDA low mid-byte: clock SCL up to 9 times, then
+ * send a STOP. The caller must re-initialise the I2C peripheral afterwards
+ * (Wire.begin() resets I2C1 and restores the alternate-function pins). */
+void io_i2c1_bus_recover() {
+	GPIO_InitTypeDef GPIO_InitStructure;
+
+	I2C_Cmd(I2C1, DISABLE);
+
+	GPIO_InitStructure.GPIO_Pin = IO_I2C1_SCL_PIN | IO_I2C1_SDA_PIN;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+	GPIO_Init(IO_I2C1_PORT, &GPIO_InitStructure);
+
+	GPIO_SetBits(IO_I2C1_PORT, IO_I2C1_SCL_PIN | IO_I2C1_SDA_PIN);
+	sys_ctrl_delay_us(5);
+
+	for (uint8_t i = 0; i < 9; i++) {
+		if (GPIO_ReadInputDataBit(IO_I2C1_PORT, IO_I2C1_SDA_PIN) == Bit_SET) {
+			break;
+		}
+		GPIO_ResetBits(IO_I2C1_PORT, IO_I2C1_SCL_PIN);
+		sys_ctrl_delay_us(5);
+		GPIO_SetBits(IO_I2C1_PORT, IO_I2C1_SCL_PIN);
+		sys_ctrl_delay_us(5);
+	}
+
+	/* STOP: SDA rises while SCL is high */
+	GPIO_ResetBits(IO_I2C1_PORT, IO_I2C1_SCL_PIN);
+	sys_ctrl_delay_us(5);
+	GPIO_ResetBits(IO_I2C1_PORT, IO_I2C1_SDA_PIN);
+	sys_ctrl_delay_us(5);
+	GPIO_SetBits(IO_I2C1_PORT, IO_I2C1_SCL_PIN);
+	sys_ctrl_delay_us(5);
+	GPIO_SetBits(IO_I2C1_PORT, IO_I2C1_SDA_PIN);
+	sys_ctrl_delay_us(5);
+}
+
+/******************************************************************************
 * eeprom function
 * when using function DATA_EEPROM_ProgramByte,
 * must be DATA_EEPROM_unlock- DATA_EEPROM_ProgramByte- DATA_EEPROM_lock
