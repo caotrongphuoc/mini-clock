@@ -31,7 +31,7 @@ sequenceDiagram
     Main-)RTC: timer MC_CLOCK_RTC_TICK_1S (1000 ms, periodic)
     Main-)Display: timer AC_DISPLAY_INITIAL (100 ms)
     Main->>Main: world clock and calendar defaults
-    Display->>Display: OLED on; read settings; apply mute, brightness, city
+    Display->>Display: OLED on, read settings, apply mute, brightness, city
     Display->>Display: startup melody (silent when muted)
     Display->>Alarm: load the alarm bank, program the next alarm
     Alarm-)RTC: MC_CLOCK_RTC_SET_ALARM_REQ / CLEAR_ALARM_REQ
@@ -84,7 +84,7 @@ sequenceDiagram
     participant Alarm
     participant Display
 
-    RTC->>RTC: retry pending writes; poll alarm flag
+    RTC->>RTC: retry pending writes, poll alarm flag
     opt alarm flag set
         RTC-)Alarm: MC_CLOCK_ALARM_FIRED
     end
@@ -108,9 +108,9 @@ sequenceDiagram
 
     Source-)Display: AC_DISPLAY_SHOW_RINGING {source, sound}
     Display->>Page: scr_clock_ringing_enter() before the active screen sees it
-    Page->>Page: cancel the previous screen's timers; SCREEN_TRAN
+    Page->>Page: cancel the previous screen's timers, SCREEN_TRAN
     loop AC_DISPLAY_ALARM_RING_TICK (1 s)
-        Page->>Page: blink; melody every 5 s; stop at 60 s
+        Page->>Page: blink, melody every 5 s, stop at 60 s
     end
     Page-)Source: *_DISMISS (any key or timeout)
     Page->>Display: Digital screen

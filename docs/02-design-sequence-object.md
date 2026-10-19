@@ -99,7 +99,7 @@ sequenceDiagram
     Display-)Display: MC_CLOCK_TIME_TICK (1000 ms)
     Display-)Time: MC_CLOCK_TIME_UPDATE
     Time->>Driver: rtc_get_time() / rtc_get_date()
-    Time->>Time: apply the city offset; chime at the hour
+    Time->>Time: apply the city offset, chime at the hour
     Time-)Display: AC_DISPLAY_RENDER_SCREEN
     Display->>Time: mc_clock_time_get_state() for the view
 ```
@@ -122,13 +122,13 @@ sequenceDiagram
     participant Stopwatch
 
     Display-)Stopwatch: MC_CLOCK_STOPWATCH_START_PAUSE
-    Stopwatch->>Stopwatch: running = 1; timer_set(UPDATE, 100 ms, periodic)
+    Stopwatch->>Stopwatch: running = 1, timer_set(UPDATE, 100 ms, periodic)
     loop every 100 ms while running
         Stopwatch-)Stopwatch: MC_CLOCK_STOPWATCH_UPDATE (elapsed += 100)
     end
     Display-)Stopwatch: MC_CLOCK_STOPWATCH_LAP
     Display-)Stopwatch: MC_CLOCK_STOPWATCH_START_PAUSE
-    Stopwatch->>Stopwatch: running = 0; timer_remove_attr(UPDATE)
+    Stopwatch->>Stopwatch: running = 0, timer_remove_attr(UPDATE)
 ```
 
 ## V. Timer Object Sequence
@@ -196,11 +196,11 @@ sequenceDiagram
 
     RTC-)Alarm: MC_CLOCK_ALARM_FIRED
     alt not already ringing
-        Alarm->>Alarm: ringing = 1; play melody
+        Alarm->>Alarm: ringing = 1, play melody
         Alarm-)Display: AC_DISPLAY_SHOW_RINGING {ALARM, melody}
     end
     Display-)Alarm: MC_CLOCK_ALARM_DISMISS
-    Alarm->>Alarm: ringing = 0; buzzer off
+    Alarm->>Alarm: ringing = 0, buzzer off
     Alarm-)RTC: MC_CLOCK_RTC_SET_ALARM_REQ {next alarm}
 ```
 
@@ -252,9 +252,9 @@ sequenceDiagram
     participant Display
 
     RTC-)Calendar: MC_CLOCK_CALENDAR_UPDATE
-    Calendar->>Calendar: today; due = enabled and date and start minute match
+    Calendar->>Calendar: today, due = enabled and date and start minute match
     alt due and not alarm_fired
-        Calendar->>Calendar: alarm_fired = 1; ringing = 1
+        Calendar->>Calendar: alarm_fired = 1, ringing = 1
         Calendar-)Calendar: MC_CLOCK_CALENDAR_ALARM_FIRED
         Calendar-)Display: AC_DISPLAY_SHOW_RINGING {EVENT, melody}
     end
@@ -279,7 +279,7 @@ sequenceDiagram
     Source-)Display: AC_DISPLAY_SHOW_RINGING {source, sound}
     Display->>Page: scr_clock_ringing_enter(): cancel screen timers, SCREEN_TRAN
     loop every 1 s (AC_DISPLAY_ALARM_RING_TICK)
-        Page->>Page: blink; melody every 5 s
+        Page->>Page: blink, melody every 5 s
     end
     alt any key or 60 s
         Page-)Source: *_DISMISS
