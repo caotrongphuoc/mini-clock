@@ -3,6 +3,7 @@
 #include "mc_clock_alarm.h"
 #include "eeprom.h"
 #include "app_eeprom.h"
+#include "mc_clock_ring.h"
 
 #define MC_CALENDAR_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_calendar_bank_t))
 
@@ -397,23 +398,26 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		    &local_time,
 		    &local_date);
 
+		/* Driven by the 1 Hz RTC tick on every screen. Match the whole start
+		 * minute (a tick can skip second 0) and fire once per occurrence. */
 		for (uint8_t i = 0; i < calendar.total_events; i++)
 		{
 			mc_calendar_event_t* ev = &calendar.events[i];
 
-			if (ev->year != calendar.today_year ||
-			    ev->month != calendar.today_month ||
-			    ev->day != calendar.today_day)
+			uint8_t due = ev->alarm_enabled &&
+			              ev->year == calendar.today_year &&
+			              ev->month == calendar.today_month &&
+			              ev->day == calendar.today_day &&
+			              ev->start_hour == local_time.hour &&
+			              ev->start_min == local_time.min;
+
+			if (!due)
 			{
 				ev->alarm_fired = 0;
+				continue;
 			}
 
-			if (ev->year == calendar.today_year &&
-			    ev->month == calendar.today_month &&
-			    ev->day == calendar.today_day &&
-			    ev->start_hour == local_time.hour &&
-			    ev->start_min == local_time.min &&
-			    local_time.sec == 0)
+			if (!ev->alarm_fired)
 			{
 				APP_DBG_SIG("MC_CLOCK_CALENDAR_UPDATE — alarm fired for event %u\n", i);
 				ev->alarm_fired = 1;
@@ -431,6 +435,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_CALENDAR_ALARM_FIRED\n");
 		calendar.ringing = 1;
 		BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
+		mc_clock_ring_request(MC_CLOCK_RING_SOURCE_CALENDAR, mc_clock_alarm_get_sound());
 	}
 	break;
 

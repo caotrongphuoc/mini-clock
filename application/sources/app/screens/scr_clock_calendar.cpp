@@ -440,11 +440,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	case MC_CLOCK_TIME_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIME_TICK [calendar]\n");
-		mc_clock_calendar_get_state(&st);
-
-		task_post_pure_msg(
-		    MC_CLOCK_CALENDAR_ID,
-		    MC_CLOCK_CALENDAR_UPDATE);
+		/* Event alarms are checked on the RTC 1 Hz tick; this tick only refreshes the view */
 	}
 	break;
 

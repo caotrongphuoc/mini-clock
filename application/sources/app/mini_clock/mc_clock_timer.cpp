@@ -1,6 +1,7 @@
 #include "mc_clock_timer.h"
 
 #include "mc_clock_alarm.h"
+#include "mc_clock_ring.h"
 
 static mc_clock_timer_state_t mc_clock_timer_state = {
     .set_hour = 0,
@@ -164,6 +165,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 			mc_clock_timer_state.running = 0;
 			mc_clock_timer_state.finished = 1;
 			BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
+			mc_clock_ring_request(MC_CLOCK_RING_SOURCE_TIMER, mc_clock_alarm_get_sound());
 		}
 	}
 	break;

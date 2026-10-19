@@ -6,7 +6,16 @@
 /*****************************************************************************/
 /* Variable Declaration - Clock ringing */
 /*****************************************************************************/
+static uint8_t ringing_source = MC_CLOCK_RING_SOURCE_MAX; /* MAX = not ringing */
+static uint8_t ringing_sound;
+static uint8_t ringing_elapsed_s;
 static uint8_t ringing_blink;
+
+static const char* const ringing_title[MC_CLOCK_RING_SOURCE_MAX] = {
+    "ALARM",
+    "TIMER",
+    "EVENT",
+};
 
 /*****************************************************************************/
 /* View - Clock ringing */
@@ -62,7 +71,11 @@ void view_scr_clock_ringing()
 		view_render.drawRect(0, 0, LCD_WIDTH, 24, WHITE);
 		view_render.setTextColor(WHITE);
 	}
-	scr_clock_ringing_print_center("ALARM", SCR_CLOCK_RINGING_TITLE_Y - 3, 2);
+
+	if (ringing_source < MC_CLOCK_RING_SOURCE_MAX)
+	{
+		scr_clock_ringing_print_center(ringing_title[ringing_source], SCR_CLOCK_RINGING_TITLE_Y, 2);
+	}
 
 	view_render.setTextColor(WHITE);
 	scr_clock_ringing_print_center(time_text, SCR_CLOCK_RINGING_TIME_Y, 2);
@@ -70,10 +83,64 @@ void view_scr_clock_ringing()
 }
 
 /*****************************************************************************/
+/* Private helpers - Clock ringing */
+/*****************************************************************************/
+/* Tell the source object to stop ringing (it silences the buzzer and re-arms) */
+static void scr_clock_ringing_dismiss_source(void)
+{
+	switch (ringing_source)
+	{
+	case MC_CLOCK_RING_SOURCE_ALARM:
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
+		break;
+
+	case MC_CLOCK_RING_SOURCE_TIMER:
+		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
+		break;
+
+	case MC_CLOCK_RING_SOURCE_CALENDAR:
+		task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_ALARM_DISMISS);
+		break;
+
+	default:
+		break;
+	}
+
+	ringing_source = MC_CLOCK_RING_SOURCE_MAX;
+}
+
+static void scr_clock_ringing_leave(void)
+{
+	scr_clock_ringing_dismiss_source();
+	timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_ALARM_RING_TICK);
+	SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
+}
+
+/*****************************************************************************/
 /* Handle - Clock ringing */
 /*****************************************************************************/
-void scr_clock_ringing_enter(void)
+void scr_clock_ringing_enter(ak_msg_t* msg)
 {
+	if (get_data_len_common_msg(msg) != sizeof(mc_clock_ring_req_t))
+	{
+		return;
+	}
+
+	mc_clock_ring_req_t* req = (mc_clock_ring_req_t*)get_data_common_msg(msg);
+
+	if (req->source >= MC_CLOCK_RING_SOURCE_MAX)
+	{
+		return;
+	}
+
+	/* A second source pre-empts the first; the first one is dismissed so it
+	 * does not stay latched in its ringing state. */
+	scr_clock_ringing_dismiss_source();
+
+	ringing_source = req->source;
+	ringing_sound = req->sound;
+	ringing_elapsed_s = 0;
+
 	/* The interrupted screen does not get to clean up, so cancel every
 	 * periodic display timer a clock screen may own. */
 	timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
@@ -84,12 +151,6 @@ void scr_clock_ringing_enter(void)
 	timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_LOGO);
 
 	SCREEN_TRAN(scr_clock_ringing_handle, &scr_clock_ringing);
-}
-
-static void scr_clock_ringing_leave(void)
-{
-	timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_ALARM_RING_TICK);
-	SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
 }
 
 void scr_clock_ringing_handle(ak_msg_t* msg)
@@ -110,19 +171,20 @@ void scr_clock_ringing_handle(ak_msg_t* msg)
 
 	case AC_DISPLAY_ALARM_RING_TICK:
 	{
-		mc_clock_alarm_state_t state;
+		ringing_elapsed_s++;
 
-		mc_clock_alarm_get_state(&state);
-
-		/* Auto-stopped by the alarm task after its timeout */
-		if (!state.ringing)
+		if (ringing_elapsed_s >= MC_CLOCK_RING_TIMEOUT_S)
 		{
 			scr_clock_ringing_leave();
 			break;
 		}
 
+		if ((ringing_elapsed_s % MC_CLOCK_RING_REPEAT_S) == 0)
+		{
+			BUZZER_PlaySound((buzzer_sound_t)ringing_sound);
+		}
+
 		ringing_blink = !ringing_blink;
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_RING_TICK);
 		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_UPDATE);
 	}
 	break;
@@ -137,7 +199,6 @@ void scr_clock_ringing_handle(ak_msg_t* msg)
 	case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("dismiss [ringing]\n");
-		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
 		scr_clock_ringing_leave();
 	}
 	break;

@@ -2,6 +2,7 @@
 #include "mc_clock_world.h"
 #include "eeprom.h"
 #include "app_eeprom.h"
+#include "mc_clock_ring.h"
 
 #define MC_CLOCK_ALARM_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_alarm_bank_t))
 
@@ -196,7 +197,6 @@ static void mc_clock_alarm_delete_current()
 static void mc_clock_alarm_stop_ringing(void)
 {
 	mc_clock_alarm_state.ringing = 0;
-	mc_clock_alarm_state.ring_elapsed_s = 0;
 	BUZZER_Disable();
 	/* Re-arm the RTC for the next enabled alarm */
 	mc_clock_alarm_apply_rtc();
@@ -451,31 +451,8 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		}
 
 		mc_clock_alarm_state.ringing = 1;
-		mc_clock_alarm_state.ring_elapsed_s = 0;
 		BUZZER_PlaySound(mc_clock_alarm_state.sound);
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_ALARM_RINGING);
-	}
-	break;
-
-	/* 1 s tick from the ringing screen */
-	case MC_CLOCK_ALARM_RING_TICK:
-	{
-		APP_DBG_SIG("MC_CLOCK_ALARM_RING_TICK\n");
-		if (!mc_clock_alarm_state.ringing)
-		{
-			break;
-		}
-
-		mc_clock_alarm_state.ring_elapsed_s++;
-
-		if (mc_clock_alarm_state.ring_elapsed_s >= MC_CLOCK_ALARM_RING_TIMEOUT_S)
-		{
-			mc_clock_alarm_stop_ringing();
-		}
-		else if ((mc_clock_alarm_state.ring_elapsed_s % MC_CLOCK_ALARM_RING_REPEAT_S) == 0)
-		{
-			BUZZER_PlaySound(mc_clock_alarm_state.sound);
-		}
+		mc_clock_ring_request(MC_CLOCK_RING_SOURCE_ALARM, mc_clock_alarm_state.sound);
 	}
 	break;
 

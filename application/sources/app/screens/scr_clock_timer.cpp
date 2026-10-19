@@ -174,9 +174,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	case MC_CLOCK_TIMER_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_TIMER_TICK\n");
-		task_post_pure_msg(
-		    MC_CLOCK_TIMER_ID,
-		    MC_CLOCK_TIMER_UPDATE);
+		/* Countdown runs on the RTC 1 Hz tick; this tick only refreshes the view */
 
 		if (timer_help)
 		{

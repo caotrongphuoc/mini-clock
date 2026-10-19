@@ -5,6 +5,7 @@
 
 #include "app.h"
 #include "message.h"
+#include "timer.h"
 #include "task_list.h"
 #include "app_dbg.h"
 

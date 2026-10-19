@@ -201,9 +201,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 	case MC_CLOCK_STOPWATCH_TICK:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_TICK\n");
-		task_post_pure_msg(
-		    MC_CLOCK_STOPWATCH_ID,
-		    MC_CLOCK_STOPWATCH_UPDATE);
+		/* Counting runs on the stopwatch's own timer; this tick only refreshes the view */
 	}
 	break;
 

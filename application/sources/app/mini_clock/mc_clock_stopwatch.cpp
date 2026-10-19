@@ -24,6 +24,19 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_START_PAUSE\n");
 		mc_clock_stopwatch_state.running = !mc_clock_stopwatch_state.running;
+
+		/* Count in the background so leaving the screen does not pause it */
+		if (mc_clock_stopwatch_state.running)
+		{
+			timer_set(MC_CLOCK_STOPWATCH_ID,
+			          MC_CLOCK_STOPWATCH_UPDATE,
+			          MC_CLOCK_STOPWATCH_TICK_INTERVAL,
+			          TIMER_PERIODIC);
+		}
+		else
+		{
+			timer_remove_attr(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_UPDATE);
+		}
 	}
 	break;
 
@@ -31,6 +44,7 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_RESET\n");
 		mc_clock_stopwatch_state.running = 0;
+		timer_remove_attr(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_UPDATE);
 		mc_clock_stopwatch_state.elapsed_ms = 0;
 		mc_clock_stopwatch_state.lap_count = 0;
 	}

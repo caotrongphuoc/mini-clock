@@ -28,6 +28,10 @@ void task_mc_rtc(ak_msg_t* msg)
 			APP_DBG("[RTC] ALARM_A fired\n");
 			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_FIRED);
 		}
+
+		/* Background second for objects that must keep running off-screen */
+		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_UPDATE);
+		task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_UPDATE);
 	}
 	break;
 
