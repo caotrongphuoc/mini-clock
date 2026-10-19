@@ -42,6 +42,8 @@
 #include "Adafruit_oled_drv.h"
 #include "flash.h"
 #include "buzzer.h"
+#include "rtc.h"
+#include "task_mc_rtc.h"
 
 /*****************************************************************************/
 /*  local declare
@@ -79,6 +81,7 @@ int32_t shell_fwu(uint8_t* argv);
 int32_t shell_psv(uint8_t* argv);
 int32_t shell_buzzer(uint8_t* argv);
 int32_t shell_btn(uint8_t* argv);
+int32_t shell_rtc(uint8_t* argv);
 
 /*****************************************************************************/
 /*  command table
@@ -110,6 +113,7 @@ const cmd_line_t lgn_cmd_table[] = {
 	/*************************************************************************/
 	{(const int8_t*)"dbg",		shell_dbg,			(const int8_t*)"dbg"},
 	{(const int8_t*)"btn",		shell_btn,			(const int8_t*)"simulate button press"},
+	{(const int8_t*)"rtc",		shell_rtc,			(const int8_t*)"rtc get/set time"},
 
 	/* End Of Table */
 	{(const int8_t*)0,(pf_cmd_func)0,(const int8_t*)0}
@@ -954,5 +958,68 @@ int32_t shell_btn(uint8_t* argv) {
 
 	task_post_pure_msg(AC_TASK_DISPLAY_ID, sig);
 	LOGIN_PRINT("btn %c\n", *(argv + 4));
+	return 0;
+}
+
+/* Day of week for the Gregorian calendar, 1 = Monday .. 7 = Sunday. */
+static uint8_t shell_rtc_weekday(uint16_t year, uint8_t month, uint8_t day) {
+	static const uint8_t offset[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+	if (month < 3) {
+		year--;
+	}
+	uint8_t dow = (year + year / 4 - year / 100 + year / 400 + offset[month - 1] + day) % 7; /* 0 = Sunday */
+	return (dow == 0) ? RTC_WEEKDAY_SUN : dow;
+}
+
+/* rtc g                     : print raw RTC time (Vietnam local, UTC+7)
+ * rtc s YYYYMMDD hhmmss     : set raw RTC date and time through the RTC task */
+int32_t shell_rtc(uint8_t* argv) {
+	switch (*(argv + 4)) {
+	case 'g': {
+		rtc_time_t time;
+		rtc_date_t date;
+		rtc_get_time(&time);
+		rtc_get_date(&date);
+		LOGIN_PRINT("rtc %04u-%02u-%02u wd%u %02u:%02u:%02u\n", date.year, date.month, date.date, date.weekday, time.hour, time.min, time.sec);
+	}
+		break;
+
+	case 's': {
+		if (str_parser((char*)argv) != 4) {
+			LOGIN_PRINT("usage: rtc s YYYYMMDD hhmmss\n");
+			break;
+		}
+
+		uint32_t ymd = (uint32_t)strtol(str_parser_get_attr(2), NULL, 10);
+		uint32_t hms = (uint32_t)strtol(str_parser_get_attr(3), NULL, 10);
+
+		mc_clock_rtc_set_time_req_t req;
+		req.date.year = (uint16_t)(ymd / 10000);
+		req.date.month = (uint8_t)((ymd / 100) % 100);
+		req.date.date = (uint8_t)(ymd % 100);
+		req.time.hour = (uint8_t)(hms / 10000);
+		req.time.min = (uint8_t)((hms / 100) % 100);
+		req.time.sec = (uint8_t)(hms % 100);
+
+		if (req.date.year < 2000 || req.date.year > 2099 || req.date.month < 1 || req.date.month > 12 ||
+		    req.date.date < 1 || req.date.date > 31 || req.time.hour > 23 || req.time.min > 59 || req.time.sec > 59) {
+			LOGIN_PRINT("rtc: value out of range\n");
+			break;
+		}
+
+		req.date.weekday = shell_rtc_weekday(req.date.year, req.date.month, req.date.date);
+		req.apply_time = 1;
+		req.apply_date = 1;
+
+		task_post_common_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_SET_TIME_REQ, (uint8_t*)&req, sizeof(req));
+		LOGIN_PRINT("rtc set %04u-%02u-%02u wd%u %02u:%02u:%02u\n", req.date.year, req.date.month, req.date.date, req.date.weekday, req.time.hour, req.time.min, req.time.sec);
+	}
+		break;
+
+	default:
+		LOGIN_PRINT("usage: rtc g | rtc s YYYYMMDD hhmmss\n");
+		break;
+	}
+
 	return 0;
 }
