@@ -9,14 +9,15 @@
 #include "task_list.h"
 #include "app_dbg.h"
 
-#define MC_CLOCK_STOPWATCH_LAP_MAX (10)
+// Number of laps kept per run
+#define STOPWATCH_LAP_NUMBER (10)
 
 typedef struct
 {
 	uint8_t running;
 	uint32_t elapsed_ms;
 	uint8_t lap_count;
-	uint32_t lap_ms[MC_CLOCK_STOPWATCH_LAP_MAX];
+	uint32_t lap_ms[STOPWATCH_LAP_NUMBER];
 } mc_clock_stopwatch_state_t;
 
 void mc_clock_stopwatch_handle(ak_msg_t* msg);

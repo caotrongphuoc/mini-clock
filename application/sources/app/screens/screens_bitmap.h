@@ -3,9 +3,9 @@
 
 #include "view_render.h"
 
-#define SCR_CLOCK_MENU_ICON_W (22)
-#define SCR_CLOCK_MENU_ICON_H (22)
-#define SCR_CLOCK_MENU_ICON_BYTES (((SCR_CLOCK_MENU_ICON_W + 7) / 8) * SCR_CLOCK_MENU_ICON_H)
+// Size of menu icon bitmap
+#define MENU_ICON_W (22)
+#define MENU_ICON_H (22)
 
 extern const unsigned char PROGMEM bitmap_clock_menu_clock[];
 extern const unsigned char PROGMEM bitmap_clock_menu_alarm[];

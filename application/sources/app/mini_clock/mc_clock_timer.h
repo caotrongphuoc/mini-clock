@@ -8,15 +8,15 @@
 #include "app_dbg.h"
 #include "buzzer.h"
 
-#define MC_CLOCK_TIMER_MAX_MINUTES (1000)
-#define MC_CLOCK_TIMER_STEP_MINUTES (1)
+// Largest value of the hour field
+#define TIMER_HOUR_MAX (23)
 
 typedef enum
 {
-	MC_TIMER_EDIT_HOUR = 0,
-	MC_TIMER_EDIT_MIN,
-	MC_TIMER_EDIT_SEC,
-} mc_timer_edit_field_t;
+	TIMER_EDIT_HOUR = 0,
+	TIMER_EDIT_MIN,
+	TIMER_EDIT_SEC,
+} mc_clock_timer_edit_field_t;
 
 typedef struct
 {

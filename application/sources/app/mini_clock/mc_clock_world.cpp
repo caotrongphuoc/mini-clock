@@ -1,6 +1,6 @@
 #include "mc_clock_world.h"
 
-static mc_world_clock_state_t world_clock;
+static mc_clock_world_clock_state_t world_clock;
 
 /*
  * RTC is set to Vietnam local time (UTC+7).
@@ -8,7 +8,7 @@ static mc_world_clock_state_t world_clock;
  *   offset_minutes = (country_utc_offset_hours * 60) - (7 * 60)
  * The table lives in flash; only the selection and current time are in RAM.
  */
-static const mc_world_clock_country_t world_clock_country[MC_WORLD_CLOCK_MAX_COUNTRY] = {
+static const mc_clock_world_clock_country_t world_clock_country[WORLD_CLOCK_COUNTRY_NUMBER] = {
     {"Vietnam", 0, "UTC+7"},
     {"England", -420, "UTC+0"},
     {"Portugal", -420, "UTC+0"},
@@ -56,21 +56,21 @@ void mc_clock_world_clock_init(void)
 void mc_clock_world_clock_select_country(
     uint8_t index)
 {
-	if (index < MC_WORLD_CLOCK_MAX_COUNTRY)
+	if (index < WORLD_CLOCK_COUNTRY_NUMBER)
 	{
 		world_clock.selected_country = index;
 	}
 }
 
 void mc_clock_world_clock_get_state(
-    mc_world_clock_state_t* state)
+    mc_clock_world_clock_state_t* state)
 {
 	*state = world_clock;
 }
 
-const mc_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index)
+const mc_clock_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index)
 {
-	if (index >= MC_WORLD_CLOCK_MAX_COUNTRY)
+	if (index >= WORLD_CLOCK_COUNTRY_NUMBER)
 	{
 		index = 0;
 	}
@@ -129,7 +129,7 @@ void mc_clock_world_clock_handle(
 	case MC_CLOCK_WORLD_CLOCK_SELECT_UP:
 	{
 		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_UP\n");
-		if (world_clock.selected_country < MC_WORLD_CLOCK_MAX_COUNTRY - 1)
+		if (world_clock.selected_country < WORLD_CLOCK_COUNTRY_NUMBER - 1)
 		{
 			world_clock.selected_country++;
 		}
@@ -155,7 +155,7 @@ void mc_clock_world_clock_handle(
 		}
 		else
 		{
-			world_clock.selected_country = MC_WORLD_CLOCK_MAX_COUNTRY - 1;
+			world_clock.selected_country = WORLD_CLOCK_COUNTRY_NUMBER - 1;
 		}
 		clock_setting_data.world_country = world_clock.selected_country;
 		mc_clock_setting_write(&clock_setting_data);

@@ -390,11 +390,11 @@ int32_t shell_stt(uint8_t* argv) {
 	LOGIN_PRINT("alarm total:%u cur:%u scroll:%u edit:%u idx:%u field:%u ring:%u\n",
 	            alarm.total_alarm, alarm.current_item, alarm.scroll_offset,
 	            alarm.editing, alarm.editing_alarm, alarm.editing_field, alarm.ringing);
-	for (uint8_t i = 0; i < alarm.total_alarm && i < MC_CLOCK_ALARM_MAX; i++) {
+	for (uint8_t i = 0; i < alarm.total_alarm && i < ALARM_NUMBER; i++) {
 		LOGIN_PRINT("  %u. %02u:%02u %s\n", i + 1, alarm.alarm[i].hour, alarm.alarm[i].minute, alarm.alarm[i].enabled ? "on" : "off");
 	}
 
-	mc_calendar_state_t cal;
+	mc_clock_calendar_state_t cal;
 	mc_clock_calendar_get_state(&cal);
 	LOGIN_PRINT("calendar total:%u mode:%u view:%04u-%02u-%02u cur:%u scroll:%u edit:%u new:%u ring:%u\n",
 	            cal.total_events, cal.mode, cal.view_year, cal.view_month, cal.selected_day,
@@ -964,14 +964,14 @@ int32_t shell_btn(uint8_t* argv) {
 	uint8_t sig = 0;
 
 	switch (*(argv + 4)) {
-	case 'm': sig = AC_DISPLAY_BUTON_MODE_PRESSED; break;
-	case 'u': sig = AC_DISPLAY_BUTON_UP_PRESSED; break;
-	case 'd': sig = AC_DISPLAY_BUTON_DOWN_PRESSED; break;
-	case 'M': sig = AC_DISPLAY_BUTON_LONG_MODE_PRESSED; break;
-	case 'U': sig = AC_DISPLAY_BUTON_LONG_UP_PRESSED; break;
-	case 'D': sig = AC_DISPLAY_BUTON_LONG_DOWN_PRESSED; break;
-	case 'a': sig = AC_DISPLAY_BUTON_MODE_UP_PRESSED; break;
-	case 'b': sig = AC_DISPLAY_BUTON_MODE_DOWN_PRESSED; break;
+	case 'm': sig = AC_DISPLAY_BUTTON_MODE_PRESSED; break;
+	case 'u': sig = AC_DISPLAY_BUTTON_UP_PRESSED; break;
+	case 'd': sig = AC_DISPLAY_BUTTON_DOWN_PRESSED; break;
+	case 'M': sig = AC_DISPLAY_BUTTON_LONG_MODE_PRESSED; break;
+	case 'U': sig = AC_DISPLAY_BUTTON_LONG_UP_PRESSED; break;
+	case 'D': sig = AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED; break;
+	case 'a': sig = AC_DISPLAY_BUTTON_MODE_UP_PRESSED; break;
+	case 'b': sig = AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED; break;
 	default:
 		LOGIN_PRINT("usage: btn <m|u|d> press, <M|U|D> long press, a=mode+up, b=mode+down\n");
 		return 0;

@@ -15,13 +15,13 @@
 /*****************************************************************************/
 /* A write the RTC did not acknowledge (bus error, RTC backing off) is kept and
  * retried on each 1 Hz tick, so a request is never lost silently. */
-#define MC_CLOCK_RTC_RETRY_MAX (10)
+#define RTC_WRITE_RETRY_MAX (10)
 
 typedef enum
 {
-	MC_CLOCK_RTC_ALARM_OP_NONE = 0,
-	MC_CLOCK_RTC_ALARM_OP_SET,
-	MC_CLOCK_RTC_ALARM_OP_CLEAR,
+	RTC_ALARM_OP_NONE = 0,
+	RTC_ALARM_OP_SET,
+	RTC_ALARM_OP_CLEAR,
 } mc_clock_rtc_alarm_op_t;
 
 static mc_clock_rtc_set_time_req_t rtc_pending_time;
@@ -93,9 +93,9 @@ static void mc_clock_rtc_try_time(void)
 		return;
 	}
 
-	if (++rtc_pending_time_tries > MC_CLOCK_RTC_RETRY_MAX)
+	if (++rtc_pending_time_tries > RTC_WRITE_RETRY_MAX)
 	{
-		APP_DBG("[RTC] set time dropped after %u tries\n", MC_CLOCK_RTC_RETRY_MAX);
+		APP_DBG("[RTC] set time dropped after %u tries\n", RTC_WRITE_RETRY_MAX);
 		rtc_pending_time_tries = 0;
 	}
 }
@@ -104,7 +104,7 @@ static void mc_clock_rtc_try_alarm(void)
 {
 	uint8_t ok;
 
-	if (rtc_pending_alarm_op == MC_CLOCK_RTC_ALARM_OP_SET)
+	if (rtc_pending_alarm_op == RTC_ALARM_OP_SET)
 	{
 		ok = rtc_set_alarm_a(&rtc_pending_alarm.time, rtc_pending_alarm.weekday);
 	}
@@ -113,13 +113,13 @@ static void mc_clock_rtc_try_alarm(void)
 		ok = rtc_clear_alarm_a();
 	}
 
-	if (ok || ++rtc_pending_alarm_tries > MC_CLOCK_RTC_RETRY_MAX)
+	if (ok || ++rtc_pending_alarm_tries > RTC_WRITE_RETRY_MAX)
 	{
 		if (!ok)
 		{
-			APP_DBG("[RTC] alarm update dropped after %u tries\n", MC_CLOCK_RTC_RETRY_MAX);
+			APP_DBG("[RTC] alarm update dropped after %u tries\n", RTC_WRITE_RETRY_MAX);
 		}
-		rtc_pending_alarm_op = MC_CLOCK_RTC_ALARM_OP_NONE;
+		rtc_pending_alarm_op = RTC_ALARM_OP_NONE;
 		rtc_pending_alarm_tries = 0;
 	}
 }
@@ -156,7 +156,7 @@ void task_mc_rtc(ak_msg_t* msg)
 			mc_clock_rtc_try_time();
 		}
 
-		if (rtc_pending_alarm_op != MC_CLOCK_RTC_ALARM_OP_NONE)
+		if (rtc_pending_alarm_op != RTC_ALARM_OP_NONE)
 		{
 			mc_clock_rtc_try_alarm();
 		}
@@ -195,7 +195,7 @@ void task_mc_rtc(ak_msg_t* msg)
 			break;
 		}
 
-		mc_clock_rtc_queue_alarm(MC_CLOCK_RTC_ALARM_OP_SET,
+		mc_clock_rtc_queue_alarm(RTC_ALARM_OP_SET,
 		                         (mc_clock_rtc_set_alarm_req_t*)get_data_common_msg(msg));
 	}
 	break;
@@ -203,7 +203,7 @@ void task_mc_rtc(ak_msg_t* msg)
 	case MC_CLOCK_RTC_CLEAR_ALARM_REQ:
 	{
 		APP_DBG_SIG("MC_CLOCK_RTC_CLEAR_ALARM_REQ\n");
-		mc_clock_rtc_queue_alarm(MC_CLOCK_RTC_ALARM_OP_CLEAR, NULL);
+		mc_clock_rtc_queue_alarm(RTC_ALARM_OP_CLEAR, NULL);
 	}
 	break;
 

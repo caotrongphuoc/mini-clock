@@ -4,14 +4,15 @@
 #include "screens.h"
 #include "buzzer.h"
 
-#define SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER (4)
+// Total number of menu items
+#define SETTING_SOUND_ITEM_NUMBER (4)
 
 typedef enum
 {
-	SCR_CLOCK_SETTING_SOUND_MUTE,
-	SCR_CLOCK_SETTING_SOUND_CHIME,
-	SCR_CLOCK_SETTING_SOUND_ALARM,
-	SCR_CLOCK_SETTING_SOUND_BACK,
+	SETTING_SOUND_MUTE,
+	SETTING_SOUND_CHIME,
+	SETTING_SOUND_ALARM,
+	SETTING_SOUND_BACK,
 } scr_clock_setting_sound_item_t;
 
 static const buzzer_sound_t alarm_sound_list[] = {
@@ -27,6 +28,7 @@ static const buzzer_sound_t alarm_sound_list[] = {
 
 };
 
+// Number of selectable alarm melodies
 #define ALARM_SOUND_LIST_NUMBER (sizeof(alarm_sound_list) / sizeof(alarm_sound_list[0]))
 
 void scr_clock_setting_sound_reset(void);

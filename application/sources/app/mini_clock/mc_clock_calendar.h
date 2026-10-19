@@ -13,7 +13,18 @@
 
 #include <string.h>
 
-#define MC_CALENDAR_MAX_EVENTS (10)
+// Number of events in the calendar (and in the EEPROM bank)
+#define CALENDAR_EVENT_NUMBER (10)
+
+// Events shown at once in the day list
+#define CALENDAR_LIST_VISIBLE (2)
+
+// Event index meaning "no event selected"
+#define CALENDAR_EVENT_NONE (255)
+
+// Start and end hour of a newly added event
+#define CALENDAR_NEW_START_HOUR (8)
+#define CALENDAR_NEW_END_HOUR (9)
 
 /*****************************************************************************/
 /* Category                                                                   */
@@ -21,14 +32,14 @@
 
 typedef enum
 {
-	MC_CAL_CAT_WORK = 0,
-	MC_CAL_CAT_MEETING = 1,
-	MC_CAL_CAT_PERSONAL = 2,
-	MC_CAL_CAT_REMINDER = 3,
-	MC_CAL_CAT_MAX
-} mc_calendar_category_t;
+	CALENDAR_CATEGORY_WORK = 0,
+	CALENDAR_CATEGORY_MEETING = 1,
+	CALENDAR_CATEGORY_PERSONAL = 2,
+	CALENDAR_CATEGORY_REMINDER = 3,
+	CALENDAR_CATEGORY_MAX
+} mc_clock_calendar_category_t;
 
-extern const char* const MC_CAL_CAT_NAME[MC_CAL_CAT_MAX];
+extern const char* const mc_clock_calendar_category_name[CALENDAR_CATEGORY_MAX];
 
 /*****************************************************************************/
 /* Event struct                                                               */
@@ -46,7 +57,7 @@ typedef struct
 	uint8_t end_hour; /* 0-23 */
 	uint8_t end_min;  /* 0-59 */
 
-	uint8_t category; /* mc_calendar_category_t */
+	uint8_t category; /* mc_clock_calendar_category_t */
 
 	uint8_t alarm_enabled;
 	uint8_t alarm_sound; /* buzzer sound ID */
@@ -54,7 +65,7 @@ typedef struct
 	uint8_t repeat;      /* repeat mode */
 	uint8_t alarm_fired; /* 1 = alarm already fired this occurrence */
 
-} mc_calendar_event_t;
+} mc_clock_calendar_event_t;
 
 /*****************************************************************************/
 /* Calendar screen mode                                                       */
@@ -62,10 +73,10 @@ typedef struct
 
 typedef enum
 {
-	MC_CAL_MODE_MONTH = 0, /* Monthly grid view            */
-	MC_CAL_MODE_LIST = 1,  /* Event list for selected day  */
-	MC_CAL_MODE_EDIT = 2,  /* Edit / Add event             */
-} mc_calendar_mode_t;
+	CALENDAR_MODE_MONTH = 0, /* Monthly grid view            */
+	CALENDAR_MODE_LIST = 1,  /* Event list for selected day  */
+	CALENDAR_MODE_EDIT = 2,  /* Edit / Add event             */
+} mc_clock_calendar_mode_t;
 
 /*****************************************************************************/
 /* State struct                                                               */
@@ -98,11 +109,11 @@ typedef struct
 	uint8_t ringing_event;
 
 	/* Screen mode */
-	uint8_t mode; /* mc_calendar_mode_t          */
+	uint8_t mode; /* mc_clock_calendar_mode_t          */
 
-	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
+	mc_clock_calendar_event_t events[CALENDAR_EVENT_NUMBER];
 
-} mc_calendar_state_t;
+} mc_clock_calendar_state_t;
 
 /*****************************************************************************/
 /* Edit fields (used by editing_field)                                        */
@@ -110,17 +121,17 @@ typedef struct
 
 typedef enum
 {
-	MC_CAL_FIELD_YEAR = 0,
-	MC_CAL_FIELD_MONTH = 1,
-	MC_CAL_FIELD_DAY = 2,
-	MC_CAL_FIELD_CATEGORY = 3,
-	MC_CAL_FIELD_START_HOUR = 4,
-	MC_CAL_FIELD_START_MIN = 5,
-	MC_CAL_FIELD_END_HOUR = 6,
-	MC_CAL_FIELD_END_MIN = 7,
-	MC_CAL_FIELD_ALARM = 8,
-	MC_CAL_FIELD_MAX
-} mc_calendar_field_t;
+	CALENDAR_FIELD_YEAR = 0,
+	CALENDAR_FIELD_MONTH = 1,
+	CALENDAR_FIELD_DAY = 2,
+	CALENDAR_FIELD_CATEGORY = 3,
+	CALENDAR_FIELD_START_HOUR = 4,
+	CALENDAR_FIELD_START_MIN = 5,
+	CALENDAR_FIELD_END_HOUR = 6,
+	CALENDAR_FIELD_END_MIN = 7,
+	CALENDAR_FIELD_ALARM = 8,
+	CALENDAR_FIELD_MAX
+} mc_clock_calendar_field_t;
 
 /*****************************************************************************/
 /* Repeat mode                                                               */
@@ -128,14 +139,14 @@ typedef enum
 
 typedef enum
 {
-	MC_CAL_REPEAT_NONE = 0,
-	MC_CAL_REPEAT_DAILY,
-	MC_CAL_REPEAT_WEEKLY,
-	MC_CAL_REPEAT_MONTHLY,
-	MC_CAL_REPEAT_YEARLY,
-	MC_CAL_REPEAT_MAX
+	CALENDAR_REPEAT_NONE = 0,
+	CALENDAR_REPEAT_DAILY,
+	CALENDAR_REPEAT_WEEKLY,
+	CALENDAR_REPEAT_MONTHLY,
+	CALENDAR_REPEAT_YEARLY,
+	CALENDAR_REPEAT_MAX
 
-} mc_calendar_repeat_t;
+} mc_clock_calendar_repeat_t;
 
 /*****************************************************************************/
 /* Public API                                                                 */
@@ -145,9 +156,9 @@ void mc_clock_calendar_init(void);
 
 void mc_clock_calendar_handle(ak_msg_t* msg);
 
-void mc_clock_calendar_get_state(mc_calendar_state_t* state);
+void mc_clock_calendar_get_state(mc_clock_calendar_state_t* state);
 
-uint8_t mc_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
+uint8_t mc_clock_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
 
 void mc_clock_calendar_sync(void);
 
@@ -155,8 +166,8 @@ void mc_clock_calendar_sync(void);
 typedef struct
 {
 	uint8_t total_events;
-	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
-} mc_calendar_bank_t;
+	mc_clock_calendar_event_t events[CALENDAR_EVENT_NUMBER];
+} mc_clock_calendar_bank_t;
 
 void mc_clock_calendar_load_from_eeprom(void);
 

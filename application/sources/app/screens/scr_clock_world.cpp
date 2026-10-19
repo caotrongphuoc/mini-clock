@@ -24,10 +24,10 @@ static uint8_t world_anim_running = 0;
 static uint8_t world_old_country = 0;
 
 static void draw_world_clock_content(
-    mc_world_clock_state_t* state,
+    mc_clock_world_clock_state_t* state,
     int16_t offset)
 {
-	const mc_world_clock_country_t* country =
+	const mc_clock_world_clock_country_t* country =
 	    mc_clock_world_clock_get_country(state->selected_country);
 
 	char time_buf[12];
@@ -91,7 +91,7 @@ static void draw_world_clock_content(
 
 static void view_scr_clock_world()
 {
-	mc_world_clock_state_t state;
+	mc_clock_world_clock_state_t state;
 
 	mc_clock_world_clock_get_state(&state);
 
@@ -101,7 +101,7 @@ static void view_scr_clock_world()
 
 	if (world_anim_running)
 	{
-		mc_world_clock_state_t old_state = state;
+		mc_clock_world_clock_state_t old_state = state;
 
 		old_state.selected_country = world_old_country;
 
@@ -202,9 +202,9 @@ void scr_clock_world_handle(
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		mc_world_clock_state_t state;
+		mc_clock_world_clock_state_t state;
 
 		mc_clock_world_clock_get_state(&state);
 
@@ -228,10 +228,10 @@ void scr_clock_world_handle(
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 
-		mc_world_clock_state_t state;
+		mc_clock_world_clock_state_t state;
 
 		mc_clock_world_clock_get_state(&state);
 
@@ -260,7 +260,7 @@ void scr_clock_world_handle(
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
 
 		timer_remove_attr(

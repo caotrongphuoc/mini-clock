@@ -112,15 +112,15 @@ void view_scr_clock_timer()
 
 	switch (timer_state.edit_field)
 	{
-	case MC_TIMER_EDIT_HOUR:
+	case TIMER_EDIT_HOUR:
 		view_render.print("HOUR");
 		break;
 
-	case MC_TIMER_EDIT_MIN:
+	case TIMER_EDIT_MIN:
 		view_render.print("MIN");
 		break;
 
-	case MC_TIMER_EDIT_SEC:
+	case TIMER_EDIT_SEC:
 		view_render.print("SEC");
 		break;
 	}
@@ -133,15 +133,15 @@ void view_scr_clock_timer()
 
 		switch (timer_state.edit_field)
 		{
-		case MC_TIMER_EDIT_HOUR:
+		case TIMER_EDIT_HOUR:
 			x = 20;
 			break;
 
-		case MC_TIMER_EDIT_MIN:
+		case TIMER_EDIT_MIN:
 			x = 56;
 			break;
 
-		case MC_TIMER_EDIT_SEC:
+		case TIMER_EDIT_SEC:
 			x = 92;
 			break;
 		}
@@ -188,9 +188,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_help = 0;
 		mc_clock_timer_get_state(&timer_state);
 
@@ -208,9 +208,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	break;
 
 	// This is to start the timer
-	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_MODE_PRESSED\n");
 		timer_help = 0;
 		task_post_pure_msg(MC_CLOCK_TIMER_ID,
 		                   MC_CLOCK_TIMER_START_PAUSE);
@@ -219,18 +219,18 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_UP_PRESSED\n");
 		timer_help = 0;
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_RESET);
 		BUZZER_PlaySound(BUZZER_SOUND_USB_DISCONNECTED);
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED\n");
 		timer_help = 0;
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIMER_TICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
@@ -238,9 +238,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 		timer_help = 0;
 		mc_clock_timer_get_state(&timer_state);
 		if (timer_state.finished)
@@ -254,9 +254,9 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 		timer_help = 0;
 		mc_clock_timer_get_state(&timer_state);
 		if (timer_state.finished)
@@ -270,7 +270,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_UP_PRESSED:
 	{
 		APP_DBG_SIG("MODE + UP\n");
 		timer_help = 0;
@@ -285,7 +285,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("MODE + DOWN\n");
 		timer_help = 0;

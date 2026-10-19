@@ -11,7 +11,8 @@
 
 #include <string.h>
 
-#define MC_WORLD_CLOCK_MAX_COUNTRY (32)
+// Number of cities in the world clock table
+#define WORLD_CLOCK_COUNTRY_NUMBER (32)
 
 typedef struct
 {
@@ -24,7 +25,7 @@ typedef struct
 	/* Pre-formatted UTC string, e.g. "UTC+7", "UTC-5", "UTC+5:30" */
 	const char* utc_label;
 
-} mc_world_clock_country_t;
+} mc_clock_world_clock_country_t;
 
 typedef struct
 {
@@ -34,7 +35,7 @@ typedef struct
 	uint8_t minute;
 	uint8_t second;
 
-} mc_world_clock_state_t;
+} mc_clock_world_clock_state_t;
 
 void mc_clock_world_clock_init(void);
 
@@ -45,10 +46,10 @@ void mc_clock_world_clock_select_country(
     uint8_t index);
 
 void mc_clock_world_clock_get_state(
-    mc_world_clock_state_t* state);
+    mc_clock_world_clock_state_t* state);
 
 /* Read-only country entry from the flash table (index is clamped). */
-const mc_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index);
+const mc_clock_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index);
 
 int16_t mc_clock_world_clock_get_selected_offset_minutes(void);
 

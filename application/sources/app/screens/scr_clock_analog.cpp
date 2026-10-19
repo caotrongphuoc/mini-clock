@@ -6,16 +6,23 @@
 #include "mc_clock_world.h"
 #include "scr_clock_main.h"
 
-#define ANALOG_CX 64
-#define ANALOG_CY 32
-#define ANALOG_R 30
-#define ANALOG_TICK_MAJOR 5
-#define ANALOG_TICK_MINOR 3
-#define ANALOG_HOUR_LEN 13
-#define ANALOG_MIN_LEN 20
-#define ANALOG_SEC_LEN 27
-#define ANALOG_HUB_R 2
-#define ANALOG_NUM_R 21
+// Dial center and radius
+#define ANALOG_CX (64)
+#define ANALOG_CY (32)
+#define ANALOG_R (30)
+
+// Tick length (hour marks, minute marks)
+#define ANALOG_TICK_MAJOR (5)
+#define ANALOG_TICK_MINOR (3)
+
+// Hand length (hour, minute, second)
+#define ANALOG_HOUR_LEN (13)
+#define ANALOG_MIN_LEN (20)
+#define ANALOG_SEC_LEN (27)
+
+// Center hub radius and hour number radius
+#define ANALOG_HUB_R (2)
+#define ANALOG_NUM_R (21)
 
 static void view_scr_clock_analog();
 
@@ -168,7 +175,7 @@ void scr_clock_analog_draw_right_panel()
 
 	view_render.drawLine(102, 23, 123, 23, WHITE);
 
-	mc_world_clock_state_t world_state;
+	mc_clock_world_clock_state_t world_state;
 	mc_clock_world_clock_get_state(&world_state);
 	const char* offset_str = mc_clock_world_clock_get_country(world_state.selected_country)->utc_label + 3;
 
@@ -227,9 +234,9 @@ void scr_clock_analog_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED [analog]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED [analog]\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);

@@ -6,7 +6,8 @@
 #include "app_eeprom.h"
 #include "mc_clock_ring.h"
 
-#define MC_CLOCK_ALARM_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_alarm_bank_t))
+// Bytes covered by the bank checksum (magic + bank)
+#define ALARM_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_alarm_bank_t))
 
 typedef struct
 {
@@ -26,7 +27,7 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
 
     .editing = 0,
     .editing_alarm = 0,
-    .editing_field = MC_CLOCK_ALARM_EDIT_HOUR,
+    .editing_field = ALARM_EDIT_HOUR,
 
     .ringing = 0,
 
@@ -41,12 +42,12 @@ void mc_clock_alarm_save_to_eeprom(void)
 
 	memset(&eeprom_data, 0, sizeof(eeprom_data));
 	eeprom_data.data.total_alarm = mc_clock_alarm_state.total_alarm;
-	for (uint8_t i = 0; i < MC_CLOCK_ALARM_MAX; i++)
+	for (uint8_t i = 0; i < ALARM_NUMBER; i++)
 	{
 		eeprom_data.data.alarm[i] = mc_clock_alarm_state.alarm[i];
 	}
 
-	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number, &eeprom_data.check_sum, MC_CLOCK_ALARM_CHECKSUM_SIZE);
+	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number, &eeprom_data.check_sum, ALARM_CHECKSUM_SIZE);
 
 	if (eeprom_read(EEPROM_ALARM_START_ADDR, (uint8_t*)&stored, sizeof(stored)) == EEPROM_DRIVER_OK &&
 	    memcmp(&stored, &eeprom_data, sizeof(stored)) == 0)
@@ -64,14 +65,14 @@ void mc_clock_alarm_load_from_eeprom(void)
 	uint8_t ret = eeprom_read(EEPROM_ALARM_START_ADDR, (uint8_t*)&eeprom_data, sizeof(eeprom_data));
 
 	if (ret == EEPROM_DRIVER_OK &&
-	    mc_clock_eeprom_is_valid(&eeprom_data.magic_number, eeprom_data.check_sum, MC_CLOCK_ALARM_CHECKSUM_SIZE))
+	    mc_clock_eeprom_is_valid(&eeprom_data.magic_number, eeprom_data.check_sum, ALARM_CHECKSUM_SIZE))
 	{
 		mc_clock_alarm_state.total_alarm = eeprom_data.data.total_alarm;
-		if (mc_clock_alarm_state.total_alarm > MC_CLOCK_ALARM_MAX)
+		if (mc_clock_alarm_state.total_alarm > ALARM_NUMBER)
 		{
 			mc_clock_alarm_state.total_alarm = 0;
 		}
-		for (uint8_t i = 0; i < MC_CLOCK_ALARM_MAX; i++)
+		for (uint8_t i = 0; i < ALARM_NUMBER; i++)
 		{
 			mc_clock_alarm_state.alarm[i] = eeprom_data.data.alarm[i];
 		}
@@ -162,7 +163,7 @@ static void mc_clock_alarm_begin_edit(uint8_t index, uint8_t is_new)
 {
 	mc_clock_alarm_state.editing = 1;
 	mc_clock_alarm_state.editing_alarm = index;
-	mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+	mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
 	mc_clock_alarm_edit_backup = mc_clock_alarm_state.alarm[index];
 	mc_clock_alarm_editing_new = is_new;
 }
@@ -178,9 +179,9 @@ static void mc_clock_alarm_scroll_to_current(void)
 	{
 		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
 	}
-	else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + 3)
+	else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + ALARM_LIST_VISIBLE)
 	{
-		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - 2;
+		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - (ALARM_LIST_VISIBLE - 1);
 	}
 }
 
@@ -219,7 +220,7 @@ static void mc_clock_alarm_delete_current()
 	}
 
 	mc_clock_alarm_state.editing = 0;
-	mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+	mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
 
 	mc_clock_alarm_commit();
 }
@@ -258,7 +259,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		mc_clock_alarm_state.current_item = 0;
 		mc_clock_alarm_state.scroll_offset = 0;
 		mc_clock_alarm_state.editing = 0;
-		mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+		mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
 	}
 	break;
 
@@ -270,13 +271,13 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		{
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case MC_CLOCK_ALARM_EDIT_DELETE:
+			case ALARM_EDIT_DELETE:
 			{
 				mc_clock_alarm_delete_current();
 			}
 			break;
 
-			case MC_CLOCK_ALARM_EDIT_SAVE:
+			case ALARM_EDIT_SAVE:
 			{
 				mc_clock_alarm_state.editing = 0;
 				mc_clock_alarm_commit();
@@ -295,12 +296,12 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		// Add New button
 		if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm)
 		{
-			if (mc_clock_alarm_state.total_alarm < MC_CLOCK_ALARM_MAX)
+			if (mc_clock_alarm_state.total_alarm < ALARM_NUMBER)
 			{
 				uint8_t new_alarm = mc_clock_alarm_state.total_alarm;
 
-				mc_clock_alarm_state.alarm[new_alarm].hour = 8;
-				mc_clock_alarm_state.alarm[new_alarm].minute = 0;
+				mc_clock_alarm_state.alarm[new_alarm].hour = ALARM_NEW_HOUR;
+				mc_clock_alarm_state.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
 				mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
 
 				mc_clock_alarm_state.total_alarm++;
@@ -338,15 +339,15 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case MC_CLOCK_ALARM_EDIT_HOUR:
+			case ALARM_EDIT_HOUR:
 				alarm->hour = (alarm->hour + 1) % 24;
 				break;
 
-			case MC_CLOCK_ALARM_EDIT_MINUTE:
+			case ALARM_EDIT_MINUTE:
 				alarm->minute = (alarm->minute + 1) % 60;
 				break;
 
-			case MC_CLOCK_ALARM_EDIT_ENABLE:
+			case ALARM_EDIT_ENABLE:
 				alarm->enabled = 1;
 				break;
 
@@ -380,17 +381,17 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 			switch (mc_clock_alarm_state.editing_field)
 			{
-			case MC_CLOCK_ALARM_EDIT_HOUR:
+			case ALARM_EDIT_HOUR:
 				alarm->hour =
 				    (alarm->hour == 0) ? 23 : alarm->hour - 1;
 				break;
 
-			case MC_CLOCK_ALARM_EDIT_MINUTE:
+			case ALARM_EDIT_MINUTE:
 				alarm->minute =
 				    (alarm->minute == 0) ? 59 : alarm->minute - 1;
 				break;
 
-			case MC_CLOCK_ALARM_EDIT_ENABLE:
+			case ALARM_EDIT_ENABLE:
 				alarm->enabled = 0;
 				break;
 
@@ -417,10 +418,10 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 		if (mc_clock_alarm_state.editing)
 		{
-			if (mc_clock_alarm_state.editing_field == MC_CLOCK_ALARM_EDIT_SAVE)
+			if (mc_clock_alarm_state.editing_field == ALARM_EDIT_SAVE)
 			{
 				mc_clock_alarm_state.editing = 0;
-				mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+				mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
 
 				mc_clock_alarm_commit();
 			}
@@ -437,12 +438,12 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_ADD_NEW\n");
 
-		if (mc_clock_alarm_state.total_alarm < MC_CLOCK_ALARM_MAX)
+		if (mc_clock_alarm_state.total_alarm < ALARM_NUMBER)
 		{
 			uint8_t new_alarm = mc_clock_alarm_state.total_alarm;
 
-			mc_clock_alarm_state.alarm[new_alarm].hour = 8;
-			mc_clock_alarm_state.alarm[new_alarm].minute = 0;
+			mc_clock_alarm_state.alarm[new_alarm].hour = ALARM_NEW_HOUR;
+			mc_clock_alarm_state.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
 			mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
 
 			mc_clock_alarm_state.total_alarm++;
@@ -483,8 +484,8 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			mc_clock_alarm_state.total_alarm--;
 
 			/* current_item now points at the next alarm (or "Add New");
-			 * keep the 3-line window inside the shorter list. */
-			uint8_t max_offset = (mc_clock_alarm_state.total_alarm > 3) ? (mc_clock_alarm_state.total_alarm - 3) : 0;
+			 * keep the list window inside the shorter list. */
+			uint8_t max_offset = (mc_clock_alarm_state.total_alarm > ALARM_LIST_VISIBLE) ? (mc_clock_alarm_state.total_alarm - ALARM_LIST_VISIBLE) : 0;
 			if (mc_clock_alarm_state.scroll_offset > max_offset)
 			{
 				mc_clock_alarm_state.scroll_offset = max_offset;
@@ -506,7 +507,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 		mc_clock_alarm_state.ringing = 1;
 		BUZZER_PlaySound(mc_clock_alarm_state.sound);
-		mc_clock_ring_request(MC_CLOCK_RING_SOURCE_ALARM, mc_clock_alarm_state.sound);
+		mc_clock_ring_request(RING_SOURCE_ALARM, mc_clock_alarm_state.sound);
 	}
 	break;
 

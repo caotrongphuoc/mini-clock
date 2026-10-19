@@ -6,29 +6,34 @@
 #include "scr_clock_main.h"
 #include "scr_clock_setting_display.h"
 
-#define SCR_CLOCK_MENU_ITEM_NUMBER (9)
-#define SCR_CLOCK_MENU_ICON_X (53)
-#define SCR_CLOCK_MENU_ICON_Y (17)
-#define SCR_CLOCK_MENU_FRAME_X (6)
-#define SCR_CLOCK_MENU_FRAME_Y (13)
-#define SCR_CLOCK_MENU_FRAME_W (116)
-#define SCR_CLOCK_MENU_FRAME_H (48) // with the words bottom is 38 else 48
-#define SCR_CLOCK_MENU_FRAME_R (4)
+// Total number of menu items
+#define MENU_ITEM_NUMBER (9)
 
-// Animation variables
-#define MENU_ANIMATION_END 64
+// Icon position
+#define MENU_ICON_X (53)
+#define MENU_ICON_Y (17)
+
+// Frame (origin, width, height, corner radius)
+#define MENU_FRAME_X (6)
+#define MENU_FRAME_Y (13)
+#define MENU_FRAME_W (116)
+#define MENU_FRAME_H (48) // with the words bottom is 38 else 48
+#define MENU_FRAME_R (4)
+
+// Slide distance of the menu animation (px)
+#define MENU_ANIMATION_END (64)
 
 typedef enum
 {
-	SCR_CLOCK_MENU_CLOCK,
-	SCR_CLOCK_MENU_ANALOG,
-	SCR_CLOCK_MENU_ALARM,
-	SCR_CLOCK_MENU_STOPWATCH,
-	SCR_CLOCK_MENU_TIMER,
-	SCR_CLOCK_MENU_WORLD_CLOCK,
-	SCR_CLOCK_MENU_CALENDAR,
-	SCR_CLOCK_MENU_SETTING,
-	SCR_CLOCK_MENU_EXIT,
+	MENU_CLOCK,
+	MENU_ANALOG,
+	MENU_ALARM,
+	MENU_STOPWATCH,
+	MENU_TIMER,
+	MENU_WORLD_CLOCK,
+	MENU_CALENDAR,
+	MENU_SETTING,
+	MENU_EXIT,
 } scr_clock_menu_item_t;
 
 #endif //__SCR_CLOCK_MENU_H__

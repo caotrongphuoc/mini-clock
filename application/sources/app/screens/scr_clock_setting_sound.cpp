@@ -6,7 +6,7 @@
 
 static uint8_t setting_sound_location_choose;
 
-static const char* const setting_sound_item_name[SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER] = {
+static const char* const setting_sound_item_name[SETTING_SOUND_ITEM_NUMBER] = {
     "Mute",
     "Chime",
     "Alarm",
@@ -44,30 +44,30 @@ void view_scr_clock_setting_sound()
 {
 	view_render.setTextSize(1);
 
-	for (uint8_t i = 0; i < SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER; i++)
+	for (uint8_t i = 0; i < SETTING_SOUND_ITEM_NUMBER; i++)
 	{
-		uint8_t frame_y = SCR_CLOCK_SETTING_FRAME_Y_1 + SCR_CLOCK_SETTING_FRAME_STEP * i;
+		uint8_t frame_y = SETTING_FRAME_Y_1 + SETTING_FRAME_STEP * i;
 		bool selected = (i == setting_sound_location_choose);
 		uint8_t fg = selected ? BLACK : WHITE;
 
 		if (selected)
 		{
-			view_render.fillRoundRect(SCR_CLOCK_SETTING_FRAME_X, frame_y,
-			                          SCR_CLOCK_SETTING_FRAME_W, SCR_CLOCK_SETTING_FRAME_H,
-			                          SCR_CLOCK_SETTING_FRAME_R, WHITE);
+			view_render.fillRoundRect(SETTING_FRAME_X, frame_y,
+			                          SETTING_FRAME_W, SETTING_FRAME_H,
+			                          SETTING_FRAME_R, WHITE);
 		}
 		else
 		{
-			view_render.drawRoundRect(SCR_CLOCK_SETTING_FRAME_X, frame_y,
-			                          SCR_CLOCK_SETTING_FRAME_W, SCR_CLOCK_SETTING_FRAME_H,
-			                          SCR_CLOCK_SETTING_FRAME_R, WHITE);
+			view_render.drawRoundRect(SETTING_FRAME_X, frame_y,
+			                          SETTING_FRAME_W, SETTING_FRAME_H,
+			                          SETTING_FRAME_R, WHITE);
 		}
 
 		view_render.setTextColor(fg);
 		view_render.setCursor(8, frame_y + 2);
 		view_render.print(setting_sound_item_name[i]);
 
-		if (i == SCR_CLOCK_SETTING_SOUND_MUTE)
+		if (i == SETTING_SOUND_MUTE)
 
 		{
 			view_render.drawBitmap(110,
@@ -78,14 +78,14 @@ void view_scr_clock_setting_sound()
 			                       fg);
 		}
 
-		else if (i == SCR_CLOCK_SETTING_SOUND_CHIME)
+		else if (i == SETTING_SOUND_CHIME)
 		{
 			view_render.drawBitmap(110, frame_y + 1,
 			                       clock_setting_data.chime_enabled ? bitmap_bell_ring : bitmap_bell_off,
 			                       11, 11, fg);
 		}
 
-		else if (i == SCR_CLOCK_SETTING_SOUND_ALARM)
+		else if (i == SETTING_SOUND_ALARM)
 		{
 			view_render.setCursor(65, frame_y + 2);
 			view_render.print(alarm_sound_name[clock_setting_data.alarm_sound]);
@@ -106,26 +106,26 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		switch (setting_sound_location_choose)
 		{
-		case SCR_CLOCK_SETTING_SOUND_MUTE:
+		case SETTING_SOUND_MUTE:
 			clock_setting_data.sound_off = !clock_setting_data.sound_off;
 			BUZZER_Silent(clock_setting_data.sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
 			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_SOUND_CHIME:
+		case SETTING_SOUND_CHIME:
 			clock_setting_data.chime_enabled = !clock_setting_data.chime_enabled;
 			mc_clock_time_set_chime_enabled(clock_setting_data.chime_enabled);
 			mc_clock_setting_write(&clock_setting_data);
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 			break;
 
-		case SCR_CLOCK_SETTING_SOUND_ALARM:
+		case SETTING_SOUND_ALARM:
 		{
 			clock_setting_data.alarm_sound++;
 
@@ -140,7 +140,7 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 		}
 		break;
 
-		case SCR_CLOCK_SETTING_SOUND_BACK:
+		case SETTING_SOUND_BACK:
 		default:
 			SCREEN_BACK();
 			BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
@@ -149,12 +149,12 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 		if (setting_sound_location_choose == 0)
 		{
-			setting_sound_location_choose = SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER - 1;
+			setting_sound_location_choose = SETTING_SOUND_ITEM_NUMBER - 1;
 		}
 		else
 		{
@@ -164,11 +164,11 @@ void scr_clock_setting_sound_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 		setting_sound_location_choose++;
-		if (setting_sound_location_choose >= SCR_CLOCK_SETTING_SOUND_ITEM_NUMBER)
+		if (setting_sound_location_choose >= SETTING_SOUND_ITEM_NUMBER)
 		{
 			setting_sound_location_choose = 0;
 		}

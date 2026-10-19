@@ -34,7 +34,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 
 	switch (state->editing_field)
 	{
-	case MC_CLOCK_ALARM_EDIT_HOUR: // Hour
+	case ALARM_EDIT_HOUR: // Hour
 	{
 		xsprintf(buf, "[%02u]:%02u %s",
 		         alarm->hour,
@@ -51,7 +51,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_EDIT_MINUTE: // Minute
+	case ALARM_EDIT_MINUTE: // Minute
 	{
 		xsprintf(buf, "%02u:[%02u] %s",
 		         alarm->hour,
@@ -68,7 +68,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_EDIT_ENABLE: // ON/OFF
+	case ALARM_EDIT_ENABLE: // ON/OFF
 	{
 		xsprintf(buf, "%02u:%02u [%s]",
 		         alarm->hour,
@@ -85,7 +85,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_EDIT_DELETE: // Delete
+	case ALARM_EDIT_DELETE: // Delete
 	{
 		view_render.setCursor(5, 28);
 		view_render.setTextSize(2);
@@ -97,7 +97,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	}
 	break;
 
-	case MC_CLOCK_ALARM_EDIT_SAVE: // Save
+	case ALARM_EDIT_SAVE: // Save
 	{
 		view_render.setCursor(5, 28);
 		view_render.setTextSize(2);
@@ -113,7 +113,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 
 static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 {
-	uint8_t visible_lines = 3;
+	uint8_t visible_lines = ALARM_LIST_VISIBLE;
 
 	for (uint8_t i = 0; i < visible_lines; i++)
 	{
@@ -196,9 +196,9 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 		break;
 	}
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 
 		mc_clock_alarm_get_state(&state);
 
@@ -232,9 +232,9 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_UP);
 
@@ -242,9 +242,9 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DOWN);
 
@@ -252,17 +252,17 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_MODE_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_NEXT_FIELD);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_UP_PRESSED\n");
 
 		task_post_pure_msg(
 		    MC_CLOCK_ALARM_ID,
@@ -272,9 +272,9 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED\n");
 
 		SCREEN_TRAN(scr_clock_menu_handle,
 		            &scr_clock_menu);
@@ -283,17 +283,17 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_UP_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_TOGGLE);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED\n");
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DELETE);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}

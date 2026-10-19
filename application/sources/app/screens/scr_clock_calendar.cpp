@@ -47,12 +47,12 @@ static const char* const DOW_NAME[7] = {
  * Grid geometry: 7 columns × 18 px = 126 px (1 px margin each side)
  * Rows: 9 px tall, up to 5 visible at once (scroll for month-6)
  */
-#define CAL_COL_W 18
-#define CAL_COL_CENTER(c) (10 + (c)*CAL_COL_W)
-#define CAL_ROW_H 9
-#define CAL_GRID_Y 19
+#define CALENDAR_COL_W (18)
+#define CALENDAR_COL_CENTER(c) (10 + (c)*CALENDAR_COL_W)
+#define CALENDAR_ROW_H (9)
+#define CALENDAR_GRID_Y (19)
 
-static void view_scr_calendar_month(const mc_calendar_state_t* st)
+static void view_scr_calendar_month(const mc_clock_calendar_state_t* st)
 {
 	char buf[16];
 	/* Grid column of the 1st: 0 = Monday ... 6 = Sunday */
@@ -64,7 +64,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 	int16_t scroll_y = 0;
 	if (selected_row >= 4)
 	{
-		scroll_y = (selected_row - 3) * CAL_ROW_H;
+		scroll_y = (selected_row - 3) * CALENDAR_ROW_H;
 	}
 
 	view_render.setTextSize(1);
@@ -78,7 +78,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 	/* DOW headers centered per column */
 	for (uint8_t d = 0; d < 7; d++)
 	{
-		view_render.setCursor(CAL_COL_CENTER(d) - 5, 9);
+		view_render.setCursor(CALENDAR_COL_CENTER(d) - 5, 9);
 		view_render.print(DOW_NAME[d]);
 	}
 
@@ -90,8 +90,8 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		uint8_t col = cell_idx % 7;
 		uint8_t row = cell_idx / 7;
 
-		int16_t center_x = CAL_COL_CENTER(col);
-		int16_t y = CAL_GRID_Y + row * CAL_ROW_H - scroll_y;
+		int16_t center_x = CALENDAR_COL_CENTER(col);
+		int16_t y = CALENDAR_GRID_Y + row * CALENDAR_ROW_H - scroll_y;
 
 		if (y < 18 || y > 61)
 		{
@@ -102,7 +102,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 		                    st->view_month == st->today_month &&
 		                    st->view_year == st->today_year);
 		uint8_t is_selected = (day == st->selected_day);
-		uint8_t has_event = mc_calendar_has_event_on_day(
+		uint8_t has_event = mc_clock_calendar_has_event_on_day(
 		    st->view_year, st->view_month, day);
 
 		int16_t box_x = center_x - 6;
@@ -138,7 +138,7 @@ static void view_scr_calendar_month(const mc_calendar_state_t* st)
 /* View — Event list for selected day                                         */
 /*****************************************************************************/
 
-static void view_scr_calendar_list(const mc_calendar_state_t* st)
+static void view_scr_calendar_list(const mc_clock_calendar_state_t* st)
 {
 	char buf[24];
 
@@ -159,7 +159,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 
 	for (uint8_t i = 0; i < st->total_events; i++)
 	{
-		const mc_calendar_event_t* ev = &st->events[i];
+		const mc_clock_calendar_event_t* ev = &st->events[i];
 
 		if (ev->year != st->view_year ||
 		    ev->month != st->view_month ||
@@ -190,7 +190,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 
 		/* Line 1: category + alarm indicator */
 		view_render.setCursor(4, y + 2);
-		view_render.print(MC_CAL_CAT_NAME[ev->category]);
+		view_render.print(mc_clock_calendar_category_name[ev->category]);
 
 		if (ev->alarm_enabled)
 		{
@@ -226,7 +226,7 @@ static void view_scr_calendar_list(const mc_calendar_state_t* st)
 /* View — Edit event                                                          */
 /*****************************************************************************/
 
-static const char* const FIELD_LABEL[MC_CAL_FIELD_MAX] = {
+static const char* const FIELD_LABEL[CALENDAR_FIELD_MAX] = {
     "Year",
     "Month",
     "Day",
@@ -238,7 +238,7 @@ static const char* const FIELD_LABEL[MC_CAL_FIELD_MAX] = {
     "Alarm",
 };
 
-static void view_scr_calendar_edit(const mc_calendar_state_t* st)
+static void view_scr_calendar_edit(const mc_clock_calendar_state_t* st)
 {
 	if (st->editing_event >= st->total_events)
 	{
@@ -247,7 +247,7 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 		return;
 	}
 
-	const mc_calendar_event_t* ev = &st->events[st->editing_event];
+	const mc_clock_calendar_event_t* ev = &st->events[st->editing_event];
 	char buf[20];
 
 	view_render.drawRoundRect(0, 0, LCD_WIDTH, LCD_HEIGHT, 4, WHITE);
@@ -259,7 +259,7 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 
 	/* Field label */
 	view_render.setCursor(4, 16);
-	if (st->editing_field < MC_CAL_FIELD_MAX)
+	if (st->editing_field < CALENDAR_FIELD_MAX)
 	{
 		view_render.print(FIELD_LABEL[st->editing_field]);
 	}
@@ -270,27 +270,27 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 
 	switch (st->editing_field)
 	{
-	case MC_CAL_FIELD_YEAR:
+	case CALENDAR_FIELD_YEAR:
 		xsprintf(buf, "%u", ev->year);
 		break;
-	case MC_CAL_FIELD_MONTH:
+	case CALENDAR_FIELD_MONTH:
 		xsprintf(buf, "%s", MONTH_NAME[ev->month]);
 		break;
-	case MC_CAL_FIELD_DAY:
+	case CALENDAR_FIELD_DAY:
 		xsprintf(buf, "%u", ev->day);
 		break;
-	case MC_CAL_FIELD_CATEGORY:
-		xsprintf(buf, "%s", MC_CAL_CAT_NAME[ev->category]);
+	case CALENDAR_FIELD_CATEGORY:
+		xsprintf(buf, "%s", mc_clock_calendar_category_name[ev->category]);
 		break;
-	case MC_CAL_FIELD_START_HOUR:
-	case MC_CAL_FIELD_END_HOUR:
-		xsprintf(buf, "%02u", (st->editing_field == MC_CAL_FIELD_START_HOUR) ? ev->start_hour : ev->end_hour);
+	case CALENDAR_FIELD_START_HOUR:
+	case CALENDAR_FIELD_END_HOUR:
+		xsprintf(buf, "%02u", (st->editing_field == CALENDAR_FIELD_START_HOUR) ? ev->start_hour : ev->end_hour);
 		break;
-	case MC_CAL_FIELD_START_MIN:
-	case MC_CAL_FIELD_END_MIN:
-		xsprintf(buf, "%02u", (st->editing_field == MC_CAL_FIELD_START_MIN) ? ev->start_min : ev->end_min);
+	case CALENDAR_FIELD_START_MIN:
+	case CALENDAR_FIELD_END_MIN:
+		xsprintf(buf, "%02u", (st->editing_field == CALENDAR_FIELD_START_MIN) ? ev->start_min : ev->end_min);
 		break;
-	case MC_CAL_FIELD_ALARM:
+	case CALENDAR_FIELD_ALARM:
 		xsprintf(buf, "%s", ev->alarm_enabled ? "ON" : "OFF");
 		break;
 	default:
@@ -302,7 +302,7 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 	view_render.setTextSize(1);
 
 	/* Progress bar */
-	uint8_t bar_w = (uint8_t)(((uint16_t)(st->editing_field + 1) * 110) / MC_CAL_FIELD_MAX);
+	uint8_t bar_w = (uint8_t)(((uint16_t)(st->editing_field + 1) * 110) / CALENDAR_FIELD_MAX);
 	view_render.fillRect(8, 48, bar_w, 4, WHITE);
 
 	/* Hint */
@@ -314,7 +314,7 @@ static void view_scr_calendar_edit(const mc_calendar_state_t* st)
 /* View — Ringing overlay                                                     */
 /*****************************************************************************/
 
-static void view_scr_calendar_ringing(const mc_calendar_state_t* st)
+static void view_scr_calendar_ringing(const mc_clock_calendar_state_t* st)
 {
 	char buf[20];
 
@@ -330,10 +330,10 @@ static void view_scr_calendar_ringing(const mc_calendar_state_t* st)
 
 	if (st->ringing_event < st->total_events)
 	{
-		const mc_calendar_event_t* ev = &st->events[st->ringing_event];
+		const mc_clock_calendar_event_t* ev = &st->events[st->ringing_event];
 
 		view_render.setCursor(14, 28);
-		view_render.print(MC_CAL_CAT_NAME[ev->category]);
+		view_render.print(mc_clock_calendar_category_name[ev->category]);
 
 		xsprintf(buf, "%02u:%02u", ev->start_hour, ev->start_min);
 		view_render.setCursor(80, 28);
@@ -365,7 +365,7 @@ view_screen_t scr_clock_calendar = {
 
 static void view_scr_clock_calendar()
 {
-	mc_calendar_state_t st;
+	mc_clock_calendar_state_t st;
 
 	mc_clock_calendar_get_state(&st);
 
@@ -386,15 +386,15 @@ static void view_scr_clock_calendar()
 
 	switch (st.mode)
 	{
-	case MC_CAL_MODE_MONTH:
+	case CALENDAR_MODE_MONTH:
 		view_scr_calendar_month(&st);
 		break;
 
-	case MC_CAL_MODE_LIST:
+	case CALENDAR_MODE_LIST:
 		view_scr_calendar_list(&st);
 		break;
 
-	case MC_CAL_MODE_EDIT:
+	case CALENDAR_MODE_EDIT:
 		view_scr_calendar_edit(&st);
 		break;
 
@@ -406,7 +406,7 @@ static void view_scr_clock_calendar()
 
 void scr_clock_calendar_handle(ak_msg_t* msg)
 {
-	mc_calendar_state_t st;
+	mc_clock_calendar_state_t st;
 
 	switch (msg->sig)
 	{
@@ -429,9 +429,9 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.ringing)
@@ -442,7 +442,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 
 		switch (st.mode)
 		{
-		case MC_CAL_MODE_MONTH:
+		case CALENDAR_MODE_MONTH:
 		{
 			task_post_pure_msg(
 			    MC_CLOCK_CALENDAR_ID,
@@ -452,7 +452,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 		}
 		break;
 
-		case MC_CAL_MODE_LIST:
+		case CALENDAR_MODE_LIST:
 		{
 			task_post_pure_msg(
 			    MC_CLOCK_CALENDAR_ID,
@@ -462,7 +462,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 		}
 		break;
 
-		case MC_CAL_MODE_EDIT:
+		case CALENDAR_MODE_EDIT:
 		{
 			task_post_pure_msg(
 			    MC_CLOCK_CALENDAR_ID,
@@ -477,9 +477,9 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_MODE_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_MODE_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.ringing)
@@ -489,7 +489,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 
 		switch (st.mode)
 		{
-		case MC_CAL_MODE_MONTH:
+		case CALENDAR_MODE_MONTH:
 		{
 			/* Add new event */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
@@ -498,7 +498,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 		}
 		break;
 
-		case MC_CAL_MODE_LIST:
+		case CALENDAR_MODE_LIST:
 		{
 			/* Delete selected event */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
@@ -507,7 +507,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 		}
 		break;
 
-		case MC_CAL_MODE_EDIT:
+		case CALENDAR_MODE_EDIT:
 		{
 			if (st.is_new_event)
 			{
@@ -522,7 +522,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 				                   MC_CLOCK_CALENDAR_NEXT_FIELD);
 
 				/* Jump directly to last field so NEXT_FIELD exits edit mode */
-				while (st.editing_field < (MC_CAL_FIELD_MAX - 1))
+				while (st.editing_field < (CALENDAR_FIELD_MAX - 1))
 				{
 					task_post_pure_msg(MC_CLOCK_CALENDAR_ID,
 					                   MC_CLOCK_CALENDAR_NEXT_FIELD);
@@ -543,9 +543,9 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.ringing)
@@ -553,7 +553,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 			break;
 		}
 
-		if (st.mode == MC_CAL_MODE_MONTH)
+		if (st.mode == CALENDAR_MODE_MONTH)
 		{
 			/* UP = previous day (month view pans left) */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_FIELD_DEC);
@@ -567,9 +567,9 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
 		if (st.ringing)
@@ -577,7 +577,7 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 			break;
 		}
 
-		if (st.mode == MC_CAL_MODE_MONTH)
+		if (st.mode == CALENDAR_MODE_MONTH)
 		{
 			/* DOWN = next day */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_FIELD_INC);
@@ -591,17 +591,17 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_UP_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_UP_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
-		if (st.mode == MC_CAL_MODE_MONTH)
+		if (st.mode == CALENDAR_MODE_MONTH)
 		{
 			/* Long-UP: previous month */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_PREV_MONTH);
 		}
-		else if (st.mode == MC_CAL_MODE_LIST)
+		else if (st.mode == CALENDAR_MODE_LIST)
 		{
 			/* Long-UP in list: back to month view */
 			task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_SETUP);
@@ -611,12 +611,12 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_LONG_DOWN_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED [calendar]\n");
 		mc_clock_calendar_get_state(&st);
 
-		if (st.mode == MC_CAL_MODE_MONTH)
+		if (st.mode == CALENDAR_MODE_MONTH)
 		{
 			task_post_pure_msg(
 			    MC_CLOCK_CALENDAR_ID,
@@ -633,9 +633,9 @@ void scr_clock_calendar_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_UP_PRESSED [calendar]\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_UP_PRESSED [calendar]\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);

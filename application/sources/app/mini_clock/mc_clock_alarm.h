@@ -10,7 +10,15 @@
 #include "buzzer.h"
 #include "task_mc_rtc.h"
 
-#define MC_CLOCK_ALARM_MAX (10)
+// Number of alarms in the list (and in the EEPROM bank)
+#define ALARM_NUMBER (10)
+
+// Rows shown at once in the alarm list
+#define ALARM_LIST_VISIBLE (3)
+
+// Time of a newly added alarm
+#define ALARM_NEW_HOUR (8)
+#define ALARM_NEW_MINUTE (0)
 
 typedef struct
 {
@@ -22,11 +30,11 @@ typedef struct
 
 typedef enum
 {
-	MC_CLOCK_ALARM_EDIT_HOUR = 0,
-	MC_CLOCK_ALARM_EDIT_MINUTE = 1,
-	MC_CLOCK_ALARM_EDIT_ENABLE = 2,
-	MC_CLOCK_ALARM_EDIT_DELETE = 3,
-	MC_CLOCK_ALARM_EDIT_SAVE = 4,
+	ALARM_EDIT_HOUR = 0,
+	ALARM_EDIT_MINUTE = 1,
+	ALARM_EDIT_ENABLE = 2,
+	ALARM_EDIT_DELETE = 3,
+	ALARM_EDIT_SAVE = 4,
 
 } mc_clock_alarm_edit_field_t;
 
@@ -50,7 +58,7 @@ typedef struct
 	buzzer_sound_t sound;
 
 	// Alarm storage
-	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
+	mc_clock_alarm_item_t alarm[ALARM_NUMBER];
 
 } mc_clock_alarm_state_t;
 
@@ -66,7 +74,7 @@ uint8_t mc_clock_alarm_get_sound(void);
 typedef struct
 {
 	uint8_t total_alarm;
-	mc_clock_alarm_item_t alarm[MC_CLOCK_ALARM_MAX];
+	mc_clock_alarm_item_t alarm[ALARM_NUMBER];
 } mc_clock_alarm_bank_t;
 
 void mc_clock_alarm_load_from_eeprom(void);

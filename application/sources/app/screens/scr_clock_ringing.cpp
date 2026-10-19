@@ -6,12 +6,12 @@
 /*****************************************************************************/
 /* Variable Declaration - Clock ringing */
 /*****************************************************************************/
-static uint8_t ringing_source = MC_CLOCK_RING_SOURCE_MAX; /* MAX = not ringing */
+static uint8_t ringing_source = RING_SOURCE_MAX; /* MAX = not ringing */
 static uint8_t ringing_sound;
 static uint8_t ringing_elapsed_s;
 static uint8_t ringing_blink;
 
-static const char* const ringing_title[MC_CLOCK_RING_SOURCE_MAX] = {
+static const char* const ringing_title[RING_SOURCE_MAX] = {
     "ALARM",
     "TIMER",
     "EVENT",
@@ -72,14 +72,14 @@ void view_scr_clock_ringing()
 		view_render.setTextColor(WHITE);
 	}
 
-	if (ringing_source < MC_CLOCK_RING_SOURCE_MAX)
+	if (ringing_source < RING_SOURCE_MAX)
 	{
-		scr_clock_ringing_print_center(ringing_title[ringing_source], SCR_CLOCK_RINGING_TITLE_Y, 2);
+		scr_clock_ringing_print_center(ringing_title[ringing_source], RINGING_TITLE_Y, 2);
 	}
 
 	view_render.setTextColor(WHITE);
-	scr_clock_ringing_print_center(time_text, SCR_CLOCK_RINGING_TIME_Y, 2);
-	scr_clock_ringing_print_center("Press any key", SCR_CLOCK_RINGING_HINT_Y, 1);
+	scr_clock_ringing_print_center(time_text, RINGING_TIME_Y, 2);
+	scr_clock_ringing_print_center("Press any key", RINGING_HINT_Y, 1);
 }
 
 /*****************************************************************************/
@@ -90,15 +90,15 @@ static void scr_clock_ringing_dismiss_source(void)
 {
 	switch (ringing_source)
 	{
-	case MC_CLOCK_RING_SOURCE_ALARM:
+	case RING_SOURCE_ALARM:
 		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_DISMISS);
 		break;
 
-	case MC_CLOCK_RING_SOURCE_TIMER:
+	case RING_SOURCE_TIMER:
 		task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
 		break;
 
-	case MC_CLOCK_RING_SOURCE_CALENDAR:
+	case RING_SOURCE_CALENDAR:
 		task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_ALARM_DISMISS);
 		break;
 
@@ -106,7 +106,7 @@ static void scr_clock_ringing_dismiss_source(void)
 		break;
 	}
 
-	ringing_source = MC_CLOCK_RING_SOURCE_MAX;
+	ringing_source = RING_SOURCE_MAX;
 }
 
 static void scr_clock_ringing_leave(void)
@@ -128,7 +128,7 @@ void scr_clock_ringing_enter(ak_msg_t* msg)
 
 	mc_clock_ring_req_t* req = (mc_clock_ring_req_t*)get_data_common_msg(msg);
 
-	if (req->source >= MC_CLOCK_RING_SOURCE_MAX)
+	if (req->source >= RING_SOURCE_MAX)
 	{
 		return;
 	}
@@ -173,13 +173,13 @@ void scr_clock_ringing_handle(ak_msg_t* msg)
 	{
 		ringing_elapsed_s++;
 
-		if (ringing_elapsed_s >= MC_CLOCK_RING_TIMEOUT_S)
+		if (ringing_elapsed_s >= RING_TIMEOUT_S)
 		{
 			scr_clock_ringing_leave();
 			break;
 		}
 
-		if ((ringing_elapsed_s % MC_CLOCK_RING_REPEAT_S) == 0)
+		if ((ringing_elapsed_s % RING_REPEAT_S) == 0)
 		{
 			BUZZER_PlaySound((buzzer_sound_t)ringing_sound);
 		}
@@ -189,14 +189,14 @@ void scr_clock_ringing_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
-	case AC_DISPLAY_BUTON_UP_PRESSED:
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
-	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
-	case AC_DISPLAY_BUTON_LONG_UP_PRESSED:
-	case AC_DISPLAY_BUTON_LONG_DOWN_PRESSED:
-	case AC_DISPLAY_BUTON_MODE_UP_PRESSED:
-	case AC_DISPLAY_BUTON_MODE_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED:
 	{
 		APP_DBG_SIG("dismiss [ringing]\n");
 		scr_clock_ringing_leave();

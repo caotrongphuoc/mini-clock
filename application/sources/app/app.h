@@ -3,7 +3,7 @@
  * @author: GaoKong
  * @date:   13/08/2016
  ******************************************************************************
- **/
+**/
 
 #ifndef __APP_H__
 #define __APP_H__
@@ -14,7 +14,7 @@ extern "C"
 #endif
 
 #include "ak.h"
-#if defined(IF_NETWORK_NRF24_EN)
+#if defined (IF_NETWORK_NRF24_EN)
 #include "nrf_nwk_sig.h"
 #endif
 
@@ -22,100 +22,94 @@ extern "C"
 #include "app_eeprom.h"
 #include "app_data.h"
 
-	/*****************************************************************************/
-	/* SYSTEM task define
-	 */
-	/*****************************************************************************/
-	/* define timer */
-	/* define signal */
-	enum
-	{
-		SYSTEM_AK_FLASH_UPDATE_REQ = AK_USER_DEFINE_SIG,
-	};
+/*****************************************************************************/
+/* SYSTEM task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	SYSTEM_AK_FLASH_UPDATE_REQ = AK_USER_DEFINE_SIG,
+};
 
 /*****************************************************************************/
 /* FIRMWARE task define
  */
 /*****************************************************************************/
 /* define timer */
-#define FW_PACKED_TIMEOUT_INTERVAL (5000)
-#define FW_UPDATE_REQ_INTERVAL (5000)
+#define FW_PACKED_TIMEOUT_INTERVAL			(5000)
+#define FW_UPDATE_REQ_INTERVAL				(5000)
 
-	/* define signal */
-	enum
-	{
-		FW_CRENT_APP_FW_INFO_REQ = AK_USER_DEFINE_SIG,
-		FW_CRENT_BOOT_FW_INFO_REQ,
-		FW_UPDATE_REQ,
-		FW_UPDATE_SM_OK,
-		FW_TRANSFER_REQ,
-		FW_INTERNAL_UPDATE_APP_RES_OK,
-		FW_INTERNAL_UPDATE_BOOT_RES_OK,
-		FW_SAFE_MODE_RES_OK,
-		FW_UPDATE_SM_BUSY,
-		FW_PACKED_TIMEOUT,
-		FW_CHECKING_REQ
-	};
+/* define signal */
+enum {
+	FW_CRENT_APP_FW_INFO_REQ = AK_USER_DEFINE_SIG,
+	FW_CRENT_BOOT_FW_INFO_REQ,
+	FW_UPDATE_REQ,
+	FW_UPDATE_SM_OK,
+	FW_TRANSFER_REQ,
+	FW_INTERNAL_UPDATE_APP_RES_OK,
+	FW_INTERNAL_UPDATE_BOOT_RES_OK,
+	FW_SAFE_MODE_RES_OK,
+	FW_UPDATE_SM_BUSY,
+	FW_PACKED_TIMEOUT,
+	FW_CHECKING_REQ
+};
 
 /*****************************************************************************/
 /*  LIFE task define
  */
 /*****************************************************************************/
 /* define timer */
-#define AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL (1000)
+#define AC_LIFE_TASK_TIMER_LED_LIFE_INTERVAL		(1000)
 
-	/* define signal */
-	enum
-	{
-		AC_LIFE_SYSTEM_CHECK = AK_USER_DEFINE_SIG,
-	};
+/* define signal */
+enum {
+	AC_LIFE_SYSTEM_CHECK = AK_USER_DEFINE_SIG,
+};
 
-	/*****************************************************************************/
-	/*  SHELL task define
-	 */
-	/*****************************************************************************/
-	/* define timer */
+/*****************************************************************************/
+/*  SHELL task define
+ */
+/*****************************************************************************/
+/* define timer */
 
-	/* define signal */
-	enum
-	{
-		AC_SHELL_LOGIN_CMD = AK_USER_DEFINE_SIG,
-		AC_SHELL_REMOTE_CMD,
-	};
+/* define signal */
+enum {
+	AC_SHELL_LOGIN_CMD = AK_USER_DEFINE_SIG,
+	AC_SHELL_REMOTE_CMD,
+};
 
-	/*****************************************************************************/
-	/* IF task define
-	 */
-	/*****************************************************************************/
-	/* define timer */
-	/* define signal */
-	enum
-	{
-		AC_IF_PURE_MSG_IN = AK_USER_DEFINE_SIG,
-		AC_IF_PURE_MSG_OUT,
-		AC_IF_COMMON_MSG_IN,
-		AC_IF_COMMON_MSG_OUT,
-		AC_IF_DYNAMIC_MSG_IN,
-		AC_IF_DYNAMIC_MSG_OUT,
-	};
+/*****************************************************************************/
+/* IF task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	AC_IF_PURE_MSG_IN = AK_USER_DEFINE_SIG,
+	AC_IF_PURE_MSG_OUT,
+	AC_IF_COMMON_MSG_IN,
+	AC_IF_COMMON_MSG_OUT,
+	AC_IF_DYNAMIC_MSG_IN,
+	AC_IF_DYNAMIC_MSG_OUT,
+};
 
-	/*****************************************************************************/
-	/* UART_IF task define
-	 */
-	/*****************************************************************************/
-	/* timer signal */
-	/* define signal */
+/*****************************************************************************/
+/* UART_IF task define
+ */
+/*****************************************************************************/
+/* timer signal */
+/* define signal */
 
-	enum
-	{
-		AC_UART_IF_INIT = AK_USER_DEFINE_SIG,
-		AC_UART_IF_PURE_MSG_OUT,
-		AC_UART_IF_COMMON_MSG_OUT,
-		AC_UART_IF_DYNAMIC_MSG_OUT,
-		AC_UART_IF_PURE_MSG_IN,
-		AC_UART_IF_COMMON_MSG_IN,
-		AC_UART_IF_DYNAMIC_MSG_IN,
-	};
+enum {
+	AC_UART_IF_INIT = AK_USER_DEFINE_SIG,
+	AC_UART_IF_PURE_MSG_OUT,
+	AC_UART_IF_COMMON_MSG_OUT,
+	AC_UART_IF_DYNAMIC_MSG_OUT,
+	AC_UART_IF_PURE_MSG_IN,
+	AC_UART_IF_COMMON_MSG_IN,
+	AC_UART_IF_DYNAMIC_MSG_IN,
+};
 
 /*****************************************************************************/
 /*  LIFE task define
@@ -135,14 +129,14 @@ extern "C"
 enum {
 	AC_DISPLAY_RENDER_SCREEN = AK_SYS_DEFINE_SIG,
 	AC_DISPLAY_INITIAL = AK_USER_DEFINE_SIG,
-	AC_DISPLAY_BUTON_MODE_PRESSED,
-	AC_DISPLAY_BUTON_UP_PRESSED,
-	AC_DISPLAY_BUTON_DOWN_PRESSED,
-	AC_DISPLAY_BUTON_LONG_MODE_PRESSED,
-	AC_DISPLAY_BUTON_LONG_UP_PRESSED,
-	AC_DISPLAY_BUTON_LONG_DOWN_PRESSED,
-	AC_DISPLAY_BUTON_MODE_UP_PRESSED,
-	AC_DISPLAY_BUTON_MODE_DOWN_PRESSED,
+	AC_DISPLAY_BUTTON_MODE_PRESSED,
+	AC_DISPLAY_BUTTON_UP_PRESSED,
+	AC_DISPLAY_BUTTON_DOWN_PRESSED,
+	AC_DISPLAY_BUTTON_LONG_MODE_PRESSED,
+	AC_DISPLAY_BUTTON_LONG_UP_PRESSED,
+	AC_DISPLAY_BUTTON_LONG_DOWN_PRESSED,
+	AC_DISPLAY_BUTTON_MODE_UP_PRESSED,
+	AC_DISPLAY_BUTTON_MODE_DOWN_PRESSED,
 	AC_DISPLAY_SHOW_LOGO,
 	AC_DISPLAY_SHOW_IDLE,
 	AC_DISPLAY_SHOW_IDLE_BALL_MOVING_UPDATE,
@@ -154,161 +148,151 @@ enum {
 	AC_DISPLAY_ALARM_RING_TICK
 };
 
-	/*****************************************************************************/
-	/* DBG task define
-	 */
-	/*****************************************************************************/
-	/* define timer */
-	/* define signal */
-	enum
-	{
-		AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
-	};
-
-	/*****************************************************************************/
-	/* MC CLOCK RTC task define
-	 */
-	/*****************************************************************************/
-	/* define timer */
-#define MC_CLOCK_RTC_TICK_1S_INTERVAL (1000)
-
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_RTC_TICK_1S = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_RTC_SET_TIME_REQ,
-		MC_CLOCK_RTC_SET_ALARM_REQ,
-		MC_CLOCK_RTC_CLEAR_ALARM_REQ,
-	};
-
 /*****************************************************************************/
-/* MC CLOCK TIME task define
+/*  Mini clock 'RTC' task define
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_TIME_TICK_INTERVAL (1000)
-
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_TIME_SETUP,
-		MC_CLOCK_TIME_UPDATE,
-	};
+#define MC_CLOCK_RTC_TICK_1S_INTERVAL								(1000)
+/* define signal */
+enum {
+	MC_CLOCK_RTC_TICK_1S = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_RTC_SET_TIME_REQ,
+	MC_CLOCK_RTC_SET_ALARM_REQ,
+	MC_CLOCK_RTC_CLEAR_ALARM_REQ,
+};
 
 /*****************************************************************************/
-/* MC CLOCK STOPWATCH task define
+/*  Mini clock 'TIME' task define
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_STOPWATCH_TICK_INTERVAL (100)
-
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_STOPWATCH_TICK = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_STOPWATCH_SETUP,
-		MC_CLOCK_STOPWATCH_START_PAUSE,
-		MC_CLOCK_STOPWATCH_RESET,
-		MC_CLOCK_STOPWATCH_UPDATE,
-		MC_CLOCK_STOPWATCH_LAP,
-		MC_CLOCK_STOPWATCH_HELP,
-	};
+#define MC_CLOCK_TIME_TICK_INTERVAL									(1000)
+/* define signal */
+enum {
+	MC_CLOCK_TIME_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_TIME_SETUP,
+	MC_CLOCK_TIME_UPDATE,
+};
 
 /*****************************************************************************/
-/* MC CLOCK TIMER task define
+/*  Mini clock 'STOPWATCH' task define
  */
 /*****************************************************************************/
 /* define timer */
-#define MC_CLOCK_TIMER_TICK_INTERVAL (1000)
+#define MC_CLOCK_STOPWATCH_TICK_INTERVAL							(100)
+/* define signal */
+enum {
+	MC_CLOCK_STOPWATCH_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_STOPWATCH_SETUP,
+	MC_CLOCK_STOPWATCH_START_PAUSE,
+	MC_CLOCK_STOPWATCH_RESET,
+	MC_CLOCK_STOPWATCH_UPDATE,
+	MC_CLOCK_STOPWATCH_LAP,
+	MC_CLOCK_STOPWATCH_HELP,
+};
 
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_TIMER_TICK = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_TIMER_SETUP,
-		MC_CLOCK_TIMER_START_PAUSE,
-		MC_CLOCK_TIMER_RESET,
-		MC_CLOCK_TIMER_INC,
-		MC_CLOCK_TIMER_DEC,
-		MC_CLOCK_TIMER_UPDATE,
-		MC_CLOCK_TIMER_DISMISS,
-		MC_CLOCK_TIMER_NEXT_FIELD,
-		MC_CLOCK_TIMER_PREV_FIELD,
-	};
+/*****************************************************************************/
+/*  Mini clock 'TIMER' task define
+ */
+/*****************************************************************************/
+/* define timer */
+#define MC_CLOCK_TIMER_TICK_INTERVAL								(1000)
+/* define signal */
+enum {
+	MC_CLOCK_TIMER_TICK = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_TIMER_SETUP,
+	MC_CLOCK_TIMER_START_PAUSE,
+	MC_CLOCK_TIMER_RESET,
+	MC_CLOCK_TIMER_INC,
+	MC_CLOCK_TIMER_DEC,
+	MC_CLOCK_TIMER_UPDATE,
+	MC_CLOCK_TIMER_DISMISS,
+	MC_CLOCK_TIMER_NEXT_FIELD,
+	MC_CLOCK_TIMER_PREV_FIELD,
+};
 
-	/*****************************************************************************/
-	/* MC CLOCK ALARM task define
-	 */
-	/*****************************************************************************/
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_ALARM_SETUP = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_ALARM_SELECT,
-		MC_CLOCK_ALARM_UP,
-		MC_CLOCK_ALARM_DOWN,
-		MC_CLOCK_ALARM_NEXT_FIELD,
-		MC_CLOCK_ALARM_TOGGLE,
-		MC_CLOCK_ALARM_DELETE,
-		MC_CLOCK_ALARM_FIRED,
-		MC_CLOCK_ALARM_DISMISS,
-		MC_CLOCK_ALARM_ADD_NEW,
-		MC_CLOCK_ALARM_REARM,
-	};
+/*****************************************************************************/
+/*  Mini clock 'ALARM' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	MC_CLOCK_ALARM_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_ALARM_SELECT,
+	MC_CLOCK_ALARM_UP,
+	MC_CLOCK_ALARM_DOWN,
+	MC_CLOCK_ALARM_NEXT_FIELD,
+	MC_CLOCK_ALARM_TOGGLE,
+	MC_CLOCK_ALARM_DELETE,
+	MC_CLOCK_ALARM_FIRED,
+	MC_CLOCK_ALARM_DISMISS,
+	MC_CLOCK_ALARM_ADD_NEW,
+	MC_CLOCK_ALARM_REARM,
+};
 
-	/*****************************************************************************/
-	/* MC CLOCK WORLD CLOCK task define
-	 */
-	/*****************************************************************************/
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_WORLD_CLOCK_SETUP = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_WORLD_CLOCK_UPDATE,
-		MC_CLOCK_WORLD_CLOCK_SELECT_UP,
-		MC_CLOCK_WORLD_CLOCK_SELECT_DOWN,
-	};
+/*****************************************************************************/
+/*  Mini clock 'WORLD CLOCK' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	MC_CLOCK_WORLD_CLOCK_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_WORLD_CLOCK_UPDATE,
+	MC_CLOCK_WORLD_CLOCK_SELECT_UP,
+	MC_CLOCK_WORLD_CLOCK_SELECT_DOWN,
+};
 
-	/*****************************************************************************/
-	/* MC CLOCK CALENDAR task define
-	 */
-	/*****************************************************************************/
-	/* define signal */
-	enum
-	{
-		MC_CLOCK_CALENDAR_SETUP = MC_CLOCK_DEFINE_SIG,
-		MC_CLOCK_CALENDAR_UPDATE,
-		MC_CLOCK_CALENDAR_NEXT_MONTH,
-		MC_CLOCK_CALENDAR_PREV_MONTH,
-		MC_CLOCK_CALENDAR_ADD_EVENT,
-		MC_CLOCK_CALENDAR_EDIT_EVENT,
-		MC_CLOCK_CALENDAR_BACK,
-		MC_CLOCK_CALENDAR_DELETE_EVENT,
-		MC_CLOCK_CALENDAR_NEXT_FIELD,
-		MC_CLOCK_CALENDAR_FIELD_INC,
-		MC_CLOCK_CALENDAR_FIELD_DEC,
-		MC_CLOCK_CALENDAR_ALARM_FIRED,
-		MC_CLOCK_CALENDAR_ALARM_DISMISS,
-	};
+/*****************************************************************************/
+/*  Mini clock 'CALENDAR' task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	MC_CLOCK_CALENDAR_SETUP = MC_CLOCK_DEFINE_SIG,
+	MC_CLOCK_CALENDAR_UPDATE,
+	MC_CLOCK_CALENDAR_NEXT_MONTH,
+	MC_CLOCK_CALENDAR_PREV_MONTH,
+	MC_CLOCK_CALENDAR_ADD_EVENT,
+	MC_CLOCK_CALENDAR_EDIT_EVENT,
+	MC_CLOCK_CALENDAR_BACK,
+	MC_CLOCK_CALENDAR_DELETE_EVENT,
+	MC_CLOCK_CALENDAR_NEXT_FIELD,
+	MC_CLOCK_CALENDAR_FIELD_INC,
+	MC_CLOCK_CALENDAR_FIELD_DEC,
+	MC_CLOCK_CALENDAR_ALARM_FIRED,
+	MC_CLOCK_CALENDAR_ALARM_DISMISS,
+};
+
+/*****************************************************************************/
+/* DBG task define
+ */
+/*****************************************************************************/
+/* define timer */
+/* define signal */
+enum {
+	AC_DBG_TEST_1 = AK_USER_DEFINE_SIG,
+};
 
 /*****************************************************************************/
 /*  app function declare
  */
 /*****************************************************************************/
-#define APP_MAGIC_NUMBER 0xAABBCCDD
-#define APP_VER {0, 0, 0, 3}
+#define APP_MAGIC_NUMBER	0xAABBCCDD
+#define APP_VER				{0, 0, 0, 3}
 
-	typedef struct
-	{
-		uint32_t magic_number;
-		uint8_t version[4];
-	} app_info_t;
+typedef struct {
+	uint32_t magic_number;
+	uint8_t version[4];
+} app_info_t;
 
-	extern const app_info_t app_info;
+extern const app_info_t app_info;
 
-	extern void* app_get_boot_share_data();
-	extern int main_app();
+extern void* app_get_boot_share_data();
+extern int  main_app();
 
 #ifdef __cplusplus
 }

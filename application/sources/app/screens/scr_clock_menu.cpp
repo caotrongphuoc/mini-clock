@@ -1,7 +1,7 @@
 #include "scr_clock_menu.h"
 
 // animation variables
-static uint8_t current_location = SCR_CLOCK_MENU_CLOCK;
+static uint8_t current_location = MENU_CLOCK;
 static uint8_t target_location;
 static int8_t animation_direction = 0; // -1 = left, +1 = right
 static uint8_t animation_running = 0;
@@ -9,9 +9,9 @@ static uint8_t animation_step = 0;
 
 // Ease in-out curve, 8 steps from 0 to 64
 static const uint8_t ease_offsets[] = {0, 2, 8, 20, 32, 44, 56, 62, 64};
-#define ANIM_FRAME_COUNT (sizeof(ease_offsets) / sizeof(ease_offsets[0]) - 1)
+#define MENU_ANIM_FRAME_NUMBER (sizeof(ease_offsets) / sizeof(ease_offsets[0]) - 1)
 
-static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
+static const unsigned char* const menu_bitmap[MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_clock,
     bitmap_clock_menu_clock,
     bitmap_clock_menu_alarm,
@@ -23,7 +23,7 @@ static const unsigned char* const menu_bitmap[SCR_CLOCK_MENU_ITEM_NUMBER] = {
     bitmap_clock_menu_exit,
 };
 
-static const char* const menu_name[SCR_CLOCK_MENU_ITEM_NUMBER] = {
+static const char* const menu_name[MENU_ITEM_NUMBER] = {
     "Digital",
     "Analog",
     "Alarm",
@@ -51,21 +51,21 @@ view_screen_t scr_clock_menu = {
 
 void scr_clock_menu_draw_frame()
 {
-	view_render.drawRoundRect(SCR_CLOCK_MENU_FRAME_X,
-	                          SCR_CLOCK_MENU_FRAME_Y,
-	                          SCR_CLOCK_MENU_FRAME_W,
-	                          SCR_CLOCK_MENU_FRAME_H,
-	                          SCR_CLOCK_MENU_FRAME_R,
+	view_render.drawRoundRect(MENU_FRAME_X,
+	                          MENU_FRAME_Y,
+	                          MENU_FRAME_W,
+	                          MENU_FRAME_H,
+	                          MENU_FRAME_R,
 	                          WHITE);
 }
 
 void scr_clock_menu_draw_icon()
 {
-	view_render.drawBitmap(SCR_CLOCK_MENU_ICON_X,
-	                       SCR_CLOCK_MENU_ICON_Y,
+	view_render.drawBitmap(MENU_ICON_X,
+	                       MENU_ICON_Y,
 	                       menu_bitmap[current_location],
-	                       SCR_CLOCK_MENU_ICON_W,
-	                       SCR_CLOCK_MENU_ICON_H,
+	                       MENU_ICON_W,
+	                       MENU_ICON_H,
 	                       WHITE);
 }
 
@@ -77,8 +77,8 @@ void scr_clock_menu_draw_icon_xy(int16_t x,
 	view_render.drawBitmap(x,
 	                       y,
 	                       menu_bitmap[index],
-	                       SCR_CLOCK_MENU_ICON_W,
-	                       SCR_CLOCK_MENU_ICON_H,
+	                       MENU_ICON_W,
+	                       MENU_ICON_H,
 	                       WHITE);
 }
 
@@ -128,7 +128,7 @@ void scr_clock_menu_draw_name()
 void scr_clock_menu_draw_indicator()
 {
 	const uint8_t spacing = 10;
-	const uint8_t count = SCR_CLOCK_MENU_ITEM_NUMBER;
+	const uint8_t count = MENU_ITEM_NUMBER;
 
 	int16_t start_x = (LCD_WIDTH - ((count - 1) * spacing)) / 2;
 	int16_t y = 55;
@@ -181,7 +181,7 @@ void view_scr_clock_menu()
 	scr_clock_menu_draw_time();
 	scr_clock_menu_draw_frame();
 
-	int16_t center = SCR_CLOCK_MENU_ICON_X;
+	int16_t center = MENU_ICON_X;
 
 	if (animation_running)
 	{
@@ -189,7 +189,7 @@ void view_scr_clock_menu()
 
 		scr_clock_menu_draw_icon_xy(
 		    center + offset,
-		    SCR_CLOCK_MENU_ICON_Y,
+		    MENU_ICON_Y,
 		    current_location);
 
 		scr_clock_menu_draw_name_xy(
@@ -198,7 +198,7 @@ void view_scr_clock_menu()
 
 		scr_clock_menu_draw_icon_xy(
 		    center + offset - animation_direction * MENU_ANIMATION_END,
-		    SCR_CLOCK_MENU_ICON_Y,
+		    MENU_ICON_Y,
 		    target_location);
 
 		scr_clock_menu_draw_name_xy(
@@ -231,7 +231,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	case SCREEN_ENTRY:
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
-		current_location = SCR_CLOCK_MENU_CLOCK;
+		current_location = MENU_CLOCK;
 		animation_running = 0;
 		animation_step = 0;
 		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
@@ -257,7 +257,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		{
 			animation_step++;
 
-			if (animation_step > ANIM_FRAME_COUNT)
+			if (animation_step > MENU_ANIM_FRAME_NUMBER)
 			{
 				current_location = target_location;
 				animation_running = 0;
@@ -270,45 +270,45 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 		timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_MENU_ANIM_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		switch (current_location)
 		{
-		case SCR_CLOCK_MENU_CLOCK:
+		case MENU_CLOCK:
 			SCREEN_TRAN(scr_clock_main_handle, &scr_clock_main);
 			break;
 
-		case SCR_CLOCK_MENU_ANALOG:
+		case MENU_ANALOG:
 			SCREEN_TRAN(scr_clock_analog_handle, &scr_clock_analog);
 			break;
 
-		case SCR_CLOCK_MENU_ALARM:
+		case MENU_ALARM:
 			SCREEN_TRAN(scr_clock_alarm_handle, &scr_clock_alarm);
 			break;
 
-		case SCR_CLOCK_MENU_STOPWATCH:
+		case MENU_STOPWATCH:
 			SCREEN_TRAN(scr_clock_stopwatch_handle, &scr_clock_stopwatch);
 			break;
 
-		case SCR_CLOCK_MENU_TIMER:
+		case MENU_TIMER:
 			SCREEN_TRAN(scr_clock_timer_handle, &scr_clock_timer);
 			break;
 
-		case SCR_CLOCK_MENU_WORLD_CLOCK:
+		case MENU_WORLD_CLOCK:
 			SCREEN_TRAN(scr_clock_world_handle, &scr_clock_world);
 			break;
-		case SCR_CLOCK_MENU_CALENDAR:
+		case MENU_CALENDAR:
 			SCREEN_TRAN(scr_clock_calendar_handle, &scr_clock_calendar);
 			break;
-		case SCR_CLOCK_MENU_SETTING:
+		case MENU_SETTING:
 			SCREEN_TRAN(scr_clock_setting_handle, &scr_clock_setting);
 			break;
 
-		case SCR_CLOCK_MENU_EXIT:
+		case MENU_EXIT:
 			SCREEN_TRAN(scr_idle_handle, &scr_idle);
 			break;
 
@@ -319,15 +319,15 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_UP_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 
 		if (animation_running == 0)
 		{
 			target_location = current_location + 1;
 
-			if (target_location >= SCR_CLOCK_MENU_ITEM_NUMBER)
+			if (target_location >= MENU_ITEM_NUMBER)
 				target_location = 0;
 
 			animation_direction = -1;
@@ -339,14 +339,14 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 	}
 	break;
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_DOWN_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 
 		if (animation_running == 0)
 		{
 			if (current_location == 0)
-				target_location = SCR_CLOCK_MENU_ITEM_NUMBER - 1;
+				target_location = MENU_ITEM_NUMBER - 1;
 			else
 				target_location = current_location - 1;
 

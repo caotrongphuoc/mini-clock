@@ -64,7 +64,7 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_LAP\n");
 		if (mc_clock_stopwatch_state.running &&
-		    mc_clock_stopwatch_state.lap_count < MC_CLOCK_STOPWATCH_LAP_MAX)
+		    mc_clock_stopwatch_state.lap_count < STOPWATCH_LAP_NUMBER)
 		{
 			mc_clock_stopwatch_state.lap_ms[mc_clock_stopwatch_state.lap_count] =
 			    mc_clock_stopwatch_state.elapsed_ms;

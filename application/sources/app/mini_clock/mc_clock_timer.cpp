@@ -15,7 +15,7 @@ static mc_clock_timer_state_t mc_clock_timer_state = {
     .running = 0,
     .finished = 0,
 
-    .edit_field = MC_TIMER_EDIT_MIN,
+    .edit_field = TIMER_EDIT_MIN,
 };
 void mc_clock_timer_get_state(mc_clock_timer_state_t* state)
 {
@@ -84,17 +84,17 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 			switch (mc_clock_timer_state.edit_field)
 			{
-			case MC_TIMER_EDIT_HOUR:
-				if (mc_clock_timer_state.set_hour < 23)
+			case TIMER_EDIT_HOUR:
+				if (mc_clock_timer_state.set_hour < TIMER_HOUR_MAX)
 					mc_clock_timer_state.set_hour++;
 				break;
 
-			case MC_TIMER_EDIT_MIN:
+			case TIMER_EDIT_MIN:
 				if (mc_clock_timer_state.set_min < 59)
 					mc_clock_timer_state.set_min++;
 				break;
 
-			case MC_TIMER_EDIT_SEC:
+			case TIMER_EDIT_SEC:
 				if (mc_clock_timer_state.set_sec < 59)
 					mc_clock_timer_state.set_sec++;
 				break;
@@ -116,17 +116,17 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 
 			switch (mc_clock_timer_state.edit_field)
 			{
-			case MC_TIMER_EDIT_HOUR:
+			case TIMER_EDIT_HOUR:
 				if (mc_clock_timer_state.set_hour > 0)
 					mc_clock_timer_state.set_hour--;
 				break;
 
-			case MC_TIMER_EDIT_MIN:
+			case TIMER_EDIT_MIN:
 				if (mc_clock_timer_state.set_min > 0)
 					mc_clock_timer_state.set_min--;
 				break;
 
-			case MC_TIMER_EDIT_SEC:
+			case TIMER_EDIT_SEC:
 				if (mc_clock_timer_state.set_sec > 0)
 					mc_clock_timer_state.set_sec--;
 				break;
@@ -165,7 +165,7 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 			mc_clock_timer_state.running = 0;
 			mc_clock_timer_state.finished = 1;
 			BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
-			mc_clock_ring_request(MC_CLOCK_RING_SOURCE_TIMER, mc_clock_alarm_get_sound());
+			mc_clock_ring_request(RING_SOURCE_TIMER, mc_clock_alarm_get_sound());
 		}
 
 		/* Redraw with the new value; the tick that requested it was rendered
@@ -191,9 +191,9 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_NEXT_FIELD\n");
 		if (!mc_clock_timer_state.running)
 		{
-			if (mc_clock_timer_state.edit_field == MC_TIMER_EDIT_SEC)
+			if (mc_clock_timer_state.edit_field == TIMER_EDIT_SEC)
 			{
-				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_HOUR;
+				mc_clock_timer_state.edit_field = TIMER_EDIT_HOUR;
 			}
 			else
 			{
@@ -208,9 +208,9 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_TIMER_PREV_FIELD\n");
 		if (!mc_clock_timer_state.running)
 		{
-			if (mc_clock_timer_state.edit_field == MC_TIMER_EDIT_HOUR)
+			if (mc_clock_timer_state.edit_field == TIMER_EDIT_HOUR)
 			{
-				mc_clock_timer_state.edit_field = MC_TIMER_EDIT_SEC;
+				mc_clock_timer_state.edit_field = TIMER_EDIT_SEC;
 			}
 			else
 			{

@@ -65,16 +65,16 @@ void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 
 	for (uint8_t i = RTC_WEEKDAY_MON; i <= RTC_WEEKDAY_SUN; i++)
 	{
-		int16_t box_x = SCR_CLOCK_MAIN_WEEKDAY_AREA_X + ((i - RTC_WEEKDAY_MON) * SCR_CLOCK_MAIN_WEEKDAY_SEG_W);
-		int16_t text_x = box_x + SCR_CLOCK_MAIN_WEEKDAY_TEXT_OFFSET_X;
+		int16_t box_x = MAIN_WEEKDAY_AREA_X + ((i - RTC_WEEKDAY_MON) * MAIN_WEEKDAY_SEG_W);
+		int16_t text_x = box_x + MAIN_WEEKDAY_TEXT_OFFSET_X;
 		uint8_t selected = ((i == weekday) && inverted);
 
 		if (selected)
 		{
 			view_render.fillRect(box_x,
-			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_Y,
-			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_W,
-			                     SCR_CLOCK_MAIN_WEEKDAY_BOX_H,
+			                     MAIN_WEEKDAY_BOX_Y,
+			                     MAIN_WEEKDAY_BOX_W,
+			                     MAIN_WEEKDAY_BOX_H,
 			                     WHITE);
 			view_render.setTextColor(BLACK);
 		}
@@ -83,7 +83,7 @@ void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted)
 			view_render.setTextColor(WHITE);
 		}
 
-		view_render.setCursor(text_x, SCR_CLOCK_MAIN_WEEKDAY_ROW_Y);
+		view_render.setCursor(text_x, MAIN_WEEKDAY_ROW_Y);
 		view_render.print(scr_clock_main_weekday_short_text(i));
 	}
 
@@ -122,18 +122,18 @@ void view_scr_clock_main()
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 	scr_clock_main_draw_weekdays(state.date.weekday, 1);
 
-	view_render.drawRoundRect(SCR_CLOCK_MAIN_TIME_FRAME_X,
-	                          SCR_CLOCK_MAIN_TIME_FRAME_Y,
-	                          SCR_CLOCK_MAIN_TIME_FRAME_W,
-	                          SCR_CLOCK_MAIN_TIME_FRAME_H,
-	                          SCR_CLOCK_MAIN_TIME_FRAME_R,
+	view_render.drawRoundRect(MAIN_TIME_FRAME_X,
+	                          MAIN_TIME_FRAME_Y,
+	                          MAIN_TIME_FRAME_W,
+	                          MAIN_TIME_FRAME_H,
+	                          MAIN_TIME_FRAME_R,
 	                          WHITE);
-	view_render.setTextSize(SCR_CLOCK_MAIN_TIME_TEXT_SIZE);
-	view_render.setCursor(SCR_CLOCK_MAIN_TIME_X, SCR_CLOCK_MAIN_TIME_Y);
+	view_render.setTextSize(MAIN_TIME_TEXT_SIZE);
+	view_render.setCursor(MAIN_TIME_X, MAIN_TIME_Y);
 	view_render.print(time_text);
 
-	view_render.setTextSize(SCR_CLOCK_MAIN_INFO_TEXT_SIZE);
-	view_render.setCursor(SCR_CLOCK_MAIN_DATE_TEXT_X, SCR_CLOCK_MAIN_DATE_TEXT_Y);
+	view_render.setTextSize(MAIN_INFO_TEXT_SIZE);
+	view_render.setCursor(MAIN_DATE_TEXT_X, MAIN_DATE_TEXT_Y);
 	view_render.print(date_text);
 }
 
@@ -159,20 +159,20 @@ void scr_clock_main_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_MODE_PRESSED:
+	case AC_DISPLAY_BUTTON_MODE_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_MODE_PRESSED\n");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_remove_attr(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 	}
 	break;
 
-	case AC_DISPLAY_BUTON_UP_PRESSED:
-	case AC_DISPLAY_BUTON_DOWN_PRESSED:
+	case AC_DISPLAY_BUTTON_UP_PRESSED:
+	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		APP_DBG_SIG("AC_DISPLAY_BUTON_%s_PRESSED\n",
-		            msg->sig == AC_DISPLAY_BUTON_UP_PRESSED ? "UP" : "DOWN");
+		APP_DBG_SIG("AC_DISPLAY_BUTTON_%s_PRESSED\n",
+		            msg->sig == AC_DISPLAY_BUTTON_UP_PRESSED ? "UP" : "DOWN");
 	}
 	break;
 
