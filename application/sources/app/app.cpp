@@ -277,7 +277,9 @@ void app_task_init() {
 
 	mc_clock_world_clock_init();
 	mc_clock_calendar_init();
-	mc_clock_alarm_apply_rtc();
+	/* Alarms are programmed into the RTC by mc_clock_alarm_load_from_eeprom()
+	 * on AC_DISPLAY_INITIAL; applying them here (before the bank is loaded)
+	 * would save an empty bank over the stored one. */
 
 	task_post_pure_msg(AC_TASK_UART_IF_ID, AC_UART_IF_INIT);
 }
