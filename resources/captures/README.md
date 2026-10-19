@@ -15,7 +15,7 @@ afterwards; the release image prints nothing on the console.
 
 ## How the frames were taken
 
-[`tools/capture_screens.py`](../../tools/capture_screens.py) drives the clock with the `btn` shell
+A capture script (development tooling, removed after the documentation was finished) drove the clock with the `btn` shell
 command (it posts the same Display signals as the physical buttons) and reads each frame with
 `lcd d`. It adds three sample alarms (06:00 on, 07:00 off, 09:00 on) and one calendar event, sets
 the RTC to 05:59:57 to trigger the ringing page, and afterwards deletes the samples and re-syncs the
@@ -30,29 +30,19 @@ footage.
 - The ringing frames were re-taken separately with the same `0x9211` image (an alarm at 08:00 and
   the RTC set to 07:59:57); four consecutive frames keep both blink phases of the title bar.
 
-[`tools/render_screens.py`](../../tools/render_screens.py) only enlarges pixels (nearest neighbour,
-×4 → 512×256); the saved framebuffer bytes are not edited.
+Rendering only enlarged pixels (nearest neighbour, ×4 → 512×256); the saved framebuffer bytes
+are not edited.
 
-```bash
-python3 tools/capture_screens.py --port /dev/ttyUSB0      # diagnostic build, clock on Digital
-python3 tools/render_screens.py
-```
 
 ## Demo
 
 [`mc_clock_demo_uart.json`](mc_clock_demo_uart.json) is the source of the README's
 [demo GIF](../videos/mini_clock_demo.gif). It was recorded with the same `0x9211` diagnostic image on
-**2026-10-19** by [`tools/capture_demo.py`](../../tools/capture_demo.py): Digital → Menu → Analog →
+**2026-10-19** by the same tooling: Digital → Menu → Analog →
 World Clock (Vietnam, England, back to Vietnam) → Stopwatch with one lap → add a 08:00 alarm → the RTC
 is set to 07:59:55 → the alarm rings → any key dismisses it → Digital.
 
-Each frame keeps its real capture time (`t`, Unix seconds). [`tools/render_demo.py`](../../tools/render_demo.py)
-holds every frame for the real gap to the next one (about 0.6–1.5 s, capped at 1.5 s) and the last
+Each frame keeps its real capture time (`t`, Unix seconds). The demo GIF holds every frame for the real gap to the next one (about 0.6–1.5 s, capped at 1.5 s) and the last
 frame for 2 s, so the GIF plays close to real time but samples only about one frame per second; the
 50 ms menu slide is not visible. Pixels are only enlarged ×4. The sample alarm was deleted and the RTC
 re-synced afterwards.
-
-```bash
-python3 tools/capture_demo.py --port /dev/ttyUSB0      # diagnostic build, Digital screen, no alarms
-python3 tools/render_demo.py
-```

@@ -115,13 +115,12 @@ usage (release build: Flash 74,768 / 118,784 bytes, RAM 13,324 / 16,384 bytes).
 
 ## V. UART debug shell
 
-The console runs at **115200 8N1**. `tools/ak-console.py` sends commands and prints the replies
-without an interactive terminal:
+The console runs at **115200 8N1** on the kit's Type-C (CH340) port. Open it with the Makefile
+target (minicom) or pyserial's terminal:
 
 ```bash
-python3 tools/ak-console.py --list
-python3 tools/ak-console.py --port /dev/ttyUSB0 --cmd "ver" --cmd "fatal l"
-python3 tools/ak-console.py --port /dev/ttyUSB0 --watch 10
+make -C application com dev=/dev/ttyUSB0
+python3 -m serial.tools.miniterm /dev/ttyUSB0 115200
 ```
 
 | Command | Purpose |
@@ -156,19 +155,6 @@ session, change `-ULOGIN_PRINT_EN` and `-USYS_PRINT_EN` to `-D`, rebuild and fla
 afterwards. Keep `LOG_AK_KERNEL_ENABLE` in `application/sources/ak/ak.cfg.mk` off unless you are
 profiling: it prints every message and starves the shell.
 
-### Documentation tools
-
-| Script | Output |
-|---|---|
-| `tools/capture_screens.py` | Framebuffer captures of every screen (`resources/captures/`) |
-| `tools/capture_demo.py` | The README demo recording |
-| `tools/render_screens.py`, `tools/render_demo.py` | Screen PNG/GIF previews and the demo GIF |
-| `tools/render_banner.py`, `tools/render_readme_cards.py` | Banner, framed cards, objects table images |
-| `tools/render_clock_sequence.py` | README sequence figure |
-
-The capture scripts need the diagnostic build and restore the kit afterwards (sample alarms and
-events deleted, RTC re-synced).
-
 ## VI. Commit message convention
 
 ```bash
@@ -199,4 +185,3 @@ Documents in `docs/` are numbered in reading order: `NN-<type>-<topic>.md`, wher
 
 - [AK Embedded Base Kit](https://epcb.vn/products/ak-embedded-base-kit-lap-trinh-nhung-vi-dieu-khien-mcu)
 - [Zomwar](https://github.com/caotrongphuoc/zomwar-game) — README and document layout reference
-- [AGENTS.md](../AGENTS.md) — rules for AI coding agents working on this repository

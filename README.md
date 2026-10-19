@@ -35,7 +35,6 @@
 | [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Naming, ownership rules, code style, build and flash, the UART debug shell, and commit conventions. |
 | [docs/02-design-sequence-object.md](docs/02-design-sequence-object.md) | Owned state and message sequences for RTC, Time, Stopwatch, Timer, Alarm, World Clock, Calendar, and the ringing page. |
 | [docs/03-design-sequence-runtime.md](docs/03-design-sequence-runtime.md) | Runtime flow from boot and button input to objects, the one-second tick, ringing, and screen rendering. |
-| [AGENTS.md](AGENTS.md) | Rules and runtime model for AI coding agents (Codex, and Claude Code through [CLAUDE.md](CLAUDE.md)). |
 
 ## Introduction
 

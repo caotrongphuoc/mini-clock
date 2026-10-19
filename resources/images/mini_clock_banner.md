@@ -20,7 +20,3 @@ theme. No artwork from those projects is copied.
 
 The GIF has 18 frames with 500 ms holds (9 s loop) and a fixed 128-colour palette. OLED previews use
 nearest-neighbour resizing; the kit photograph uses Lanczos.
-
-```bash
-python3 tools/render_banner.py
-```

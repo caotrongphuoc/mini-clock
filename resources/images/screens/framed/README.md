@@ -2,8 +2,8 @@
 
 The README shows OLED screens inside 720×480 cards derived from the main Mini Clock banner's
 background: the navy glow, scanlines, faint clock face, pixel font, and blue colours.
-[`tools/render_banner.py`](../../../../tools/render_banner.py) is the shared source for the banner
-and these cards; no separate artwork or firmware UI is introduced.
+The banner and these cards share one background and palette; no separate artwork or firmware UI is
+introduced.
 
 Each card is a different 720×480 crop of the shared 1280×640 background, with a title, subtitle,
 bezel, and footer added **outside** the OLED viewport. The empty cards are saved in
@@ -23,7 +23,3 @@ previews are unchanged. GIF frame order, per-frame durations, and looping are pr
 
 The README's Objects table intentionally uses **unframed** previews: the same 512×256 OLED image on
 a plain 512×288 black canvas, in [`../../objects/table/`](../../objects/table/).
-
-```bash
-python3 tools/render_readme_cards.py
-```
