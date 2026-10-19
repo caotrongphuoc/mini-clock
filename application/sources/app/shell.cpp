@@ -78,6 +78,7 @@ int32_t shell_boot(uint8_t* argv);
 int32_t shell_fwu(uint8_t* argv);
 int32_t shell_psv(uint8_t* argv);
 int32_t shell_buzzer(uint8_t* argv);
+int32_t shell_btn(uint8_t* argv);
 
 /*****************************************************************************/
 /*  command table
@@ -108,6 +109,7 @@ const cmd_line_t lgn_cmd_table[] = {
 	/* debug command */
 	/*************************************************************************/
 	{(const int8_t*)"dbg",		shell_dbg,			(const int8_t*)"dbg"},
+	{(const int8_t*)"btn",		shell_btn,			(const int8_t*)"simulate button press"},
 
 	/* End Of Table */
 	{(const int8_t*)0,(pf_cmd_func)0,(const int8_t*)0}
@@ -929,5 +931,28 @@ int32_t shell_buzzer(uint8_t* argv) {
 		break;
 	}
 
+	return 0;
+}
+
+/* Simulate a button event by posting the same signal the BSP callback posts. */
+int32_t shell_btn(uint8_t* argv) {
+	uint8_t sig = 0;
+
+	switch (*(argv + 4)) {
+	case 'm': sig = AC_DISPLAY_BUTON_MODE_PRESSED; break;
+	case 'u': sig = AC_DISPLAY_BUTON_UP_PRESSED; break;
+	case 'd': sig = AC_DISPLAY_BUTON_DOWN_PRESSED; break;
+	case 'M': sig = AC_DISPLAY_BUTON_LONG_MODE_PRESSED; break;
+	case 'U': sig = AC_DISPLAY_BUTON_LONG_UP_PRESSED; break;
+	case 'D': sig = AC_DISPLAY_BUTON_LONG_DOWN_PRESSED; break;
+	case 'a': sig = AC_DISPLAY_BUTON_MODE_UP_PRESSED; break;
+	case 'b': sig = AC_DISPLAY_BUTON_MODE_DOWN_PRESSED; break;
+	default:
+		LOGIN_PRINT("usage: btn <m|u|d> press, <M|U|D> long press, a=mode+up, b=mode+down\n");
+		return 0;
+	}
+
+	task_post_pure_msg(AC_TASK_DISPLAY_ID, sig);
+	LOGIN_PRINT("btn %c\n", *(argv + 4));
 	return 0;
 }
