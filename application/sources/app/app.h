@@ -135,6 +135,7 @@ extern "C"
 #define AC_DISPLAY_WELCOME_TEXT_ANIM_TICK_INTERVAL					(120)
 #define AC_DISPLAY_MENU_ANIM_TICK_INTERVAL							(50)
 #define AC_DISPLAY_WORLD_ANIM_TICK_INTERVAL							(50)
+#define AC_DISPLAY_ALARM_RING_TICK_INTERVAL							(1000)
 
 /* define signal */
 enum {
@@ -159,7 +160,9 @@ enum {
 	AC_DISPLAY_SHOW_MERRY_CHRISTMAS_SLEEP,
 	AC_DISPLAY_SHOW_MODBUS_PULL_UPDATE,
 	AC_DISPLAY_SHOW_MODBUS_PULL_SLEEP,
-	AC_DISPLAY_WORLD_ANIM_TICK
+	AC_DISPLAY_WORLD_ANIM_TICK,
+	AC_DISPLAY_SHOW_ALARM_RINGING,
+	AC_DISPLAY_ALARM_RING_TICK
 };
 
 	/*****************************************************************************/
@@ -177,6 +180,9 @@ enum {
 	/* MC CLOCK RTC task define
 	 */
 	/*****************************************************************************/
+	/* define timer */
+#define MC_CLOCK_RTC_TICK_1S_INTERVAL (1000)
+
 	/* define signal */
 	enum
 	{
@@ -264,6 +270,7 @@ enum {
 		MC_CLOCK_ALARM_FIRED,
 		MC_CLOCK_ALARM_DISMISS,
 		MC_CLOCK_ALARM_ADD_NEW,
+		MC_CLOCK_ALARM_RING_TICK,
 	};
 
 	/*****************************************************************************/

@@ -19,3 +19,4 @@ SOURCES_CPP += sources/app/screens/scr_clock_world.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_calendar.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_time_setting.cpp
 SOURCES_CPP += sources/app/screens/scr_clock_analog.cpp
+SOURCES_CPP += sources/app/screens/scr_clock_ringing.cpp

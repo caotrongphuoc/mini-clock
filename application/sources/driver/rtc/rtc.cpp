@@ -173,6 +173,26 @@ void rtc_clear_alarm_a(void)
 	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
 }
 
+uint8_t rtc_take_alarm_a_flag(void)
+{
+	uint8_t ctrl_2 = 0;
+
+	if (rtc_pcf85063a_read_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1) == 0)
+	{
+		return 0;
+	}
+
+	if ((ctrl_2 & RTC_PCF85063A_CTRL_2_AF) == 0)
+	{
+		return 0;
+	}
+
+	ctrl_2 &= ~RTC_PCF85063A_CTRL_2_AF;
+	rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_CTRL_2, &ctrl_2, 1);
+
+	return 1;
+}
+
 void rtc_set_wakeup(uint32_t seconds)
 {
 	uint8_t timer_mode = 0;

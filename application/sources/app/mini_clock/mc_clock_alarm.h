@@ -12,6 +12,10 @@
 
 #define MC_CLOCK_ALARM_MAX (10)
 
+/* Ringing: replay the sound every REPEAT seconds, stop by itself after TIMEOUT */
+#define MC_CLOCK_ALARM_RING_REPEAT_S  (5)
+#define MC_CLOCK_ALARM_RING_TIMEOUT_S (60)
+
 typedef struct
 {
 	uint8_t hour;
@@ -45,6 +49,7 @@ typedef struct
 
     // Alarm ringing state
     uint8_t ringing;
+    uint8_t ring_elapsed_s;
 
     // Selected alarm sound
     buzzer_sound_t sound;

@@ -40,6 +40,9 @@ extern "C"
 
 	void rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday);
 	void rtc_clear_alarm_a(void);
+	/* Poll the alarm flag: returns 1 once per match and clears the flag.
+	 * Used instead of the INT pin, which is not routed to an EXTI line. */
+	uint8_t rtc_take_alarm_a_flag(void);
 
 	void rtc_set_wakeup(uint32_t seconds);
 	void rtc_stop_wakeup(void);

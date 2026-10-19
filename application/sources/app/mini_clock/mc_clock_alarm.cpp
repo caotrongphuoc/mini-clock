@@ -193,6 +193,15 @@ static void mc_clock_alarm_delete_current()
 	mc_clock_alarm_apply_rtc();
 }
 
+static void mc_clock_alarm_stop_ringing(void)
+{
+	mc_clock_alarm_state.ringing = 0;
+	mc_clock_alarm_state.ring_elapsed_s = 0;
+	BUZZER_Disable();
+	/* Re-arm the RTC for the next enabled alarm */
+	mc_clock_alarm_apply_rtc();
+}
+
 void mc_clock_alarm_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
@@ -436,17 +445,44 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_FIRED:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");
+		if (mc_clock_alarm_state.ringing)
+		{
+			break;
+		}
+
 		mc_clock_alarm_state.ringing = 1;
+		mc_clock_alarm_state.ring_elapsed_s = 0;
 		BUZZER_PlaySound(mc_clock_alarm_state.sound);
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_SHOW_ALARM_RINGING);
+	}
+	break;
+
+	/* 1 s tick from the ringing screen */
+	case MC_CLOCK_ALARM_RING_TICK:
+	{
+		APP_DBG_SIG("MC_CLOCK_ALARM_RING_TICK\n");
+		if (!mc_clock_alarm_state.ringing)
+		{
+			break;
+		}
+
+		mc_clock_alarm_state.ring_elapsed_s++;
+
+		if (mc_clock_alarm_state.ring_elapsed_s >= MC_CLOCK_ALARM_RING_TIMEOUT_S)
+		{
+			mc_clock_alarm_stop_ringing();
+		}
+		else if ((mc_clock_alarm_state.ring_elapsed_s % MC_CLOCK_ALARM_RING_REPEAT_S) == 0)
+		{
+			BUZZER_PlaySound(mc_clock_alarm_state.sound);
+		}
 	}
 	break;
 
 	case MC_CLOCK_ALARM_DISMISS:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_DISMISS\n");
-		mc_clock_alarm_state.ringing = 0;
-		BUZZER_Disable();
-		mc_clock_alarm_apply_rtc();
+		mc_clock_alarm_stop_ringing();
 	}
 	break;
 

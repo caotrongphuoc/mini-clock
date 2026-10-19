@@ -17,14 +17,17 @@ void task_mc_rtc(ak_msg_t* msg)
 {
 	switch (msg->sig)
 	{
+	/* 1 Hz service tick (app_start_timer). The PCF85063A INT pin is not routed
+	 * to an EXTI line, so the alarm flag is polled here instead. */
 	case MC_CLOCK_RTC_TICK_1S:
 	{
-		rtc_time_t time;
-
 		APP_DBG_SIG("MC_CLOCK_RTC_TICK_1S\n");
-		rtc_get_time(&time);
-		APP_DBG("[RTC] %02u:%02u:%02u\n", time.hour, time.min, time.sec);
-		task_post_pure_msg(AC_TASK_DISPLAY_ID, MC_CLOCK_TIME_TICK);
+
+		if (rtc_take_alarm_a_flag())
+		{
+			APP_DBG("[RTC] ALARM_A fired\n");
+			task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_FIRED);
+		}
 	}
 	break;
 
