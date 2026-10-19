@@ -71,11 +71,29 @@ Prefix: `mc_clock_*` (Mini Clock).
   (copy-out snapshot). Screens read snapshots for rendering and post `MC_CLOCK_*` signals
   for every state change. Do not add new writes into another object's state.
 - Existing direct calls across objects (`mc_clock_world_clock_get_selected_offset_minutes()`,
-  `mc_clock_alarm_apply_rtc()`, `mc_clock_alarm_get_sound()`, `mc_clock_time_adjust_timezone()`,
-  setting apply/reset helpers) are legacy. Do not add more; when touching that flow, prefer
-  moving it to messages and say so in the change summary.
+  `mc_clock_world_clock_get_country()`, `mc_clock_alarm_get_sound()`,
+  `mc_clock_time_adjust_timezone()`, setting apply/reset helpers, shell debug commands) are
+  legacy. Do not add more; when touching that flow, prefer moving it to messages and say so in
+  the change summary. Alarm re-arming is message-only: post `MC_CLOCK_ALARM_REARM` after the
+  time or time zone changes (`mc_clock_alarm_apply_rtc()` is private).
 - The active screen owns its periodic tick on `AC_TASK_DISPLAY_ID`, sets it on
   `SCREEN_ENTRY`, and must `timer_remove_attr()` it before every `SCREEN_TRAN`/`SCREEN_BACK`.
+  Screen ticks only refresh the view; animation ticks (menu, world clock) run only while sliding.
+  Many display signals share the value 100 (`MC_CLOCK_TIME_TICK`, `MC_CLOCK_TIMER_TICK`,
+  `MC_CLOCK_STOPWATCH_TICK`), so never post one of them to the display from outside a screen.
+- **1 Hz service tick:** `task_mc_rtc` receives `MC_CLOCK_RTC_TICK_1S` (started in
+  `app_start_timer`). It polls the PCF85063A alarm flag (the INT pin is not used), retries RTC
+  writes the chip did not acknowledge (max 10), and posts `MC_CLOCK_TIMER_UPDATE` and
+  `MC_CLOCK_CALENDAR_UPDATE` so the timer and reminders run on every screen. The stopwatch owns
+  its own 100 ms timer while running.
+- **Ringing:** a source (alarm, timer, calendar) plays the first sound and calls
+  `mc_clock_ring_request()` (`mini_clock/mc_clock_ring.h`), which posts `AC_DISPLAY_SHOW_RINGING`.
+  `task_display` switches to `scr_clock_ringing` from any screen; that screen repeats the sound,
+  times out after 60 s and posts the source's dismiss signal.
+- After an object updates the time it shows (time, world, timer), it posts
+  `AC_DISPLAY_RENDER_SCREEN` so the screen redraws with the new value instead of the old one.
+- RAM is tight (13.3 of 16 KB, ~3 KB stack, 2 KB heap). Keep snapshots small; tables that do
+  not change belong in flash (`static const`).
 - RTC holds **Vietnam local time (UTC+7)**. World-clock offsets are minutes relative to UTC+7.
   The selected country is the device's display timezone; alarms and calendar events are stored
   in that local time and converted to raw RTC time when programming the RTC.
@@ -104,17 +122,18 @@ Prefix: `mc_clock_*` (Mini Clock).
   long Up reset, long Down back.
 - Calendar: Up/Down move day/field, long Up/Down change month or back, Mode open/next,
   long Mode add/delete/finish, Mode+Up back to menu.
+- Ringing screen: any key dismisses. Full per-screen table: README "III. Controls".
 
-## Known incomplete items (verify before relying on them)
+## Known limitations (verify before relying on them)
 
-- RTC alarm never fires: `rtc_alarm_irq()` is empty and nothing polls the PCF85063A AF flag,
-  so `MC_CLOCK_RTC_ALARM_FIRED` is never posted. No UI posts `MC_CLOCK_ALARM_DISMISS`.
-- `app_task_init()` calls `mc_clock_alarm_apply_rtc()` before EEPROM is loaded, which saves an
-  empty alarm bank over the stored one on every boot.
-- Timer, stopwatch, and calendar event alarms only advance while their own screen is open.
-- Calendar event alarm ignores `alarm_enabled`; `repeat` and `alarm_sound` fields are unused.
-- `MC_CLOCK_RTC_TICK_1S`, `MC_CLOCK_RTC_WAKEUP`, `MC_CLOCK_RTC_SET_DATE_REQ` are never posted.
-- RAM is ~87% used (~2 KB stack). Avoid large stack copies (the world-clock snapshot is ~1 KB).
+- The PCF85063A INT pin is not used; the alarm flag is polled once per second.
+- Calendar event fields `repeat` and `alarm_sound` are stored but unused (reminders use the
+  alarm melody). Two events in the same minute ring one after the other.
+- Not exercised on hardware yet: the RTC write retry path (needs an I2C fault), an empty
+  calendar on a blank EEPROM, and re-arming from World Clock / Setting > Reset (same
+  `MC_CLOCK_ALARM_REARM` path as the tested time change).
+- `twi.cpp` (platform, read-only) leaves I2C1 BUSY after a NACK/timeout; `driver/rtc` recovers
+  the bus through `io_i2c1_bus_busy()` / `io_i2c1_bus_recover()` in `io_cfg.c`.
 
 ## Build and validation
 
@@ -128,8 +147,16 @@ Prefix: `mc_clock_*` (Mini Clock).
   (AK bootloader via `ak-flash`, app at `0x08003000`).
 - All console print/debug gates (`LOGIN_PRINT`, `SYS_PRINT`, `APP_PRINT`, `SYS_DBG`, `APP_DBG`,
   `APP_DBG_SIG`) are disabled in `application/Makefile` for the play build, so the shell
-  echoes commands but `ver` / `fatal l` print nothing. A diagnostic build that enables them is
-  temporary and must be restored. Silence is not proof of a healthy board.
+  echoes commands but `ver` / `fatal l` print nothing. For on-device checks set
+  `-DLOGIN_PRINT_EN -DSYS_PRINT_EN` temporarily and restore `-U` before handing off. Keep the
+  kernel task log (`LOG_AK_KERNEL_ENABLE` in `ak.cfg.mk`) off unless profiling: it prints every
+  message and starves the shell. Silence is not proof of a healthy board.
+- Console helper: `python3 tools/ak-console.py --port /dev/ttyUSB0 --cmd "ver"` (`--watch`,
+  `--key`, `--list`). App shell commands: `stt` (alarm/calendar state), `rtc g` /
+  `rtc s YYYYMMDD hhmmss`, `mute 1|0`, `btn m|u|d|M|U|D|a|b` (simulated presses). Verify
+  navigation with `stt` rather than guessing from `lcd d`; wait ~1 s between menu presses
+  (presses during the slide animation are ignored).
+- Restore what a test changes on the board (alarms, events, RTC time, selected city, settings).
 - Never claim on-device validation when only compilation was performed.
 
 ## Coding style
