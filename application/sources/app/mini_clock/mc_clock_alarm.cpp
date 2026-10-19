@@ -1,6 +1,8 @@
 #include "mc_clock_alarm.h"
 #include "mc_clock_world.h"
 #include "eeprom.h"
+
+#include <string.h>
 #include "app_eeprom.h"
 #include "mc_clock_ring.h"
 
@@ -28,10 +30,13 @@ static mc_clock_alarm_state_t mc_clock_alarm_state = {
     .sound = BUZZER_SOUND_ALARM_CLASSIC,
 };
 
+/* Write the alarm bank, skipping the write when EEPROM already holds it */
 void mc_clock_alarm_save_to_eeprom(void)
 {
 	mc_clock_alarm_eeprom_t eeprom_data;
+	mc_clock_alarm_eeprom_t stored;
 
+	memset(&eeprom_data, 0, sizeof(eeprom_data));
 	eeprom_data.data.total_alarm = mc_clock_alarm_state.total_alarm;
 	for (uint8_t i = 0; i < MC_CLOCK_ALARM_MAX; i++)
 	{
@@ -39,6 +44,13 @@ void mc_clock_alarm_save_to_eeprom(void)
 	}
 
 	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number, &eeprom_data.check_sum, MC_CLOCK_ALARM_CHECKSUM_SIZE);
+
+	if (eeprom_read(EEPROM_ALARM_START_ADDR, (uint8_t*)&stored, sizeof(stored)) == EEPROM_DRIVER_OK &&
+	    memcmp(&stored, &eeprom_data, sizeof(stored)) == 0)
+	{
+		return;
+	}
+
 	eeprom_write(EEPROM_ALARM_START_ADDR, (uint8_t*)&eeprom_data, sizeof(eeprom_data));
 }
 
@@ -117,7 +129,6 @@ void mc_clock_alarm_apply_rtc(void)
 	if (!found)
 	{
 		task_post_pure_msg(MC_CLOCK_RTC_ID, MC_CLOCK_RTC_CLEAR_ALARM_REQ);
-		mc_clock_alarm_save_to_eeprom();
 		return;
 	}
 
@@ -131,11 +142,29 @@ void mc_clock_alarm_apply_rtc(void)
 	                     MC_CLOCK_RTC_SET_ALARM_REQ,
 	                     (uint8_t*)&req,
 	                     sizeof(req));
-
-	mc_clock_alarm_save_to_eeprom();
 }
 
 
+
+/* Copy of the alarm being edited, restored when the edit is abandoned */
+static mc_clock_alarm_item_t mc_clock_alarm_edit_backup;
+static uint8_t mc_clock_alarm_editing_new;
+
+/* The alarm list changed: re-arm the RTC and persist the bank */
+static void mc_clock_alarm_commit(void)
+{
+	mc_clock_alarm_apply_rtc();
+	mc_clock_alarm_save_to_eeprom();
+}
+
+static void mc_clock_alarm_begin_edit(uint8_t index, uint8_t is_new)
+{
+	mc_clock_alarm_state.editing = 1;
+	mc_clock_alarm_state.editing_alarm = index;
+	mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+	mc_clock_alarm_edit_backup = mc_clock_alarm_state.alarm[index];
+	mc_clock_alarm_editing_new = is_new;
+}
 
 static void mc_clock_alarm_scroll_to_current(void)
 {
@@ -191,7 +220,7 @@ static void mc_clock_alarm_delete_current()
 	mc_clock_alarm_state.editing = 0;
 	mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
 
-	mc_clock_alarm_apply_rtc();
+	mc_clock_alarm_commit();
 }
 
 static void mc_clock_alarm_stop_ringing(void)
@@ -209,6 +238,22 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_SETUP:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_SETUP\n");
+
+		/* The screen was left mid-edit: discard the unsaved change */
+		if (mc_clock_alarm_state.editing &&
+		    mc_clock_alarm_state.editing_alarm < mc_clock_alarm_state.total_alarm)
+		{
+			if (mc_clock_alarm_editing_new)
+			{
+				mc_clock_alarm_state.total_alarm--;
+			}
+			else
+			{
+				mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm] = mc_clock_alarm_edit_backup;
+			}
+		}
+		mc_clock_alarm_editing_new = 0;
+
 		mc_clock_alarm_state.current_item = 0;
 		mc_clock_alarm_state.scroll_offset = 0;
 		mc_clock_alarm_state.editing = 0;
@@ -233,7 +278,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			case MC_CLOCK_ALARM_EDIT_SAVE:
 			{
 				mc_clock_alarm_state.editing = 0;
-				mc_clock_alarm_apply_rtc();
+				mc_clock_alarm_commit();
 			}
 			break;
 
@@ -260,8 +305,9 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 				mc_clock_alarm_state.total_alarm++;
 
 				mc_clock_alarm_state.current_item = new_alarm;
+				mc_clock_alarm_scroll_to_current();
 
-				mc_clock_alarm_apply_rtc();
+				mc_clock_alarm_commit();
 			}
 
 			break;
@@ -276,9 +322,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		// Existing alarm selected
 		if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
 		{
-			mc_clock_alarm_state.editing = 1;
-			mc_clock_alarm_state.editing_alarm = mc_clock_alarm_state.current_item;
-			mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+			mc_clock_alarm_begin_edit(mc_clock_alarm_state.current_item, 0);
 		}
 	}
 	break;
@@ -377,7 +421,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 				mc_clock_alarm_state.editing = 0;
 				mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
 
-				mc_clock_alarm_apply_rtc();
+				mc_clock_alarm_commit();
 			}
 			else
 			{
@@ -403,11 +447,10 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			mc_clock_alarm_state.total_alarm++;
 
 			mc_clock_alarm_state.current_item = new_alarm;
+			mc_clock_alarm_scroll_to_current();
 
-			// enter editing immediately
-			mc_clock_alarm_state.editing = 1;
-			mc_clock_alarm_state.editing_alarm = new_alarm;
-			mc_clock_alarm_state.editing_field = MC_CLOCK_ALARM_EDIT_HOUR;
+			// enter editing immediately; saved only when the edit is confirmed
+			mc_clock_alarm_begin_edit(new_alarm, 1);
 		}
 	}
 	break;
@@ -420,7 +463,7 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		{
 			mc_clock_alarm_item_t* alarm = &mc_clock_alarm_state.alarm[mc_clock_alarm_state.current_item];
 			alarm->enabled = !alarm->enabled;
-			mc_clock_alarm_apply_rtc();
+			mc_clock_alarm_commit();
 		}
 	}
 	break;
@@ -437,7 +480,17 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			}
 
 			mc_clock_alarm_state.total_alarm--;
-			mc_clock_alarm_apply_rtc();
+
+			/* current_item now points at the next alarm (or "Add New");
+			 * keep the 3-line window inside the shorter list. */
+			uint8_t max_offset = (mc_clock_alarm_state.total_alarm > 3) ? (mc_clock_alarm_state.total_alarm - 3) : 0;
+			if (mc_clock_alarm_state.scroll_offset > max_offset)
+			{
+				mc_clock_alarm_state.scroll_offset = max_offset;
+			}
+			mc_clock_alarm_scroll_to_current();
+
+			mc_clock_alarm_commit();
 		}
 	}
 	break;

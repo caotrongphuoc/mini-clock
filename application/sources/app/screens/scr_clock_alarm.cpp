@@ -190,13 +190,8 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 
-		mc_clock_alarm_state_t state;
-
-		mc_clock_alarm_get_state(&state);
-
-		state.current_item = 0;
-		state.scroll_offset = 0;
-		state.editing = 0;
+		/* Start at the top of the list; an edit left unfinished is discarded */
+		task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SETUP);
 
 		break;
 	}
