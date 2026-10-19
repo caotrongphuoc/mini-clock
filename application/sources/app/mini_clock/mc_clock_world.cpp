@@ -119,6 +119,10 @@ void mc_clock_world_clock_handle(
 	{
 		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_UPDATE\n");
 		mc_clock_world_clock_update();
+
+		/* Redraw with the new value; the tick that requested it was rendered
+		 * before this update ran, which made the clock show the previous second. */
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
 	break;
 

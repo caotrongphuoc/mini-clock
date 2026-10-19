@@ -167,6 +167,10 @@ void mc_clock_timer_handle(ak_msg_t* msg)
 			BUZZER_PlaySound((buzzer_sound_t)mc_clock_alarm_get_sound());
 			mc_clock_ring_request(MC_CLOCK_RING_SOURCE_TIMER, mc_clock_alarm_get_sound());
 		}
+
+		/* Redraw with the new value; the tick that requested it was rendered
+		 * before this update ran, which made the clock show the previous second. */
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
 	}
 	break;
 
