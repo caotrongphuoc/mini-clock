@@ -170,7 +170,7 @@ void scr_clock_analog_draw_right_panel()
 
 	mc_world_clock_state_t world_state;
 	mc_clock_world_clock_get_state(&world_state);
-	const char* offset_str = world_state.country[world_state.selected_country].utc_label + 3;
+	const char* offset_str = mc_clock_world_clock_get_country(world_state.selected_country)->utc_label + 3;
 
 	uint8_t len = 0;
 	while (offset_str[len])

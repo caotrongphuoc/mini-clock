@@ -2,296 +2,167 @@
 
 static mc_world_clock_state_t world_clock;
 
-/* Helper - build UTC label string from offset in minutes                    */
-static void build_utc_label(char* out, int16_t offset_from_utc_min)
-{
-    char sign = (offset_from_utc_min >= 0) ? '+' : '-';
-    int16_t abs_min = (offset_from_utc_min >= 0)
-                        ? offset_from_utc_min
-                        : -offset_from_utc_min;
-    uint8_t h = (uint8_t)(abs_min / 60);
-    uint8_t m = (uint8_t)(abs_min % 60);
-
-    if (m == 0)
-    {
-        xsprintf(out, "UTC%c%u", sign, h);
-    }
-    else
-    {
-        xsprintf(out, "UTC%c%u:%02u", sign, h, m);
-    }
-}
-
-
-/* Init - World Clock                                                         */
 /*
  * RTC is set to Vietnam local time (UTC+7).
  * All offsets below are relative to Vietnam time:
  *   offset_minutes = (country_utc_offset_hours * 60) - (7 * 60)
+ * The table lives in flash; only the selection and current time are in RAM.
  */
+static const mc_world_clock_country_t world_clock_country[MC_WORLD_CLOCK_MAX_COUNTRY] = {
+    {"Vietnam", 0, "UTC+7"},
+    {"England", -420, "UTC+0"},
+    {"Portugal", -420, "UTC+0"},
+    {"France", -360, "UTC+1"},
+    {"Germany", -360, "UTC+1"},
+    {"Egypt", -300, "UTC+2"},
+    {"Greece", -300, "UTC+2"},
+    {"Moscow", -240, "UTC+3"},
+    {"Dubai", -180, "UTC+4"},
+    {"Iran", -150, "UTC+3:30"},
+    {"Pakistan", -120, "UTC+5"},
+    {"India", -90, "UTC+5:30"},
+    {"Dhaka", -60, "UTC+6"},
+    {"Myanmar", -30, "UTC+6:30"},
+    {"Thailand", 0, "UTC+7"},
+    {"Jakarta", 0, "UTC+7"},
+    {"Singapore", 60, "UTC+8"},
+    {"China", 60, "UTC+8"},
+    {"Korea", 120, "UTC+9"},
+    {"Japan", 120, "UTC+9"},
+    {"Adelaide", 150, "UTC+9:30"},
+    {"Sydney", 180, "UTC+10"},
+    {"Auckland", 300, "UTC+12"},
+    {"Azores", -480, "UTC-1"},
+    {"Brazil", -600, "UTC-3"},
+    {"Caracas", -660, "UTC-4"},
+    {"USA", -720, "UTC-5"},
+    {"Chicago", -780, "UTC-6"},
+    {"Denver", -840, "UTC-7"},
+    {"LA", -900, "UTC-8"},
+    {"Alaska", -960, "UTC-9"},
+    {"Hawaii", -1020, "UTC-10"},
+};
+
+/* Init - World Clock                                                         */
 void mc_clock_world_clock_init(void)
 {
-    /* Base: Vietnam UTC+7 */
-    strcpy(world_clock.country[0].name, "Vietnam");
-    world_clock.country[0].timezone_offset_minutes = 0;
-    build_utc_label(world_clock.country[0].utc_label, 7 * 60);
+	world_clock.selected_country = 0;
 
-    /* UTC+0 */
-    strcpy(world_clock.country[1].name, "England");
-    world_clock.country[1].timezone_offset_minutes = -420;
-    build_utc_label(world_clock.country[1].utc_label, 0);
-
-    strcpy(world_clock.country[2].name, "Portugal");
-    world_clock.country[2].timezone_offset_minutes = -420;
-    build_utc_label(world_clock.country[2].utc_label, 0);
-
-    /* UTC+1 */
-    strcpy(world_clock.country[3].name, "France");
-    world_clock.country[3].timezone_offset_minutes = -360;
-    build_utc_label(world_clock.country[3].utc_label, 60);
-
-    strcpy(world_clock.country[4].name, "Germany");
-    world_clock.country[4].timezone_offset_minutes = -360;
-    build_utc_label(world_clock.country[4].utc_label, 60);
-
-    /* UTC+2 */
-    strcpy(world_clock.country[5].name, "Egypt");
-    world_clock.country[5].timezone_offset_minutes = -300;
-    build_utc_label(world_clock.country[5].utc_label, 120);
-
-    strcpy(world_clock.country[6].name, "Greece");
-    world_clock.country[6].timezone_offset_minutes = -300;
-    build_utc_label(world_clock.country[6].utc_label, 120);
-
-    /* UTC+3 */
-    strcpy(world_clock.country[7].name, "Moscow");
-    world_clock.country[7].timezone_offset_minutes = -240;
-    build_utc_label(world_clock.country[7].utc_label, 180);
-
-    strcpy(world_clock.country[8].name, "Dubai");
-    world_clock.country[8].timezone_offset_minutes = -180;
-    build_utc_label(world_clock.country[8].utc_label, 240);
-
-    /* UTC+3:30 */
-    strcpy(world_clock.country[9].name, "Iran");
-    world_clock.country[9].timezone_offset_minutes = -150;
-    build_utc_label(world_clock.country[9].utc_label, 210);
-
-    /* UTC+5 */
-    strcpy(world_clock.country[10].name, "Pakistan");
-    world_clock.country[10].timezone_offset_minutes = -120;
-    build_utc_label(world_clock.country[10].utc_label, 300);
-
-    /* UTC+5:30 */
-    strcpy(world_clock.country[11].name, "India");
-    world_clock.country[11].timezone_offset_minutes = -90;
-    build_utc_label(world_clock.country[11].utc_label, 330);
-
-    /* UTC+6 */
-    strcpy(world_clock.country[12].name, "Dhaka");
-    world_clock.country[12].timezone_offset_minutes = -60;
-    build_utc_label(world_clock.country[12].utc_label, 360);
-
-    /* UTC+6:30 */
-    strcpy(world_clock.country[13].name, "Myanmar");
-    world_clock.country[13].timezone_offset_minutes = -30;
-    build_utc_label(world_clock.country[13].utc_label, 390);
-
-    /* UTC+7 */
-    strcpy(world_clock.country[14].name, "Thailand");
-    world_clock.country[14].timezone_offset_minutes = 0;
-    build_utc_label(world_clock.country[14].utc_label, 420);
-
-    strcpy(world_clock.country[15].name, "Jakarta");
-    world_clock.country[15].timezone_offset_minutes = 0;
-    build_utc_label(world_clock.country[15].utc_label, 420);
-
-    /* UTC+8 */
-    strcpy(world_clock.country[16].name, "Singapore");
-    world_clock.country[16].timezone_offset_minutes = 60;
-    build_utc_label(world_clock.country[16].utc_label, 480);
-
-    strcpy(world_clock.country[17].name, "China");
-    world_clock.country[17].timezone_offset_minutes = 60;
-    build_utc_label(world_clock.country[17].utc_label, 480);
-
-    strcpy(world_clock.country[18].name, "Korea");
-    world_clock.country[18].timezone_offset_minutes = 120;
-    build_utc_label(world_clock.country[18].utc_label, 540);
-
-    strcpy(world_clock.country[19].name, "Japan");
-    world_clock.country[19].timezone_offset_minutes = 120;
-    build_utc_label(world_clock.country[19].utc_label, 540);
-
-    /* UTC+9:30 */
-    strcpy(world_clock.country[20].name, "Adelaide");
-    world_clock.country[20].timezone_offset_minutes = 150;
-    build_utc_label(world_clock.country[20].utc_label, 570);
-
-    /* UTC+10 */
-    strcpy(world_clock.country[21].name, "Sydney");
-    world_clock.country[21].timezone_offset_minutes = 180;
-    build_utc_label(world_clock.country[21].utc_label, 600);
-
-    /* UTC+12 */
-    strcpy(world_clock.country[22].name, "Auckland");
-    world_clock.country[22].timezone_offset_minutes = 300;
-    build_utc_label(world_clock.country[22].utc_label, 720);
-
-    /* UTC-1 */
-    strcpy(world_clock.country[23].name, "Azores");
-    world_clock.country[23].timezone_offset_minutes = -480;
-    build_utc_label(world_clock.country[23].utc_label, -60);
-
-    /* UTC-3 */
-    strcpy(world_clock.country[24].name, "Brazil");
-    world_clock.country[24].timezone_offset_minutes = -600;
-    build_utc_label(world_clock.country[24].utc_label, -180);
-
-    /* UTC-4 */
-    strcpy(world_clock.country[25].name, "Caracas");
-    world_clock.country[25].timezone_offset_minutes = -660;
-    build_utc_label(world_clock.country[25].utc_label, -240);
-
-    /* UTC-5 */
-    strcpy(world_clock.country[26].name, "USA");
-    world_clock.country[26].timezone_offset_minutes = -720;
-    build_utc_label(world_clock.country[26].utc_label, -300);
-
-    /* UTC-6 */
-    strcpy(world_clock.country[27].name, "Chicago");
-    world_clock.country[27].timezone_offset_minutes = -780;
-    build_utc_label(world_clock.country[27].utc_label, -360);
-
-    /* UTC-7 */
-    strcpy(world_clock.country[28].name, "Denver");
-    world_clock.country[28].timezone_offset_minutes = -840;
-    build_utc_label(world_clock.country[28].utc_label, -420);
-
-    /* UTC-8 */
-    strcpy(world_clock.country[29].name, "LA");
-    world_clock.country[29].timezone_offset_minutes = -900;
-    build_utc_label(world_clock.country[29].utc_label, -480);
-
-    /* UTC-9 */
-    strcpy(world_clock.country[30].name, "Alaska");
-    world_clock.country[30].timezone_offset_minutes = -960;
-    build_utc_label(world_clock.country[30].utc_label, -540);
-
-    /* UTC-10 */
-    strcpy(world_clock.country[31].name, "Hawaii");
-    world_clock.country[31].timezone_offset_minutes = -1020;
-    build_utc_label(world_clock.country[31].utc_label, -600);
-
-    world_clock.selected_country = 0;
-
-    world_clock.hour = 0;
-    world_clock.minute = 0;
-    world_clock.second = 0;
+	world_clock.hour = 0;
+	world_clock.minute = 0;
+	world_clock.second = 0;
 }
 
 void mc_clock_world_clock_select_country(
-        uint8_t index)
+    uint8_t index)
 {
-    if(index < MC_WORLD_CLOCK_MAX_COUNTRY)
-    {
-        world_clock.selected_country = index;
-    }
+	if (index < MC_WORLD_CLOCK_MAX_COUNTRY)
+	{
+		world_clock.selected_country = index;
+	}
 }
 
 void mc_clock_world_clock_get_state(
-        mc_world_clock_state_t* state)
+    mc_world_clock_state_t* state)
 {
-    memcpy(state,&world_clock,sizeof(mc_world_clock_state_t));
+	*state = world_clock;
+}
+
+const mc_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index)
+{
+	if (index >= MC_WORLD_CLOCK_MAX_COUNTRY)
+	{
+		index = 0;
+	}
+
+	return &world_clock_country[index];
 }
 
 int16_t mc_clock_world_clock_get_selected_offset_minutes(void)
 {
-    return world_clock.country[world_clock.selected_country].timezone_offset_minutes;
+	return world_clock_country[world_clock.selected_country].timezone_offset_minutes;
 }
 
 static void mc_clock_world_clock_update(void)
 {
-    rtc_time_t now;
-    rtc_get_time(&now);
+	rtc_time_t now;
+	rtc_get_time(&now);
 
-    /* Convert current RTC time (Vietnam local) to total minutes since midnight */
-    int32_t total_minutes = (int32_t)now.hour * 60 + (int32_t)now.min;
+	/* Convert current RTC time (Vietnam local) to total minutes since midnight */
+	int32_t total_minutes = (int32_t)now.hour * 60 + (int32_t)now.min;
 
-    /* Apply offset for selected country */
-    int16_t offset = world_clock.country[world_clock.selected_country].timezone_offset_minutes;
-    total_minutes += offset;
+	/* Apply offset for selected country */
+	int16_t offset = world_clock_country[world_clock.selected_country].timezone_offset_minutes;
+	total_minutes += offset;
 
-    /* Wrap around 24 hours (1440 minutes) */
-    total_minutes = ((total_minutes % 1440) + 1440) % 1440;
+	/* Wrap around 24 hours (1440 minutes) */
+	total_minutes = ((total_minutes % 1440) + 1440) % 1440;
 
-    world_clock.hour   = (uint8_t)(total_minutes / 60);
-    world_clock.minute = (uint8_t)(total_minutes % 60);
-    world_clock.second = now.sec;
+	world_clock.hour = (uint8_t)(total_minutes / 60);
+	world_clock.minute = (uint8_t)(total_minutes % 60);
+	world_clock.second = now.sec;
 }
 
 void mc_clock_world_clock_handle(
-        ak_msg_t* msg)
+    ak_msg_t* msg)
 {
-    switch(msg->sig)
-    {
-        case MC_CLOCK_WORLD_CLOCK_SETUP:
-        {
-            APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SETUP\n");
-            mc_clock_world_clock_update();
-        }
-        break;
+	switch (msg->sig)
+	{
+	case MC_CLOCK_WORLD_CLOCK_SETUP:
+	{
+		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SETUP\n");
+		mc_clock_world_clock_update();
+	}
+	break;
 
-        case MC_CLOCK_WORLD_CLOCK_UPDATE:
-        {
-            APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_UPDATE\n");
-            mc_clock_world_clock_update();
-        }
-        break;
+	case MC_CLOCK_WORLD_CLOCK_UPDATE:
+	{
+		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_UPDATE\n");
+		mc_clock_world_clock_update();
+	}
+	break;
 
-        case MC_CLOCK_WORLD_CLOCK_SELECT_UP:
-        {
-            APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_UP\n");
-            if (world_clock.selected_country < MC_WORLD_CLOCK_MAX_COUNTRY - 1)
-            {
-                world_clock.selected_country++;
-            }
-            else
-            {
-                world_clock.selected_country = 0;
-            }
-            clock_setting_data.world_country = world_clock.selected_country;
-            mc_clock_setting_write(&clock_setting_data);
-            mc_clock_world_clock_update();
-            /* Alarm times are stored in the selected country's local time;
-             * reprogram RTC so the alarm fires at the correct raw time. */
-            mc_clock_alarm_apply_rtc();
-        }
-        break;
+	case MC_CLOCK_WORLD_CLOCK_SELECT_UP:
+	{
+		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_UP\n");
+		if (world_clock.selected_country < MC_WORLD_CLOCK_MAX_COUNTRY - 1)
+		{
+			world_clock.selected_country++;
+		}
+		else
+		{
+			world_clock.selected_country = 0;
+		}
+		clock_setting_data.world_country = world_clock.selected_country;
+		mc_clock_setting_write(&clock_setting_data);
+		mc_clock_world_clock_update();
+		/* Alarm times are stored in the selected country's local time;
+		 * reprogram RTC so the alarm fires at the correct raw time. */
+		mc_clock_alarm_apply_rtc();
+	}
+	break;
 
-        case MC_CLOCK_WORLD_CLOCK_SELECT_DOWN:
-        {
-            APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_DOWN\n");
-            if (world_clock.selected_country > 0)
-            {
-                world_clock.selected_country--;
-            }
-            else
-            {
-                world_clock.selected_country = MC_WORLD_CLOCK_MAX_COUNTRY - 1;
-            }
-            clock_setting_data.world_country = world_clock.selected_country;
-            mc_clock_setting_write(&clock_setting_data);
-            mc_clock_world_clock_update();
-            /* Alarm times are stored in the selected country's local time;
-             * reprogram RTC so the alarm fires at the correct raw time. */
-            mc_clock_alarm_apply_rtc();
-        }
-        break;
+	case MC_CLOCK_WORLD_CLOCK_SELECT_DOWN:
+	{
+		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_DOWN\n");
+		if (world_clock.selected_country > 0)
+		{
+			world_clock.selected_country--;
+		}
+		else
+		{
+			world_clock.selected_country = MC_WORLD_CLOCK_MAX_COUNTRY - 1;
+		}
+		clock_setting_data.world_country = world_clock.selected_country;
+		mc_clock_setting_write(&clock_setting_data);
+		mc_clock_world_clock_update();
+		/* Alarm times are stored in the selected country's local time;
+		 * reprogram RTC so the alarm fires at the correct raw time. */
+		mc_clock_alarm_apply_rtc();
+	}
+	break;
 
-        default:
-        break;
-
-    }
-
+	default:
+		break;
+	}
 }

@@ -11,59 +11,45 @@
 
 #include <string.h>
 
-
 #define MC_WORLD_CLOCK_MAX_COUNTRY (32)
-
 
 typedef struct
 {
-    char name[20];
+	const char* name;
 
-    /* Offset from Vietnam (UTC+7) in minutes.
-     * e.g. Vietnam=0, USA(UTC-5)=-720, India(UTC+5:30)=-90 */
-    int16_t timezone_offset_minutes;
+	/* Offset from Vietnam (UTC+7) in minutes.
+	 * e.g. Vietnam=0, USA(UTC-5)=-720, India(UTC+5:30)=-90 */
+	int16_t timezone_offset_minutes;
 
-    /* Pre-formatted UTC string, e.g. "UTC+7", "UTC-5", "UTC+5:30" */
-    char utc_label[10];
+	/* Pre-formatted UTC string, e.g. "UTC+7", "UTC-5", "UTC+5:30" */
+	const char* utc_label;
 
 } mc_world_clock_country_t;
 
-
-
 typedef struct
 {
-    uint8_t selected_country;
+	uint8_t selected_country;
 
-    uint8_t hour;
-    uint8_t minute;
-    uint8_t second;
-
-    mc_world_clock_country_t country[MC_WORLD_CLOCK_MAX_COUNTRY];
+	uint8_t hour;
+	uint8_t minute;
+	uint8_t second;
 
 } mc_world_clock_state_t;
 
-
-
 void mc_clock_world_clock_init(void);
 
-
 void mc_clock_world_clock_handle(
-        ak_msg_t* msg);
-
-
+    ak_msg_t* msg);
 
 void mc_clock_world_clock_select_country(
-        uint8_t index);
-
-
+    uint8_t index);
 
 void mc_clock_world_clock_get_state(
-        mc_world_clock_state_t* state);
+    mc_world_clock_state_t* state);
 
-
+/* Read-only country entry from the flash table (index is clamped). */
+const mc_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index);
 
 int16_t mc_clock_world_clock_get_selected_offset_minutes(void);
-
-
 
 #endif

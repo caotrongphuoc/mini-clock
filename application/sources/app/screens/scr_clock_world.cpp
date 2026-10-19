@@ -28,7 +28,7 @@ static void draw_world_clock_content(
     int16_t offset)
 {
 	const mc_world_clock_country_t* country =
-	    &state->country[state->selected_country];
+	    mc_clock_world_clock_get_country(state->selected_country);
 
 	char time_buf[12];
 
