@@ -56,10 +56,10 @@ class Kit:
 
 	def menu(self, index):
 		"""From the Digital screen: open the menu and enter item `index`."""
-		self.press("m", 1.2)
+		self.press("m", 1.5)
 		for _ in range(index):
-			self.press("u", 1.0)
-		self.press("m", 1.0)
+			self.press("u", 1.5)             # presses during the slide animation are ignored
+		self.press("m", 1.5)
 
 	def stt(self):
 		return self.cmd("stt", until=lambda b: re.search(rb"calendar total.*ring:\d", b) is not None, wait=2.0)

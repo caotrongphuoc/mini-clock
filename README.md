@@ -21,6 +21,12 @@
 
 ---
 
+## Demo
+
+<p align="center">
+  <img src="resources/videos/mini_clock_demo.gif" alt="OLED demo recorded from the kit: digital clock, menu, analog, world clock, stopwatch with a lap, adding an alarm, the alarm ringing at 08:00 and dismissing it" width="720"/>
+</p>
+
 ## Documentation
 
 | File | Description |

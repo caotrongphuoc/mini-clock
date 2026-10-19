@@ -1,5 +1,7 @@
 # OLED framebuffer captures
 
+## Screen previews
+
 [`mc_clock_screens_uart.json`](mc_clock_screens_uart.json) is the source of every screen image in
 [`../images/screens/`](../images/screens/). It records the real kit's OLED through the Type-C CH340
 UART at 115200 8N1 on **2026-10-19**.
@@ -34,4 +36,23 @@ footage.
 ```bash
 python3 tools/capture_screens.py --port /dev/ttyUSB0      # diagnostic build, clock on Digital
 python3 tools/render_screens.py
+```
+
+## Demo
+
+[`mc_clock_demo_uart.json`](mc_clock_demo_uart.json) is the source of the README's
+[demo GIF](../videos/mini_clock_demo.gif). It was recorded with the same `0x9211` diagnostic image on
+**2026-10-19** by [`tools/capture_demo.py`](../../tools/capture_demo.py): Digital → Menu → Analog →
+World Clock (Vietnam, England, back to Vietnam) → Stopwatch with one lap → add a 08:00 alarm → the RTC
+is set to 07:59:55 → the alarm rings → any key dismisses it → Digital.
+
+Each frame keeps its real capture time (`t`, Unix seconds). [`tools/render_demo.py`](../../tools/render_demo.py)
+holds every frame for the real gap to the next one (about 0.6–1.5 s, capped at 1.5 s) and the last
+frame for 2 s, so the GIF plays close to real time but samples only about one frame per second; the
+50 ms menu slide is not visible. Pixels are only enlarged ×4. The sample alarm was deleted and the RTC
+re-synced afterwards.
+
+```bash
+python3 tools/capture_demo.py --port /dev/ttyUSB0      # diagnostic build, Digital screen, no alarms
+python3 tools/render_demo.py
 ```
