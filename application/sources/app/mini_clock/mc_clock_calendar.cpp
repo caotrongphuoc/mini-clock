@@ -102,16 +102,92 @@ static void mc_calendar_clamp_day(void)
 	}
 }
 
+/* The list view shows only the selected day's events, MC_CAL_LIST_VISIBLE at a
+ * time, and scroll_offset counts positions within that day. Navigation below
+ * walks the same filtered list so the cursor never lands on a hidden event. */
+#define MC_CAL_LIST_VISIBLE (2)
+
+/* Copy of the event being edited, restored when an edit is abandoned */
+static mc_calendar_event_t calendar_edit_backup;
+
+static uint8_t mc_calendar_on_selected_day(uint8_t idx)
+{
+	const mc_calendar_event_t* ev = &calendar.events[idx];
+
+	return ev->year == calendar.view_year &&
+	       ev->month == calendar.view_month &&
+	       ev->day == calendar.selected_day;
+}
+
+/* Next (dir > 0) or previous (dir < 0) selected-day event from idx, or 255 */
+static uint8_t mc_calendar_find_on_day(int16_t idx, int8_t dir)
+{
+	for (idx += dir; idx >= 0 && idx < calendar.total_events; idx += dir)
+	{
+		if (mc_calendar_on_selected_day((uint8_t)idx))
+		{
+			return (uint8_t)idx;
+		}
+	}
+
+	return 255;
+}
+
 /* Helper - scroll event list to keep current_event visible                  */
 static void mc_calendar_scroll_to_event(void)
 {
-	if (calendar.current_event < calendar.scroll_offset)
+	if (calendar.current_event >= calendar.total_events)
 	{
-		calendar.scroll_offset = calendar.current_event;
+		calendar.scroll_offset = 0;
+		return;
 	}
-	else if (calendar.current_event >= calendar.scroll_offset + 3)
+
+	uint8_t pos = 0;
+
+	for (uint8_t i = 0; i < calendar.current_event; i++)
 	{
-		calendar.scroll_offset = calendar.current_event - 2;
+		if (mc_calendar_on_selected_day(i))
+		{
+			pos++;
+		}
+	}
+
+	if (pos < calendar.scroll_offset)
+	{
+		calendar.scroll_offset = pos;
+	}
+	else if (pos >= calendar.scroll_offset + MC_CAL_LIST_VISIBLE)
+	{
+		calendar.scroll_offset = pos - (MC_CAL_LIST_VISIBLE - 1);
+	}
+}
+
+/* Move the month view by one month; the caller picks the selected day */
+static void mc_calendar_shift_month(int8_t dir)
+{
+	if (dir > 0)
+	{
+		if (calendar.view_month == 12)
+		{
+			calendar.view_month = 1;
+			calendar.view_year++;
+		}
+		else
+		{
+			calendar.view_month++;
+		}
+	}
+	else
+	{
+		if (calendar.view_month == 1)
+		{
+			calendar.view_month = 12;
+			calendar.view_year--;
+		}
+		else
+		{
+			calendar.view_month--;
+		}
 	}
 }
 
@@ -252,40 +328,7 @@ void mc_clock_calendar_init(void)
 	calendar.view_month = date.month;
 	calendar.selected_day = date.date;
 
-	calendar.total_events = 3;
-
-	/* Event 1 */
-	calendar.events[0].year = calendar.today_year;
-	calendar.events[0].month = calendar.today_month;
-	calendar.events[0].day = calendar.today_day;
-	calendar.events[0].start_hour = 8;
-	calendar.events[0].start_min = 0;
-	calendar.events[0].end_hour = 9;
-	calendar.events[0].end_min = 0;
-	calendar.events[0].category = MC_CAL_CAT_WORK;
-	calendar.events[0].alarm_enabled = 1;
-
-	/* Event 2 */
-	calendar.events[1].year = calendar.today_year;
-	calendar.events[1].month = calendar.today_month;
-	calendar.events[1].day = calendar.today_day;
-	calendar.events[1].start_hour = 10;
-	calendar.events[1].start_min = 0;
-	calendar.events[1].end_hour = 11;
-	calendar.events[1].end_min = 30;
-	calendar.events[1].category = MC_CAL_CAT_MEETING;
-	calendar.events[1].alarm_enabled = 0;
-
-	/* Event 3 */
-	calendar.events[2].year = calendar.today_year;
-	calendar.events[2].month = calendar.today_month;
-	calendar.events[2].day = calendar.today_day;
-	calendar.events[2].start_hour = 18;
-	calendar.events[2].start_min = 0;
-	calendar.events[2].end_hour = 18;
-	calendar.events[2].end_min = 15;
-	calendar.events[2].category = MC_CAL_CAT_REMINDER;
-	calendar.events[2].alarm_enabled = 0;
+	calendar.total_events = 0;
 	calendar.mode = MC_CAL_MODE_MONTH;
 }
 
@@ -450,15 +493,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	case MC_CLOCK_CALENDAR_NEXT_MONTH:
 	{
 		APP_DBG_SIG("MC_CLOCK_CALENDAR_NEXT_MONTH\n");
-		if (calendar.view_month == 12)
-		{
-			calendar.view_month = 1;
-			calendar.view_year++;
-		}
-		else
-		{
-			calendar.view_month++;
-		}
+		mc_calendar_shift_month(+1);
 		mc_calendar_clamp_day();
 	}
 	break;
@@ -466,15 +501,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	case MC_CLOCK_CALENDAR_PREV_MONTH:
 	{
 		APP_DBG_SIG("MC_CLOCK_CALENDAR_PREV_MONTH\n");
-		if (calendar.view_month == 1)
-		{
-			calendar.view_month = 12;
-			calendar.view_year--;
-		}
-		else
-		{
-			calendar.view_month--;
-		}
+		mc_calendar_shift_month(-1);
 		mc_calendar_clamp_day();
 	}
 	break;
@@ -522,19 +549,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 
 		if (calendar.mode == MC_CAL_MODE_MONTH)
 		{
-			calendar.current_event = 255;
-
-			for (uint8_t i = 0; i < calendar.total_events; i++)
-			{
-				if (calendar.events[i].year == calendar.view_year &&
-				    calendar.events[i].month == calendar.view_month &&
-				    calendar.events[i].day == calendar.selected_day)
-				{
-					calendar.current_event = i;
-					break;
-				}
-			}
-
+			calendar.current_event = mc_calendar_find_on_day(-1, +1);
 			calendar.scroll_offset = 0;
 			calendar.mode = MC_CAL_MODE_LIST;
 
@@ -549,6 +564,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.editing_event = calendar.current_event;
 			calendar.editing_field = MC_CAL_FIELD_YEAR;
 			calendar.is_new_event = 0;
+			calendar_edit_backup = calendar.events[calendar.editing_event];
 
 			calendar.mode = MC_CAL_MODE_EDIT;
 
@@ -576,16 +592,24 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 
 			calendar.total_events--;
 
-			if (calendar.total_events == 0)
+			/* Select the next event of the same day (it slid into del), else
+			 * the previous one; with none left, go back to the month view. */
+			calendar.current_event = mc_calendar_find_on_day((int16_t)del - 1, +1);
+			if (calendar.current_event == 255)
 			{
-				calendar.current_event = 255;
-				calendar.mode = MC_CAL_MODE_MONTH;
-				mc_clock_calendar_save_to_eeprom();
-				break;
+				calendar.current_event = mc_calendar_find_on_day(del, -1);
 			}
 
-			if (calendar.current_event >= calendar.total_events)
-				calendar.current_event = calendar.total_events - 1;
+			calendar.is_new_event = 0;
+
+			if (calendar.current_event == 255)
+			{
+				calendar.mode = MC_CAL_MODE_MONTH;
+			}
+			else
+			{
+				calendar.mode = MC_CAL_MODE_LIST;
+			}
 
 			mc_calendar_scroll_to_event();
 			mc_clock_calendar_save_to_eeprom();
@@ -611,7 +635,12 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		{
 			/* Finished editing */
 
-			calendar.events[calendar.editing_event].alarm_fired = 0;
+			mc_calendar_event_t* ev = &calendar.events[calendar.editing_event];
+			ev->alarm_fired = 0;
+
+			calendar.view_year = ev->year;
+			calendar.view_month = ev->month;
+			calendar.selected_day = ev->day;
 
 			calendar.current_event = calendar.editing_event;
 			calendar.scroll_offset = 0;
@@ -651,16 +680,16 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			}
 			else
 			{
-				/* Move to next month */
-				task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_NEXT_MONTH);
+				mc_calendar_shift_month(+1);
 				calendar.selected_day = 1;
 			}
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
-			if (calendar.current_event + 1 < calendar.total_events)
+			uint8_t next = mc_calendar_find_on_day(calendar.current_event, +1);
+			if (calendar.current_event < calendar.total_events && next != 255)
 			{
-				calendar.current_event++;
+				calendar.current_event = next;
 				mc_calendar_scroll_to_event();
 			}
 		}
@@ -684,19 +713,15 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			}
 			else
 			{
-				/* Move to previous month */
-				task_post_pure_msg(MC_CLOCK_CALENDAR_ID, MC_CLOCK_CALENDAR_PREV_MONTH);
+				/* Last day of the previous month */
+				mc_calendar_shift_month(-1);
 				calendar.selected_day =
 				    mc_calendar_days_in_month(calendar.view_month, calendar.view_year);
 			}
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
-			if (calendar.total_events == 0)
-			{
-				break;
-			}
-			if (calendar.current_event == 255)
+			if (calendar.current_event >= calendar.total_events)
 			{
 				/* no event on this day -> create new event */
 				task_post_pure_msg(
@@ -706,9 +731,10 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				break;
 			}
 
-			if (calendar.current_event > 0)
+			uint8_t prev = mc_calendar_find_on_day(calendar.current_event, -1);
+			if (prev != 255)
 			{
-				calendar.current_event--;
+				calendar.current_event = prev;
 				mc_calendar_scroll_to_event();
 			}
 		}
@@ -725,7 +751,20 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		}
 		else if (calendar.mode == MC_CAL_MODE_EDIT)
 		{
+			if (calendar.is_new_event)
+			{
+				/* Abandoned new event: drop it (it was never saved) */
+				calendar.total_events--;
+				calendar.is_new_event = 0;
+				calendar.current_event = mc_calendar_find_on_day(-1, +1);
+			}
+			else if (calendar.editing_event < calendar.total_events)
+			{
+				calendar.events[calendar.editing_event] = calendar_edit_backup;
+			}
+
 			calendar.mode = MC_CAL_MODE_LIST;
+			mc_calendar_scroll_to_event();
 		}
 
 	}
