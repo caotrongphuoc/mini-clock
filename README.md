@@ -32,9 +32,9 @@
 | File | Description |
 | --- | --- |
 | [README.md](README.md) | Project overview, hardware, clock features, controls, and objects. |
-| [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Naming, ownership rules, code style, build and flash, the UART debug shell, and commit conventions. |
-| [docs/02-design-sequence-object.md](docs/02-design-sequence-object.md) | Owned state and message sequences for RTC, Time, Stopwatch, Timer, Alarm, World Clock, Calendar, and the ringing page. |
-| [docs/03-design-sequence-runtime.md](docs/03-design-sequence-runtime.md) | Runtime flow from boot and button input to objects, the one-second tick, ringing, and screen rendering. |
+| [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Naming conventions, code style and clang-format setup, commit messages, and document naming. |
+| [docs/02-design-sequence-object.md](docs/02-design-sequence-object.md) | Owned state and signal sequences of RTC, Time, Stopwatch, Timer, Alarm, World Clock, Calendar, and Ringing. |
+| [docs/03-design-sequence-runtime.md](docs/03-design-sequence-runtime.md) | Clock start, running and ringing flows, task ownership, button processing, and scheduling notes. |
 
 ## Introduction
 
@@ -235,8 +235,6 @@ The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means ho
   </tr>
 </table>
 <p align="center"><strong><em>Figure 7:</em></strong> Ringing screen</p>
-
-> **Note:** The release build compiles the console output out. To inspect a running clock, see the [UART debug shell](docs/01-guide-coding-rules.md#v-uart-debug-shell).
 
 ### IV. Basic Clock Sequence Logic
 
