@@ -1,4 +1,5 @@
 #include "scr_clock_calendar.h"
+#include "mc_clock_date.h"
 
 #include "mc_clock_calendar.h"
 #include "task_list.h"
@@ -39,22 +40,6 @@ static const char* const DOW_NAME[7] = {
 };
 
 /*****************************************************************************/
-/* View helper — weekday of 1st of month (0=Mon … 6=Sun)           			 */
-/*****************************************************************************/
-
-static uint8_t first_weekday_of_month(uint8_t month, uint16_t year)
-{
-	/* Tomohiko Sakamoto's algorithm, returns 0=Sun … 6=Sat              */
-	/* We remap to 0=Mon … 6=Sun                                         */
-	static const int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
-	if (month < 3)
-		year--;
-	int dow = (year + year / 4 - year / 100 + year / 400 + t[month - 1] + 1) % 7;
-	/* 0=Sun → convert to 0=Mon: Sun becomes 6, others shift left */
-	return (uint8_t)((dow + 6) % 7);
-}
-
-/*****************************************************************************/
 /* View — Monthly grid                                                        */
 /*****************************************************************************/
 
@@ -62,16 +47,17 @@ static uint8_t first_weekday_of_month(uint8_t month, uint16_t year)
  * Grid geometry: 7 columns × 18 px = 126 px (1 px margin each side)
  * Rows: 9 px tall, up to 5 visible at once (scroll for month-6)
  */
-#define CAL_COL_W    18
-#define CAL_COL_CENTER(c) (10 + (c) * CAL_COL_W)
-#define CAL_ROW_H    9
-#define CAL_GRID_Y   19
+#define CAL_COL_W 18
+#define CAL_COL_CENTER(c) (10 + (c)*CAL_COL_W)
+#define CAL_ROW_H 9
+#define CAL_GRID_Y 19
 
 static void view_scr_calendar_month(const mc_calendar_state_t* st)
 {
 	char buf[16];
-	uint8_t first_dow = first_weekday_of_month(st->view_month, st->view_year);
-	uint8_t days_in_m = mc_calendar_days_in_month(st->view_month, st->view_year);
+	/* Grid column of the 1st: 0 = Monday ... 6 = Sunday */
+	uint8_t first_dow = mc_clock_date_weekday(st->view_year, st->view_month, 1) - RTC_WEEKDAY_MON;
+	uint8_t days_in_m = mc_clock_date_days_in_month(st->view_year, st->view_month);
 	uint8_t selected_cell = first_dow + (st->selected_day - 1);
 	uint8_t selected_row = selected_cell / 7;
 
@@ -416,7 +402,6 @@ static void view_scr_clock_calendar()
 		view_scr_calendar_month(&st);
 		break;
 	}
-
 }
 
 void scr_clock_calendar_handle(ak_msg_t* msg)

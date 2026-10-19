@@ -8,6 +8,7 @@
 #include "task_mc_rtc.h"
 
 #include "rtc.h"
+#include "mc_clock_date.h"
 
 /*****************************************************************************/
 /* Variable Declaration - MC RTC task */
@@ -29,26 +30,6 @@ static uint8_t rtc_pending_time_tries; /* 0 = nothing pending */
 static mc_clock_rtc_set_alarm_req_t rtc_pending_alarm;
 static uint8_t rtc_pending_alarm_op;
 static uint8_t rtc_pending_alarm_tries;
-
-/*****************************************************************************/
-/* Private helpers - MC RTC task */
-/*****************************************************************************/
-static uint8_t mc_clock_rtc_days_in_month(uint16_t year, uint8_t month)
-{
-	static const uint8_t days[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-	if (month < 1 || month > 12)
-	{
-		return 31;
-	}
-
-	if (month == 2 && (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0))
-	{
-		return 29;
-	}
-
-	return days[month];
-}
 
 /* A retry happens one tick later, so the requested time moves on by 1 s */
 static void mc_clock_rtc_advance_one_second(mc_clock_rtc_set_time_req_t* req)
@@ -73,7 +54,7 @@ static void mc_clock_rtc_advance_one_second(mc_clock_rtc_set_time_req_t* req)
 
 	req->date.weekday = (req->date.weekday >= RTC_WEEKDAY_SUN) ? RTC_WEEKDAY_MON : req->date.weekday + 1;
 
-	if (++req->date.date <= mc_clock_rtc_days_in_month(req->date.year, req->date.month))
+	if (++req->date.date <= mc_clock_date_days_in_month(req->date.year, req->date.month))
 	{
 		return;
 	}

@@ -10,7 +10,7 @@
 /* Ringing is shown by one screen for every source. The source object plays
  * the first sound and posts AC_DISPLAY_SHOW_RINGING; the ringing screen
  * repeats the sound, times out, and posts the source's dismiss signal. */
-#define MC_CLOCK_RING_REPEAT_S  (5)
+#define MC_CLOCK_RING_REPEAT_S (5)
 #define MC_CLOCK_RING_TIMEOUT_S (60)
 
 typedef enum

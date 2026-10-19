@@ -8,11 +8,15 @@
 static uint8_t setting_display_location_choose;
 
 static const uint8_t setting_bright_value[SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER] = {
-    0x20, 0x80, 0xCF,
+    0x20,
+    0x80,
+    0xCF,
 };
 
 static const char* const setting_bright_label[SCR_CLOCK_SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER] = {
-    "[LO]", "[MD]", "[HI]",
+    "[LO]",
+    "[MD]",
+    "[HI]",
 };
 
 static const char* const setting_display_item_name[SCR_CLOCK_SETTING_DISPLAY_ITEM_NUMBER] = {

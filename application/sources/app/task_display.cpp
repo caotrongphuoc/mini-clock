@@ -12,10 +12,12 @@
 
 scr_mng_t scr_mng_app;
 
-void task_display(ak_msg_t* msg) {
+void task_display(ak_msg_t* msg)
+{
 	/* Alarm, timer and calendar can ring on any screen, so switch here rather than in every
 	 * screen handler. */
-	if (msg->sig == AC_DISPLAY_SHOW_RINGING) {
+	if (msg->sig == AC_DISPLAY_SHOW_RINGING)
+	{
 		scr_clock_ringing_enter(msg);
 	}
 

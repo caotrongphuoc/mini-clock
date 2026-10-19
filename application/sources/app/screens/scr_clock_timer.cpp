@@ -207,7 +207,6 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	}
 	break;
 
-
 	// This is to start the timer
 	case AC_DISPLAY_BUTON_LONG_MODE_PRESSED:
 	{

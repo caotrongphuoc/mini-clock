@@ -8,15 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <forward_list>
-#include <functional>
-#include <iterator>
-#include <vector>
-#include <deque>
-#include <queue>
-#include <array>
-#include <map>
-
 /* kernel include */
 #include "ak.h"
 #include "message.h"
@@ -52,9 +43,6 @@
 
 /* arduino include */
 #include "SPI.h"
-#include "WString.h"
-#include "HardwareSerial.h"
-#include "ArduinoJson.h"
 
 /* common include */
 #include "screen_manager.h"
@@ -65,14 +53,6 @@
 #include "mc_clock_world.h"
 #include "mc_clock_calendar.h"
 #include "mc_clock_alarm.h"
-
-/* ----------------------- Json includes ------------------------------------*/
-//#include "json.hpp"
-
-using namespace std;
-
-#define MBM_SERIAL_PORT           ( 2 )
-#define MBM_SERIAL_BAUDRATE       ( 9600 )
 
 #if defined(RELEASE)
 const char* app_run_mode = "RELEASE";

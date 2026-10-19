@@ -101,7 +101,6 @@ typedef struct
 	uint8_t mode; /* mc_calendar_mode_t          */
 
 	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
-	
 
 } mc_calendar_state_t;
 
@@ -148,8 +147,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg);
 
 void mc_clock_calendar_get_state(mc_calendar_state_t* state);
 
-uint8_t mc_calendar_days_in_month(uint8_t month, uint16_t year);
-
 uint8_t mc_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
 
 void mc_clock_calendar_sync(void);
@@ -157,7 +154,7 @@ void mc_clock_calendar_sync(void);
 /* Persistent bank stored in EEPROM (total + events array) */
 typedef struct
 {
-	uint8_t             total_events;
+	uint8_t total_events;
 	mc_calendar_event_t events[MC_CALENDAR_MAX_EVENTS];
 } mc_calendar_bank_t;
 

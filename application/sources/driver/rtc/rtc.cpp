@@ -141,9 +141,7 @@ uint8_t rtc_set_alarm_a(const rtc_time_t* time, uint8_t weekday)
 	data[1] = rtc_pcf85063a_bin_to_bcd(time->min);
 	data[2] = rtc_pcf85063a_bin_to_bcd(time->hour);
 	data[3] = RTC_PCF85063A_ALARM_DISABLE;
-	data[4] = (weekday == RTC_ALARM_ANY_WEEKDAY) ?
-	    RTC_PCF85063A_ALARM_DISABLE :
-	    rtc_pcf85063a_weekday_to_reg(weekday);
+	data[4] = (weekday == RTC_ALARM_ANY_WEEKDAY) ? RTC_PCF85063A_ALARM_DISABLE : rtc_pcf85063a_weekday_to_reg(weekday);
 
 	if (rtc_pcf85063a_write_regs(RTC_PCF85063A_REG_ALARM, data, sizeof(data)) == 0)
 	{

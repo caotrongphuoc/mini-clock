@@ -111,7 +111,7 @@ make -C application flash dev=/dev/ttyUSB0       # flash through the AK bootload
 
 The application starts at `0x08003000`, after the AK bootloader and the shared boot partition.
 Before handing off a change, run a clean build, check `git diff --check`, and note the Flash and RAM
-usage (release build: Flash 74,768 / 118,784 bytes, RAM 13,324 / 16,384 bytes).
+usage (release build: Flash 74,696 / 118,784 bytes, RAM 13,324 / 16,384 bytes).
 
 ## V. UART debug shell
 

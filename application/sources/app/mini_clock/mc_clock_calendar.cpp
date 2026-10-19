@@ -4,14 +4,15 @@
 #include "eeprom.h"
 #include "app_eeprom.h"
 #include "mc_clock_ring.h"
+#include "mc_clock_date.h"
 
 #define MC_CALENDAR_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_calendar_bank_t))
 
 typedef struct
 {
-	uint32_t           magic_number;
+	uint32_t magic_number;
 	mc_calendar_bank_t data;
-	uint8_t            check_sum;
+	uint8_t check_sum;
 } mc_calendar_eeprom_t;
 
 const char* const MC_CAL_REPEAT_NAME[MC_CAL_REPEAT_MAX] =
@@ -32,29 +33,6 @@ const char* const MC_CAL_CAT_NAME[MC_CAL_CAT_MAX] = {
 
 /* Variable Declaration                                                       */
 static mc_calendar_state_t calendar;
-
-/* Helper - days in month (leap year aware)                                  */
-uint8_t mc_calendar_days_in_month(uint8_t month, uint16_t year)
-{
-	static const uint8_t days_table[13] =
-	    {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-	if (month < 1 || month > 12)
-	{
-		return 30;
-	}
-
-	if (month == 2)
-	{
-		uint8_t is_leap = ((year % 4 == 0) &&
-		                   (year % 100 != 0 || year % 400 == 0))
-		                      ? 1
-		                      : 0;
-		return is_leap ? 29 : 28;
-	}
-
-	return days_table[month];
-}
 
 /* Helper - check if any event on a day*/
 uint8_t mc_calendar_has_event_on_day(
@@ -90,8 +68,7 @@ static void mc_calendar_sync_today(void)
 /* Helper - clamp selected_day to valid range for current view month         */
 static void mc_calendar_clamp_day(void)
 {
-	uint8_t max_day = mc_calendar_days_in_month(
-	    calendar.view_month, calendar.view_year);
+	uint8_t max_day = mc_clock_date_days_in_month(calendar.view_year, calendar.view_month);
 	if (calendar.selected_day < 1)
 	{
 		calendar.selected_day = 1;
@@ -216,7 +193,7 @@ static void mc_calendar_field_change(int8_t delta)
 				ev->year--;
 		}
 		/* Re-clamp day */
-		days = mc_calendar_days_in_month(ev->month, ev->year);
+		days = mc_clock_date_days_in_month(ev->year, ev->month);
 		if (ev->day > days)
 			ev->day = days;
 		break;
@@ -230,13 +207,13 @@ static void mc_calendar_field_change(int8_t delta)
 		{
 			ev->month = (ev->month == 1) ? 12 : ev->month - 1;
 		}
-		days = mc_calendar_days_in_month(ev->month, ev->year);
+		days = mc_clock_date_days_in_month(ev->year, ev->month);
 		if (ev->day > days)
 			ev->day = days;
 		break;
 
 	case MC_CAL_FIELD_DAY:
-		days = mc_calendar_days_in_month(ev->month, ev->year);
+		days = mc_clock_date_days_in_month(ev->year, ev->month);
 		if (delta > 0)
 		{
 			ev->day = (ev->day % days) + 1;
@@ -410,8 +387,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		calendar.scroll_offset = 0;
 		calendar.is_new_event = 0;
 		calendar.ringing = 0;
-
-
 	}
 	break;
 
@@ -552,7 +527,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.current_event = mc_calendar_find_on_day(-1, +1);
 			calendar.scroll_offset = 0;
 			calendar.mode = MC_CAL_MODE_LIST;
-
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
 		{
@@ -567,7 +541,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar_edit_backup = calendar.events[calendar.editing_event];
 
 			calendar.mode = MC_CAL_MODE_EDIT;
-
 		}
 	}
 	break;
@@ -672,8 +645,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 		else if (calendar.mode == MC_CAL_MODE_MONTH)
 		{
 			/* In month view UP increments selected day */
-			uint8_t max_day = mc_calendar_days_in_month(
-			    calendar.view_month, calendar.view_year);
+			uint8_t max_day = mc_clock_date_days_in_month(calendar.view_year, calendar.view_month);
 			if (calendar.selected_day < max_day)
 			{
 				calendar.selected_day++;
@@ -716,7 +688,7 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 				/* Last day of the previous month */
 				mc_calendar_shift_month(-1);
 				calendar.selected_day =
-				    mc_calendar_days_in_month(calendar.view_month, calendar.view_year);
+				    mc_clock_date_days_in_month(calendar.view_year, calendar.view_month);
 			}
 		}
 		else if (calendar.mode == MC_CAL_MODE_LIST)
@@ -766,7 +738,6 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 			calendar.mode = MC_CAL_MODE_LIST;
 			mc_calendar_scroll_to_event();
 		}
-
 	}
 	break;
 

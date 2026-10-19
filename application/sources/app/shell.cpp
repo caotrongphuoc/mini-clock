@@ -44,6 +44,7 @@
 #include "buzzer.h"
 #include "rtc.h"
 #include "task_mc_rtc.h"
+#include "mc_clock_date.h"
 #include "mc_clock_alarm.h"
 #include "mc_clock_calendar.h"
 
@@ -981,16 +982,6 @@ int32_t shell_btn(uint8_t* argv) {
 	return 0;
 }
 
-/* Day of week for the Gregorian calendar, 1 = Monday .. 7 = Sunday. */
-static uint8_t shell_rtc_weekday(uint16_t year, uint8_t month, uint8_t day) {
-	static const uint8_t offset[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
-	if (month < 3) {
-		year--;
-	}
-	uint8_t dow = (year + year / 4 - year / 100 + year / 400 + offset[month - 1] + day) % 7; /* 0 = Sunday */
-	return (dow == 0) ? RTC_WEEKDAY_SUN : dow;
-}
-
 /* rtc g                     : print raw RTC time (Vietnam local, UTC+7)
  * rtc s YYYYMMDD hhmmss     : set raw RTC date and time through the RTC task */
 int32_t shell_rtc(uint8_t* argv) {
@@ -1027,7 +1018,7 @@ int32_t shell_rtc(uint8_t* argv) {
 			break;
 		}
 
-		req.date.weekday = shell_rtc_weekday(req.date.year, req.date.month, req.date.date);
+		req.date.weekday = mc_clock_date_weekday(req.date.year, req.date.month, req.date.date);
 		req.apply_time = 1;
 		req.apply_date = 1;
 

@@ -2,6 +2,7 @@
 
 #include "buzzer.h"
 #include "mc_clock_world.h"
+#include "mc_clock_date.h"
 static mc_clock_time_state_t clock_state;
 static uint8_t clock_chime_enabled;
 
@@ -14,18 +15,6 @@ void mc_clock_time_get_state(mc_clock_time_state_t* state)
 void mc_clock_time_set_chime_enabled(uint8_t enabled)
 {
 	clock_chime_enabled = enabled ? 1 : 0;
-}
-
-static uint8_t days_in_month(uint16_t year, uint8_t month)
-{
-	const uint8_t days[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	if (month < 1 || month > 12) return 30;
-	if (month == 2)
-	{
-		uint8_t is_leap = ((year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)) ? 1 : 0;
-		return is_leap ? 29 : 28;
-	}
-	return days[month];
 }
 
 void mc_clock_time_adjust_timezone(const rtc_time_t* in_time, const rtc_date_t* in_date, int16_t offset_minutes, rtc_time_t* out_time, rtc_date_t* out_date)
@@ -42,7 +31,7 @@ void mc_clock_time_adjust_timezone(const rtc_time_t* in_time, const rtc_date_t* 
 		out_date->date++;
 		out_date->weekday = (out_date->weekday == 7) ? 1 : out_date->weekday + 1;
 
-		uint8_t max_days = days_in_month(out_date->year, out_date->month);
+		uint8_t max_days = mc_clock_date_days_in_month(out_date->year, out_date->month);
 		if (out_date->date > max_days)
 		{
 			out_date->date = 1;
@@ -72,7 +61,7 @@ void mc_clock_time_adjust_timezone(const rtc_time_t* in_time, const rtc_date_t* 
 				out_date->month = 12;
 				out_date->year--;
 			}
-			out_date->date = days_in_month(out_date->year, out_date->month);
+			out_date->date = mc_clock_date_days_in_month(out_date->year, out_date->month);
 		}
 	}
 

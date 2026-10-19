@@ -5,9 +5,9 @@ mc_clock_setting_t clock_setting_data;
 
 typedef struct
 {
-	uint32_t           magic_number;
+	uint32_t magic_number;
 	mc_clock_setting_t data;
-	uint8_t            check_sum;
+	uint8_t check_sum;
 } mc_clock_setting_eeprom_t;
 
 #define MC_CLOCK_SETTING_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_setting_t))
@@ -27,7 +27,7 @@ uint8_t mc_clock_eeprom_checksum(uint8_t* data, uint32_t size)
 void mc_clock_eeprom_update_checksum(uint32_t* magic_number, uint8_t* check_sum, uint32_t check_sum_size)
 {
 	*magic_number = MC_CLOCK_EEPROM_MAGIC_NUMBER;
-	*check_sum    = mc_clock_eeprom_checksum((uint8_t*)magic_number, check_sum_size);
+	*check_sum = mc_clock_eeprom_checksum((uint8_t*)magic_number, check_sum_size);
 }
 
 bool mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_t check_sum_size)
@@ -41,13 +41,13 @@ bool mc_clock_eeprom_is_valid(uint32_t* magic_number, uint8_t check_sum, uint32_
 /*****************************************************************************/
 void mc_clock_setting_set_default(mc_clock_setting_t* data)
 {
-	data->format_12h    = MC_CLOCK_SETTING_FORMAT_12H_DEFAULT;
-	data->sound_off     = MC_CLOCK_SETTING_SOUND_OFF_DEFAULT;
+	data->format_12h = MC_CLOCK_SETTING_FORMAT_12H_DEFAULT;
+	data->sound_off = MC_CLOCK_SETTING_SOUND_OFF_DEFAULT;
 	data->chime_enabled = MC_CLOCK_SETTING_CHIME_DEFAULT;
-	data->alarm_sound   = MC_CLOCK_SETTING_ALARM_SOUND_DEFAULT;
+	data->alarm_sound = MC_CLOCK_SETTING_ALARM_SOUND_DEFAULT;
 	data->world_country = MC_CLOCK_SETTING_WORLD_COUNTRY_DEFAULT;
-	data->bright_level  = MC_CLOCK_SETTING_BRIGHT_LEVEL_DEFAULT;
-	data->color_invert  = MC_CLOCK_SETTING_COLOR_INVERT_DEFAULT;
+	data->bright_level = MC_CLOCK_SETTING_BRIGHT_LEVEL_DEFAULT;
+	data->color_invert = MC_CLOCK_SETTING_COLOR_INVERT_DEFAULT;
 }
 
 bool mc_clock_setting_read(mc_clock_setting_t* data)

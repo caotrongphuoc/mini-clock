@@ -1,4 +1,5 @@
 #include "scr_clock_time_setting.h"
+#include "mc_clock_date.h"
 
 #include "task_mc_rtc.h"
 #include "mc_clock_world.h"
@@ -26,55 +27,14 @@ uint16_t scr_clock_time_setting_wrap_value(uint16_t value, uint16_t min, uint16_
 	return (value <= min) ? max : value - 1;
 }
 
-uint8_t scr_clock_time_setting_days_in_month(uint16_t year, uint8_t month)
-{
-	const uint8_t days[] = {
-	    31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-	if (month == 0 || month > 12)
-	{
-		return 31;
-	}
-
-	if (month == 2 && ((year % 4) == 0))
-	{
-		return 29;
-	}
-
-	return days[month - 1];
-}
-
 void scr_clock_time_setting_fix_date()
 {
-	uint8_t max_date = scr_clock_time_setting_days_in_month(setting_date.year, setting_date.month);
+	uint8_t max_date = mc_clock_date_days_in_month(setting_date.year, setting_date.month);
 
 	if (setting_date.date > max_date)
 	{
 		setting_date.date = max_date;
 	}
-}
-
-uint8_t scr_clock_time_setting_weekday(uint16_t year, uint8_t month, uint8_t date)
-{
-	if (month < 3)
-	{
-		month += 12;
-		year--;
-	}
-
-	uint16_t weekday = (date + ((13 * (month + 1)) / 5) + year + (year / 4) - (year / 100) + (year / 400)) % 7;
-
-	if (weekday == 0)
-	{
-		return RTC_WEEKDAY_SUN - 1;
-	}
-
-	if (weekday == 1)
-	{
-		return RTC_WEEKDAY_SUN;
-	}
-
-	return weekday - 1;
 }
 
 void scr_clock_time_setting_change_value(int8_t step)
@@ -97,8 +57,8 @@ void scr_clock_time_setting_change_value(int8_t step)
 	case SCR_CLOCK_TIME_SETTING_DATE:
 		setting_date.date = scr_clock_time_setting_wrap_value(setting_date.date,
 		                                                      1,
-		                                                      scr_clock_time_setting_days_in_month(setting_date.year,
-		                                                                                           setting_date.month),
+		                                                      mc_clock_date_days_in_month(setting_date.year,
+		                                                                                  setting_date.month),
 		                                                      step);
 		break;
 
@@ -305,9 +265,9 @@ void scr_clock_time_setting_handle(ak_msg_t* msg)
 		scr_clock_time_setting_fix_date();
 		if (setting_date.weekday < RTC_WEEKDAY_MON || setting_date.weekday > RTC_WEEKDAY_SUN)
 		{
-			setting_date.weekday = scr_clock_time_setting_weekday(setting_date.year,
-			                                                      setting_date.month,
-			                                                      setting_date.date);
+			setting_date.weekday = mc_clock_date_weekday(setting_date.year,
+			                                             setting_date.month,
+			                                             setting_date.date);
 		}
 	}
 	break;

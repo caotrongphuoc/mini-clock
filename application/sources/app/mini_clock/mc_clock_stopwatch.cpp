@@ -73,16 +73,6 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	}
 	break;
 
-	case MC_CLOCK_STOPWATCH_CLEAR_LAP:
-	{
-		APP_DBG_SIG("MC_CLOCK_STOPWATCH_CLEAR_LAP\n");
-		if (mc_clock_stopwatch_state.running == 0)
-		{
-			mc_clock_stopwatch_state.lap_count = 0;
-		}
-	}
-	break;
-
 	default:
 		break;
 	}

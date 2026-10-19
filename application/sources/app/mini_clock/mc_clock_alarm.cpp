@@ -10,9 +10,9 @@
 
 typedef struct
 {
-	uint32_t              magic_number;
+	uint32_t magic_number;
 	mc_clock_alarm_bank_t data;
-	uint8_t               check_sum;
+	uint8_t check_sum;
 } mc_clock_alarm_eeprom_t;
 
 /* Other modules request a re-arm with MC_CLOCK_ALARM_REARM */
@@ -82,12 +82,12 @@ void mc_clock_alarm_load_from_eeprom(void)
 
 void mc_clock_alarm_set_sound(uint8_t sound)
 {
-    mc_clock_alarm_state.sound = (buzzer_sound_t)sound;
+	mc_clock_alarm_state.sound = (buzzer_sound_t)sound;
 }
 
 uint8_t mc_clock_alarm_get_sound(void)
 {
-    return (uint8_t)mc_clock_alarm_state.sound;
+	return (uint8_t)mc_clock_alarm_state.sound;
 }
 /* Public API - Clock alarm object */
 void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
@@ -146,8 +146,6 @@ static void mc_clock_alarm_apply_rtc(void)
 	                     (uint8_t*)&req,
 	                     sizeof(req));
 }
-
-
 
 /* Copy of the alarm being edited, restored when the edit is abandoned */
 static mc_clock_alarm_item_t mc_clock_alarm_edit_backup;
