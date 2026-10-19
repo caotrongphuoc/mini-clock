@@ -35,7 +35,7 @@ Main runtime flow:
 2. Signals are posted into the AK message pool.
 3. The AK scheduler dispatches messages to destination task handlers, higher priority first.
 4. Each task updates only the state it owns.
-5. After a change that a screen shows, the object posts `AC_DISPLAY_RENDER_SCREEN`; the screen render reads the latest object state through `mc_clock_<object>_get_state()` and refreshes the display buffer.
+5. After a change that a screen shows, the object posts `AC_DISPLAY_RENDER_SCREEN`; the screen render reads the latest object state (`mc_clock_<object>`) and refreshes the display buffer.
 
 ### High Level Architecture
 
@@ -268,12 +268,12 @@ Timer and Calendar ring through the same path with `RING_SOURCE_TIMER` / `MC_CLO
 |---|---|---|---|---|
 | `MC_CLOCK_RTC_ID` | 5 | Every RTC write, 1 s service tick, alarm flag polling | Pending time write, pending alarm write | `MC_CLOCK_RTC_TICK_1S`, `MC_CLOCK_RTC_SET_TIME_REQ`, `MC_CLOCK_RTC_SET_ALARM_REQ`, `MC_CLOCK_RTC_CLEAR_ALARM_REQ` |
 | `AC_TASK_DISPLAY_ID` | 4 | Screen manager, render scheduling, button routing, screen ticks, ringing page | Current screen state, screen view state (menu item, lap scroll, animation) | All `AC_DISPLAY_*` signals, `MC_CLOCK_TIME_TICK`, `MC_CLOCK_STOPWATCH_TICK`, `MC_CLOCK_STOPWATCH_HELP`, `MC_CLOCK_TIMER_TICK` |
-| `MC_CLOCK_TIME_ID` | 4 | Local time of the selected city, chime | `clock_state`, chime flag | `MC_CLOCK_TIME_SETUP`, `MC_CLOCK_TIME_UPDATE` |
-| `MC_CLOCK_STOPWATCH_ID` | 4 | Elapsed time and laps | `mc_clock_stopwatch_state` | `MC_CLOCK_STOPWATCH_SETUP`, `MC_CLOCK_STOPWATCH_START_PAUSE`, `MC_CLOCK_STOPWATCH_RESET`, `MC_CLOCK_STOPWATCH_UPDATE`, `MC_CLOCK_STOPWATCH_LAP` |
-| `MC_CLOCK_TIMER_ID` | 4 | Countdown | `mc_clock_timer_state` | `MC_CLOCK_TIMER_SETUP`, `MC_CLOCK_TIMER_START_PAUSE`, `MC_CLOCK_TIMER_RESET`, `MC_CLOCK_TIMER_INC`, `MC_CLOCK_TIMER_DEC`, `MC_CLOCK_TIMER_UPDATE`, `MC_CLOCK_TIMER_DISMISS`, `MC_CLOCK_TIMER_NEXT_FIELD`, `MC_CLOCK_TIMER_PREV_FIELD` |
-| `MC_CLOCK_ALARM_ID` | 4 | Alarm list, editor, EEPROM bank, next RTC alarm | `mc_clock_alarm_state`, edit backup | `MC_CLOCK_ALARM_SETUP`, `MC_CLOCK_ALARM_SELECT`, `MC_CLOCK_ALARM_UP`, `MC_CLOCK_ALARM_DOWN`, `MC_CLOCK_ALARM_NEXT_FIELD`, `MC_CLOCK_ALARM_TOGGLE`, `MC_CLOCK_ALARM_DELETE`, `MC_CLOCK_ALARM_FIRED`, `MC_CLOCK_ALARM_DISMISS`, `MC_CLOCK_ALARM_ADD_NEW`, `MC_CLOCK_ALARM_REARM` |
-| `MC_CLOCK_WORLD_CLOCK_ID` | 4 | Selected city (display time zone) | `world_clock` | `MC_CLOCK_WORLD_CLOCK_SETUP`, `MC_CLOCK_WORLD_CLOCK_UPDATE`, `MC_CLOCK_WORLD_CLOCK_SELECT_UP`, `MC_CLOCK_WORLD_CLOCK_SELECT_DOWN` |
-| `MC_CLOCK_CALENDAR_ID` | 4 | Month view, day list, editor, EEPROM bank, reminders | `calendar`, edit backup | `MC_CLOCK_CALENDAR_SETUP`, `MC_CLOCK_CALENDAR_UPDATE`, `MC_CLOCK_CALENDAR_NEXT_MONTH`, `MC_CLOCK_CALENDAR_PREV_MONTH`, `MC_CLOCK_CALENDAR_ADD_EVENT`, `MC_CLOCK_CALENDAR_EDIT_EVENT`, `MC_CLOCK_CALENDAR_BACK`, `MC_CLOCK_CALENDAR_DELETE_EVENT`, `MC_CLOCK_CALENDAR_NEXT_FIELD`, `MC_CLOCK_CALENDAR_FIELD_INC`, `MC_CLOCK_CALENDAR_FIELD_DEC`, `MC_CLOCK_CALENDAR_ALARM_FIRED`, `MC_CLOCK_CALENDAR_ALARM_DISMISS` |
+| `MC_CLOCK_TIME_ID` | 4 | Local time of the selected city, chime | `mc_clock_time`, chime flag | `MC_CLOCK_TIME_SETUP`, `MC_CLOCK_TIME_UPDATE` |
+| `MC_CLOCK_STOPWATCH_ID` | 4 | Elapsed time and laps | `mc_clock_stopwatch` | `MC_CLOCK_STOPWATCH_SETUP`, `MC_CLOCK_STOPWATCH_START_PAUSE`, `MC_CLOCK_STOPWATCH_RESET`, `MC_CLOCK_STOPWATCH_UPDATE`, `MC_CLOCK_STOPWATCH_LAP` |
+| `MC_CLOCK_TIMER_ID` | 4 | Countdown | `mc_clock_timer` | `MC_CLOCK_TIMER_SETUP`, `MC_CLOCK_TIMER_START_PAUSE`, `MC_CLOCK_TIMER_RESET`, `MC_CLOCK_TIMER_INC`, `MC_CLOCK_TIMER_DEC`, `MC_CLOCK_TIMER_UPDATE`, `MC_CLOCK_TIMER_DISMISS`, `MC_CLOCK_TIMER_NEXT_FIELD`, `MC_CLOCK_TIMER_PREV_FIELD` |
+| `MC_CLOCK_ALARM_ID` | 4 | Alarm list, editor, EEPROM bank, next RTC alarm | `mc_clock_alarm`, edit backup | `MC_CLOCK_ALARM_SETUP`, `MC_CLOCK_ALARM_SELECT`, `MC_CLOCK_ALARM_UP`, `MC_CLOCK_ALARM_DOWN`, `MC_CLOCK_ALARM_NEXT_FIELD`, `MC_CLOCK_ALARM_TOGGLE`, `MC_CLOCK_ALARM_DELETE`, `MC_CLOCK_ALARM_FIRED`, `MC_CLOCK_ALARM_DISMISS`, `MC_CLOCK_ALARM_ADD_NEW`, `MC_CLOCK_ALARM_REARM` |
+| `MC_CLOCK_WORLD_CLOCK_ID` | 4 | Selected city (display time zone) | `mc_clock_world_clock` | `MC_CLOCK_WORLD_CLOCK_SETUP`, `MC_CLOCK_WORLD_CLOCK_UPDATE`, `MC_CLOCK_WORLD_CLOCK_SELECT_UP`, `MC_CLOCK_WORLD_CLOCK_SELECT_DOWN` |
+| `MC_CLOCK_CALENDAR_ID` | 4 | Month view, day list, editor, EEPROM bank, reminders | `mc_clock_calendar`, edit backup | `MC_CLOCK_CALENDAR_SETUP`, `MC_CLOCK_CALENDAR_UPDATE`, `MC_CLOCK_CALENDAR_NEXT_MONTH`, `MC_CLOCK_CALENDAR_PREV_MONTH`, `MC_CLOCK_CALENDAR_ADD_EVENT`, `MC_CLOCK_CALENDAR_EDIT_EVENT`, `MC_CLOCK_CALENDAR_BACK`, `MC_CLOCK_CALENDAR_DELETE_EVENT`, `MC_CLOCK_CALENDAR_NEXT_FIELD`, `MC_CLOCK_CALENDAR_FIELD_INC`, `MC_CLOCK_CALENDAR_FIELD_DEC`, `MC_CLOCK_CALENDAR_ALARM_FIRED`, `MC_CLOCK_CALENDAR_ALARM_DISMISS` |
 
 The kernel timer task (`TASK_TIMER_TICK_ID`, priority 7) delivers every timer signal above. The console runs from a polling task that only runs when every message queue is empty.
 
@@ -309,7 +309,7 @@ Important runtime characteristics:
 - A sender posts a message; it does not directly execute the destination task handler.
 - Handlers run to completion (RTC): a task processes one signal fully before pulling the next.
 - Higher priority runs first: `MC_CLOCK_RTC_ID` (5) runs before the clock objects and the display task (4).
-- Clock logic is decoupled through signals: a screen never changes an object's state directly, it posts a signal and reads a copy back with `mc_clock_<object>_get_state()`.
+- Clock logic is decoupled through signals: a screen never changes an object's state directly, it posts a signal and reads the object instance (`mc_clock_<object>`, `extern` in the object's header) when it renders. Only the owning handler writes an instance.
 - The screen manager renders after every display message, at most once per `AC_DISPLAY_MINIMUM_SCREEN_RENDER_INTERVAL_MS` (50 ms); a render that comes too early is scheduled with a one-shot `AC_DISPLAY_RENDER_SCREEN`.
 - The display renders a button or tick message before the object it posted to has run. That object posts `AC_DISPLAY_RENDER_SCREEN` after its change, so the view shows the new state at once instead of on the next tick.
 - Each screen arms its own ticks on `SCREEN_ENTRY` and removes them before every `SCREEN_TRAN`. The menu and World Clock slide timers (`AC_DISPLAY_MENU_ANIM_TICK`, `AC_DISPLAY_WORLD_ANIM_TICK`, 50 ms) run only while an item slides, so an idle screen renders once a second.
@@ -319,4 +319,4 @@ Important runtime characteristics:
 - Ringing is a display-task hand-off: `task_display` passes `AC_DISPLAY_SHOW_RINGING` to `scr_clock_ringing_enter()` before the active screen sees it, so any screen can be interrupted.
 - A common-message payload is at most 64 bytes; every handler checks `get_data_len_common_msg()` before it casts `get_data_common_msg()`.
 - Two short blocking operations remain inside handlers. EEPROM writes program the data EEPROM byte by byte; saving the calendar bank (about 150 bytes) can cut short a console reply sent right after it. I2C transfers to the RTC take about a millisecond; the driver checks the BUSY flag first, recovers a stuck bus, and backs off for 5 s after a failure.
-- RAM is 13.3 of 16 KB: about 3 KB of stack and a 2 KB heap. Object state copies on the stack are kept small and the world clock table lives in flash. The message pools hold 32 pure, 8 common and 8 dynamic messages, with 16 timers (`ak.cfg.mk`).
+- RAM is 13.3 of 16 KB: about 3 KB of stack and a 2 KB heap. Screens read object state in place instead of copying it to the stack, and the world clock table lives in flash. The message pools hold 32 pure, 8 common and 8 dynamic messages, with 16 timers (`ak.cfg.mk`).

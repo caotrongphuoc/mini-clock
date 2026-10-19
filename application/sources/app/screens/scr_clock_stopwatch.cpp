@@ -74,7 +74,6 @@ static void scr_clock_stopwatch_draw_help()
 
 void view_scr_clock_stopwatch()
 {
-	mc_clock_stopwatch_state_t state;
 	char time_buf[12];
 
 	view_render.clear();
@@ -86,8 +85,7 @@ void view_scr_clock_stopwatch()
 		return;
 	}
 
-	mc_clock_stopwatch_get_state(&state);
-	scr_clock_stopwatch_format_time(time_buf, state.elapsed_ms);
+	scr_clock_stopwatch_format_time(time_buf, mc_clock_stopwatch.elapsed_ms);
 
 	view_render.setTextColor(WHITE);
 
@@ -95,7 +93,7 @@ void view_scr_clock_stopwatch()
 
 	draw_center_text(time_buf, 24, 2);
 
-	if (state.running)
+	if (mc_clock_stopwatch.running)
 	{
 		view_render.fillRoundRect(
 		    box_x,
@@ -120,12 +118,12 @@ void view_scr_clock_stopwatch()
 
 	// RUN
 	view_render.setCursor(box_x + 2, run_y + 2);
-	view_render.setTextColor(state.running ? BLACK : WHITE);
+	view_render.setTextColor(mc_clock_stopwatch.running ? BLACK : WHITE);
 	view_render.print("RUN");
 
 	// STOP
 	view_render.setCursor(box_x + 2, stop_y + 2);
-	view_render.setTextColor(state.running ? WHITE : BLACK);
+	view_render.setTextColor(mc_clock_stopwatch.running ? WHITE : BLACK);
 	view_render.print("STOP");
 
 	uint8_t start = stopwatch_lap_scroll;
@@ -134,14 +132,14 @@ void view_scr_clock_stopwatch()
 	{
 		uint8_t lap_index = start + i;
 
-		if (lap_index >= state.lap_count)
+		if (lap_index >= mc_clock_stopwatch.lap_count)
 		{
 			break;
 		}
 
 		char lap_buf[20];
 
-		uint32_t lap_time = state.lap_ms[lap_index];
+		uint32_t lap_time = mc_clock_stopwatch.lap_ms[lap_index];
 
 		uint32_t sec = lap_time / 1000;
 		uint32_t ms = (lap_time % 1000) / 10;
@@ -249,10 +247,7 @@ void scr_clock_stopwatch_handle(ak_msg_t* msg)
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 		stopwatch_help = 0;
 
-		mc_clock_stopwatch_state_t state;
-		mc_clock_stopwatch_get_state(&state);
-
-		if (stopwatch_lap_scroll + 2 < state.lap_count)
+		if (stopwatch_lap_scroll + 2 < mc_clock_stopwatch.lap_count)
 		{
 			stopwatch_lap_scroll++;
 		}

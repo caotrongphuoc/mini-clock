@@ -18,9 +18,9 @@ typedef struct
 	uint32_t elapsed_ms;
 	uint8_t lap_count;
 	uint32_t lap_ms[STOPWATCH_LAP_NUMBER];
-} mc_clock_stopwatch_state_t;
+} mc_clock_stopwatch_t;
 
 void mc_clock_stopwatch_handle(ak_msg_t* msg);
-void mc_clock_stopwatch_get_state(mc_clock_stopwatch_state_t* state);
+extern mc_clock_stopwatch_t mc_clock_stopwatch;
 
 #endif //__MC_CLOCK_STOPWATCH_H__

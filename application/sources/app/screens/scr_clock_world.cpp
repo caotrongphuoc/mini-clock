@@ -24,7 +24,7 @@ static uint8_t world_anim_running = 0;
 static uint8_t world_old_country = 0;
 
 static void draw_world_clock_content(
-    mc_clock_world_clock_state_t* state,
+    const mc_clock_world_clock_t* state,
     int16_t offset)
 {
 	const mc_clock_world_clock_country_t* country =
@@ -91,17 +91,13 @@ static void draw_world_clock_content(
 
 static void view_scr_clock_world()
 {
-	mc_clock_world_clock_state_t state;
-
-	mc_clock_world_clock_get_state(&state);
-
 	view_render.clear();
 
 	view_render.setTextColor(WHITE);
 
 	if (world_anim_running)
 	{
-		mc_clock_world_clock_state_t old_state = state;
+		mc_clock_world_clock_t old_state = mc_clock_world_clock;
 
 		old_state.selected_country = world_old_country;
 
@@ -116,7 +112,7 @@ static void view_scr_clock_world()
 		 * new screen enters
 		 */
 		draw_world_clock_content(
-		    &state,
+		    &mc_clock_world_clock,
 		    world_anim_offset + world_anim_direction * LCD_WIDTH);
 
 		/*
@@ -133,7 +129,7 @@ static void view_scr_clock_world()
 	else
 	{
 		draw_world_clock_content(
-		    &state,
+		    &mc_clock_world_clock,
 		    0);
 	}
 
@@ -204,20 +200,9 @@ void scr_clock_world_handle(
 
 	case AC_DISPLAY_BUTTON_DOWN_PRESSED:
 	{
-		mc_clock_world_clock_state_t state;
+		world_old_country = mc_clock_world_clock.selected_country;
 
-		mc_clock_world_clock_get_state(&state);
-
-		world_old_country = state.selected_country;
-
-		if (rand() & 1)
-		{
-			world_start_animation(-1);
-		}
-		else
-		{
-			world_start_animation(-1);
-		}
+		world_start_animation(-1);
 
 		task_post_pure_msg(
 		    MC_CLOCK_WORLD_CLOCK_ID,
@@ -231,25 +216,10 @@ void scr_clock_world_handle(
 	case AC_DISPLAY_BUTTON_UP_PRESSED:
 	{
 
-		mc_clock_world_clock_state_t state;
-
-		mc_clock_world_clock_get_state(&state);
-
 		world_old_country =
-		    state.selected_country;
+		    mc_clock_world_clock.selected_country;
 
-		/*
-		 * UP:
-		 * random enter from top or left
-		 */
-		if (rand() & 1)
-		{
-			world_start_animation(1);
-		}
-		else
-		{
-			world_start_animation(1);
-		}
+		world_start_animation(1);
 
 		task_post_pure_msg(
 		    MC_CLOCK_WORLD_CLOCK_ID,

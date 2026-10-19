@@ -60,12 +60,11 @@ typedef struct
 	// Alarm storage
 	mc_clock_alarm_item_t alarm[ALARM_NUMBER];
 
-} mc_clock_alarm_state_t;
+} mc_clock_alarm_t;
 
 void mc_clock_alarm_handle(ak_msg_t* msg);
 
-void mc_clock_alarm_get_state(
-    mc_clock_alarm_state_t* state);
+extern mc_clock_alarm_t mc_clock_alarm;
 
 void mc_clock_alarm_set_sound(uint8_t sound);
 uint8_t mc_clock_alarm_get_sound(void);

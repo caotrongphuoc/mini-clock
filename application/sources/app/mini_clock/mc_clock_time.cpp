@@ -3,14 +3,10 @@
 #include "buzzer.h"
 #include "mc_clock_world.h"
 #include "mc_clock_date.h"
-static mc_clock_time_state_t clock_state;
-static uint8_t clock_chime_enabled;
 
-/* Public API - Clock object */
-void mc_clock_time_get_state(mc_clock_time_state_t* state)
-{
-	*state = clock_state;
-}
+/* Variable Declaration - Clock time object */
+mc_clock_time_t mc_clock_time;
+static uint8_t clock_chime_enabled;
 
 void mc_clock_time_set_chime_enabled(uint8_t enabled)
 {
@@ -75,7 +71,7 @@ void mc_clock_time_update_local(void)
 	rtc_date_t raw_date;
 	rtc_get_time(&raw_time);
 	rtc_get_date(&raw_date);
-	mc_clock_time_adjust_timezone(&raw_time, &raw_date, mc_clock_world_clock_get_selected_offset_minutes(), &clock_state.time, &clock_state.date);
+	mc_clock_time_adjust_timezone(&raw_time, &raw_date, mc_clock_world_clock_get_selected_offset_minutes(), &mc_clock_time.time, &mc_clock_time.date);
 }
 
 void mc_clock_time_handle(ak_msg_t* msg)
@@ -95,8 +91,8 @@ void mc_clock_time_handle(ak_msg_t* msg)
 		mc_clock_time_update_local();
 
 		if (clock_chime_enabled &&
-		    clock_state.time.min == 0 &&
-		    clock_state.time.sec == 0)
+		    mc_clock_time.time.min == 0 &&
+		    mc_clock_time.time.sec == 0)
 		{
 			BUZZER_PlaySound(BUZZER_SOUND_CLICK);
 		}

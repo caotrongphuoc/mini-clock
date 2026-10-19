@@ -1,6 +1,7 @@
 #include "mc_clock_world.h"
 
-static mc_clock_world_clock_state_t world_clock;
+/* Variable Declaration - World clock object */
+mc_clock_world_clock_t mc_clock_world_clock;
 
 /*
  * RTC is set to Vietnam local time (UTC+7).
@@ -46,11 +47,11 @@ static const mc_clock_world_clock_country_t world_clock_country[WORLD_CLOCK_COUN
 /* Init - World Clock                                                         */
 void mc_clock_world_clock_init(void)
 {
-	world_clock.selected_country = 0;
+	mc_clock_world_clock.selected_country = 0;
 
-	world_clock.hour = 0;
-	world_clock.minute = 0;
-	world_clock.second = 0;
+	mc_clock_world_clock.hour = 0;
+	mc_clock_world_clock.minute = 0;
+	mc_clock_world_clock.second = 0;
 }
 
 void mc_clock_world_clock_select_country(
@@ -58,14 +59,8 @@ void mc_clock_world_clock_select_country(
 {
 	if (index < WORLD_CLOCK_COUNTRY_NUMBER)
 	{
-		world_clock.selected_country = index;
+		mc_clock_world_clock.selected_country = index;
 	}
-}
-
-void mc_clock_world_clock_get_state(
-    mc_clock_world_clock_state_t* state)
-{
-	*state = world_clock;
 }
 
 const mc_clock_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index)
@@ -80,7 +75,7 @@ const mc_clock_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t i
 
 int16_t mc_clock_world_clock_get_selected_offset_minutes(void)
 {
-	return world_clock_country[world_clock.selected_country].timezone_offset_minutes;
+	return world_clock_country[mc_clock_world_clock.selected_country].timezone_offset_minutes;
 }
 
 static void mc_clock_world_clock_update(void)
@@ -92,15 +87,15 @@ static void mc_clock_world_clock_update(void)
 	int32_t total_minutes = (int32_t)now.hour * 60 + (int32_t)now.min;
 
 	/* Apply offset for selected country */
-	int16_t offset = world_clock_country[world_clock.selected_country].timezone_offset_minutes;
+	int16_t offset = world_clock_country[mc_clock_world_clock.selected_country].timezone_offset_minutes;
 	total_minutes += offset;
 
 	/* Wrap around 24 hours (1440 minutes) */
 	total_minutes = ((total_minutes % 1440) + 1440) % 1440;
 
-	world_clock.hour = (uint8_t)(total_minutes / 60);
-	world_clock.minute = (uint8_t)(total_minutes % 60);
-	world_clock.second = now.sec;
+	mc_clock_world_clock.hour = (uint8_t)(total_minutes / 60);
+	mc_clock_world_clock.minute = (uint8_t)(total_minutes % 60);
+	mc_clock_world_clock.second = now.sec;
 }
 
 void mc_clock_world_clock_handle(
@@ -129,15 +124,15 @@ void mc_clock_world_clock_handle(
 	case MC_CLOCK_WORLD_CLOCK_SELECT_UP:
 	{
 		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_UP\n");
-		if (world_clock.selected_country < WORLD_CLOCK_COUNTRY_NUMBER - 1)
+		if (mc_clock_world_clock.selected_country < WORLD_CLOCK_COUNTRY_NUMBER - 1)
 		{
-			world_clock.selected_country++;
+			mc_clock_world_clock.selected_country++;
 		}
 		else
 		{
-			world_clock.selected_country = 0;
+			mc_clock_world_clock.selected_country = 0;
 		}
-		clock_setting_data.world_country = world_clock.selected_country;
+		clock_setting_data.world_country = mc_clock_world_clock.selected_country;
 		mc_clock_setting_write(&clock_setting_data);
 		mc_clock_world_clock_update();
 		/* Alarm times are stored in the selected country's local time;
@@ -149,15 +144,15 @@ void mc_clock_world_clock_handle(
 	case MC_CLOCK_WORLD_CLOCK_SELECT_DOWN:
 	{
 		APP_DBG_SIG("MC_CLOCK_WORLD_CLOCK_SELECT_DOWN\n");
-		if (world_clock.selected_country > 0)
+		if (mc_clock_world_clock.selected_country > 0)
 		{
-			world_clock.selected_country--;
+			mc_clock_world_clock.selected_country--;
 		}
 		else
 		{
-			world_clock.selected_country = WORLD_CLOCK_COUNTRY_NUMBER - 1;
+			mc_clock_world_clock.selected_country = WORLD_CLOCK_COUNTRY_NUMBER - 1;
 		}
-		clock_setting_data.world_country = world_clock.selected_country;
+		clock_setting_data.world_country = mc_clock_world_clock.selected_country;
 		mc_clock_setting_write(&clock_setting_data);
 		mc_clock_world_clock_update();
 		/* Alarm times are stored in the selected country's local time;

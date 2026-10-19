@@ -385,20 +385,16 @@ int32_t shell_fatal(uint8_t* argv) {
 int32_t shell_stt(uint8_t* argv) {
 	(void)argv;
 
-	mc_clock_alarm_state_t alarm;
-	mc_clock_alarm_get_state(&alarm);
 	LOGIN_PRINT("alarm total:%u cur:%u scroll:%u edit:%u idx:%u field:%u ring:%u\n",
-	            alarm.total_alarm, alarm.current_item, alarm.scroll_offset,
-	            alarm.editing, alarm.editing_alarm, alarm.editing_field, alarm.ringing);
-	for (uint8_t i = 0; i < alarm.total_alarm && i < ALARM_NUMBER; i++) {
-		LOGIN_PRINT("  %u. %02u:%02u %s\n", i + 1, alarm.alarm[i].hour, alarm.alarm[i].minute, alarm.alarm[i].enabled ? "on" : "off");
+	            mc_clock_alarm.total_alarm, mc_clock_alarm.current_item, mc_clock_alarm.scroll_offset,
+	            mc_clock_alarm.editing, mc_clock_alarm.editing_alarm, mc_clock_alarm.editing_field, mc_clock_alarm.ringing);
+	for (uint8_t i = 0; i < mc_clock_alarm.total_alarm && i < ALARM_NUMBER; i++) {
+		LOGIN_PRINT("  %u. %02u:%02u %s\n", i + 1, mc_clock_alarm.alarm[i].hour, mc_clock_alarm.alarm[i].minute, mc_clock_alarm.alarm[i].enabled ? "on" : "off");
 	}
 
-	mc_clock_calendar_state_t cal;
-	mc_clock_calendar_get_state(&cal);
 	LOGIN_PRINT("calendar total:%u mode:%u view:%04u-%02u-%02u cur:%u scroll:%u edit:%u new:%u ring:%u\n",
-	            cal.total_events, cal.mode, cal.view_year, cal.view_month, cal.selected_day,
-	            cal.current_event, cal.scroll_offset, cal.editing_event, cal.is_new_event, cal.ringing);
+	            mc_clock_calendar.total_events, mc_clock_calendar.mode, mc_clock_calendar.view_year, mc_clock_calendar.view_month, mc_clock_calendar.selected_day,
+	            mc_clock_calendar.current_event, mc_clock_calendar.scroll_offset, mc_clock_calendar.editing_event, mc_clock_calendar.is_new_event, mc_clock_calendar.ringing);
 	return 0;
 }
 

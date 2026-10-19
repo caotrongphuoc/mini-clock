@@ -52,11 +52,9 @@ static void scr_clock_ringing_print_center(const char* text, uint8_t y, uint8_t 
 
 void view_scr_clock_ringing()
 {
-	mc_clock_time_state_t state;
 	char time_text[9];
 
-	mc_clock_time_get_state(&state);
-	scr_clock_main_format_time(time_text, &state.time, scr_clock_setting_is_12h_format());
+	scr_clock_main_format_time(time_text, &mc_clock_time.time, scr_clock_setting_is_12h_format());
 
 	view_render.clear();
 
@@ -134,7 +132,7 @@ void scr_clock_ringing_enter(ak_msg_t* msg)
 	}
 
 	/* A second source pre-empts the first; the first one is dismissed so it
-	 * does not stay latched in its ringing state. */
+	 * does not stay latched in its ringing mc_clock_time. */
 	scr_clock_ringing_dismiss_source();
 
 	ringing_source = req->source;

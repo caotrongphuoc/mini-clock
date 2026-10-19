@@ -150,17 +150,15 @@ void scr_clock_menu_draw_indicator()
 
 void scr_clock_menu_draw_time()
 {
-	mc_clock_time_state_t state;
 	char time_text[12];
 	uint8_t use_12h = scr_clock_setting_is_12h_format();
 
-	mc_clock_time_get_state(&state);
-	scr_clock_main_format_time(time_text, &state.time, use_12h);
+	scr_clock_main_format_time(time_text, &mc_clock_time.time, use_12h);
 
 	if (use_12h)
 	{
 		time_text[8] = ' ';
-		time_text[9] = (state.time.hour >= 12) ? 'P' : 'A';
+		time_text[9] = (mc_clock_time.time.hour >= 12) ? 'P' : 'A';
 		time_text[10] = 'M';
 		time_text[11] = '\0';
 	}

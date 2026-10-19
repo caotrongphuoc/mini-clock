@@ -20,7 +20,7 @@ typedef struct
 static void mc_clock_alarm_apply_rtc(void);
 
 /* Variable Declaration - Clock alarm object */
-static mc_clock_alarm_state_t mc_clock_alarm_state = {
+mc_clock_alarm_t mc_clock_alarm = {
     .current_item = 0,
     .scroll_offset = 0,
     .total_alarm = 0,
@@ -41,10 +41,10 @@ void mc_clock_alarm_save_to_eeprom(void)
 	mc_clock_alarm_eeprom_t stored;
 
 	memset(&eeprom_data, 0, sizeof(eeprom_data));
-	eeprom_data.data.total_alarm = mc_clock_alarm_state.total_alarm;
+	eeprom_data.data.total_alarm = mc_clock_alarm.total_alarm;
 	for (uint8_t i = 0; i < ALARM_NUMBER; i++)
 	{
-		eeprom_data.data.alarm[i] = mc_clock_alarm_state.alarm[i];
+		eeprom_data.data.alarm[i] = mc_clock_alarm.alarm[i];
 	}
 
 	mc_clock_eeprom_update_checksum(&eeprom_data.magic_number, &eeprom_data.check_sum, ALARM_CHECKSUM_SIZE);
@@ -67,14 +67,14 @@ void mc_clock_alarm_load_from_eeprom(void)
 	if (ret == EEPROM_DRIVER_OK &&
 	    mc_clock_eeprom_is_valid(&eeprom_data.magic_number, eeprom_data.check_sum, ALARM_CHECKSUM_SIZE))
 	{
-		mc_clock_alarm_state.total_alarm = eeprom_data.data.total_alarm;
-		if (mc_clock_alarm_state.total_alarm > ALARM_NUMBER)
+		mc_clock_alarm.total_alarm = eeprom_data.data.total_alarm;
+		if (mc_clock_alarm.total_alarm > ALARM_NUMBER)
 		{
-			mc_clock_alarm_state.total_alarm = 0;
+			mc_clock_alarm.total_alarm = 0;
 		}
 		for (uint8_t i = 0; i < ALARM_NUMBER; i++)
 		{
-			mc_clock_alarm_state.alarm[i] = eeprom_data.data.alarm[i];
+			mc_clock_alarm.alarm[i] = eeprom_data.data.alarm[i];
 		}
 	}
 
@@ -83,19 +83,13 @@ void mc_clock_alarm_load_from_eeprom(void)
 
 void mc_clock_alarm_set_sound(uint8_t sound)
 {
-	mc_clock_alarm_state.sound = (buzzer_sound_t)sound;
+	mc_clock_alarm.sound = (buzzer_sound_t)sound;
 }
 
 uint8_t mc_clock_alarm_get_sound(void)
 {
-	return (uint8_t)mc_clock_alarm_state.sound;
+	return (uint8_t)mc_clock_alarm.sound;
 }
-/* Public API - Clock alarm object */
-void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state)
-{
-	*state = mc_clock_alarm_state;
-}
-
 static void mc_clock_alarm_apply_rtc(void)
 {
 	rtc_time_t now;
@@ -109,15 +103,15 @@ static void mc_clock_alarm_apply_rtc(void)
 
 	int16_t offset_minutes = mc_clock_world_clock_get_selected_offset_minutes();
 
-	for (uint8_t i = 0; i < mc_clock_alarm_state.total_alarm; i++)
+	for (uint8_t i = 0; i < mc_clock_alarm.total_alarm; i++)
 	{
-		if (!mc_clock_alarm_state.alarm[i].enabled)
+		if (!mc_clock_alarm.alarm[i].enabled)
 		{
 			continue;
 		}
 
 		// Convert local country alarm time to base RTC timezone time
-		int32_t a_min_rtc = (int32_t)mc_clock_alarm_state.alarm[i].hour * 60 + mc_clock_alarm_state.alarm[i].minute - offset_minutes;
+		int32_t a_min_rtc = (int32_t)mc_clock_alarm.alarm[i].hour * 60 + mc_clock_alarm.alarm[i].minute - offset_minutes;
 		a_min_rtc = ((a_min_rtc % 1440) + 1440) % 1440;
 
 		uint16_t delta = (a_min_rtc > now_min) ? (a_min_rtc - now_min) : (24 * 60 - (now_min - a_min_rtc));
@@ -161,73 +155,73 @@ static void mc_clock_alarm_commit(void)
 
 static void mc_clock_alarm_begin_edit(uint8_t index, uint8_t is_new)
 {
-	mc_clock_alarm_state.editing = 1;
-	mc_clock_alarm_state.editing_alarm = index;
-	mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
-	mc_clock_alarm_edit_backup = mc_clock_alarm_state.alarm[index];
+	mc_clock_alarm.editing = 1;
+	mc_clock_alarm.editing_alarm = index;
+	mc_clock_alarm.editing_field = ALARM_EDIT_HOUR;
+	mc_clock_alarm_edit_backup = mc_clock_alarm.alarm[index];
 	mc_clock_alarm_editing_new = is_new;
 }
 
 static void mc_clock_alarm_scroll_to_current(void)
 {
-	if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.total_alarm)
+	if (mc_clock_alarm.current_item >= mc_clock_alarm.total_alarm)
 	{
 		return;
 	}
 
-	if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.scroll_offset)
+	if (mc_clock_alarm.current_item < mc_clock_alarm.scroll_offset)
 	{
-		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item;
+		mc_clock_alarm.scroll_offset = mc_clock_alarm.current_item;
 	}
-	else if (mc_clock_alarm_state.current_item >= mc_clock_alarm_state.scroll_offset + ALARM_LIST_VISIBLE)
+	else if (mc_clock_alarm.current_item >= mc_clock_alarm.scroll_offset + ALARM_LIST_VISIBLE)
 	{
-		mc_clock_alarm_state.scroll_offset = mc_clock_alarm_state.current_item - (ALARM_LIST_VISIBLE - 1);
+		mc_clock_alarm.scroll_offset = mc_clock_alarm.current_item - (ALARM_LIST_VISIBLE - 1);
 	}
 }
 
 static void mc_clock_alarm_delete_current()
 {
-	uint8_t index = mc_clock_alarm_state.editing_alarm;
+	uint8_t index = mc_clock_alarm.editing_alarm;
 
-	if (index >= mc_clock_alarm_state.total_alarm)
+	if (index >= mc_clock_alarm.total_alarm)
 	{
 		return;
 	}
 
 	// Move all alarms after it one position up
-	for (uint8_t i = index; i + 1 < mc_clock_alarm_state.total_alarm; i++)
+	for (uint8_t i = index; i + 1 < mc_clock_alarm.total_alarm; i++)
 	{
-		mc_clock_alarm_state.alarm[i] =
-		    mc_clock_alarm_state.alarm[i + 1];
+		mc_clock_alarm.alarm[i] =
+		    mc_clock_alarm.alarm[i + 1];
 	}
 
 	// Remove last item
-	mc_clock_alarm_state.total_alarm--;
+	mc_clock_alarm.total_alarm--;
 
 	// Fix selected item
-	if (mc_clock_alarm_state.current_item >=
-	    mc_clock_alarm_state.total_alarm)
+	if (mc_clock_alarm.current_item >=
+	    mc_clock_alarm.total_alarm)
 	{
-		if (mc_clock_alarm_state.total_alarm > 0)
+		if (mc_clock_alarm.total_alarm > 0)
 		{
-			mc_clock_alarm_state.current_item =
-			    mc_clock_alarm_state.total_alarm - 1;
+			mc_clock_alarm.current_item =
+			    mc_clock_alarm.total_alarm - 1;
 		}
 		else
 		{
-			mc_clock_alarm_state.current_item = 0;
+			mc_clock_alarm.current_item = 0;
 		}
 	}
 
-	mc_clock_alarm_state.editing = 0;
-	mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
+	mc_clock_alarm.editing = 0;
+	mc_clock_alarm.editing_field = ALARM_EDIT_HOUR;
 
 	mc_clock_alarm_commit();
 }
 
 static void mc_clock_alarm_stop_ringing(void)
 {
-	mc_clock_alarm_state.ringing = 0;
+	mc_clock_alarm.ringing = 0;
 	BUZZER_Disable();
 	/* Re-arm the RTC for the next enabled alarm */
 	mc_clock_alarm_apply_rtc();
@@ -242,24 +236,24 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		APP_DBG_SIG("MC_CLOCK_ALARM_SETUP\n");
 
 		/* The screen was left mid-edit: discard the unsaved change */
-		if (mc_clock_alarm_state.editing &&
-		    mc_clock_alarm_state.editing_alarm < mc_clock_alarm_state.total_alarm)
+		if (mc_clock_alarm.editing &&
+		    mc_clock_alarm.editing_alarm < mc_clock_alarm.total_alarm)
 		{
 			if (mc_clock_alarm_editing_new)
 			{
-				mc_clock_alarm_state.total_alarm--;
+				mc_clock_alarm.total_alarm--;
 			}
 			else
 			{
-				mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm] = mc_clock_alarm_edit_backup;
+				mc_clock_alarm.alarm[mc_clock_alarm.editing_alarm] = mc_clock_alarm_edit_backup;
 			}
 		}
 		mc_clock_alarm_editing_new = 0;
 
-		mc_clock_alarm_state.current_item = 0;
-		mc_clock_alarm_state.scroll_offset = 0;
-		mc_clock_alarm_state.editing = 0;
-		mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
+		mc_clock_alarm.current_item = 0;
+		mc_clock_alarm.scroll_offset = 0;
+		mc_clock_alarm.editing = 0;
+		mc_clock_alarm.editing_field = ALARM_EDIT_HOUR;
 	}
 	break;
 
@@ -267,9 +261,9 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_SELECT\n");
 
-		if (mc_clock_alarm_state.editing)
+		if (mc_clock_alarm.editing)
 		{
-			switch (mc_clock_alarm_state.editing_field)
+			switch (mc_clock_alarm.editing_field)
 			{
 			case ALARM_EDIT_DELETE:
 			{
@@ -279,14 +273,14 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 
 			case ALARM_EDIT_SAVE:
 			{
-				mc_clock_alarm_state.editing = 0;
+				mc_clock_alarm.editing = 0;
 				mc_clock_alarm_commit();
 			}
 			break;
 
 			default:
-				mc_clock_alarm_state.editing_field =
-				    (mc_clock_alarm_edit_field_t)(mc_clock_alarm_state.editing_field + 1);
+				mc_clock_alarm.editing_field =
+				    (mc_clock_alarm_edit_field_t)(mc_clock_alarm.editing_field + 1);
 				break;
 			}
 
@@ -294,19 +288,19 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		}
 
 		// Add New button
-		if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm)
+		if (mc_clock_alarm.current_item == mc_clock_alarm.total_alarm)
 		{
-			if (mc_clock_alarm_state.total_alarm < ALARM_NUMBER)
+			if (mc_clock_alarm.total_alarm < ALARM_NUMBER)
 			{
-				uint8_t new_alarm = mc_clock_alarm_state.total_alarm;
+				uint8_t new_alarm = mc_clock_alarm.total_alarm;
 
-				mc_clock_alarm_state.alarm[new_alarm].hour = ALARM_NEW_HOUR;
-				mc_clock_alarm_state.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
-				mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
+				mc_clock_alarm.alarm[new_alarm].hour = ALARM_NEW_HOUR;
+				mc_clock_alarm.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
+				mc_clock_alarm.alarm[new_alarm].enabled = 1;
 
-				mc_clock_alarm_state.total_alarm++;
+				mc_clock_alarm.total_alarm++;
 
-				mc_clock_alarm_state.current_item = new_alarm;
+				mc_clock_alarm.current_item = new_alarm;
 				mc_clock_alarm_scroll_to_current();
 
 				mc_clock_alarm_commit();
@@ -316,15 +310,15 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 		}
 
 		// Back button
-		if (mc_clock_alarm_state.current_item == mc_clock_alarm_state.total_alarm + 1)
+		if (mc_clock_alarm.current_item == mc_clock_alarm.total_alarm + 1)
 		{
 			break;
 		}
 
 		// Existing alarm selected
-		if (mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
+		if (mc_clock_alarm.current_item < mc_clock_alarm.total_alarm)
 		{
-			mc_clock_alarm_begin_edit(mc_clock_alarm_state.current_item, 0);
+			mc_clock_alarm_begin_edit(mc_clock_alarm.current_item, 0);
 		}
 	}
 	break;
@@ -332,12 +326,12 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_UP:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_UP\n");
-		if (mc_clock_alarm_state.editing)
+		if (mc_clock_alarm.editing)
 		{
 			mc_clock_alarm_item_t* alarm =
-			    &mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm];
+			    &mc_clock_alarm.alarm[mc_clock_alarm.editing_alarm];
 
-			switch (mc_clock_alarm_state.editing_field)
+			switch (mc_clock_alarm.editing_field)
 			{
 			case ALARM_EDIT_HOUR:
 				alarm->hour = (alarm->hour + 1) % 24;
@@ -358,13 +352,13 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			break;
 		}
 
-		if (mc_clock_alarm_state.current_item == 0)
+		if (mc_clock_alarm.current_item == 0)
 		{
-			mc_clock_alarm_state.current_item = mc_clock_alarm_state.total_alarm + 1;
+			mc_clock_alarm.current_item = mc_clock_alarm.total_alarm + 1;
 		}
 		else
 		{
-			mc_clock_alarm_state.current_item--;
+			mc_clock_alarm.current_item--;
 		}
 
 		mc_clock_alarm_scroll_to_current();
@@ -374,12 +368,12 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_DOWN:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_DOWN\n");
-		if (mc_clock_alarm_state.editing)
+		if (mc_clock_alarm.editing)
 		{
 			mc_clock_alarm_item_t* alarm =
-			    &mc_clock_alarm_state.alarm[mc_clock_alarm_state.editing_alarm];
+			    &mc_clock_alarm.alarm[mc_clock_alarm.editing_alarm];
 
-			switch (mc_clock_alarm_state.editing_field)
+			switch (mc_clock_alarm.editing_field)
 			{
 			case ALARM_EDIT_HOUR:
 				alarm->hour =
@@ -402,10 +396,10 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 			break;
 		}
 
-		mc_clock_alarm_state.current_item++;
-		if (mc_clock_alarm_state.current_item > mc_clock_alarm_state.total_alarm + 1)
+		mc_clock_alarm.current_item++;
+		if (mc_clock_alarm.current_item > mc_clock_alarm.total_alarm + 1)
 		{
-			mc_clock_alarm_state.current_item = 0;
+			mc_clock_alarm.current_item = 0;
 		}
 
 		mc_clock_alarm_scroll_to_current();
@@ -416,19 +410,19 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_NEXT_FIELD\n");
 
-		if (mc_clock_alarm_state.editing)
+		if (mc_clock_alarm.editing)
 		{
-			if (mc_clock_alarm_state.editing_field == ALARM_EDIT_SAVE)
+			if (mc_clock_alarm.editing_field == ALARM_EDIT_SAVE)
 			{
-				mc_clock_alarm_state.editing = 0;
-				mc_clock_alarm_state.editing_field = ALARM_EDIT_HOUR;
+				mc_clock_alarm.editing = 0;
+				mc_clock_alarm.editing_field = ALARM_EDIT_HOUR;
 
 				mc_clock_alarm_commit();
 			}
 			else
 			{
-				mc_clock_alarm_state.editing_field =
-				    (mc_clock_alarm_edit_field_t)(mc_clock_alarm_state.editing_field + 1);
+				mc_clock_alarm.editing_field =
+				    (mc_clock_alarm_edit_field_t)(mc_clock_alarm.editing_field + 1);
 			}
 		}
 	}
@@ -438,17 +432,17 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_ADD_NEW\n");
 
-		if (mc_clock_alarm_state.total_alarm < ALARM_NUMBER)
+		if (mc_clock_alarm.total_alarm < ALARM_NUMBER)
 		{
-			uint8_t new_alarm = mc_clock_alarm_state.total_alarm;
+			uint8_t new_alarm = mc_clock_alarm.total_alarm;
 
-			mc_clock_alarm_state.alarm[new_alarm].hour = ALARM_NEW_HOUR;
-			mc_clock_alarm_state.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
-			mc_clock_alarm_state.alarm[new_alarm].enabled = 1;
+			mc_clock_alarm.alarm[new_alarm].hour = ALARM_NEW_HOUR;
+			mc_clock_alarm.alarm[new_alarm].minute = ALARM_NEW_MINUTE;
+			mc_clock_alarm.alarm[new_alarm].enabled = 1;
 
-			mc_clock_alarm_state.total_alarm++;
+			mc_clock_alarm.total_alarm++;
 
-			mc_clock_alarm_state.current_item = new_alarm;
+			mc_clock_alarm.current_item = new_alarm;
 			mc_clock_alarm_scroll_to_current();
 
 			// enter editing immediately; saved only when the edit is confirmed
@@ -460,10 +454,10 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_TOGGLE:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_TOGGLE\n");
-		if (mc_clock_alarm_state.editing == 0 &&
-		    mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
+		if (mc_clock_alarm.editing == 0 &&
+		    mc_clock_alarm.current_item < mc_clock_alarm.total_alarm)
 		{
-			mc_clock_alarm_item_t* alarm = &mc_clock_alarm_state.alarm[mc_clock_alarm_state.current_item];
+			mc_clock_alarm_item_t* alarm = &mc_clock_alarm.alarm[mc_clock_alarm.current_item];
 			alarm->enabled = !alarm->enabled;
 			mc_clock_alarm_commit();
 		}
@@ -473,22 +467,22 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_DELETE:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_DELETE\n");
-		if (mc_clock_alarm_state.editing == 0 &&
-		    mc_clock_alarm_state.current_item < mc_clock_alarm_state.total_alarm)
+		if (mc_clock_alarm.editing == 0 &&
+		    mc_clock_alarm.current_item < mc_clock_alarm.total_alarm)
 		{
-			for (uint8_t i = mc_clock_alarm_state.current_item; i + 1 < mc_clock_alarm_state.total_alarm; i++)
+			for (uint8_t i = mc_clock_alarm.current_item; i + 1 < mc_clock_alarm.total_alarm; i++)
 			{
-				mc_clock_alarm_state.alarm[i] = mc_clock_alarm_state.alarm[i + 1];
+				mc_clock_alarm.alarm[i] = mc_clock_alarm.alarm[i + 1];
 			}
 
-			mc_clock_alarm_state.total_alarm--;
+			mc_clock_alarm.total_alarm--;
 
 			/* current_item now points at the next alarm (or "Add New");
 			 * keep the list window inside the shorter list. */
-			uint8_t max_offset = (mc_clock_alarm_state.total_alarm > ALARM_LIST_VISIBLE) ? (mc_clock_alarm_state.total_alarm - ALARM_LIST_VISIBLE) : 0;
-			if (mc_clock_alarm_state.scroll_offset > max_offset)
+			uint8_t max_offset = (mc_clock_alarm.total_alarm > ALARM_LIST_VISIBLE) ? (mc_clock_alarm.total_alarm - ALARM_LIST_VISIBLE) : 0;
+			if (mc_clock_alarm.scroll_offset > max_offset)
 			{
-				mc_clock_alarm_state.scroll_offset = max_offset;
+				mc_clock_alarm.scroll_offset = max_offset;
 			}
 			mc_clock_alarm_scroll_to_current();
 
@@ -500,14 +494,14 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	case MC_CLOCK_ALARM_FIRED:
 	{
 		APP_DBG_SIG("MC_CLOCK_ALARM_FIRED\n");
-		if (mc_clock_alarm_state.ringing)
+		if (mc_clock_alarm.ringing)
 		{
 			break;
 		}
 
-		mc_clock_alarm_state.ringing = 1;
-		BUZZER_PlaySound(mc_clock_alarm_state.sound);
-		mc_clock_ring_request(RING_SOURCE_ALARM, mc_clock_alarm_state.sound);
+		mc_clock_alarm.ringing = 1;
+		BUZZER_PlaySound(mc_clock_alarm.sound);
+		mc_clock_ring_request(RING_SOURCE_ALARM, mc_clock_alarm.sound);
 	}
 	break;
 

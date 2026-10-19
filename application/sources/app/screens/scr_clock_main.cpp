@@ -108,19 +108,17 @@ view_screen_t scr_clock_main = {
 
 void view_scr_clock_main()
 {
-	mc_clock_time_state_t state;
 	char time_text[9];
 	char date_text[11];
 
-	mc_clock_time_get_state(&state);
-	scr_clock_main_format_time(time_text, &state.time, scr_clock_setting_is_12h_format());
-	scr_clock_main_format_date(date_text, &state.date);
+	scr_clock_main_format_time(time_text, &mc_clock_time.time, scr_clock_setting_is_12h_format());
+	scr_clock_main_format_date(date_text, &mc_clock_time.date);
 
 	view_render.clear();
 	view_render.setTextColor(WHITE);
 
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
-	scr_clock_main_draw_weekdays(state.date.weekday, 1);
+	scr_clock_main_draw_weekdays(mc_clock_time.date.weekday, 1);
 
 	view_render.drawRoundRect(MAIN_TIME_FRAME_X,
 	                          MAIN_TIME_FRAME_Y,

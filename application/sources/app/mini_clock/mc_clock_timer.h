@@ -32,9 +32,9 @@ typedef struct
 	uint8_t finished;
 
 	uint8_t edit_field;
-} mc_clock_timer_state_t;
+} mc_clock_timer_t;
 
 void mc_clock_timer_handle(ak_msg_t* msg);
-void mc_clock_timer_get_state(mc_clock_timer_state_t* state);
+extern mc_clock_timer_t mc_clock_timer;
 
 #endif //__MC_CLOCK_TIMER_H__

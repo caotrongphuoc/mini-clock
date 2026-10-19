@@ -188,7 +188,7 @@ typedef struct
 } mc_clock_alarm_item_t;
 ```
 
-A message payload is named after the request it carries (`mc_clock_rtc_set_time_req_t`, `mc_clock_ring_req_t`). Types provided by the framework follow the same pattern (`ak_msg_t`, `view_screen_t`).
+The object's main state type is `mc_clock_<object>_t` (`mc_clock_alarm_t`, `mc_clock_calendar_t`). A message payload is named after the request it carries (`mc_clock_rtc_set_time_req_t`, `mc_clock_ring_req_t`). Types provided by the framework follow the same pattern (`ak_msg_t`, `view_screen_t`).
 
 ### 8. Functions
 
@@ -196,7 +196,7 @@ Use `lower_snake_case` with the module name as prefix, so that grepping the pref
 
 ```cpp
 void mc_clock_alarm_handle(ak_msg_t* msg);
-void mc_clock_alarm_get_state(mc_clock_alarm_state_t* state);
+void mc_clock_alarm_load_from_eeprom(void);
 void mc_clock_ring_request(uint8_t source, uint8_t sound);
 uint8_t mc_clock_date_weekday(uint16_t year, uint8_t month, uint8_t day);
 ```
@@ -207,16 +207,32 @@ Helpers used inside one `.cpp` only are `static` and keep the same prefix (`mc_c
 
 Use `lower_snake_case`. Do not start names with an underscore.
 
-- **Object state:** one `static` variable in the object's `.cpp`, changed only by that object's handler. Screens read a copy through `mc_clock_<object>_get_state()`.
+- **Object state:** one instance per object, named after the object (`mc_clock_<object>`, type `mc_clock_<object>_t`). Declare it `extern` in the object's header and define it exactly once in the object's `.cpp`. Only that object's handler writes it; screens and the shell read it directly to render.
+
+  ```cpp
+  // mc_clock_alarm.h
+  extern mc_clock_alarm_t mc_clock_alarm;
+
+  // mc_clock_alarm.cpp
+  mc_clock_alarm_t mc_clock_alarm = {
+      .current_item = 0,
+      ...
+  };
+  ```
+
+- **Module-internal variables:** declare `static` in the `.cpp`.
 
   ```cpp
   // mc_clock_alarm.cpp
-  static mc_clock_alarm_state_t mc_clock_alarm_state;
+  static mc_clock_alarm_item_t mc_clock_alarm_edit_backup;
+
+  // scr_clock_world.cpp
+  static uint8_t world_anim_running = 0;
   ```
 
 - **Constant tables:** `static const` so they stay in flash (the world clock city table, the menu bitmaps).
 
-- **Globals shared between modules:** declare `extern` in the header, define exactly once in the `.cpp` of the owning module.
+- **Other globals shared between modules:** the same rule, `extern` in the header and defined once in the `.cpp` of the owning module.
 
   ```cpp
   // mc_clock_calendar.h

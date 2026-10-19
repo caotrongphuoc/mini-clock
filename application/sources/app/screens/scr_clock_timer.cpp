@@ -43,11 +43,8 @@ static void scr_clock_timer_draw_help()
 
 void view_scr_clock_timer()
 {
-	mc_clock_timer_state_t timer_state;
 	char time_buf[16];
 	uint8_t progress = 0;
-
-	mc_clock_timer_get_state(&timer_state);
 
 	view_render.clear();
 	if (timer_help)
@@ -57,29 +54,26 @@ void view_scr_clock_timer()
 	}
 
 	xsprintf(time_buf, "%02u:%02u:%02u",
-	         timer_state.remaining_hour,
-	         timer_state.remaining_min,
-	         timer_state.remaining_sec);
+	         mc_clock_timer.remaining_hour,
+	         mc_clock_timer.remaining_min,
+	         mc_clock_timer.remaining_sec);
 
-	if (timer_state.set_min > 0)
+	uint32_t total =
+	    mc_clock_timer.set_hour * 3600UL +
+	    mc_clock_timer.set_min * 60UL +
+	    mc_clock_timer.set_sec;
+
+	uint32_t remain =
+	    mc_clock_timer.remaining_hour * 3600UL +
+	    mc_clock_timer.remaining_min * 60UL +
+	    mc_clock_timer.remaining_sec;
+
+	if (total > 0 && remain <= total)
 	{
-		uint32_t total =
-		    timer_state.set_hour * 3600UL +
-		    timer_state.set_min * 60UL +
-		    timer_state.set_sec;
-
-		uint32_t remain =
-		    timer_state.remaining_hour * 3600UL +
-		    timer_state.remaining_min * 60UL +
-		    timer_state.remaining_sec;
-
-		if (total > 0)
-		{
-			progress = ((total - remain) * 100UL) / total;
-		}
+		progress = ((total - remain) * 100UL) / total;
 	}
 
-	if (timer_state.finished)
+	if (mc_clock_timer.finished)
 	{
 		view_render.fillRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 		view_render.setTextColor(BLACK);
@@ -107,10 +101,10 @@ void view_scr_clock_timer()
 
 	view_render.setCursor(5, 52);
 	view_render.setTextSize(1);
-	view_render.print(timer_state.running ? "RUNNING" : "STOPPED");
+	view_render.print(mc_clock_timer.running ? "RUNNING" : "STOPPED");
 	view_render.setCursor(75, 52);
 
-	switch (timer_state.edit_field)
+	switch (mc_clock_timer.edit_field)
 	{
 	case TIMER_EDIT_HOUR:
 		view_render.print("HOUR");
@@ -127,11 +121,11 @@ void view_scr_clock_timer()
 
 	view_render.fillRect(5, 60, (progress * 118) / 100, 3, WHITE);
 
-	if (!timer_state.running)
+	if (!mc_clock_timer.running)
 	{
 		uint8_t x = 20;
 
-		switch (timer_state.edit_field)
+		switch (mc_clock_timer.edit_field)
 		{
 		case TIMER_EDIT_HOUR:
 			x = 20;
@@ -152,8 +146,6 @@ void view_scr_clock_timer()
 
 void scr_clock_timer_handle(ak_msg_t* msg)
 {
-	mc_clock_timer_state_t timer_state;
-
 	switch (msg->sig)
 	{
 	case SCREEN_ENTRY:
@@ -192,9 +184,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 		timer_help = 0;
-		mc_clock_timer_get_state(&timer_state);
-
-		if (timer_state.finished)
+		if (mc_clock_timer.finished)
 		{
 			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
 		}
@@ -242,8 +232,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_UP_PRESSED\n");
 		timer_help = 0;
-		mc_clock_timer_get_state(&timer_state);
-		if (timer_state.finished)
+		if (mc_clock_timer.finished)
 		{
 			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
 			break;
@@ -258,8 +247,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_DOWN_PRESSED\n");
 		timer_help = 0;
-		mc_clock_timer_get_state(&timer_state);
-		if (timer_state.finished)
+		if (mc_clock_timer.finished)
 		{
 			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_DISMISS);
 			break;
@@ -274,9 +262,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MODE + UP\n");
 		timer_help = 0;
-		mc_clock_timer_get_state(&timer_state);
-
-		if (!timer_state.running)
+		if (!mc_clock_timer.running)
 		{
 			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_NEXT_FIELD);
 		}
@@ -289,9 +275,7 @@ void scr_clock_timer_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("MODE + DOWN\n");
 		timer_help = 0;
-		mc_clock_timer_get_state(&timer_state);
-
-		if (!timer_state.running)
+		if (!mc_clock_timer.running)
 		{
 			task_post_pure_msg(MC_CLOCK_TIMER_ID, MC_CLOCK_TIMER_PREV_FIELD);
 		}

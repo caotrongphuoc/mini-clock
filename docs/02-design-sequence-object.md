@@ -86,7 +86,7 @@ sequenceDiagram
 
 ## III. Time Object Sequence
 
-Time owns the local time and date (`clock_state`) and the chime flag.
+Time owns the local time and date (`mc_clock_time`) and the chime flag.
 
 **Setup.** The Digital, Analog and Menu screens post `MC_CLOCK_TIME_SETUP` on `SCREEN_ENTRY`, which reads the time once, and arm a periodic `MC_CLOCK_TIME_TICK` on the display task every `MC_CLOCK_TIME_TICK_INTERVAL` (1000 ms).
 
@@ -119,7 +119,7 @@ sequenceDiagram
         Note right of Time: convert with the selected city offset<br/>chime at mm:ss == 00:00 when enabled
         Time-)Scr: AC_DISPLAY_RENDER_SCREEN
         deactivate Time
-        Note right of Scr: render reads mc_clock_time_get_state()
+        Note right of Scr: render reads mc_clock_time
     end
 
     Note over Scr: on leave, remove MC_CLOCK_TIME_TICK, then SCREEN_TRAN

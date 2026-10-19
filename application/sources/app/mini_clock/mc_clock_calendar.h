@@ -113,7 +113,7 @@ typedef struct
 
 	mc_clock_calendar_event_t events[CALENDAR_EVENT_NUMBER];
 
-} mc_clock_calendar_state_t;
+} mc_clock_calendar_t;
 
 /*****************************************************************************/
 /* Edit fields (used by editing_field)                                        */
@@ -156,7 +156,7 @@ void mc_clock_calendar_init(void);
 
 void mc_clock_calendar_handle(ak_msg_t* msg);
 
-void mc_clock_calendar_get_state(mc_clock_calendar_state_t* state);
+extern mc_clock_calendar_t mc_clock_calendar;
 
 uint8_t mc_clock_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
 

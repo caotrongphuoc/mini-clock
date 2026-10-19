@@ -1,13 +1,7 @@
 #include "mc_clock_stopwatch.h"
 
 /* Variable Declaration - Clock stopwatch object */
-static mc_clock_stopwatch_state_t mc_clock_stopwatch_state;
-
-/* Public API - Clock stopwatch object */
-void mc_clock_stopwatch_get_state(mc_clock_stopwatch_state_t* state)
-{
-	*state = mc_clock_stopwatch_state;
-}
+mc_clock_stopwatch_t mc_clock_stopwatch;
 
 /* Handle - Clock stopwatch object */
 void mc_clock_stopwatch_handle(ak_msg_t* msg)
@@ -23,10 +17,10 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	case MC_CLOCK_STOPWATCH_START_PAUSE:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_START_PAUSE\n");
-		mc_clock_stopwatch_state.running = !mc_clock_stopwatch_state.running;
+		mc_clock_stopwatch.running = !mc_clock_stopwatch.running;
 
 		/* Count in the background so leaving the screen does not pause it */
-		if (mc_clock_stopwatch_state.running)
+		if (mc_clock_stopwatch.running)
 		{
 			timer_set(MC_CLOCK_STOPWATCH_ID,
 			          MC_CLOCK_STOPWATCH_UPDATE,
@@ -43,19 +37,19 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	case MC_CLOCK_STOPWATCH_RESET:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_RESET\n");
-		mc_clock_stopwatch_state.running = 0;
+		mc_clock_stopwatch.running = 0;
 		timer_remove_attr(MC_CLOCK_STOPWATCH_ID, MC_CLOCK_STOPWATCH_UPDATE);
-		mc_clock_stopwatch_state.elapsed_ms = 0;
-		mc_clock_stopwatch_state.lap_count = 0;
+		mc_clock_stopwatch.elapsed_ms = 0;
+		mc_clock_stopwatch.lap_count = 0;
 	}
 	break;
 
 	case MC_CLOCK_STOPWATCH_UPDATE:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_UPDATE\n");
-		if (mc_clock_stopwatch_state.running)
+		if (mc_clock_stopwatch.running)
 		{
-			mc_clock_stopwatch_state.elapsed_ms += MC_CLOCK_STOPWATCH_TICK_INTERVAL;
+			mc_clock_stopwatch.elapsed_ms += MC_CLOCK_STOPWATCH_TICK_INTERVAL;
 		}
 	}
 	break;
@@ -63,12 +57,12 @@ void mc_clock_stopwatch_handle(ak_msg_t* msg)
 	case MC_CLOCK_STOPWATCH_LAP:
 	{
 		APP_DBG_SIG("MC_CLOCK_STOPWATCH_LAP\n");
-		if (mc_clock_stopwatch_state.running &&
-		    mc_clock_stopwatch_state.lap_count < STOPWATCH_LAP_NUMBER)
+		if (mc_clock_stopwatch.running &&
+		    mc_clock_stopwatch.lap_count < STOPWATCH_LAP_NUMBER)
 		{
-			mc_clock_stopwatch_state.lap_ms[mc_clock_stopwatch_state.lap_count] =
-			    mc_clock_stopwatch_state.elapsed_ms;
-			mc_clock_stopwatch_state.lap_count++;
+			mc_clock_stopwatch.lap_ms[mc_clock_stopwatch.lap_count] =
+			    mc_clock_stopwatch.elapsed_ms;
+			mc_clock_stopwatch.lap_count++;
 		}
 	}
 	break;

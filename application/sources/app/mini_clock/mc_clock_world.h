@@ -35,7 +35,7 @@ typedef struct
 	uint8_t minute;
 	uint8_t second;
 
-} mc_clock_world_clock_state_t;
+} mc_clock_world_clock_t;
 
 void mc_clock_world_clock_init(void);
 
@@ -45,8 +45,7 @@ void mc_clock_world_clock_handle(
 void mc_clock_world_clock_select_country(
     uint8_t index);
 
-void mc_clock_world_clock_get_state(
-    mc_clock_world_clock_state_t* state);
+extern mc_clock_world_clock_t mc_clock_world_clock;
 
 /* Read-only country entry from the flash table (index is clamped). */
 const mc_clock_world_clock_country_t* mc_clock_world_clock_get_country(uint8_t index);

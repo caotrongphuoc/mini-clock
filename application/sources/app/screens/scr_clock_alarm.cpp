@@ -18,10 +18,10 @@ view_screen_t scr_clock_alarm = {
     .focus_item = 0,
 };
 
-static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
+static void view_scr_clock_alarm_editing()
 {
 	const mc_clock_alarm_item_t* alarm =
-	    &state->alarm[state->editing_alarm];
+	    &mc_clock_alarm.alarm[mc_clock_alarm.editing_alarm];
 
 	char buf[16];
 
@@ -32,7 +32,7 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	view_render.setTextSize(2);
 	view_render.print("Edit Alarm");
 
-	switch (state->editing_field)
+	switch (mc_clock_alarm.editing_field)
 	{
 	case ALARM_EDIT_HOUR: // Hour
 	{
@@ -111,21 +111,21 @@ static void view_scr_clock_alarm_editing(const mc_clock_alarm_state_t* state)
 	}
 }
 
-static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
+static void view_scr_clock_alarm_list()
 {
 	uint8_t visible_lines = ALARM_LIST_VISIBLE;
 
 	for (uint8_t i = 0; i < visible_lines; i++)
 	{
-		uint8_t idx = state->scroll_offset + i;
-		if (idx >= state->total_alarm)
+		uint8_t idx = mc_clock_alarm.scroll_offset + i;
+		if (idx >= mc_clock_alarm.total_alarm)
 		{
 			break;
 		}
 
 		uint8_t y = i * 13;
-		uint16_t bg = (idx == state->current_item) ? WHITE : BLACK;
-		uint16_t fg = (idx == state->current_item) ? BLACK : WHITE;
+		uint16_t bg = (idx == mc_clock_alarm.current_item) ? WHITE : BLACK;
+		uint16_t fg = (idx == mc_clock_alarm.current_item) ? BLACK : WHITE;
 		char line[16];
 
 		view_render.fillRect(0, y, LCD_WIDTH, 13, bg);
@@ -133,15 +133,15 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 		view_render.setTextSize(1);
 		xsprintf(line, "%u. %02u:%02u %s",
 		         idx + 1,
-		         state->alarm[idx].hour,
-		         state->alarm[idx].minute,
-		         state->alarm[idx].enabled ? "[ON]" : "[OFF]");
+		         mc_clock_alarm.alarm[idx].hour,
+		         mc_clock_alarm.alarm[idx].minute,
+		         mc_clock_alarm.alarm[idx].enabled ? "[ON]" : "[OFF]");
 		view_render.setCursor(4, y + 3);
 		view_render.print(line);
 	}
 
-	uint8_t add_focus = (state->current_item == state->total_alarm);
-	uint8_t back_focus = (state->current_item == state->total_alarm + 1);
+	uint8_t add_focus = (mc_clock_alarm.current_item == mc_clock_alarm.total_alarm);
+	uint8_t back_focus = (mc_clock_alarm.current_item == mc_clock_alarm.total_alarm + 1);
 
 	view_render.fillRect(0, 40, LCD_WIDTH, 24, BLACK);
 
@@ -160,19 +160,15 @@ static void view_scr_clock_alarm_list(const mc_clock_alarm_state_t* state)
 
 void view_scr_clock_alarm()
 {
-	mc_clock_alarm_state_t state;
-
-	mc_clock_alarm_get_state(&state);
-
 	view_render.clear();
 
-	if (state.editing)
+	if (mc_clock_alarm.editing)
 	{
-		view_scr_clock_alarm_editing(&state);
+		view_scr_clock_alarm_editing();
 	}
 	else
 	{
-		view_scr_clock_alarm_list(&state);
+		view_scr_clock_alarm_list();
 	}
 }
 
@@ -182,8 +178,6 @@ void view_scr_clock_alarm()
 
 void scr_clock_alarm_handle(ak_msg_t* msg)
 {
-	mc_clock_alarm_state_t state;
-
 	switch (msg->sig)
 	{
 	case SCREEN_ENTRY:
@@ -200,21 +194,19 @@ void scr_clock_alarm_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("AC_DISPLAY_BUTTON_MODE_PRESSED\n");
 
-		mc_clock_alarm_get_state(&state);
+		uint8_t add_item = mc_clock_alarm.total_alarm;
+		uint8_t back_item = mc_clock_alarm.total_alarm + 1;
 
-		uint8_t add_item = state.total_alarm;
-		uint8_t back_item = state.total_alarm + 1;
-
-		if (!state.editing)
+		if (!mc_clock_alarm.editing)
 		{
-			if (state.current_item == back_item)
+			if (mc_clock_alarm.current_item == back_item)
 			{
 				SCREEN_TRAN(scr_clock_menu_handle, &scr_clock_menu);
 				BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 				break;
 			}
 
-			if (state.current_item == add_item)
+			if (mc_clock_alarm.current_item == add_item)
 			{
 				task_post_pure_msg(MC_CLOCK_ALARM_ID, MC_CLOCK_ALARM_SELECT);
 				BUZZER_PlaySound(BUZZER_SOUND_CLICK);

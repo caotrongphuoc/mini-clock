@@ -175,9 +175,7 @@ void scr_clock_analog_draw_right_panel()
 
 	view_render.drawLine(102, 23, 123, 23, WHITE);
 
-	mc_clock_world_clock_state_t world_state;
-	mc_clock_world_clock_get_state(&world_state);
-	const char* offset_str = mc_clock_world_clock_get_country(world_state.selected_country)->utc_label + 3;
+	const char* offset_str = mc_clock_world_clock_get_country(mc_clock_world_clock.selected_country)->utc_label + 3;
 
 	uint8_t len = 0;
 	while (offset_str[len])
@@ -200,16 +198,13 @@ void scr_clock_analog_draw_right_panel()
 
 void view_scr_clock_analog()
 {
-	mc_clock_time_state_t state;
-	mc_clock_time_get_state(&state);
-
 	view_render.clear();
 	view_render.drawRect(0, 0, LCD_WIDTH, LCD_HEIGHT, WHITE);
 
-	scr_clock_analog_draw_date_column(&state.date);
+	scr_clock_analog_draw_date_column(&mc_clock_time.date);
 	scr_clock_analog_draw_right_panel();
 	scr_clock_analog_draw_face();
-	scr_clock_analog_draw_hands(&state.time);
+	scr_clock_analog_draw_hands(&mc_clock_time.time);
 }
 
 void scr_clock_analog_handle(ak_msg_t* msg)
