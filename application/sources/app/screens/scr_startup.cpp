@@ -52,6 +52,8 @@ void scr_startup_handle(ak_msg_t *msg) {
 		mc_clock_setting_read(&clock_setting_data);
 		scr_clock_setting_display_apply();
 		scr_clock_setting_sound_apply();
+		/* After the saved mute setting is applied, so a muted clock boots silently */
+		BUZZER_PlaySound(BUZZER_SOUND_STARTUP);
 		mc_clock_world_clock_select_country(clock_setting_data.world_country);
 		mc_clock_alarm_load_from_eeprom();
 		mc_clock_calendar_load_from_eeprom();
