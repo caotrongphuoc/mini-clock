@@ -530,4 +530,23 @@ void mc_clock_alarm_handle(ak_msg_t* msg)
 	default:
 		break;
 	}
+
+	/* The display rendered the button press before this handler changed the
+	 * list or the editor, and the alarm screen has no tick: redraw now. */
+	switch (msg->sig)
+	{
+	case MC_CLOCK_ALARM_SETUP:
+	case MC_CLOCK_ALARM_SELECT:
+	case MC_CLOCK_ALARM_UP:
+	case MC_CLOCK_ALARM_DOWN:
+	case MC_CLOCK_ALARM_NEXT_FIELD:
+	case MC_CLOCK_ALARM_TOGGLE:
+	case MC_CLOCK_ALARM_DELETE:
+	case MC_CLOCK_ALARM_ADD_NEW:
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+		break;
+
+	default:
+		break;
+	}
 }

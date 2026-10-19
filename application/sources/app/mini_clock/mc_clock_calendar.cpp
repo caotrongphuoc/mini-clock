@@ -774,6 +774,16 @@ void mc_clock_calendar_handle(ak_msg_t* msg)
 	default:
 		break;
 	}
+
+	/* Button-driven changes: the display rendered the press before this handler
+	 * ran, so redraw now instead of on the next 1 s screen tick. The background
+	 * tick (UPDATE) and the ringing path do not need a redraw here. */
+	if (msg->sig != MC_CLOCK_CALENDAR_UPDATE &&
+	    msg->sig != MC_CLOCK_CALENDAR_ALARM_FIRED &&
+	    msg->sig != MC_CLOCK_CALENDAR_ALARM_DISMISS)
+	{
+		task_post_pure_msg(AC_TASK_DISPLAY_ID, AC_DISPLAY_RENDER_SCREEN);
+	}
 }
 
 void mc_clock_calendar_sync(void)
