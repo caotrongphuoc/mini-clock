@@ -147,6 +147,12 @@ static void world_start_animation(int8_t direction)
 	world_anim_offset = 0;
 
 	world_anim_running = 1;
+
+	/* Slide frames are advanced by the view; tick only while sliding */
+	timer_set(AC_TASK_DISPLAY_ID,
+	          AC_DISPLAY_WORLD_ANIM_TICK,
+	          AC_DISPLAY_WORLD_ANIM_TICK_INTERVAL,
+	          TIMER_PERIODIC);
 }
 
 void scr_clock_world_handle(
@@ -165,11 +171,26 @@ void scr_clock_world_handle(
 		    MC_CLOCK_WORLD_CLOCK_ID,
 		    MC_CLOCK_WORLD_CLOCK_SETUP);
 
+		world_anim_running = 0;
+		world_anim_offset = 0;
+
 		timer_set(
 		    AC_TASK_DISPLAY_ID,
 		    MC_CLOCK_TIME_TICK,
-		    MC_CLOCK_TIME_TICK_INTERVAL - 950,
+		    MC_CLOCK_TIME_TICK_INTERVAL,
 		    TIMER_PERIODIC);
+	}
+	break;
+
+	case AC_DISPLAY_WORLD_ANIM_TICK:
+	{
+		/* The render that follows this tick draws the next frame */
+		if (!world_anim_running)
+		{
+			timer_remove_attr(
+			    AC_TASK_DISPLAY_ID,
+			    AC_DISPLAY_WORLD_ANIM_TICK);
+		}
 	}
 	break;
 
@@ -245,6 +266,10 @@ void scr_clock_world_handle(
 		timer_remove_attr(
 		    AC_TASK_DISPLAY_ID,
 		    MC_CLOCK_TIME_TICK);
+
+		timer_remove_attr(
+		    AC_TASK_DISPLAY_ID,
+		    AC_DISPLAY_WORLD_ANIM_TICK);
 
 		BUZZER_PlaySound(
 		    BUZZER_SOUND_CLICK);

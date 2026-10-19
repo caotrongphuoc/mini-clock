@@ -216,6 +216,14 @@ void view_scr_clock_menu()
 	APP_DBG("VIEW END\n");
 }
 
+static void scr_clock_menu_start_anim_tick()
+{
+	timer_set(AC_TASK_DISPLAY_ID,
+	          AC_DISPLAY_MENU_ANIM_TICK,
+	          AC_DISPLAY_MENU_ANIM_TICK_INTERVAL,
+	          TIMER_PERIODIC);
+}
+
 void scr_clock_menu_handle(ak_msg_t* msg)
 {
 	switch (msg->sig)
@@ -224,14 +232,12 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 	{
 		APP_DBG_SIG("SCREEN_ENTRY\n");
 		current_location = SCR_CLOCK_MENU_CLOCK;
+		animation_running = 0;
+		animation_step = 0;
 		task_post_pure_msg(MC_CLOCK_TIME_ID, MC_CLOCK_TIME_SETUP);
 		timer_set(AC_TASK_DISPLAY_ID,
 		          MC_CLOCK_TIME_TICK,
 		          MC_CLOCK_TIME_TICK_INTERVAL,
-		          TIMER_PERIODIC);
-		timer_set(AC_TASK_DISPLAY_ID,
-		          AC_DISPLAY_MENU_ANIM_TICK,
-		          AC_DISPLAY_MENU_ANIM_TICK_INTERVAL,
 		          TIMER_PERIODIC);
 	}
 	break;
@@ -256,6 +262,9 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 				current_location = target_location;
 				animation_running = 0;
 				animation_step = 0;
+
+				/* Idle menu only needs the 1 s clock tick */
+				timer_remove_attr(AC_TASK_DISPLAY_ID, AC_DISPLAY_MENU_ANIM_TICK);
 			}
 		}
 	}
@@ -324,6 +333,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			animation_direction = -1;
 			animation_step = 0;
 			animation_running = 1;
+			scr_clock_menu_start_anim_tick();
 		}
 
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
@@ -343,6 +353,7 @@ void scr_clock_menu_handle(ak_msg_t* msg)
 			animation_direction = 1;
 			animation_step = 0;
 			animation_running = 1;
+			scr_clock_menu_start_anim_tick();
 		}
 
 		BUZZER_PlaySound(BUZZER_SOUND_CLICK);
