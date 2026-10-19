@@ -8,9 +8,15 @@ in this repo; check with `/mcp`.)
 
 Before writing or changing any firmware:
 
-1. Call **`get_ak_guardrails`** first. Never modify `application/sources/ak/` (kernel),
-   `boot/`, `application/sources/networks/`, or `application/sources/common/`.
-   Build features in `application/sources/app/` and `application/sources/driver/` only.
+1. Call **`get_ak_guardrails`** first. Never modify `application/sources/ak/` (kernel;
+   `ak.cfg.mk` pool sizing is the exception), `boot/`, `application/sources/sys/`,
+   `application/sources/networks/`, `application/sources/common/`,
+   `application/sources/libraries/`, or `application/sources/platform/` (except
+   `platform/stm32l/io_cfg.c/.h`). Build features in `application/sources/app/` and
+   `application/sources/driver/`; feature flags go in `application/Makefile`.
+   All GPIO/pin/register code lives only in `io_cfg.c/.h` and is injected into drivers as
+   function pointers. ISRs only post messages (see `get_ak_guide("isr-bridge")`).
+   The `task_*` prefix is reserved for handlers registered in `task_list.h`.
 2. For a new task/driver/screen, call **`get_ak_guide`** (`create-task`,
    `create-driver`, `create-screen`, `use-timer`, `isr-bridge`, `tune-pools`) and follow
    the steps and skeleton exactly.
