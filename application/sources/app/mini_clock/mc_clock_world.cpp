@@ -18,7 +18,7 @@ static const mc_world_clock_country_t world_clock_country[MC_WORLD_CLOCK_MAX_COU
     {"Greece", -300, "UTC+2"},
     {"Moscow", -240, "UTC+3"},
     {"Dubai", -180, "UTC+4"},
-    {"Iran", -150, "UTC+3:30"},
+    {"Iran", -210, "UTC+3:30"},
     {"Pakistan", -120, "UTC+5"},
     {"India", -90, "UTC+5:30"},
     {"Dhaka", -60, "UTC+6"},
