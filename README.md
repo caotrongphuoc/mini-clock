@@ -32,7 +32,9 @@
 | File | Description |
 | --- | --- |
 | [README.md](README.md) | Project overview, hardware, clock features, controls, and objects. |
-| [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Build, flash, and the UART debug shell. |
+| [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Naming, ownership rules, code style, build and flash, the UART debug shell, and commit conventions. |
+| [docs/02-design-sequence-object.md](docs/02-design-sequence-object.md) | Owned state and message sequences for RTC, Time, Stopwatch, Timer, Alarm, World Clock, Calendar, and the ringing page. |
+| [docs/03-design-sequence-runtime.md](docs/03-design-sequence-runtime.md) | Runtime flow from boot and button input to objects, the one-second tick, ringing, and screen rendering. |
 | [AGENTS.md](AGENTS.md) | Rules and runtime model for AI coding agents (Codex, and Claude Code through [CLAUDE.md](CLAUDE.md)). |
 
 ## Introduction
@@ -201,6 +203,8 @@ The menu offers:
 </table>
 </div>
 
+> **Note:** For detailed object flows, see [Clock Object Sequences](docs/02-design-sequence-object.md).
+
 ### III. How to Use:
 
 The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means hold the button; **[Mode]+[Up]** and **[Mode]+[Down]** mean press [Up] or [Down] while holding [Mode].
@@ -233,24 +237,18 @@ The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means ho
 </table>
 <p align="center"><strong><em>Figure 7:</em></strong> Ringing screen</p>
 
-> **Note:** The release build compiles the console output out. To inspect a running clock, see [Build, Flash, and Debug](docs/01-guide-coding-rules.md).
+> **Note:** The release build compiles the console output out. To inspect a running clock, see the [UART debug shell](docs/01-guide-coding-rules.md#v-uart-debug-shell).
 
 ### IV. Basic Clock Sequence Logic
 
-Every second the **RTC** task checks the alarm flag and sends a tick to the **Timer** and the **Calendar**. Whatever starts ringing asks the display to open the ringing page, and dismissing it tells the source to stop and re-arm.
+> **Note:** For the complete signal flow, see [Runtime Signal Processing](docs/03-design-sequence-runtime.md).
 
-```text
-timer 1 s ──► RTC ──► alarm flag set? ──────► Alarm ────┐
-               ├────► Timer (countdown) ────────────────┤
-               └────► Calendar (reminders) ─────────────┤
-                                                        ▼
-                                  AC_DISPLAY_SHOW_RINGING ──► Ringing page
-                                                        │  any button / 60 s
-                                                        ▼
-                                          source dismiss ──► Alarm re-arms the RTC
-```
-
-Changing the time, the city, or resetting the settings sends `MC_CLOCK_ALARM_REARM`, so the next alarm is always programmed against the current time.
+<table align="center">
+  <tr>
+    <td align="center"><img src="resources/images/design-sequence/mc_clock_sequence.png" alt="Mini Clock basic sequence: boot, showing the time, editing an alarm, the one-second background tick, ringing and dismiss, and changing the time or the city" width="1000"/></td>
+  </tr>
+</table>
+<p align="center"><strong><em>Figure 8:</em></strong> Clock sequence logic</p>
 
 ## Contact & Support
 
