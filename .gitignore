@@ -4,6 +4,5 @@
 # Build folders
 **/build*/
 
-# Ignore Makefiles
+# Local boot Makefile
 boot/Makefile
-application/Makefile
