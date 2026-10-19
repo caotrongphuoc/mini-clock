@@ -25,9 +25,8 @@ footage.
 - `duration_ms` is a presentation hold chosen for readability. One `lcd d` takes about 0.6 s over
   UART, so animated previews are sampled about once per second; menu and World Clock slides are
   shown as their resting frames, not as the 50 ms slide animation.
-- The alarm editor frame and the two ringing blink phases were re-taken with the same firmware
-  after the first run caught them mid-update; both ringing phases are kept because the title
-  bar blinks once per second.
+- The ringing frames were re-taken separately with the same `0x9211` image (an alarm at 08:00 and
+  the RTC set to 07:59:57); four consecutive frames keep both blink phases of the title bar.
 
 [`tools/render_screens.py`](../../tools/render_screens.py) only enlarges pixels (nearest neighbour,
 ×4 → 512×256); the saved framebuffer bytes are not edited.

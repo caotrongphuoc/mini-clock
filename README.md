@@ -13,6 +13,14 @@
 
 # Mini Clock - Digital Desk Clock built on AK Embedded Base Kit
 
+<p align="center">
+  <a href="resources/images/mini_clock_banner_2x1.png">
+    <img src="resources/images/mini_clock_banner.gif" alt="Mini Clock — alarms, timers and 32 cities; the menu icons and captured OLED screens on the AK Embedded Base Kit; click for the static 2:1 cover" width="1280" height="640"/>
+  </a>
+</p>
+
+---
+
 ## Documentation
 
 | File | Description |
