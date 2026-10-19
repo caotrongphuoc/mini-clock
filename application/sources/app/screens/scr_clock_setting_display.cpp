@@ -1,8 +1,5 @@
 #include "scr_clock_setting_display.h"
 
-#include "scr_clock_setting.h"
-#include "app_eeprom.h"
-
 // Number of brightness levels
 #define SETTING_DISPLAY_BRIGHT_LEVEL_NUMBER (3)
 

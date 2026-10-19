@@ -1,9 +1,5 @@
 #include "mc_clock_time.h"
 
-#include "buzzer.h"
-#include "mc_clock_world.h"
-#include "mc_clock_date.h"
-
 /* Variable Declaration - Clock time object */
 mc_clock_time_t mc_clock_time;
 static uint8_t clock_chime_enabled;

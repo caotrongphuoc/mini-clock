@@ -1,7 +1,22 @@
 #ifndef __SCR_CLOCK_MAIN_H__
 #define __SCR_CLOCK_MAIN_H__
 
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "sys_ctrl.h"
+#include "sys_dbg.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+#include "view_render.h"
+
 #include "screens.h"
+#include "scr_clock_setting_display.h"
 
 #include "mc_clock_time.h"
 
@@ -42,9 +57,13 @@
 #define MAIN_TIME_TEXT_SIZE (2)
 #define MAIN_INFO_TEXT_SIZE (1)
 
-const char* scr_clock_main_weekday_short_text(uint8_t weekday);
-void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t use_12h);
-void scr_clock_main_format_date(char* buffer, rtc_date_t* date);
-void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted);
+extern view_dynamic_t dyn_view_scr_clock_main;
+extern view_screen_t scr_clock_main;
+extern void scr_clock_main_handle(ak_msg_t* msg);
+
+extern const char* scr_clock_main_weekday_short_text(uint8_t weekday);
+extern void scr_clock_main_format_time(char* buffer, rtc_time_t* time, uint8_t use_12h);
+extern void scr_clock_main_format_date(char* buffer, rtc_date_t* date);
+extern void scr_clock_main_draw_weekdays(uint8_t weekday, uint8_t inverted);
 
 #endif //__SCR_CLOCK_MAIN_H__

@@ -1,16 +1,28 @@
-#ifndef __SCR_CALENDAR_H__
-#define __SCR_CALENDAR_H__
+#ifndef __SCR_CLOCK_CALENDAR_H__
+#define __SCR_CLOCK_CALENDAR_H__
+
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "sys_ctrl.h"
+#include "sys_dbg.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+#include "view_render.h"
 
 #include "screens.h"
-#include "mc_clock_calendar.h"
 #include "scr_clock_menu.h"
 
-/* View object (registered in screens.h) */
+#include "mc_clock_calendar.h"
+#include "mc_clock_date.h"
+
 extern view_dynamic_t dyn_view_scr_clock_calendar;
 extern view_screen_t scr_clock_calendar;
+extern void scr_clock_calendar_handle(ak_msg_t* msg);
 
-void scr_calendar_show(void);
-
-void scr_clock_calendar_handle(ak_msg_t* msg);
-
-#endif /* __SCR_CALENDAR_H__ */
+#endif //__SCR_CLOCK_CALENDAR_H__

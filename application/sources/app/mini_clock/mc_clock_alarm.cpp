@@ -1,10 +1,4 @@
 #include "mc_clock_alarm.h"
-#include "mc_clock_world.h"
-#include "eeprom.h"
-
-#include <string.h>
-#include "app_eeprom.h"
-#include "mc_clock_ring.h"
 
 // Bytes covered by the bank checksum (magic + bank)
 #define ALARM_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_alarm_bank_t))

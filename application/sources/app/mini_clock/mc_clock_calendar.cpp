@@ -1,11 +1,5 @@
 #include "mc_clock_calendar.h"
 
-#include "mc_clock_alarm.h"
-#include "eeprom.h"
-#include "app_eeprom.h"
-#include "mc_clock_ring.h"
-#include "mc_clock_date.h"
-
 // Bytes covered by the bank checksum (magic + bank)
 #define CALENDAR_CHECKSUM_SIZE (sizeof(uint32_t) + sizeof(mc_clock_calendar_bank_t))
 

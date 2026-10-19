@@ -1,9 +1,4 @@
 #include "scr_clock_time_setting.h"
-#include "mc_clock_date.h"
-
-#include "task_mc_rtc.h"
-#include "mc_clock_world.h"
-#include "mc_clock_alarm.h"
 
 /*****************************************************************************/
 /* Variable Declaration - Clock time setting */

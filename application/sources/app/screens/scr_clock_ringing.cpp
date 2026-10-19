@@ -1,8 +1,5 @@
 #include "scr_clock_ringing.h"
 
-#include "scr_clock_main.h"
-#include "scr_clock_setting_display.h"
-
 /*****************************************************************************/
 /* Variable Declaration - Clock ringing */
 /*****************************************************************************/

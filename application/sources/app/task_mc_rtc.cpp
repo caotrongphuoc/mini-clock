@@ -1,14 +1,4 @@
-#include "ak.h"
-#include "message.h"
-
-#include "app.h"
-#include "app_dbg.h"
-
-#include "task_list.h"
 #include "task_mc_rtc.h"
-
-#include "rtc.h"
-#include "mc_clock_date.h"
 
 /*****************************************************************************/
 /* Variable Declaration - MC RTC task */

@@ -195,13 +195,57 @@ The object's main state type is `mc_clock_<object>_t` (`mc_clock_alarm_t`, `mc_c
 Use `lower_snake_case` with the module name as prefix, so that grepping the prefix returns every entry point of that module:
 
 ```cpp
-void mc_clock_alarm_handle(ak_msg_t* msg);
-void mc_clock_alarm_load_from_eeprom(void);
-void mc_clock_ring_request(uint8_t source, uint8_t sound);
-uint8_t mc_clock_date_weekday(uint16_t year, uint8_t month, uint8_t day);
+extern void mc_clock_alarm_load_from_eeprom(void);
+extern void mc_clock_alarm_set_sound(uint8_t sound);
+extern uint8_t mc_clock_calendar_has_event_on_day(uint16_t year, uint8_t month, uint8_t day);
+extern int16_t mc_clock_world_clock_get_selected_offset_minutes(void);
 ```
 
-Helpers used inside one `.cpp` only are `static` and keep the same prefix (`mc_clock_alarm_apply_rtc`, `mc_clock_calendar_shift_month`).
+Public functions are declared with `extern` in the module's header. Task handlers (`mc_clock_alarm_handle`, `task_mc_rtc`) are declared only in `task_list.h`. Helpers used inside one `.cpp` only are `static` and keep the same prefix (`mc_clock_alarm_apply_rtc`, `mc_clock_calendar_shift_month`).
+
+Every object and screen header has the same layout, and its `.cpp` includes only that header:
+
+```cpp
+#ifndef __MC_CLOCK_STOPWATCH_H__
+#define __MC_CLOCK_STOPWATCH_H__
+
+#include <stdio.h>
+
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+
+// drivers (buzzer.h, rtc.h, eeprom.h, ...), then related objects and screens
+
+// Number of laps kept per run
+#define STOPWATCH_LAP_NUMBER (10)
+
+typedef struct
+{
+	uint8_t running;
+	uint32_t elapsed_ms;
+	uint8_t lap_count;
+	uint32_t lap_ms[STOPWATCH_LAP_NUMBER];
+} mc_clock_stopwatch_t;
+
+extern mc_clock_stopwatch_t mc_clock_stopwatch;
+
+#endif //__MC_CLOCK_STOPWATCH_H__
+```
+
+A screen header adds `sys_ctrl.h`, `sys_dbg.h` and `view_render.h` to the include block and declares its view, screen and handler first:
+
+```cpp
+extern view_dynamic_t dyn_view_scr_clock_alarm;
+extern view_screen_t scr_clock_alarm;
+extern void scr_clock_alarm_handle(ak_msg_t* msg);
+```
 
 ### 9. Variables
 

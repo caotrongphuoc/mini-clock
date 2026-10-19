@@ -1,15 +1,28 @@
-#ifndef __SCR_WORLD_CLOCK_H__
-#define __SCR_WORLD_CLOCK_H__
+#ifndef __SCR_CLOCK_WORLD_H__
+#define __SCR_CLOCK_WORLD_H__
 
-#include "screens.h"
-#include "mc_clock_world.h"
-#include "task_list.h"
-#include "timer.h"
 #include <stdlib.h>
 
-extern void scr_clock_world_show(void);
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
 
-extern void scr_clock_world_handle(
-    ak_msg_t* msg);
+#include "sys_ctrl.h"
+#include "sys_dbg.h"
 
-#endif
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+#include "view_render.h"
+
+#include "screens.h"
+
+#include "mc_clock_world.h"
+
+extern view_dynamic_t dyn_view_scr_clock_world;
+extern view_screen_t scr_clock_world;
+extern void scr_clock_world_handle(ak_msg_t* msg);
+
+#endif //__SCR_CLOCK_WORLD_H__

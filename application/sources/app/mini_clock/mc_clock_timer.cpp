@@ -1,8 +1,5 @@
 #include "mc_clock_timer.h"
 
-#include "mc_clock_alarm.h"
-#include "mc_clock_ring.h"
-
 mc_clock_timer_t mc_clock_timer = {
     .set_hour = 0,
     .set_min = 1,

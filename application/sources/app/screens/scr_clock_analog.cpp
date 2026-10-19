@@ -1,11 +1,5 @@
 #include "scr_clock_analog.h"
 
-#include <math.h>
-
-#include "mc_clock_time.h"
-#include "mc_clock_world.h"
-#include "scr_clock_main.h"
-
 // Dial center and radius
 #define ANALOG_CX (64)
 #define ANALOG_CY (32)

@@ -1,5 +1,4 @@
 #include "scr_clock_main.h"
-#include "scr_clock_setting_display.h"
 
 const char* scr_clock_main_weekday_short_text(uint8_t weekday)
 {

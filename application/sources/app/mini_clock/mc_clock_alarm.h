@@ -1,14 +1,26 @@
 #ifndef __MC_CLOCK_ALARM_H__
 #define __MC_CLOCK_ALARM_H__
 
-#include "ak.h"
+#include <stdio.h>
+#include <string.h>
+
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
 
 #include "app.h"
-#include "message.h"
-#include "task_list.h"
 #include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+
 #include "buzzer.h"
+#include "eeprom.h"
+#include "app_eeprom.h"
+
 #include "task_mc_rtc.h"
+#include "mc_clock_world.h"
+#include "mc_clock_ring.h"
 
 // Number of alarms in the list (and in the EEPROM bank)
 #define ALARM_NUMBER (10)
@@ -25,17 +37,16 @@ typedef struct
 	uint8_t hour;
 	uint8_t minute;
 	uint8_t enabled;
-
 } mc_clock_alarm_item_t;
 
+// Editor fields, in the order MODE walks them
 typedef enum
 {
 	ALARM_EDIT_HOUR = 0,
-	ALARM_EDIT_MINUTE = 1,
-	ALARM_EDIT_ENABLE = 2,
-	ALARM_EDIT_DELETE = 3,
-	ALARM_EDIT_SAVE = 4,
-
+	ALARM_EDIT_MINUTE,
+	ALARM_EDIT_ENABLE,
+	ALARM_EDIT_DELETE,
+	ALARM_EDIT_SAVE,
 } mc_clock_alarm_edit_field_t;
 
 typedef struct
@@ -48,34 +59,27 @@ typedef struct
 	// Editing state
 	uint8_t editing;
 	uint8_t editing_alarm;
-
 	mc_clock_alarm_edit_field_t editing_field;
 
-	// Alarm ringing state
+	// Ringing state and selected melody
 	uint8_t ringing;
-
-	// Selected alarm sound
 	buzzer_sound_t sound;
 
-	// Alarm storage
+	// Alarm list
 	mc_clock_alarm_item_t alarm[ALARM_NUMBER];
-
 } mc_clock_alarm_t;
 
-void mc_clock_alarm_handle(ak_msg_t* msg);
-
-extern mc_clock_alarm_t mc_clock_alarm;
-
-void mc_clock_alarm_set_sound(uint8_t sound);
-uint8_t mc_clock_alarm_get_sound(void);
-
-/* Persistent bank stored in EEPROM (total + alarm array only) */
+// Bank stored in EEPROM (count and list only)
 typedef struct
 {
 	uint8_t total_alarm;
 	mc_clock_alarm_item_t alarm[ALARM_NUMBER];
 } mc_clock_alarm_bank_t;
 
-void mc_clock_alarm_load_from_eeprom(void);
+extern mc_clock_alarm_t mc_clock_alarm;
 
-#endif // __MC_CLOCK_ALARM_H__
+extern void mc_clock_alarm_load_from_eeprom(void);
+extern void mc_clock_alarm_set_sound(uint8_t sound);
+extern uint8_t mc_clock_alarm_get_sound(void);
+
+#endif //__MC_CLOCK_ALARM_H__

@@ -1,5 +1,4 @@
 #include "scr_clock_stopwatch.h"
-#include "mc_clock_stopwatch.h"
 
 static uint8_t stopwatch_lap_scroll = 0;
 static uint8_t stopwatch_help = 0;

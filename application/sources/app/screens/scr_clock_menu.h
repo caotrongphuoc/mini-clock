@@ -1,10 +1,25 @@
 #ifndef __SCR_CLOCK_MENU_H__
 #define __SCR_CLOCK_MENU_H__
 
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "sys_ctrl.h"
+#include "sys_dbg.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+#include "view_render.h"
+
 #include "screens.h"
-#include "mc_clock_time.h"
 #include "scr_clock_main.h"
 #include "scr_clock_setting_display.h"
+
+#include "mc_clock_time.h"
 
 // Total number of menu items
 #define MENU_ITEM_NUMBER (9)
@@ -35,5 +50,9 @@ typedef enum
 	MENU_SETTING,
 	MENU_EXIT,
 } scr_clock_menu_item_t;
+
+extern view_dynamic_t dyn_view_scr_clock_menu;
+extern view_screen_t scr_clock_menu;
+extern void scr_clock_menu_handle(ak_msg_t* msg);
 
 #endif //__SCR_CLOCK_MENU_H__

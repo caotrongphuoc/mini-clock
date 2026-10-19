@@ -1,9 +1,28 @@
 #ifndef __SCR_CLOCK_TIME_SETTING_H__
 #define __SCR_CLOCK_TIME_SETTING_H__
 
+#include "fsm.h"
+#include "port.h"
+#include "message.h"
+#include "timer.h"
+
+#include "sys_ctrl.h"
+#include "sys_dbg.h"
+
+#include "app.h"
+#include "app_dbg.h"
+#include "task_list.h"
+#include "task_display.h"
+#include "view_render.h"
+
 #include "screens.h"
-#include "mc_clock_time.h"
 #include "scr_clock_main.h"
+
+#include "mc_clock_time.h"
+#include "mc_clock_date.h"
+#include "task_mc_rtc.h"
+#include "mc_clock_world.h"
+#include "mc_clock_alarm.h"
 
 // Year range supported by the RTC
 #define TIME_SETTING_YEAR_MIN (2000)
@@ -32,5 +51,9 @@ typedef enum
 	TIME_SETTING_SAVE,
 	TIME_SETTING_FIELD_NUMBER,
 } scr_clock_time_setting_field_t;
+
+extern view_dynamic_t dyn_view_scr_clock_time_setting;
+extern view_screen_t scr_clock_time_setting;
+extern void scr_clock_time_setting_handle(ak_msg_t* msg);
 
 #endif //__SCR_CLOCK_TIME_SETTING_H__

@@ -1,11 +1,5 @@
 #include "scr_clock_setting.h"
 
-#include "scr_clock_setting_display.h"
-#include "scr_clock_setting_sound.h"
-#include "app_eeprom.h"
-#include "mc_clock_world.h"
-#include "mc_clock_alarm.h"
-
 /*****************************************************************************/
 /* Variable Declaration - Clock setting */
 /*****************************************************************************/

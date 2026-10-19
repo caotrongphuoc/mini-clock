@@ -1,12 +1,5 @@
 #include "scr_startup.h"
 
-#include "app_eeprom.h"
-#include "scr_clock_setting_display.h"
-#include "scr_clock_setting_sound.h"
-#include "mc_clock_alarm.h"
-#include "mc_clock_world.h"
-#include "mc_clock_calendar.h"
-
 static void view_scr_startup();
 
 view_dynamic_t dyn_view_startup = {

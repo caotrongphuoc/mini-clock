@@ -1,8 +1,16 @@
 #include "scr_clock_setting_sound.h"
-#include "scr_clock_setting.h"
-#include "mc_clock_time.h"
-#include "mc_clock_alarm.h"
-#include "app_eeprom.h"
+
+// Selectable alarm melodies, indexed by clock_setting_data.alarm_sound
+static const buzzer_sound_t alarm_sound_list[ALARM_SOUND_LIST_NUMBER] = {
+    BUZZER_SOUND_ADVENTURE_THEME,
+    BUZZER_SOUND_SPACE_TRIP,
+    BUZZER_SOUND_BATTLE_READY,
+    BUZZER_SOUND_ALARM_CLASSIC,
+    BUZZER_SOUND_ALARM_RISING,
+    BUZZER_SOUND_ALARM_BEEP_BEEP,
+    BUZZER_SOUND_ALARM_MORNING,
+    BUZZER_SOUND_ALARM_URGENT,
+};
 
 static uint8_t setting_sound_location_choose;
 

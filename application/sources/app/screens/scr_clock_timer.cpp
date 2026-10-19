@@ -1,5 +1,4 @@
 #include "scr_clock_timer.h"
-#include "mc_clock_timer.h"
 
 static void view_scr_clock_timer();
 static uint8_t timer_help = 0;

@@ -1,9 +1,4 @@
 #include "scr_clock_calendar.h"
-#include "mc_clock_date.h"
-
-#include "mc_clock_calendar.h"
-#include "task_list.h"
-#include "timer.h"
 
 /*****************************************************************************/
 /* Month names                                                                */
