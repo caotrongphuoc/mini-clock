@@ -122,7 +122,7 @@ Prefix: `mc_clock_*` (Mini Clock).
   long Up reset, long Down back.
 - Calendar: Up/Down move day/field, long Up/Down change month or back, Mode open/next,
   long Mode add/delete/finish, Mode+Up back to menu.
-- Ringing screen: any key dismisses. Full per-screen table: README "III. Controls".
+- Ringing screen: any key dismisses. Full per-screen controls: README "III. How to Use".
 
 ## Known limitations (verify before relying on them)
 

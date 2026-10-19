@@ -1,38 +1,40 @@
 <div align="center">
-  
+
 ![Repo Traffic](https://ak-badge-proxy.caotrongphuoc.workers.dev/?username=mini-clock&label=Repo+Traffic&color=blue&style=flat-square)
 
 </div>
 
-# Mini Clock - Digital Desk Clock built on AK Embedded Base Kit
+<p align="center">
+  <img src="https://img.shields.io/badge/language-C%2B%2B-blue?style=flat-square&logo=c%2B%2B" alt="Language">
+  <img src="https://img.shields.io/badge/mcu-STM32L151-blue?style=flat-square" alt="MCU">
+  <img src="https://img.shields.io/badge/framework-Active%20Kernel-blue?style=flat-square" alt="Framework">
+  <img src="https://img.shields.io/badge/hardware-AK%20Base%20Kit-blue?style=flat-square" alt="Hardware">
+</p>
 
-## Demo
+# Mini Clock - Digital Desk Clock built on AK Embedded Base Kit
 
 ## Documentation
 
 | File | Description |
-|---|---|
-| [README.md](README.md) | Main project overview, hardware information, operation, and object descriptions. |
-| [AGENTS.md](AGENTS.md) | Rules and runtime model for AI coding agents (Codex, Claude Code via [CLAUDE.md](CLAUDE.md)). |
+| --- | --- |
+| [README.md](README.md) | Project overview, hardware, clock features, controls, and objects. |
+| [docs/01-guide-coding-rules.md](docs/01-guide-coding-rules.md) | Build, flash, and the UART debug shell. |
+| [AGENTS.md](AGENTS.md) | Rules and runtime model for AI coding agents (Codex, and Claude Code through [CLAUDE.md](CLAUDE.md)). |
 
 ## Introduction
 
-Mini Clock is a digital desk clock built on the AK Embedded Base Kit.
+Mini Clock is a digital desk clock built on the AK Embedded Base Kit. It shows the time in digital and analog form, keeps alarms and calendar reminders, runs a stopwatch and a countdown timer, and converts the time to 32 world cities. Time is kept by an external RTC, and settings, alarms, and events survive a power cycle. Through this project, I practiced several embedded concepts:
 
-This project focuses on building a simple clock application using an event-driven approach. It handles basic features such as displaying time, updating the screen, reading button inputs, and triggering an hourly chime.
-
-Through this project, I practiced several embedded concepts:
-
-* **System design:** Organizing the main features and logic of the clock.
-* **Task management:** Splitting the program into small tasks such as time update, display update, and button handling.
-* **Communication:** Using signals, timers, and messages to handle events.
-* **State machine:** Managing clock modes such as normal display, setting time, and chime control.
+- **System design:** Splitting the clock into objects with clear responsibilities.
+- **Task management:** Running each object as an AK task, cooperatively and without blocking delays.
+- **Communication:** Using signals, timers, and messages to carry button input, one-second ticks, and ringing requests.
+- **State machine:** Managing screens and modes such as list, edit, running, and ringing.
 
 ### I. Hardware
 
 <table align="center">
   <tr>
-    <td align="center"><img src="hardware/images/ak-embedded-base-kit-version-3.jpg" alt="AK Embedded Base Kit - STM32L151 - v3.0" width="480"/></td>
+    <td align="center"><img src="resources/images/board/ak-embedded-base-kit-version-3.jpg" alt="AK Embedded Base Kit - STM32L151 - v3.0" width="480"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 1:</em></strong> AK Embedded Base Kit - STM32L151</p>
@@ -76,104 +78,119 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="hardware/images/board-view-top-bottom.png" width="900"/></td>
+    <td align="center"><img src="resources/images/board/board-view-top-bottom.png" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Board view Top + Bottom </p>
 
 **External RTC:** time is kept by a **PCF85063A** module on the Qwiic/Grove I2C port (I2C1: SCL `PB6`, SDA `PB7`, address `0x51`). The RTC holds Vietnam local time (UTC+7); other time zones are derived from it.
 
-### II. Features
+### II. Clock Description and Objects
 
-| Screen | What it does |
-|---|---|
-| Digital | Large `HH:MM:SS`, weekday bar and date. 12h/24h format. |
-| Analog | Clock face with hour, minute and second hands, date and UTC offset. |
-| Alarm | Up to 10 daily alarms (time + on/off), saved to EEPROM. |
-| Stopwatch | 0.1 s resolution with up to 10 laps. Keeps counting when you leave the screen. |
-| Timer | Countdown up to 23:59:59. Keeps counting when you leave the screen. |
-| World Clock | 32 cities. The selected city is also the display time zone of every other screen. |
-| Calendar | Month grid, per-day event list, up to 10 events with category, start/end time and an optional reminder. |
-| Setting | Time & date, display (12/24h, colour invert, brightness), sound (mute, hourly chime, alarm melody), reset. |
-| Exit | Idle animation (bouncing balls). |
+This section describes the screens and objects of **Mini Clock**.
 
-**Ringing.** An alarm, a finished timer or a calendar reminder opens a full-screen **ALARM / TIMER / EVENT** page from any screen. The melody repeats every 5 s; any key dismisses it, and it stops by itself after 60 s. A source that fires while another one is ringing replaces it.
+After the boot logo, the clock opens on the **Digital** screen. Press **[Mode]** to open the **Menu**, which offers:
 
-**Persistence.** Settings, alarms and calendar events are stored in the MCU's data EEPROM (each record has a magic number and checksum; an invalid record falls back to defaults). The alarm bank is only rewritten when its content changes.
+- **Digital:** Large `HH:MM:SS`, weekday bar, and date, in 12h or 24h format.
+- **Analog:** Clock face with hour, minute, and second hands, the date, and the UTC offset.
+- **Alarm:** Up to 10 daily alarms, each with a time and an on/off switch.
+- **Stopwatch:** 0.1 s resolution with up to 10 laps.
+- **Timer:** Countdown up to 23:59:59.
+- **World Clock:** 32 cities. The selected city is also the time zone shown on every other screen.
+- **Calendar:** Month grid, day list, and up to 10 events with a category, start and end time, and an optional reminder.
+- **Setting:** Time and date, display (12/24h, colour invert, brightness), sound (mute, hourly chime, alarm melody), and reset.
+- **Exit:** Idle animation of bouncing balls.
 
-### III. Controls
+#### Objects in the Clock:
 
-Buttons: **Mode**, **Up**, **Down**. *Long* = hold, *Mode+Up* / *Mode+Down* = press Up or Down while holding Mode.
+<div align="center">
+<table>
+  <thead>
+    <tr>
+      <th align="center">Object Name</th>
+      <th align="center">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center"><strong>RTC</strong></td>
+      <td>Owns the PCF85063A on I2C. Sends the one-second tick, polls the alarm flag, and retries a write the chip did not acknowledge.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Time</strong></td>
+      <td>Local time for the selected time zone, and the hourly chime.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Alarm</strong></td>
+      <td>Alarm list stored in EEPROM. Programs the next enabled alarm into the RTC.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Stopwatch</strong></td>
+      <td>Counts in 0.1 s steps on its own timer while running, and records laps.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Timer</strong></td>
+      <td>Counts down on the one-second tick and rings when it reaches zero.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>World Clock</strong></td>
+      <td>City table and the selected time zone.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Calendar</strong></td>
+      <td>Events stored in EEPROM. Checks reminders on the one-second tick.</td>
+    </tr>
+    <tr>
+      <td align="center"><strong>Ringing</strong></td>
+      <td>Shared full-screen page for an alarm, a finished timer, or a calendar reminder.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-| Screen | Controls |
-|---|---|
-| Digital / Analog | Mode: open the menu. |
-| Menu | Up / Down: previous / next item. Mode: open. |
-| Alarm (list) | Up / Down: move. Mode: edit the alarm, or *Add New* / *Back*. Long Up: on/off. Long Down: delete. Mode+Up: add and edit. Mode+Down: back to menu. |
-| Alarm (edit) | Up / Down: change the value. Mode or Long Mode: next field (on *Delete?* Mode deletes, on *Save?* it saves). |
-| Stopwatch | Mode: start / pause. Long Mode: reset. Up: lap. Down: scroll laps. Long Up / Long Down: back. |
-| Timer | Mode: start / pause. Up / Down: change the selected field. Mode+Up / Mode+Down: next / previous field. Long Up: reset. Long Down: back. |
-| World Clock | Up / Down: change city. Mode: back. |
-| Calendar (month) | Up / Down: previous / next day. Long Up / Long Down: previous / next month. Mode: open the day. Long Mode: add an event. Mode+Up: back to menu. |
-| Calendar (day list) | Up / Down: next / previous event (Down on an empty day adds one). Mode: edit. Long Mode: delete. Long Up / Long Down: back to the month. |
-| Calendar (edit) | Up / Down: change the value. Mode: next field (the last field saves). Long Mode: save, or cancel a new event. Long Down: cancel. |
-| Setting | Up / Down: move. Mode: select. In *Time*, Up / Down change the field and Mode moves to the next one until *OK*. |
-| Ringing | Any key: dismiss. |
+### III. How to Use:
 
-### IV. Software Architecture
+The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means hold the button; **[Mode]+[Up]** and **[Mode]+[Down]** mean press [Up] or [Down] while holding [Mode].
 
-The firmware is built on the AK (Active Kernel) event-driven framework: every object is a task that only communicates through messages, and every handler runs to completion without blocking.
+- **Digital / Analog:** **[Mode]** opens the menu.
+- **Menu:** **[Up]** / **[Down]** choose an item, **[Mode]** opens it.
+- **Alarm list:** **[Up]** / **[Down]** move, **[Mode]** edits an alarm or selects *Add New* / *Back*, long **[Up]** switches the alarm on or off, long **[Down]** deletes it, **[Mode]+[Up]** adds and edits a new alarm, **[Mode]+[Down]** returns to the menu.
+- **Alarm edit:** **[Up]** / **[Down]** change the value, **[Mode]** moves to the next field. On *Delete?* it deletes the alarm, and on *Save?* it saves it.
+- **Stopwatch:** **[Mode]** starts or pauses, long **[Mode]** resets, **[Up]** records a lap, **[Down]** scrolls the laps, long **[Up]** or long **[Down]** returns.
+- **Timer:** **[Mode]** starts or pauses, **[Up]** / **[Down]** change the selected field, **[Mode]+[Up]** / **[Mode]+[Down]** select the next or previous field, long **[Up]** resets, long **[Down]** returns.
+- **World Clock:** **[Up]** / **[Down]** change the city, **[Mode]** returns.
+- **Calendar (month):** **[Up]** / **[Down]** select the previous or next day, long **[Up]** / long **[Down]** change the month, **[Mode]** opens the day, long **[Mode]** adds an event, **[Mode]+[Up]** returns to the menu.
+- **Calendar (day):** **[Up]** / **[Down]** select the next or previous event (**[Down]** on an empty day adds one), **[Mode]** edits, long **[Mode]** deletes, long **[Up]** or long **[Down]** returns to the month.
+- **Calendar (edit):** **[Up]** / **[Down]** change the value, **[Mode]** moves to the next field and saves on the last one, long **[Mode]** saves (or cancels a new event), long **[Down]** cancels.
+- **Setting:** **[Up]** / **[Down]** move, **[Mode]** selects. In *Time*, **[Up]** / **[Down]** change a field and **[Mode]** moves on until *OK*.
+- **Ringing:** any button dismisses it.
 
-| Task | Priority | Responsibility |
-|---|---|---|
-| `MC_CLOCK_RTC_ID` (`task_mc_rtc`) | 5 | 1 Hz service tick; polls the RTC alarm flag; owns every RTC write and retries one the RTC did not acknowledge. |
-| `MC_CLOCK_TIME_ID` | 4 | Local time for the selected time zone; hourly chime. |
-| `MC_CLOCK_STOPWATCH_ID` | 4 | Stopwatch with its own 100 ms timer while running. |
-| `MC_CLOCK_TIMER_ID` | 4 | Countdown on the 1 Hz tick. |
-| `MC_CLOCK_ALARM_ID` | 4 | Alarm list, EEPROM bank, programs the next alarm into the RTC. |
-| `MC_CLOCK_WORLD_CLOCK_ID` | 4 | City table (in flash) and the selected time zone. |
-| `MC_CLOCK_CALENDAR_ID` | 4 | Events, EEPROM bank, reminders on the 1 Hz tick. |
-| `AC_TASK_DISPLAY_ID` | 4 | Screen manager: buttons are routed to the active screen, which renders object snapshots. |
+#### Clock Mechanics:
+
+- **Time zone:** The RTC keeps Vietnam time (UTC+7). The city selected in World Clock sets the time zone of every screen, and alarms and reminders use that local time.
+- **Background counting:** The timer, the stopwatch, and calendar reminders keep running when you leave their screens.
+- **Ringing:** An alarm, a finished timer, or a reminder opens an **ALARM**, **TIMER**, or **EVENT** page on top of any screen. The selected alarm melody repeats every 5 seconds. Any button dismisses it, and it stops by itself after 60 seconds. A source that fires while another one is ringing replaces it.
+- **Persistence:** Settings, alarms, and events are stored in EEPROM with a magic number and a checksum. An invalid record falls back to the defaults.
+- **Sound:** Mute silences every sound, including the boot melody. The hourly chime plays at the start of each hour.
+
+> **Note:** The release build compiles the console output out. To inspect a running clock, see [Build, Flash, and Debug](docs/01-guide-coding-rules.md).
+
+### IV. Basic Clock Sequence Logic
+
+Every second the **RTC** task checks the alarm flag and sends a tick to the **Timer** and the **Calendar**. Whatever starts ringing asks the display to open the ringing page, and dismissing it tells the source to stop and re-arm.
 
 ```text
-timer 1 s ──► task_mc_rtc ──► RTC alarm flag set? ──► Alarm ──┐
-                     ├──► Timer (countdown) ──────────────────┤
-                     └──► Calendar (reminders) ───────────────┤
-                                                              ▼
-                                        AC_DISPLAY_SHOW_RINGING ──► ringing screen
-                                                              │  any key / 60 s
-                                                              ▼
-                                                 source *_DISMISS ──► Alarm re-arms RTC
+timer 1 s ──► RTC ──► alarm flag set? ──────► Alarm ────┐
+               ├────► Timer (countdown) ────────────────┤
+               └────► Calendar (reminders) ─────────────┤
+                                                        ▼
+                                  AC_DISPLAY_SHOW_RINGING ──► Ringing page
+                                                        │  any button / 60 s
+                                                        ▼
+                                          source dismiss ──► Alarm re-arms the RTC
 ```
 
-Changing the time, the time zone or resetting settings sends `MC_CLOCK_ALARM_REARM`, so the next alarm is always programmed against the current time.
-
-**Memory** (release build): Flash 74,728 / 118,784 bytes, RAM 13,324 / 16,384 bytes (about 3 KB left for the stack).
-
-### V. Build & Flash
-
-```bash
-make -C application                              # build (toolchain: ~/workspace/tools, override GCC_PATH)
-make -C application flash dev=/dev/ttyUSB0       # flash through the AK bootloader (ak-flash)
-```
-
-### VI. Debug Shell
-
-The UART console runs at 115200 8N1. `tools/ak-console.py` sends commands non-interactively:
-
-```bash
-python3 tools/ak-console.py --port /dev/ttyUSB0 --cmd "ver" --cmd "fatal l"
-```
-
-| Command | Purpose |
-|---|---|
-| `ver`, `fatal l`, `ram s`, `lcd d` | Standard AK status, crash log, stack usage and framebuffer dump. |
-| `stt` | Alarm and calendar state. |
-| `rtc g` / `rtc s YYYYMMDD hhmmss` | Read / set the RTC (Vietnam time). |
-| `mute 1` / `mute 0` | Saved mute setting, without the click sounds of the menu. |
-| `btn m\|u\|d`, `btn M\|U\|D`, `btn a\|b` | Simulate a press, a long press, Mode+Up / Mode+Down. |
-
-The play build compiles the console output gates out (`-ULOGIN_PRINT_EN -USYS_PRINT_EN` in `application/Makefile`), so commands still run but print nothing. Switch them to `-D` for a debugging session and back afterwards.
+Changing the time, the city, or resetting the settings sends `MC_CLOCK_ALARM_REARM`, so the next alarm is always programmed against the current time.
 
 ## Contact & Support
 
