@@ -94,7 +94,7 @@ Flash Partitions Layout
 
 <table align="center">
   <tr>
-    <td align="center"><img src="resources/images/board/board-view-top-bottom.png" width="900"/></td>
+    <td align="center"><img src="resources/images/board/board-view-top-bottom.png" alt="AK Embedded Base Kit top and bottom views" width="900"/></td>
   </tr>
 </table>
 <p align="center"><strong><em>Figure 2:</em></strong> Board view Top + Bottom </p>
@@ -254,29 +254,29 @@ The kit has three buttons: **[Mode]**, **[Up]**, and **[Down]**. *Long* means ho
 
 <p style="font-size: 20px;"><strong>Cao Trong Phuoc</strong> - Software Engineer - Embedded Systems</p>
 
-``` Note
+```text
 Thank you for visiting this repository.
 If you have any questions, suggestions, or feedback about this project or firmware development, feel free to contact me directly.
 ```
 
 <a href="https://github.com/caotrongphuoc">
-  <img src="https://img.shields.io/badge/GitHub-caotrongphuoc-181717?style=for-the-badge&logo=github&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-caotrongphuoc-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
 </a>
 
 <a href="https://www.linkedin.com/in/cao-trong-phuoc/">
-  <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+  <img src="https://img.shields.io/badge/LinkedIn-Cao%20Trong%20Phuoc-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
 </a>
 
 <p style="font-size: 20px;"><strong>Josef Tan</strong> - Software Engineer - Embedded Systems</p>
 
-``` Note
+```text
 For questions related to this project, embedded systems, or firmware development, please feel free to reach out through GitHub or LinkedIn.
-````
+```
 
 <a href="https://github.com/joseftanlang">
-  <img src="https://img.shields.io/badge/GitHub-joseftanlang-181717?style=for-the-badge&logo=github&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-joseftanlang-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
 </a>
 
 <a href="https://www.linkedin.com/in/josef-tan/">
-  <img src="https://img.shields.io/badge/LinkedIn-Josef%20Tan-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+  <img src="https://img.shields.io/badge/LinkedIn-Josef%20Tan-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
 </a>
