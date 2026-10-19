@@ -77,7 +77,8 @@ using namespace std;
 #if defined(RELEASE)
 const char* app_run_mode = "RELEASE";
 #else
-static const char* app_run_mode = "DEBUG";
+/* Only printed by APP_PRINT, which is compiled out when APP_PRINT_EN is off */
+static const char* app_run_mode __attribute__((unused)) = "DEBUG";
 #endif
 
 const app_info_t app_info { \
