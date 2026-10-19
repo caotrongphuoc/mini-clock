@@ -82,6 +82,7 @@ int32_t shell_psv(uint8_t* argv);
 int32_t shell_buzzer(uint8_t* argv);
 int32_t shell_btn(uint8_t* argv);
 int32_t shell_rtc(uint8_t* argv);
+int32_t shell_mute(uint8_t* argv);
 
 /*****************************************************************************/
 /*  command table
@@ -114,6 +115,7 @@ const cmd_line_t lgn_cmd_table[] = {
 	{(const int8_t*)"dbg",		shell_dbg,			(const int8_t*)"dbg"},
 	{(const int8_t*)"btn",		shell_btn,			(const int8_t*)"simulate button press"},
 	{(const int8_t*)"rtc",		shell_rtc,			(const int8_t*)"rtc get/set time"},
+	{(const int8_t*)"mute",		shell_mute,			(const int8_t*)"mute 1|0: saved sound mute"},
 
 	/* End Of Table */
 	{(const int8_t*)0,(pf_cmd_func)0,(const int8_t*)0}
@@ -1021,5 +1023,24 @@ int32_t shell_rtc(uint8_t* argv) {
 		break;
 	}
 
+	return 0;
+}
+
+/* mute 1 | mute 0 : same as Setting > Sound > Mute (saved to EEPROM), without
+ * the button clicks that navigating the menu would make. */
+int32_t shell_mute(uint8_t* argv) {
+	switch (*(argv + 5)) {
+	case '0':
+	case '1':
+		clock_setting_data.sound_off = (*(argv + 5) == '1') ? 1 : 0;
+		BUZZER_Silent(clock_setting_data.sound_off ? BUZZER_SILENT_ON : BUZZER_SILENT_OFF);
+		mc_clock_setting_write(&clock_setting_data);
+		break;
+
+	default:
+		break;
+	}
+
+	LOGIN_PRINT("mute %u\n", clock_setting_data.sound_off);
 	return 0;
 }
